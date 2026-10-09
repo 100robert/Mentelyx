@@ -1,108 +1,208 @@
 # Estilo arquitectónico de Mentelyx
 
-Mentelyx tendrá un frontend Web + PWA y un backend monolítico modular.
-Las notificaciones y los recordatorios se procesarán mediante capacidades
-serverless complementarias.
+## Estilo seleccionado
+
+Mentelyx utilizará una estructura cliente-servidor con un backend
+monolítico modular y procesamiento complementario serverless.
+
+El frontend será una aplicación web responsive y mobile-first,
+instalable como PWA.
+
+Los módulos del núcleo se ejecutarán dentro de una misma aplicación
+desplegable. Las funciones serverless realizarán el envío de
+notificaciones y la activación periódica de recordatorios.
 
 ## Diagrama
 
 ```mermaid
 flowchart TB
-    US["Estudiantes · Docentes · Administradores"]
-    WEB["Aplicación Web + PWA"]
 
-    US --> WEB
+    ACT["Estudiante · Docente · Administración"]
+    WEB["Frontend Web + PWA"]
 
-    subgraph BACKEND["BACKEND MONOLÍTICO MODULAR · Una aplicación desplegable"]
+    ACT --> WEB
 
-        API["API REST · Autenticación · Autorización"]
+    subgraph MONOLITO["BACKEND MONOLÍTICO MODULAR — Una aplicación desplegable"]
 
-        subgraph PRESENTACION["PRESENTACIÓN · Controladores"]
-            direction LR
-            C1["Usuarios"]
-            C2["Aprendizaje"]
-            C3["Suscripciones"]
-            C4["Tutorías"]
-            C5["Pagos"]
+        MW["API REST · Autenticación · Autorización · Validación · Registro de errores"]
+
+        subgraph PRESENTACION["1. PRESENTACIÓN — Rutas y controladores"]
+            U_R["/usuarios"]
+            A_R["/aprendizaje"]
+            S_R["/suscripciones"]
+            T_R["/tutorias"]
+            P_R["/pagos"]
+
+            U_C["ControladorUsuarios"]
+            A_C["ControladorAprendizaje"]
+            S_C["ControladorSuscripciones"]
+            T_C["ControladorTutorias"]
+            P_C["ControladorPagos"]
+
+            U_R --> U_C
+            A_R --> A_C
+            S_R --> S_C
+            T_R --> T_C
+            P_R --> P_C
         end
 
-        subgraph NEGOCIO["NEGOCIO · Casos de uso y reglas"]
-            direction LR
-            N1["Cuentas y permisos"]
-            N2["Diagnóstico y rutas"]
-            N3["Planes y beneficios"]
-            N4["Reservas y cupos"]
-            N5["Cobros y liquidaciones"]
+        subgraph NEGOCIO["2. NEGOCIO — Casos de uso y reglas del dominio"]
+            U_S["RegistrarUsuario / AsignarPermisos"]
+            A_S["EvaluarIntento / ActualizarRuta"]
+            S_S["ActivarSuscripcion / ConsultarBeneficios"]
+            T_S["ReservarTutoria / ControlarCupos"]
+            P_S["ConfirmarPago / CalcularLiquidacion"]
         end
 
-        subgraph PERSISTENCIA["PERSISTENCIA · Implementaciones de repositorios"]
-            direction LR
-            R1["Usuarios"]
-            R2["Progreso académico"]
-            R3["Suscripciones"]
-            R4["Reservas"]
-            R5["Transacciones"]
+        subgraph INFRA["3. INFRAESTRUCTURA — Repositorios y adaptadores"]
+            U_D["RepositorioUsuarios"]
+            A_D["RepositorioAprendizaje"]
+            S_D["RepositorioSuscripciones"]
+            T_D["RepositorioReservas"]
+            P_D["RepositorioPagos"]
+
+            DB_ACCESS["Infraestructura de persistencia"]
+            PAY_ADAPTER["Adaptador de pasarela"]
         end
 
-        API --> C1
-        API --> C2
-        API --> C3
-        API --> C4
-        API --> C5
+        MW --> U_R
+        MW --> A_R
+        MW --> S_R
+        MW --> T_R
+        MW --> P_R
 
-        C1 --> N1 --> R1
-        C2 --> N2 --> R2
-        C3 --> N3 --> R3
-        C4 --> N4 --> R4
-        C5 --> N5 --> R5
+        U_C --> U_S --> U_D
+        A_C --> A_S --> A_D
+        S_C --> S_S --> S_D
+        T_C --> T_S --> T_D
+        P_C --> P_S --> P_D
 
-        DATOS["Conexión a datos"]
+        U_D --> DB_ACCESS
+        A_D --> DB_ACCESS
+        S_D --> DB_ACCESS
+        T_D --> DB_ACCESS
+        P_D --> DB_ACCESS
 
-        R1 --> DATOS
-        R2 --> DATOS
-        R3 --> DATOS
-        R4 --> DATOS
-        R5 --> DATOS
+        T_S -.->|"Consultar pago"| P_S
+        P_S --> PAY_ADAPTER
 
-        OTROS["También dentro del núcleo:<br/>Contenidos · Convenios · Docentes<br/>Notificaciones · Auditoría y soporte"]
+        subgraph COMPLEMENTARIOS["MÓDULOS COMPLEMENTARIOS — Dentro del monolito"]
+            OTROS["Contenidos · Convenios · Docentes · Auditoría y soporte"]
+            NOTI["Notificaciones: validar destinatarios y preparar avisos"]
+        end
+
+        DB_ACCESS ~~~ OTROS
+        OTROS ~~~ NOTI
+
+        T_S -.->|"Reserva confirmada"| NOTI
+        S_S -.->|"Suscripción activada"| NOTI
     end
 
-    WEB -->|"HTTPS"| API
+    WEB -->|"HTTPS"| MW
 
-    DB[("Base de datos")]
-    DATOS --> DB
+    DB[("Base de datos relacional")]
+    PASARELA["Servicio externo de pagos"]
 
-    PAGO["Pasarela externa"]
-    N5 -->|"Adaptador de pagos"| PAGO
+    DB_ACCESS --> DB
+    PAY_ADAPTER <-->|"API del proveedor"| PASARELA
 
-    subgraph ASINCRONO["PROCESAMIENTO ASÍNCRONO"]
-        COLA["Cola de tareas"]
-        FN["Funciones serverless"]
-        AVISO["Proveedor de notificaciones"]
-
-        COLA --> FN --> AVISO
+    subgraph ASINCRONO["INFRAESTRUCTURA ASÍNCRONA"]
+        CRON["Programador de ejecuciones"]
+        QUEUE["Cola de notificaciones"]
     end
 
-    OTROS -->|"Módulo de Notificaciones"| COLA
+    subgraph SERVERLESS["FUNCIONES SERVERLESS — Fuera del monolito"]
+        RECORDAR["ActivarRecordatorios"]
+        ENVIAR["EnviarNotificacion"]
+    end
 
-    classDef presentacion fill:#e7effa,stroke:#6b8fb5,color:#1c3045;
-    classDef negocio fill:#eaf3e5,stroke:#7e9d70,color:#293e23;
-    classDef datos fill:#fff3da,stroke:#b49b64,color:#463b24;
+    PROVEEDOR["Proveedor externo de notificaciones"]
 
-    class API,C1,C2,C3,C4,C5 presentacion;
-    class N1,N2,N3,N4,N5,OTROS negocio;
-    class R1,R2,R3,R4,R5,DATOS,DB datos;
+    CRON -->|"Ejecución periódica"| RECORDAR
+    RECORDAR -->|"Solicitar recordatorios mediante API interna"| NOTI
+
+    NOTI -->|"Publicar tareas mediante adaptador"| QUEUE
+    QUEUE -->|"Entregar tarea"| ENVIAR
+    ENVIAR -->|"Solicitar envío"| PROVEEDOR
+    ENVIAR -.->|"Registrar resultado mediante API interna"| NOTI
+
+    classDef presentacion fill:#e5edf9,stroke:#7893b8,color:#20334b;
+    classDef negocio fill:#e7f0df,stroke:#85a36e,color:#2c4022;
+    classDef infraestructura fill:#fff1d4,stroke:#b69a5d,color:#4b3c20;
+    classDef serverless fill:#eee6f7,stroke:#9878b2,color:#443052;
+
+    class MW,U_R,A_R,S_R,T_R,P_R,U_C,A_C,S_C,T_C,P_C presentacion;
+    class U_S,A_S,S_S,T_S,P_S,OTROS,NOTI negocio;
+    class U_D,A_D,S_D,T_D,P_D,DB_ACCESS,PAY_ADAPTER,DB,CRON,QUEUE infraestructura;
+    class RECORDAR,ENVIAR serverless;
 ```
 
-## Alcance de la vista
+## Distribución de responsabilidades
 
-Se detallan cinco módulos para mostrar su organización. Los módulos
-adicionales también pertenecen al mismo núcleo y siguen la misma
-separación de responsabilidades.
+| Componente | Ubicación | Responsabilidad |
+|---|---|---|
+| Frontend Web + PWA | Cliente | Presentar las funciones disponibles según el usuario y comunicarse con la API. |
+| Módulos del negocio | Monolito modular | Gestionar usuarios, aprendizaje, contenidos, suscripciones, convenios, docentes, tutorías y operaciones económicas. |
+| Módulo de Notificaciones | Monolito modular | Determinar los avisos válidos, sus destinatarios y contenido, y registrar su procesamiento. |
+| ActivarRecordatorios | Función serverless | Solicitar periódicamente al backend la preparación de los recordatorios pendientes. |
+| EnviarNotificacion | Función serverless | Procesar tareas de la cola, solicitar su envío al proveedor y comunicar el resultado al backend. |
+| Cola de notificaciones | Infraestructura asíncrona | Conservar y entregar tareas pendientes. |
+| Programador de ejecuciones | Infraestructura asíncrona | Activar periódicamente la función de recordatorios. |
 
-Las flechas verticales representan llamadas durante la ejecución:
-controlador, caso de uso y repositorio utilizado mediante un contrato.
-No representan las dependencias de código de Clean Architecture.
+## Reglas de organización
 
-El almacenamiento de archivos y la caché propuesta se omiten en esta
-vista resumida. Se mantienen en el diseño general de la plataforma.
+1. Los módulos del núcleo compartirán una unidad de despliegue,
+   manteniendo responsabilidades delimitadas.
+
+2. La comunicación entre módulos se realizará mediante interfaces
+   internas. Un módulo no modificará directamente los datos de otro.
+
+3. Las reglas educativas, comerciales y de autorización permanecerán
+   en el backend.
+
+4. Las funciones serverless accederán a las operaciones internas
+   mediante mecanismos autenticados y permisos limitados.
+
+5. Antes de preparar un recordatorio, el backend verificará que
+   la tutoría y sus destinatarios continúen siendo válidos.
+
+6. Un fallo en el envío de una notificación no anulará una reserva
+   o un pago confirmado.
+
+7. El procesamiento de tareas contemplará reintentos y controles
+   para evitar duplicados.
+
+## Lectura del diagrama
+
+- Las columnas detalladas representan cinco módulos del núcleo.
+- Los módulos complementarios se muestran resumidos para mantener
+  la legibilidad.
+- Las flechas continuas representan comunicación durante la ejecución.
+- Las flechas discontinuas identifican colaboraciones o notificaciones
+  entre componentes.
+- La cola y el programador son infraestructura de apoyo; no son
+  funciones serverless.
+- Las conexiones internas de recordatorios y resultados representan
+  operaciones protegidas de la API, resumidas en el diagrama.
+- Las flechas no representan las dependencias del código de
+  Clean Architecture.
+
+## Elementos complementarios
+
+Los videos y materiales se conservarán en almacenamiento de archivos
+integrado mediante adaptadores.
+
+La caché de recursos estáticos y consultas públicas se mantiene como
+propuesta ADR-012. Su incorporación no sustituirá la validación de pagos,
+permisos o cupos en las operaciones del negocio.
+
+Estos elementos se omiten en esta vista resumida para destacar
+la estructura modular y la distribución del procesamiento.
+
+## Decisiones relacionadas
+
+- ADR-001: núcleo de negocio mediante monolito modular.
+- ADR-003: frontend Web + PWA conectado mediante API REST.
+- ADR-005: integración de pagos mediante contratos y adaptadores.
+- ADR-008: notificaciones y recordatorios mediante funciones serverless.
+- ADR-009: almacenamiento separado de archivos.
