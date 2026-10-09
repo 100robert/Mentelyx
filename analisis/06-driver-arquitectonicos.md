@@ -17,7 +17,7 @@ Se identifican a partir del análisis previo del sistema.
 | DA-07 | El sistema debe mantener disponibles las funciones educativas que no dependan de un servicio externo temporalmente interrumpido. | AC-02 — Disponibilidad; RF-30 | Influye en la separación de las funciones principales y las integraciones, así como en el tratamiento de fallos. |
 | DA-08 | El sistema debe mantener cuentas personales independientes de los convenios institucionales. | RF-01, RF-15, RF-16, RF-17; RC-03, RC-04 | Influye en la separación entre identidad del estudiante, convenios y beneficios, evitando que la cuenta dependa de una institución. |
 | DA-09 | El sistema debe poder operar con una administración inicial a cargo del propietario y permitir delegación posterior. | RF-03; RC-06 — Administración inicial | Influye en la gestión de permisos y en la complejidad operativa de la solución. |
-| DA-10 | El sistema debe atender a una aplicación web y una aplicación móvil manteniendo una identidad y una información de negocio compartidas. | RF-33, RF-34; RC-01 — Acceso multiplataforma | Influye en la definición de interfaces de comunicación compartidas, la autenticación y la separación entre las interfaces de usuario y las reglas del negocio. |
+| DA-10 | El sistema debe ofrecer una experiencia educativa mediante una aplicación web responsive e instalable como PWA. | RF-33, RF-34; AC-07 — Usabilidad; RC-01 — Aplicación web instalable como PWA. | Influye en la organización del frontend, su adaptación a distintos dispositivos y los mecanismos de instalación y actualización de la aplicación. |
 
 ## Priorización
 
@@ -41,3 +41,30 @@ Cada decisión deberá identificar:
 - El resultado esperado en la estructura del sistema.
 
 La distribución entre el monolito modular y las capacidades serverless se justificará en esa etapa.
+
+## Decisiones arquitectónicas
+
+A partir de los drivers identificados, se establecen las decisiones iniciales de arquitectura de Mentelyx.
+
+Cada decisión se identifica mediante un código ADR, correspondiente a un Registro de Decisión Arquitectónica.
+
+| ID | Decisión arquitectónica | Driver relacionado | Justificación | Resultado |
+|---|---|---|---|---|
+| ADR-001 | Organizar el backend como un monolito modular. | DA-05 — Mantenibilidad; DA-09 — Administración inicial. | Separar las responsabilidades del negocio dentro de una misma aplicación desplegable, manteniendo una complejidad operativa adecuada para la etapa inicial. | El frontend web de Mentelyx, accesible desde el navegador o instalado como PWA, utilizará la API del backend para ejecutar las operaciones del negocio. |
+| ADR-002 | Aplicar Clean Architecture dentro de los módulos del backend. | DA-05 — Mantenibilidad. | Separar las reglas del negocio de las interfaces, la persistencia y los proveedores externos, facilitando los cambios y las pruebas. | Responsabilidades organizadas en Dominio, Aplicación, Presentación e Infraestructura, con dependencias dirigidas hacia el núcleo. |
+| ADR-003 | Desarrollar un único frontend web responsive y mobile-first con capacidades PWA, conectado al backend mediante una API REST sobre HTTPS. | DA-10 — Aplicación web y PWA; DA-05 — Mantenibilidad. | Permitir acceso desde el navegador y mediante instalación utilizando una misma base de frontend, manteniendo las reglas del negocio en el backend. | Una aplicación web instalable como PWA y un backend con una API para las operaciones de Mentelyx. |
+| ADR-004 | Verificar la autenticación y autorización en el backend mediante roles, permisos y acceso a recursos. | DA-03 — Seguridad; DA-09 — Administración inicial. | Proteger las operaciones independientemente de la interfaz utilizada y permitir que el propietario delegue funciones sin entregar acceso general. | Acceso controlado para estudiantes, docentes, superadministrador y administradores delegados. |
+| ADR-005 | Integrar el servicio de pagos mediante una interfaz definida por la aplicación y un adaptador del proveedor. | DA-04 — Pagos externos; DA-05 — Mantenibilidad. | Evitar que las reglas de suscripciones, tutorías y remuneraciones dependan directamente de los detalles de una pasarela específica. | Contrato de integración de pagos y una implementación encargada de comunicarse con el proveedor seleccionado. |
+| ADR-006 | Utilizar persistencia relacional con transacciones y controles de concurrencia para las operaciones críticas. | DA-06 — Consistencia. | Mantener coherencia al asignar cupos, registrar pagos y generar liquidaciones, incluso cuando existan solicitudes simultáneas. | Datos relacionados y operaciones transaccionales que impidan superar cupos o producir registros económicos inconsistentes. |
+| ADR-007 | Procesar los resultados de pagos de forma idempotente. | DA-04 — Pagos externos; DA-06 — Consistencia. | Una notificación repetida del proveedor no debe activar dos veces una suscripción ni duplicar una reserva o liquidación. | Cada operación de pago conserva una identificación única y sus efectos se aplican una sola vez. |
+| ADR-008 | Utilizar una cola de tareas y funciones serverless para notificaciones y recordatorios. | DA-07 — Disponibilidad; DA-09 — Administración inicial. | Ejecutar tareas complementarias sin mantener al usuario esperando su finalización ni invalidar operaciones confirmadas cuando falle una entrega. | Procesamiento asíncrono de avisos y recordatorios, con control de reintentos y seguimiento de tareas. |
+| ADR-009 | Separar el almacenamiento de archivos del almacenamiento de datos académicos y comerciales. | DA-01 — Escalabilidad; DA-02 — Rendimiento. | Los videos, imágenes y materiales educativos tienen necesidades de almacenamiento y distribución diferentes de las reservas, resultados y pagos. | Archivos en almacenamiento especializado y referencias, metadatos y permisos gestionados por el backend. |
+| ADR-010 | Separar la identidad del estudiante de los convenios y beneficios institucionales. | DA-08 — Independencia institucional. | Conservar la cuenta y el historial aunque termine un convenio o cambie la elegibilidad del estudiante. | Cuentas personales independientes y un módulo de convenios que administra asignaciones de beneficios, sin paneles institucionales. |
+
+### Consideraciones de las decisiones
+
+- Los módulos del backend formarán parte de una misma aplicación desplegable; no serán microservicios independientes.
+- Las funciones serverless complementarán al monolito modular. Las reglas principales de aprendizaje, acceso, reservas y remuneraciones permanecerán en el backend.
+- Las transacciones locales no abarcarán al proveedor externo de pagos. La confirmación de una contratación deberá coordinar el resultado del pago con el estado válido de la reserva.
+- La aplicación web y la aplicación móvil compartirán servicios, aunque podrán ofrecer interfaces y funciones diferentes según el usuario.
+- Los proveedores, frameworks y productos específicos se seleccionarán posteriormente, de acuerdo con estas decisiones y los recursos disponibles.

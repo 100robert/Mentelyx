@@ -40,8 +40,10 @@ Los requisitos funcionales describen las funciones que el sistema debe realizar 
 | RF-30 | El sistema debe generar notificaciones sobre cuentas, suscripciones, reservas, tutorías y operaciones económicas relevantes. |
 | RF-31 | El sistema debe registrar las operaciones administrativas y económicas relevantes y permitir su consulta a usuarios autorizados. |
 | RF-32 | El sistema debe permitir registrar incidencias de soporte, consultar su estado y documentar su atención. |
-| RF-33 | El sistema debe permitir al usuario acceder desde la aplicación web y la aplicación móvil utilizando una misma cuenta. |
-| RF-34 | El sistema debe permitir consultar desde ambas aplicaciones la información actualizada del progreso académico, suscripciones y tutorías del usuario, según sus permisos y las funciones disponibles en cada aplicación. |
+| RF-33 | El sistema debe permitir instalar Mentelyx como PWA en dispositivos y navegadores compatibles y acceder a ella desde el icono de la aplicación instalada. |
+| RF-34 | El sistema debe permitir al usuario acceder desde el navegador o la PWA instalada con una misma cuenta y consultar su información académica, suscripciones y tutorías actualizadas al conectarse al servicio. |
+
+
 
 ## Relación entre historias de usuario y requisitos funcionales
 

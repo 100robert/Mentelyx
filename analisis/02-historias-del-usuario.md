@@ -46,7 +46,7 @@ Como [actor], quiero [acción], para [beneficio].
 | HU-22 | Como administrador autorizado, quiero registrar convenios y asignar beneficios a estudiantes elegibles, para ejecutar los acuerdos establecidos por Mentelyx. |
 | HU-23 | Como administrador autorizado, quiero revisar pagos, reembolsos y liquidaciones docentes, para supervisar las operaciones económicas. |
 | HU-24 | Como administrador autorizado, quiero atender incidencias y consultar el registro de operaciones, para resolver problemas y supervisar el funcionamiento de la plataforma. |
-| HU-25 | Como estudiante, quiero acceder a Mentelyx desde la aplicación web o móvil con mi misma cuenta, para continuar mi aprendizaje y consultar mis servicios desde distintos dispositivos. |
+| HU-25 | Como estudiante, quiero acceder a Mentelyx desde el navegador o instalarla como PWA en un dispositivo compatible, para utilizar la plataforma desde distintos dispositivos con mi misma cuenta. |
 
 ## Consideraciones
 

@@ -14,7 +14,7 @@ Se considera un escenario en el que varios estudiantes consultan contenidos, rea
 | AC-04 | Seguridad | Los datos personales, resultados académicos y operaciones económicas deben estar protegidos frente a accesos no autorizados. Cada usuario debe acceder únicamente a la información y funciones permitidas. |
 | AC-05 | Mantenibilidad | El sistema debe permitir modificar planes, beneficios de convenios y funciones educativas sin afectar innecesariamente otras funcionalidades. |
 | AC-06 | Integridad y consistencia | El sistema debe conservar la coherencia de reservas, pagos y remuneraciones, evitando superar los cupos disponibles o registrar efectos duplicados para un mismo pago. |
-| AC-07 | Usabilidad | Los estudiantes deben poder localizar contenidos, consultar sus avances y contratar servicios mediante una interfaz comprensible y adecuada para dispositivos móviles y computadoras. |
+| AC-07 | Usabilidad | La interfaz debe diseñarse con un enfoque mobile-first y adaptarse a celulares, tablets y computadoras, permitiendo localizar contenidos, realizar actividades y consultar servicios tanto desde el navegador como desde la PWA instalada. |
 
 ## Prioridades de calidad
 

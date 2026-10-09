@@ -6,7 +6,7 @@ Las restricciones son condiciones o limitaciones que deben respetarse al desarro
 
 | ID | Restricción | Descripción |
 |---|---|---|
-| RC-01 | Acceso multiplataforma | Mentelyx debe ofrecer acceso mediante una aplicación web y una aplicación móvil. Ambas deben utilizar la misma cuenta del usuario y compartir la información académica, suscripciones, beneficios y tutorías, según las funciones disponibles en cada interfaz. |
+| RC-01 | Aplicación web instalable como PWA | Mentelyx debe desarrollarse como una aplicación web responsive y mobile-first, instalable como PWA en dispositivos compatibles. La primera versión no contempla una aplicación móvil nativa independiente. |
 | RC-02 | Control de versiones | Los documentos y el código del proyecto deben gestionarse mediante Git y mantenerse en GitHub. |
 | RC-03 | Acceso independiente | El registro general no debe exigir pertenencia a un colegio, academia o centro preuniversitario ni utilizar obligatoriamente un correo institucional. |
 | RC-04 | Convenios sin acceso institucional | Las instituciones asociadas no deben disponer de cuentas o paneles administrativos. Los convenios y beneficios serán gestionados por Mentelyx. |

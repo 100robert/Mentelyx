@@ -6,7 +6,15 @@
 
 Mentelyx es un centro educativo virtual independiente orientado al aprendizaje personalizado mediante inteligencia artificial, dirigido a estudiantes de primaria, secundaria y nivel preuniversitario.
 
-La plataforma contará con una aplicación web y una aplicación móvil. Los estudiantes podrán utilizar una misma cuenta para acceder a su información académica, progreso, suscripciones y tutorías desde ambos canales, según las funciones disponibles en cada aplicación.
+La plataforma se desarrollará como una aplicación web responsive y
+mobile-first, instalable como PWA en dispositivos compatibles.
+
+Los usuarios podrán acceder desde el navegador de una computadora,
+celular o tablet, o mediante la PWA instalada, utilizando la misma
+cuenta y consultando su información académica, progreso, suscripciones
+y tutorías.
+
+La primera versión no incluirá una aplicación móvil nativa independiente.
 
 Mentelyx permitirá que cada estudiante siga un proceso de aprendizaje adaptado a sus conocimientos, dificultades y ritmo de progreso. Para ello, construirá y actualizará un perfil individual de aprendizaje.
 
