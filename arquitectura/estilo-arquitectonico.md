@@ -1,184 +1,108 @@
 # Estilo arquitectónico de Mentelyx
 
-Mentelyx utiliza una estructura cliente-servidor con un frontend Web + PWA,
-un backend monolítico modular y procesamiento complementario serverless.
-
-Los módulos del núcleo forman una misma aplicación desplegable.
-Se comunican mediante operaciones internas definidas y mantienen
-responsabilidades delimitadas.
+Mentelyx tendrá un frontend Web + PWA y un backend monolítico modular.
+Las notificaciones y los recordatorios se procesarán mediante capacidades
+serverless complementarias.
 
 ## Diagrama
 
 ```mermaid
 flowchart TB
+    US["Estudiantes · Docentes · Administradores"]
+    WEB["Aplicación Web + PWA"]
 
-    subgraph ACTORES["ACTORES"]
-        EST["Estudiante"]
-        DOC["Docente"]
-        ADM["Superadministrador y administradores"]
-    end
+    US --> WEB
 
-    WEB["Frontend Web + PWA<br/>Responsive e instalable"]
+    subgraph BACKEND["BACKEND MONOLÍTICO MODULAR · Una aplicación desplegable"]
 
-    EST --> WEB
-    DOC --> WEB
-    ADM --> WEB
+        API["API REST · Autenticación · Autorización"]
 
-    subgraph MONOLITO["BACKEND MONOLÍTICO MODULAR — Una aplicación desplegable"]
-
-        API["API REST<br/>Autenticación · Autorización · Validación de entrada"]
-
-        subgraph PRINCIPALES["MÓDULOS PRINCIPALES — Detalle de responsabilidades"]
+        subgraph PRESENTACION["PRESENTACIÓN · Controladores"]
             direction LR
-
-            subgraph USUARIOS["Identidad y acceso"]
-                direction TB
-                UC["Controlador de usuarios"]
-                UU["Casos de uso<br/>Registrar usuario<br/>Asignar permisos"]
-                UR["Adaptador de persistencia<br/>Usuarios y roles"]
-
-                UC --> UU
-                UU -->|"Contrato de repositorio"| UR
-            end
-
-            subgraph APRENDIZAJE["Evaluación y aprendizaje"]
-                direction TB
-                AC["Controlador de aprendizaje"]
-                AU["Casos de uso y reglas<br/>Evaluar respuestas<br/>Actualizar perfil y ruta"]
-                AR["Adaptador de persistencia<br/>Evaluaciones y progreso"]
-
-                AC --> AU
-                AU -->|"Contrato de repositorio"| AR
-            end
-
-            subgraph SUSCRIPCIONES["Planes y suscripciones"]
-                direction TB
-                SC["Controlador de suscripciones"]
-                SU["Casos de uso y reglas<br/>Activar suscripción<br/>Determinar beneficios"]
-                SR["Adaptador de persistencia<br/>Planes y suscripciones"]
-
-                SC --> SU
-                SU -->|"Contrato de repositorio"| SR
-            end
-
-            subgraph TUTORIAS["Tutorías y reservas"]
-                direction TB
-                TC["Controlador de tutorías"]
-                TU["Casos de uso y reglas<br/>Reservar tutoría<br/>Controlar cupos"]
-                TR["Adaptador de persistencia<br/>Tutorías y reservas"]
-
-                TC --> TU
-                TU -->|"Contrato de repositorio"| TR
-            end
-
-            subgraph PAGOS["Pagos y remuneraciones"]
-                direction TB
-                PC["Controlador de pagos<br/>Recepción de notificaciones"]
-                PU["Casos de uso y reglas<br/>Verificar pago<br/>Calcular liquidación"]
-                PR["Adaptadores<br/>Persistencia e integración de pagos"]
-
-                PC --> PU
-                PU -->|"Contratos de integración"| PR
-            end
+            C1["Usuarios"]
+            C2["Aprendizaje"]
+            C3["Suscripciones"]
+            C4["Tutorías"]
+            C5["Pagos"]
         end
 
-        subgraph APOYO["OTROS MÓDULOS DEL MISMO NÚCLEO"]
-            CONT["Contenidos educativos"]
-            CONV["Convenios"]
-            DOCE["Gestión de docentes"]
-            NOTI["Notificaciones<br/>Preparar avisos y recordatorios"]
-            AUD["Auditoría y soporte"]
+        subgraph NEGOCIO["NEGOCIO · Casos de uso y reglas"]
+            direction LR
+            N1["Cuentas y permisos"]
+            N2["Diagnóstico y rutas"]
+            N3["Planes y beneficios"]
+            N4["Reservas y cupos"]
+            N5["Cobros y liquidaciones"]
         end
 
-        API --> UC
-        API --> AC
-        API --> SC
-        API --> TC
-        API --> PC
+        subgraph PERSISTENCIA["PERSISTENCIA · Implementaciones de repositorios"]
+            direction LR
+            R1["Usuarios"]
+            R2["Progreso académico"]
+            R3["Suscripciones"]
+            R4["Reservas"]
+            R5["Transacciones"]
+        end
 
-        API -->|"Operaciones autorizadas"| CONT
-        API -->|"Operaciones autorizadas"| CONV
-        API -->|"Operaciones autorizadas"| DOCE
-        API -->|"Operaciones autorizadas"| AUD
+        API --> C1
+        API --> C2
+        API --> C3
+        API --> C4
+        API --> C5
 
-        AU -.->|"Consultar recursos"| CONT
-        SU -.->|"Consultar beneficios"| CONV
-        TU -.->|"Verificar docente"| DOCE
+        C1 --> N1 --> R1
+        C2 --> N2 --> R2
+        C3 --> N3 --> R3
+        C4 --> N4 --> R4
+        C5 --> N5 --> R5
 
-        TU -.->|"Consultar estado de pago"| PU
-        SU -.->|"Consultar estado de pago"| PU
+        DATOS["Conexión a datos"]
 
-        TU -.->|"Aviso de reserva confirmada"| NOTI
-        SU -.->|"Aviso de suscripción"| NOTI
-        PU -.->|"Aviso de operación económica"| NOTI
+        R1 --> DATOS
+        R2 --> DATOS
+        R3 --> DATOS
+        R4 --> DATOS
+        R5 --> DATOS
 
-        DATOS["Acceso a datos del núcleo<br/>Cada módulo controla sus escrituras"]
+        OTROS["También dentro del núcleo:<br/>Contenidos · Convenios · Docentes<br/>Notificaciones · Auditoría y soporte"]
     end
 
-    WEB -->|"HTTPS / JSON"| API
+    WEB -->|"HTTPS"| API
 
-    UC ~~~ AC
-    AC ~~~ SC
-    SC ~~~ TC
-    TC ~~~ PC
+    DB[("Base de datos")]
+    DATOS --> DB
 
-    UR --> DATOS
-    AR --> DATOS
-    SR --> DATOS
-    TR --> DATOS
-    PR --> DATOS
+    PAGO["Pasarela externa"]
+    N5 -->|"Adaptador de pagos"| PAGO
 
-    CONT --> DATOS
-    CONV --> DATOS
-    DOCE --> DATOS
-    AUD --> DATOS
-
-    BD[("Base de datos relacional")]
-    ARCH["Almacenamiento de archivos<br/>Videos, imágenes y materiales"]
-    CACHE[("Caché de consultas públicas<br/>Propuesta ADR-012")]
-
-    DATOS --> BD
-    CONT --> ARCH
-    DOCE --> ARCH
-    CONT -.->|"Catálogo público"| CACHE
-    DOCE -.->|"Perfiles públicos"| CACHE
-
-    subgraph ASINCRONO["PROCESAMIENTO COMPLEMENTARIO — Fuera del monolito"]
+    subgraph ASINCRONO["PROCESAMIENTO ASÍNCRONO"]
         COLA["Cola de tareas"]
-        FN["Funciones serverless<br/>Envío de avisos y recordatorios"]
+        FN["Funciones serverless"]
+        AVISO["Proveedor de notificaciones"]
 
-        COLA --> FN
+        COLA --> FN --> AVISO
     end
 
-    NOTI -->|"Publicar tareas"| COLA
+    OTROS -->|"Módulo de Notificaciones"| COLA
 
-    PASARELA["Servicio externo de pagos"]
-    MENSAJERIA["Servicio externo de notificaciones"]
+    classDef presentacion fill:#e7effa,stroke:#6b8fb5,color:#1c3045;
+    classDef negocio fill:#eaf3e5,stroke:#7e9d70,color:#293e23;
+    classDef datos fill:#fff3da,stroke:#b49b64,color:#463b24;
 
-    PR <-->|"Solicitudes y resultados"| PASARELA
-    FN -->|"Solicitar entrega"| MENSAJERIA
-
-    classDef entrada fill:#e4eefb,stroke:#4275a8,color:#172b40;
-    classDef negocio fill:#e9f3e7,stroke:#6a9462,color:#233e23;
-    classDef infraestructura fill:#fff2d6,stroke:#b69a54,color:#493d22;
-    classDef externo fill:#f0e8f8,stroke:#9275ad,color:#3f2e50;
-
-    class WEB,API,UC,AC,SC,TC,PC entrada;
-    class UU,AU,SU,TU,PU,CONT,CONV,DOCE,NOTI,AUD negocio;
-    class UR,AR,SR,TR,PR,DATOS,BD,ARCH,CACHE infraestructura;
-    class COLA,FN,PASARELA,MENSAJERIA externo;
+    class API,C1,C2,C3,C4,C5 presentacion;
+    class N1,N2,N3,N4,N5,OTROS negocio;
+    class R1,R2,R3,R4,R5,DATOS,DB datos;
 ```
 
-## Lectura del diagrama
+## Alcance de la vista
 
-- Cada columna detallada representa un módulo del negocio.
-- Los cinco módulos de apoyo pertenecen al mismo backend; se muestran
-  resumidos para conservar la legibilidad.
-- El contorno del monolito identifica su unidad de despliegue.
-- Las llamadas entre módulos son internas; no requieren HTTP entre ellos.
-- Los repositorios se utilizan mediante contratos. Las flechas muestran
-  llamadas durante la ejecución, no dependencias del código.
-- El acceso a datos no autoriza a un módulo a modificar las tablas de otro.
-- Las funciones serverless ejecutan tareas complementarias fuera del núcleo.
-- La caché está propuesta para consultas públicas y no confirma pagos,
-  permisos ni disponibilidad de cupos.
+Se detallan cinco módulos para mostrar su organización. Los módulos
+adicionales también pertenecen al mismo núcleo y siguen la misma
+separación de responsabilidades.
+
+Las flechas verticales representan llamadas durante la ejecución:
+controlador, caso de uso y repositorio utilizado mediante un contrato.
+No representan las dependencias de código de Clean Architecture.
+
+El almacenamiento de archivos y la caché propuesta se omiten en esta
+vista resumida. Se mantienen en el diseño general de la plataforma.
