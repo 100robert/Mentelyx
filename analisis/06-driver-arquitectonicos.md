@@ -60,6 +60,47 @@ Cada decisión se identifica mediante un código ADR, correspondiente a un Regis
 | ADR-008 | Utilizar una cola de tareas y funciones serverless para notificaciones y recordatorios. | DA-07 — Disponibilidad; DA-09 — Administración inicial. | Ejecutar tareas complementarias sin mantener al usuario esperando su finalización ni invalidar operaciones confirmadas cuando falle una entrega. | Procesamiento asíncrono de avisos y recordatorios, con control de reintentos y seguimiento de tareas. |
 | ADR-009 | Separar el almacenamiento de archivos del almacenamiento de datos académicos y comerciales. | DA-01 — Escalabilidad; DA-02 — Rendimiento. | Los videos, imágenes y materiales educativos tienen necesidades de almacenamiento y distribución diferentes de las reservas, resultados y pagos. | Archivos en almacenamiento especializado y referencias, metadatos y permisos gestionados por el backend. |
 | ADR-010 | Separar la identidad del estudiante de los convenios y beneficios institucionales. | DA-08 — Independencia institucional. | Conservar la cuenta y el historial aunque termine un convenio o cambie la elegibilidad del estudiante. | Cuentas personales independientes y un módulo de convenios que administra asignaciones de beneficios, sin paneles institucionales. |
+| ADR-012 | Incorporar caché para archivos estáticos y consultas públicas frecuentes, utilizando Cache-Aside en el backend. | DA-01 — Escalabilidad; DA-02 — Rendimiento; DA-06 — Consistencia. | Reducir transferencias y consultas repetidas, manteniendo la validación de operaciones críticas en su fuente autorizada. | Caché de recursos del frontend y de consultas seleccionadas, con políticas de expiración, actualización e invalidación. |
+
+### ADR-012. Caché de recursos y consultas frecuentes
+
+**Estado:** Propuesta para la arquitectura inicial.
+
+#### Alcance
+
+- Archivos estáticos versionados del frontend Web + PWA.
+- Catálogo público de áreas, cursos y temas.
+- Información pública de docentes.
+- Imágenes y miniaturas públicas.
+
+#### Reglas
+
+- La base de datos continuará siendo la fuente de información persistente.
+- Las consultas seleccionadas del backend utilizarán Cache-Aside.
+- Cada tipo de información tendrá una política de expiración.
+- Los cambios de publicación deberán invalidar las entradas relacionadas.
+- Las reservas, pagos y autorizaciones no se confirmarán utilizando
+  únicamente una copia de la caché general.
+- La primera implementación no almacenará respuestas personales en
+  cachés compartidas entre usuarios.
+
+#### Ubicación en Clean Architecture
+
+La implementación de caché se ubicará en Infraestructura.
+
+Podrá implementarse como un adaptador o decorador de los repositorios
+de consulta, sin incorporar dependencias del producto de caché al Dominio.
+
+#### Verificación
+
+Se compararán los tiempos de respuesta y las consultas a la base de datos
+con y sin caché.
+
+También se comprobará que las modificaciones e invalidaciones se reflejen
+conforme a la política definida.
+
+El producto de caché y los tiempos de expiración se seleccionarán después
+de evaluar las consultas, la infraestructura y el presupuesto.
 
 ### Consideraciones de las decisiones
 
