@@ -1,147 +1,87 @@
 # Mentelyx
 
-## Centro educativo virtual de aprendizaje personalizado con inteligencia artificial
+**Centro educativo virtual independiente para el aprendizaje personalizado, con capacidades de inteligencia artificial previstas en su propuesta de producto.**
 
-### Descripción
+## Descripción general
 
-Mentelyx es un centro educativo virtual independiente orientado al aprendizaje personalizado mediante inteligencia artificial, dirigido a estudiantes de primaria, secundaria y nivel preuniversitario.
+Mentelyx es una plataforma educativa dirigida a estudiantes de **Primaria, Secundaria y Preuniversitario**. Su propósito es ofrecer una experiencia de aprendizaje que responda a los conocimientos previos, las dificultades y la evolución de cada estudiante, sin exigir su pertenencia a un colegio, academia u otra institución educativa.
 
-La plataforma se desarrollará como una aplicación web responsive y
-mobile-first, instalable como PWA en dispositivos compatibles.
+La plataforma se concibe como una **aplicación web responsive, con diseño mobile-first e instalable como PWA en dispositivos compatibles**. Una misma cuenta permitirá acceder desde el navegador o desde la PWA instalada. **No se contempla una aplicación móvil nativa independiente para la primera versión.**
 
-Los usuarios podrán acceder desde el navegador de una computadora,
-celular o tablet, o mediante la PWA instalada, utilizando la misma
-cuenta y consultando su información académica, progreso, suscripciones
-y tutorías.
+## Propuesta educativa
 
-La primera versión no incluirá una aplicación móvil nativa independiente.
+El proceso principal de aprendizaje contempla:
 
-Mentelyx permitirá que cada estudiante siga un proceso de aprendizaje adaptado a sus conocimientos, dificultades y ritmo de progreso. Para ello, construirá y actualizará un perfil individual de aprendizaje.
+1. Seleccionar un nivel educativo y un área de estudio.
+2. Realizar una evaluación diagnóstica para estimar conocimientos iniciales y necesidades de refuerzo.
+3. Construir y actualizar un perfil individual de aprendizaje a partir de resultados, respuestas, intentos y pistas utilizadas.
+4. Recomendar temas, ejercicios y rutas de aprendizaje ajustadas al diagnóstico y al desempeño.
+5. Ofrecer contenidos, ejercicios, retroalimentación, evaluaciones y simulacros.
+6. Permitir consultar el progreso académico e historial de actividades.
 
-Al iniciar un área de aprendizaje, el estudiante podrá realizar una evaluación diagnóstica que permitirá estimar su nivel inicial de dominio e identificar conocimientos que requieren refuerzo.
+El producto contempla **personalización mediante inteligencia artificial**, incluida la recomendación de actividades y la adaptación de dificultad. La técnica concreta que se utilizará en cada etapa de desarrollo se documentará y validará durante el diseño e implementación; su sola mención no constituye evidencia de un modelo de IA funcionando.
 
-Posteriormente, las respuestas, intentos, dificultades, pistas utilizadas y resultados obtenidos durante las actividades permitirán actualizar progresivamente su perfil.
+## Usuarios y administración
 
-El componente de inteligencia artificial analizará esta información para recomendar actividades, adaptar la ruta de aprendizaje y ajustar la dificultad de los ejercicios de acuerdo con la evolución del estudiante.
+Los actores principales son **Estudiante, Docente, Superadministrador y Administrador delegado**. Los docentes deben pasar por un proceso de verificación y aprobación antes de obtener privilegios para ofrecer servicios.
 
-Cuando se identifiquen dificultades, la plataforma podrá recomendar actividades de refuerzo o retomar conocimientos prerrequisitos. Cuando el estudiante demuestre un dominio suficiente, podrá avanzar hacia actividades de mayor dificultad.
+El **propietario** define las políticas educativas, comerciales y operativas del negocio. El **superadministrador** administra la plataforma dentro del software; inicialmente, una misma persona desempeñará ambas responsabilidades. Más adelante podrán crearse cuentas delegadas con permisos limitados.
 
-Además del aprendizaje adaptativo, Mentelyx permitirá consultar contenidos educativos, resolver ejercicios, participar en evaluaciones y simulacros, revisar el progreso académico y contratar tutorías con docentes verificados.
+## Modalidades de acceso
 
-### Modelo de acceso
+Mentelyx contempla una **modalidad gratuita** y dos planes de suscripción, **Plus** y **Pro**. Los recursos disponibles, los límites, los precios y las condiciones de cada plan se definirán mediante políticas comerciales antes de su implementación.
 
-Los estudiantes podrán registrarse directamente en Mentelyx sin exigir un correo institucional ni pertenecer a un colegio, academia o centro preuniversitario.
+Las **tutorías individuales y grupales** se contratarán bajo condiciones propias; **no se consideran incluidas automáticamente** en los planes Plus o Pro.
 
-Se contemplan las siguientes modalidades de acceso:
+## Convenios institucionales
 
-- Modalidad gratuita, con recursos y funcionalidades limitados.
-- Plan Plus, con beneficios adicionales.
-- Plan Pro, con beneficios ampliados.
+Mentelyx podrá celebrar convenios con colegios, academias y centros preuniversitarios para proporcionar acceso gratuito limitado o descuentos a estudiantes elegibles. Las instituciones **no tendrán cuentas, paneles administrativos ni acceso directo a datos académicos**. La administración de Mentelyx registrará convenios, validará la elegibilidad y asignará beneficios. El vencimiento de un convenio no eliminará la cuenta ni el historial del estudiante.
 
-Los contenidos, funcionalidades, límites y precios correspondientes a cada modalidad serán definidos mediante las políticas comerciales de Mentelyx.
+## Docentes y tutorías
 
-Las tutorías individuales y grupales tendrán condiciones de contratación propias. Su inclusión o descuento dentro de una suscripción deberá establecerse expresamente y no se considerará automática.
+Los docentes autorizados podrán administrar su perfil, enviar **videos demostrativos y materiales promocionales sujetos a revisión**, ofrecer tutorías, configurar horarios, cupos y tarifas, consultar reservas y revisar liquidaciones y pagos.
 
-### Convenios institucionales
+Mentelyx verificará reservas y pagos antes de confirmar la contratación, respetando los cupos disponibles. Las comisiones, los plazos de liquidación y las políticas de cancelación y reembolso se definirán antes de desarrollar las operaciones económicas correspondientes. **Los videos demostrativos son promocionales; no se contempla remuneración por visualizaciones en el alcance actual.**
 
-Mentelyx podrá establecer convenios con colegios, academias y centros preuniversitarios para ofrecer beneficios a sus estudiantes.
+## Alcance completo y MVP académico
 
-Estos beneficios podrán incluir acceso gratuito limitado a determinados recursos o descuentos en los planes Plus y Pro, de acuerdo con las condiciones y vigencia de cada convenio.
+El **producto completo** contempla los tres niveles educativos y sus funcionalidades educativas, docentes, comerciales, administrativas y de soporte.
 
-Las instituciones asociadas no tendrán cuentas administrativas, paneles institucionales ni acceso directo a la información académica de los estudiantes.
+El **MVP académico** se concentrará en:
 
-La administración de Mentelyx será responsable de registrar los convenios, verificar la elegibilidad de los estudiantes y asignar los beneficios correspondientes.
+- **Nivel:** Secundaria.
+- **Área:** Matemática.
+- **Flujo principal:** registro e inicio de sesión, evaluación diagnóstica, registro del resultado, perfil de aprendizaje, recomendación o ruta personalizada, actividades y seguimiento del progreso.
+- **Gestión mínima:** administración de los contenidos y evaluaciones que necesite el flujo demostrado.
 
-La cuenta personal y el historial académico del estudiante se conservarán independientemente de la vigencia del convenio o de su relación con una institución.
+El análisis de suscripciones, convenios, tutorías y remuneraciones forma parte del **alcance del producto**, pero **no implica que todos esos módulos se implementarán en el MVP**.
 
-### Docentes y tutorías
+## Orientación arquitectónica preliminar
 
-Mentelyx permitirá la participación de docentes verificados que ofrezcan servicios de acompañamiento, orientación y refuerzo educativo.
+Se propone un **backend monolítico modular** con responsabilidades separadas y organización interna inspirada en **Clean Architecture**, de modo que el dominio y los casos de uso no dependan de interfaces, bases de datos ni proveedores externos.
 
-Las personas interesadas deberán presentar una solicitud y pasar por un proceso de verificación y aprobación antes de obtener los permisos docentes.
+La interfaz web y la PWA utilizarán una misma base de servicios. El uso de capacidades **serverless** podrá evaluarse para funciones complementarias, pero no se considera una decisión cerrada hasta justificarlo frente a los drivers, el costo y las necesidades de operación.
 
-Los docentes autorizados podrán:
+## Dimensionamiento y calidad
 
-- Gestionar su perfil profesional.
-- Presentar videos demostrativos y materiales para promocionar su forma de enseñanza, sujetos a las condiciones de publicación.
-- Ofrecer tutorías individuales y grupales.
-- Configurar su disponibilidad, cupos y tarifas conforme a las políticas de Mentelyx.
-- Consultar sus reservas y gestionar las sesiones a su cargo.
-- Revisar las liquidaciones y pagos correspondientes a sus servicios.
+Se contemplan, como **hipótesis de dimensionamiento por validar**, un escenario de referencia de aproximadamente **1 500 usuarios concurrentes** y pruebas exploratorias de hasta **15 000 usuarios concurrentes**. No son capacidades ya demostradas ni umbrales aceptados del MVP. Su factibilidad dependerá del tipo de operación, el patrón de carga, la infraestructura y el presupuesto disponible.
 
-Los estudiantes podrán consultar los perfiles docentes, revisar los servicios disponibles y contratar una tutoría según el tema, horario, modalidad y precio ofrecidos.
+Los objetivos medibles, las condiciones de prueba y las tácticas se formalizarán en los **escenarios de atributos de calidad**.
 
-Mentelyx gestionará las reservas y verificará los pagos, evitando confirmar participantes por encima de los cupos disponibles.
+## Documentación del análisis
 
-La remuneración docente se determinará según los servicios prestados y las condiciones económicas acordadas. Las comisiones, plazos de liquidación y políticas de cancelación y reembolso deberán definirse antes de implementar estas operaciones.
+Los documentos de partida son:
 
-Los videos demostrativos tendrán una finalidad promocional. Su publicación no implicará remuneración por visualizaciones dentro del alcance actual.
+- `01-actores.md`: actores directos, sistemas externos y límites de responsabilidad.
+- `02-historias-del-usuario.md`: necesidades de los usuarios, identificadas como HU-01 a HU-25.
+- `03-requisitos-funcionales.md`: capacidades del sistema, identificadas como RF-01 a RF-34, y trazabilidad HU–RF.
 
-### Administración de la plataforma
+Los atributos de calidad, restricciones, drivers y decisiones arquitectónicas se documentarán en archivos separados para evitar mezclar necesidades con decisiones técnicas.
 
-La dirección del negocio y la administración inicial de Mentelyx serán asumidas por el propietario del proyecto.
+## Contexto académico
 
-Se distinguirán dos responsabilidades:
+**Asignatura:** Arquitectura de Software (IS-488)  
+**Semestre:** 2026-II  
+**Institución:** Universidad Nacional de San Cristóbal de Huamanga.
 
-- Propietario: establece los objetivos y las políticas educativas, comerciales y operativas.
-- Superadministrador: ejecuta las operaciones de administración autorizadas dentro del sistema.
-
-Inicialmente, ambas responsabilidades serán asumidas por la misma persona.
-
-La plataforma permitirá delegar posteriormente funciones de gestión académica, docentes, finanzas, convenios y soporte mediante cuentas individuales y permisos específicos.
-
-Los docentes tendrán acceso únicamente a las funciones y recursos relacionados con sus servicios, sin recibir privilegios de administración global.
-
-### Alcance educativo
-
-Mentelyx contempla tres niveles educativos:
-
-- Primaria.
-- Secundaria.
-- Preuniversitario.
-
-La plataforma deberá permitir incorporar progresivamente diferentes áreas, cursos, temas y habilidades.
-
-Para el desarrollo y validación inicial del proyecto se utilizará:
-
-**Nivel:** Secundaria  
-**Área:** Matemática
-
-Este alcance permitirá demostrar el funcionamiento del diagnóstico, perfil de aprendizaje, adaptación de dificultad, rutas personalizadas y seguimiento del progreso sin implementar inicialmente todo el contenido educativo previsto.
-
-El modelo completo de suscripciones, convenios y servicios docentes formará parte del análisis arquitectónico. Su implementación se organizará progresivamente según las prioridades y el cronograma del proyecto.
-
-### Orientación arquitectónica
-
-Mentelyx se diseñará con un backend monolítico modular que organizará las responsabilidades educativas, administrativas y comerciales de la plataforma.
-
-La aplicación web y la aplicación móvil compartirán los servicios y las reglas del negocio, manteniendo una identidad común para cada usuario y coherencia en su información.
-
-Se incorporarán capacidades serverless para responsabilidades complementarias cuya conveniencia se justifique durante el diseño arquitectónico.
-
-La organización interna seguirá el enfoque Clean Architecture, separando las reglas del negocio de las interfaces de usuario, el almacenamiento y los servicios externos.
-
-La distribución de responsabilidades entre el monolito modular y las capacidades serverless, así como la selección de tecnologías, se documentará mediante decisiones arquitectónicas relacionadas con los requisitos y drivers del proyecto.
-
-### Escalabilidad
-
-Mentelyx estará orientado a usuarios de diferentes regiones del país.
-
-Como escenarios de dimensionamiento y validación se consideran:
-
-- Un escenario habitual de referencia de aproximadamente 1 500 usuarios concurrentes.
-- Escenarios de prueba de hasta 15 000 usuarios concurrentes.
-
-Los simulacros, evaluaciones masivas y otros eventos programados representan situaciones en las que puede aumentar considerablemente la cantidad de usuarios simultáneos.
-
-Estas cifras constituyen objetivos de diseño y prueba, no una capacidad ya demostrada. Su cumplimiento deberá evaluarse considerando la infraestructura, el presupuesto y el tipo de actividad realizada por los usuarios.
-
-Las pruebas deberán distinguir entre consultas de contenido, resolución de ejercicios, solicitudes de ayuda mediante inteligencia artificial y contratación de tutorías, porque generan cargas diferentes sobre el sistema.
-
-### Curso
-
-Arquitectura de Software - IS-488
-
-### Semestre
-
-2026-II
+> Estado: descripción y análisis propuestos. No implica que el sistema o todos sus módulos estén implementados.
