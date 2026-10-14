@@ -2,7 +2,7 @@
 
 ## Propósito y alcance
 
-Los requisitos funcionales establecen **qué debe hacer Mentelyx** para satisfacer las historias de usuario y las reglas del negocio. Se consideran los **34 requisitos identificados (RF-01 a RF-34)** para el **producto completo**. No deben interpretarse como funcionalidades ya implementadas ni como compromiso de entregar todos los módulos en el MVP académico.
+Los requisitos funcionales establecen **qué debe hacer Mentelyx** para satisfacer las historias de usuario y las reglas del negocio. 
 
 Los requisitos describen comportamientos observables; sus atributos de calidad, restricciones y decisiones técnicas se especificarán en documentos distintos. Se conservan los identificadores originales para asegurar trazabilidad.
 
@@ -44,6 +44,20 @@ Los requisitos describen comportamientos observables; sus atributos de calidad, 
 | **RF-32** | El sistema debe permitir registrar incidencias de soporte, consultar su estado y documentar su atención. |
 | **RF-33** | El sistema debe ofrecer una experiencia web instalable como PWA en dispositivos y navegadores compatibles, de modo que pueda iniciarse desde el icono instalado cuando el entorno lo admita. |
 | **RF-34** | El sistema debe permitir acceder desde el navegador o desde la PWA instalada utilizando la misma cuenta y consultar información académica, suscripciones y tutorías actualizadas al conectarse al servicio. |
+| **RF-35** | El sistema debe permitir al docente habilitado cargar, versionar, solicitar revisión y retirar materiales originales, registrar declaración de titularidad y autorización de publicación, y gestionar separadamente el consentimiento contractual para indexación en RAG. |
+| **RF-36** | El sistema debe permitir al docente habilitado programar clases en vivo indicando modalidad (individual, grupal interactiva o magistral), tema, duración, horario, aforo, precio y estado de publicación. |
+| **RF-37** | El sistema debe permitir a estudiantes autorizados reservar o inscribirse en clases en vivo, acceder mediante credenciales de sesión de corta duración y consultar o gestionar sus estados y condiciones aplicables. |
+| **RF-38** | El sistema debe calcular y mostrar el reparto económico de cada servicio docente según reglas aprobadas, registrar por separado comisión, comisiones de cobro, costos atribuibles y liquidación, sin alterar operaciones históricas ante cambios de política. |
+| **RF-39** | El sistema debe permitir a la administración gestionar campañas, patrocinadores, categorías y ubicaciones autorizadas de banners, activarlos y suspenderlos, y consultar métricas agregadas sin exponer datos académicos privados. |
+| **RF-40** | El sistema debe mostrar anuncios claramente identificados solo en superficies habilitadas y según la política del plan, sin interrumpir evaluaciones, videoclases, editor docente, liquidaciones ni reproducción de lecciones de pago; debe aplicar controles adicionales de privacidad y publicidad apropiados para menores. |
+| **RF-41** | El sistema debe registrar revisión editorial, versión, autoría, licencia, alcance de acceso y permiso de indexación de cada fuente RAG, impedir recuperar material no autorizado y permitir su despublicación y desindexación cuando corresponda. |
+| **RF-42** | El sistema debe permitir al estudiante habilitado consultar a un tutor pedagógico con IA que recupere exclusivamente fuentes autorizadas, produzca explicaciones adaptadas a su contexto permitido, muestre referencias y gestione las fallas sin modificar unilateralmente calificaciones. |
+| **RF-43** | El sistema debe administrar los derechos de acceso, cuotas de uso y vigencias configuradas para Gratuito, Plus, Pro y convenios, incluyendo límites de consultas al tutor de IA sin conceder tutorías pagadas automáticamente. |
+| **RF-44** | El sistema debe registrar métricas de consumo y costo por servicio (IA, video, almacenamiento y sesiones, cuando exista información del proveedor), permitir a administradores ver agregados y configurar alertas y límites para controlar el presupuesto operativo. |
+| **RF-45** | El sistema debe mantener desactivada por defecto la grabación de clases en vivo y habilitarla solamente cuando existan permisos, avisos, reglas de acceso, retención y retirada válidos para la sesión correspondiente. |
+| **RF-46** | El sistema debe permitir a la administración registrar contratos/licencias de contenidos comerciales docentes y a cada docente consultar sus condiciones, versiones, vigencias y remuneraciones correspondientes a los materiales que le pertenecen. |
+| **RF-47** | El sistema debe permitir publicar y reproducir videos grabados mediante un proveedor especializado, comprobando los derechos de acceso antes de entregar credenciales temporales de reproducción y evitando enviar el flujo de video a través del backend de negocio. |
+| **RF-48** | El sistema debe poder crear, autorizar, cerrar y auditar salas o emisiones audiovisuales mediante proveedores externos, diferenciando transmisión uno-a-muchos de tutorías interactivas y protegiendo la incorporación de participantes no autorizados. |
 
 ## Matriz de trazabilidad: historias de usuario y requisitos
 
@@ -56,24 +70,34 @@ Los requisitos describen comportamientos observables; sus atributos de calidad, 
 | HU-05. Ejercicios y retroalimentación | RF-08, RF-09 |
 | HU-06. Simulacros | RF-10, RF-11 |
 | HU-07. Progreso académico | RF-11 |
-| HU-08. Planes y suscripciones | RF-12, RF-13, RF-14, RF-26, RF-27, RF-30 |
+| HU-08. Planes y suscripciones | RF-12, RF-13, RF-14, RF-26, RF-27, RF-30, RF-43 |
 | HU-09. Beneficios por convenio | RF-14, RF-16, RF-17 |
 | HU-10. Consulta de docentes | RF-20 |
 | HU-11. Contratación de tutorías | RF-21, RF-22, RF-23, RF-26, RF-27 |
 | HU-12. Gestión de tutorías contratadas | RF-24, RF-25, RF-30 |
 | HU-13. Incorporación docente | RF-18 |
-| HU-14. Perfil y promoción docente | RF-19 |
+| HU-14. Perfil y promoción docente | RF-19, RF-35, RF-47 |
 | HU-15. Oferta de tutorías | RF-21 |
 | HU-16. Atención de tutorías | RF-24, RF-30 |
-| HU-17. Consulta de remuneraciones | RF-28, RF-29 |
+| HU-17. Consulta de remuneraciones | RF-28, RF-29, RF-38 |
 | HU-18. Usuarios y permisos | RF-03, RF-04 |
 | HU-19. Gestión académica | RF-06, RF-10 |
 | HU-20. Gestión de docentes | RF-18, RF-19 |
-| HU-21. Planes y condiciones comerciales | RF-12, RF-13 |
+| HU-21. Planes y condiciones comerciales | RF-12, RF-13, RF-43 |
 | HU-22. Gestión de convenios | RF-15, RF-16, RF-17 |
-| HU-23. Supervisión económica | RF-25, RF-26, RF-27, RF-28, RF-29, RF-31 |
+| HU-23. Supervisión económica | RF-25, RF-26, RF-27, RF-28, RF-29, RF-31, RF-38, RF-44 |
 | HU-24. Soporte y supervisión | RF-31, RF-32 |
 | **HU-25. Acceso web y PWA** | **RF-33, RF-34** |
+| HU-26. Materiales docentes licenciados | RF-35, RF-41, RF-47 |
+| HU-27. Clases en vivo y remuneración | RF-36, RF-38, RF-48 |
+| HU-28. Acceso a clases en vivo | RF-37, RF-48, RF-23, RF-24 |
+| HU-29. Configuración publicitaria | RF-39, RF-40 |
+| HU-30. Revisión del corpus RAG | RF-35, RF-41 |
+| HU-31. Tutor pedagógico con IA | RF-42, RF-43 |
+| HU-32. Publicidad no intrusiva | RF-39, RF-40 |
+| HU-33. Control de cuotas y costos | RF-43, RF-44 |
+| HU-34. Control de grabaciones | RF-45, RF-48 |
+| HU-35. Licencias comerciales docentes | RF-38, RF-46 |
 
 **Nota:** RF-04, RF-14, RF-30 y RF-31 cumplen funciones transversales y pueden relacionarse con varias historias; la matriz registra los vínculos principales, no necesariamente todos los escenarios de uso indirectos.
 
@@ -87,6 +111,12 @@ Los requisitos describen comportamientos observables; sus atributos de calidad, 
 6. Los precios, comisiones, límites de beneficios, plazos de liquidación y condiciones de cancelación deben definirse antes de implementar las operaciones comerciales correspondientes.
 7. La contratación de una tutoría debe respetar la disponibilidad, capacidad y estado del pago.
 8. El acceso a información personal, académica o económica requiere autorización según la identidad y relación del solicitante con el recurso.
+9. La publicidad contextual y señalizada no interrumpe los momentos protegidos: exámenes, videoclases, editor docente, lecciones de pago y liquidaciones. Se prohíbe seleccionar anuncios según datos de rendimiento académico.
+10. Los materiales de docentes para RAG requieren permisos independientes de la mera publicación. El entrenamiento/fine-tuning de modelos con estos contenidos queda desactivado por defecto.
+11. Las videoclases pueden ser magistrales uno-a-muchos o tutorías interactivas. Las grabaciones requieren permisos y política de retención.
+12. Las tarifas sugeridas de suscripción (Plus S/24,90; Pro S/49,90), comisiones docentes y cuotas de IA son parámetros **comerciales pendientes de aprobación**, no prestaciones definitivas del sistema.
+13. Los contenidos grabados y en vivo deben mantener autorización de reproducción según plan, inscripción, licencia y vigencia.
+14. El presupuesto de infraestructura no debe depender de la premisa de que los 1.500 estudiantes y 200 docentes están siempre viendo o transmitiendo video simultáneamente.
 
 ## Comprobación futura de requisitos
 
@@ -105,3 +135,18 @@ Para considerar un requisito listo para implementación deberán añadirse **cri
 ## Delimitación del MVP académico
 
 El **MVP académico de Mentelyx** comprobará el flujo de cuenta, diagnóstico, perfil de aprendizaje, recomendación, actividades educativas y consulta del progreso. La organización de contenidos y evaluaciones se diseñará para **múltiples niveles educativos, áreas, cursos y temas**, sin restringir los requisitos a Matemática ni a Secundaria. Para la demostración se podrá cargar una cantidad reducida de contenidos de ejemplo y comprobar que es posible incorporar otras áreas o cursos sin rehacer los módulos académicos. La selección de contenidos y la asignación de RF por sprint se definirán en la planificación; no modifican el alcance funcional global.
+
+## Alcance incremental y validación
+
+Los RF-35 a RF-48 son **especificación del producto ampliado**. Para el proyecto del curso se prioriza un flujo vertical demostrable de autenticación, catálogo multidisciplinario, diagnóstico, perfil, recomendaciones y progreso; el resto se incorpora mediante prototipos o incrementos según el cronograma, no se declara implementado. La arquitectura deberá soportar todas las capacidades, pero una decisión de proveedor no sustituye una prueba.
+
+| Flujo | Ejemplo de aceptación verificable |
+|---|---|
+| RF-35/RF-41 | Material sin licencia RAG nunca aparece en resultados vectoriales; su retirada impide nuevas recuperaciones después de purgar índices/cachés. |
+| RF-37/RF-48 | Persona sin reserva válida no puede obtener credenciales de sala; sobrecupos son rechazados. |
+| RF-38 | La suma de partes y costos en cada liquidación reproduce la regla versionada y no cambia al modificar tarifas futuras. |
+| RF-39/RF-40 | No se muestran anuncios en evaluación, clase en vivo, editor docente, lección de pago o liquidación. |
+| RF-42 | La IA devuelve fuentes permitidas o una respuesta controlada si faltan fuentes o proveedor, sin inventar una calificación. |
+| RF-43/RF-44 | Una cuota agotada bloquea nuevas consultas pagadas de IA sin impedir acceso a recursos educativos ya permitidos; existen alertas de costo. |
+| RF-45 | Grabación ausente por defecto y acceso denegado sin autorización y política válidas. |
+| RF-47 | Recurso privado no emite token de reproducción sin validación de derecho de acceso. |

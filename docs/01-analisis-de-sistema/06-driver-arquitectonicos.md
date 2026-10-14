@@ -1,111 +1,68 @@
-# Drivers Arquitectónicos
+# 06. Drivers arquitectónicos — Mentelyx
 
-## Mentelyx
+## Propósito
 
-Los drivers arquitectónicos son los requisitos, atributos de calidad y restricciones que influyen de manera significativa en las decisiones de arquitectura.
+Un driver arquitectónico es un **requisito, atributo de calidad o restricción que cambia de forma significativa el diseño de la solución**. Los drivers derivan de `03-requisitos-funcionales.md`, `04-atributos-de-calidad.md` y `05-restricciones.md`; **no son decisiones técnicas** ni sustituyen los escenarios medibles.
 
-Se identifican a partir del análisis previo del sistema.
+El alcance abarca el **producto completo**; la prioridad de implementación se definirá por sprint. Un driver comercial puede ser importante para la arquitectura futura sin requerir implementación en el MVP educativo.
 
-| ID | Driver arquitectónico | Origen | ¿Por qué influye en la arquitectura? |
+## Drivers identificados
+
+| ID | Driver | Origen | Influencia arquitectónica |
 |---|---|---|---|
-| DA-01 | El sistema debe soportar el crecimiento de estudiantes, docentes y solicitudes. | AC-03 — Escalabilidad | Influye en la capacidad de procesamiento, almacenamiento y estrategia de despliegue. |
-| DA-02 | El sistema debe mantener tiempos de respuesta adecuados durante el uso simultáneo de contenidos y actividades educativas. | AC-01 — Rendimiento | Influye en la forma de consultar información, procesar solicitudes y distribuir los recursos educativos. |
-| DA-03 | El sistema debe proteger la información y controlar el acceso según los permisos de cada usuario. | RF-03, RF-04; AC-04 — Seguridad; RC-08 — Comunicación segura | Influye en la autenticación, autorización y protección de las comunicaciones y los datos. |
-| DA-04 | El sistema debe integrarse con un servicio externo para procesar pagos de suscripciones y tutorías. | RF-26, RF-27; RC-05 — Servicio externo de pagos | Condiciona la comunicación con proveedores externos y el tratamiento de los resultados de pago. |
-| DA-05 | El sistema debe permitir modificar funcionalidades y políticas comerciales sin afectar innecesariamente otras partes. | AC-05 — Mantenibilidad; RF-12, RF-15, RF-28 | Influye en la separación de responsabilidades, modularidad y dependencias internas. |
-| DA-06 | El sistema debe mantener la consistencia de cupos, reservas, pagos y liquidaciones docentes. | RF-22, RF-23, RF-27, RF-28; AC-06 — Integridad y consistencia | Influye en la coordinación de operaciones, el almacenamiento de estados y el control de solicitudes simultáneas o repetidas. |
-| DA-07 | El sistema debe mantener disponibles las funciones educativas que no dependan de un servicio externo temporalmente interrumpido. | AC-02 — Disponibilidad; RF-30 | Influye en la separación de las funciones principales y las integraciones, así como en el tratamiento de fallos. |
-| DA-08 | El sistema debe mantener cuentas personales independientes de los convenios institucionales. | RF-01, RF-15, RF-16, RF-17; RC-03, RC-04 | Influye en la separación entre identidad del estudiante, convenios y beneficios, evitando que la cuenta dependa de una institución. |
-| DA-09 | El sistema debe poder operar con una administración inicial a cargo del propietario y permitir delegación posterior. | RF-03; RC-06 — Administración inicial | Influye en la gestión de permisos y en la complejidad operativa de la solución. |
-| DA-10 | El sistema debe ofrecer una experiencia educativa mediante una aplicación web responsive e instalable como PWA. | RF-33, RF-34; AC-07 — Usabilidad; RC-01 — Aplicación web instalable como PWA. | Influye en la organización del frontend, su adaptación a distintos dispositivos y los mecanismos de instalación y actualización de la aplicación. |
+| **DA-01** | Crecimiento de estudiantes, docentes, contenidos y solicitudes. | AC-03; RF-05, RF-10 | Capacidad, distribución de recursos, almacenamiento y despliegue. |
+| **DA-02** | Tiempos de respuesta adecuados en consultas y actividades bajo carga documentada. | AC-01; RF-05, RF-09, RF-11 | Diseño de consultas, caché selectiva, tareas de procesamiento y medidas de carga. |
+| **DA-03** | Control de identidad, permisos y acceso a información académica y económica por recurso. | RF-02, RF-03, RF-04, RF-11, RF-31; AC-04; RC-07, RC-08 | Autenticación, autorización en backend, registros y protección de datos. |
+| **DA-04** | Pagos externos para tutorías y suscripciones, con resultados verificables. | RF-26, RF-27; RC-05; AC-08 | Puerto/adaptador de pagos, contratos, fallos e integración. |
+| **DA-05** | Evolución modular de cursos, reglas pedagógicas y políticas de negocio. | RF-05, RF-06, RF-08, RF-12, RF-15; AC-05, AC-09 | Separación de responsabilidades, dependencias y límites de módulos. |
+| **DA-06** | Consistencia de resultados académicos, reservas, cupos y operaciones económicas. | RF-07, RF-11, RF-22, RF-23, RF-27, RF-28; AC-06 | Transacciones, validaciones, idempotencia y control de concurrencia. |
+| **DA-07** | Continuidad de funciones esenciales ante interrupciones en integraciones no críticas. | AC-02; RF-05, RF-11, RF-24, RF-30 | Aislamiento de fallos, timeouts y desacoplamiento de notificaciones. |
+| **DA-08** | Independencia de cuentas estudiantiles frente a instituciones y convenios. | RF-01, RF-15, RF-16, RF-17; RC-03, RC-04 | Separación entre identidades, elegibilidad y beneficios. |
+| **DA-09** | Administración inicial sencilla y evolución a permisos delegados. | RF-03, RF-04; RC-06; AC-04 | Control de permisos, trazabilidad administrativa y operación de bajo esfuerzo. |
+| **DA-10** | Un solo canal web mobile-first, instalable como PWA con identidad compartida. | RF-33, RF-34; AC-07; RC-01 | Organización de frontend, comunicación API y actualización de cliente. |
+| **DA-11** | Perfil individual y personalización de aprendizaje para distintas áreas y niveles. | RF-05, RF-07, RF-08, RF-09, RF-11; AC-05, AC-06, AC-09 | Separación del perfil, evaluación y motor de recomendaciones; posibilidad de sustituir estrategias sin rehacer módulos académicos. |
+| **DA-12** | Integraciones verificables y casos de uso probables sin proveedores reales. | AC-08, AC-09; RF-26, RF-27, RF-30 | Contratos explícitos, puertos/adaptadores, dobles de prueba y validaciones automatizadas. |
+| **DA-13** | Costos medibles y menor administración para operar Mentelyx comercialmente. | AC-10; RF-43, RF-44; objetivo empresarial de eficiencia operacional | Serverless y servicios administrados donde sean convenientes; presupuestos, alertas y cálculo del costo unitario por uso. |
+| **DA-14** | Distribuir videos grabados, clases magistrales uno-a-muchos y tutorías interactivas a escala. | RF-36, RF-37, RF-45, RF-47, RF-48; AC-01, AC-02, AC-03, AC-07 | Separación entre streaming/CDN, WebRTC-SFU y backend; sesiones, tokens y políticas de grabación. |
+| **DA-15** | Tutor pedagógico con IA y RAG sujeto a derechos, calidad y cuotas. | RF-35, RF-41, RF-42, RF-43; AC-04, AC-10, AC-11; RC-11, RC-12 | Corpus versionado y con ACL, búsqueda vectorial, LLM intercambiable y límites de consumo; evaluación no dependiente del LLM. |
+| **DA-16** | Financiar plan gratuito y visibilidad docente sin publicidad intrusiva. | RF-39, RF-40; AC-04, AC-07; RC-10, RC-15 | Módulo separado de anuncios, elegibilidad por plan/ubicación, sin datos académicos privados. |
+| **DA-17** | Gestionar derechos de contenidos, contratos editoriales y desindexación verificable. | RF-35, RF-41, RF-45, RF-46; AC-04, AC-11; RC-11, RC-12, RC-13 | Licencias y versiones, estados de autorización, revocación, auditoría y borrado del índice de recuperación. |
+| **DA-18** | Rentabilizar tutorías y clases docentes mediante comisiones y liquidaciones auditables. | RF-21 a RF-29, RF-36 a RF-38, RF-44; AC-06, AC-10; RC-05, RC-14 | Modelo de precios, estados contractuales, procesamiento idempotente, desglose contable por transacción y métricas de costo por sesión. |
 
-## Priorización
+**Cambios frente al borrador:** se conservan DA-01 a DA-10, se ajusta su origen a los RF vigentes y DA-11 y DA-12 se mantienen de la revisión anterior; se incorporan DA-13 a DA-18 para costo operativo, video, tutor de IA, publicidad, derechos de contenidos y monetización docente. Las selecciones de proveedores se documentan en ADR, no aquí.
 
-| Prioridad | Drivers | Motivo |
+## Priorización preliminar de drivers
+
+| Prioridad | Drivers | Fundamento |
 |---|---|---|
-| Crítica | DA-03, DA-06 | Protegen la información y la coherencia de las operaciones académicas y económicas. |
-| Alta | DA-04, DA-05, DA-07, DA-08, DA-09 | Permiten integrar pagos, mantener el sistema, conservar la disponibilidad y operar conforme al modelo de negocio. |
-| Media | DA-01, DA-02 | Orientan la capacidad y el rendimiento de acuerdo con el crecimiento esperado. |
+| **Crítica** | DA-03, DA-06, DA-11 | Privacidad/autorización, integridad y valor central del aprendizaje adaptativo. |
+| **Alta** | DA-02, DA-05, DA-07, DA-08, DA-10, DA-12 | Desempeño de las funciones principales, evolución, continuidad, independencia institucional, experiencia web y pruebas/integraciones. |
+| **Condicionada al crecimiento** | DA-01 | El dimensionamiento necesita datos de carga y presupuesto. |
+| **Alta para el producto comercial; posterior en el MVP académico** | DA-04 | Pagos obligan a integración segura cuando entren en alcance. |
+| **Media inicialmente** | DA-09 | Administración simple al inicio, sin perder posibilidad de delegación. |
+| **Alta al abrir servicios comerciales** | DA-13, DA-14, DA-15, DA-16, DA-17, DA-18 | Control de gastos, video, privacidad editorial y márgenes docentes; no significa implementar todo durante el primer sprint. |
 
-La prioridad media no significa que el rendimiento o la escalabilidad puedan ignorarse. Indica que su dimensionamiento debe ajustarse a la demanda prevista y a los recursos disponibles.
+La prioridad arquitectónica no equivale a la fecha de implementación. Por ejemplo, DA-04 debe modelarse desde el análisis, pero las integraciones de pagos pueden planificarse para una fase posterior.
 
-## Relación con las decisiones arquitectónicas
+## Trazabilidad hacia decisiones
 
-Las decisiones arquitectónicas se definirán a partir de estos drivers.
+Cada decisión posterior debe registrar: **ID, estado (propuesta/aceptada), contexto, drivers, alternativas, elección, ventajas, costos o trade-offs, consecuencias y verificación**.
 
-Cada decisión deberá identificar:
+| Driver | Candidatos de decisión a evaluar |
+|---|---|
+| DA-01, DA-02 | Almacenamiento de archivos separado y políticas de caché justificadas por medición |
+| DA-03, DA-09 | Autenticación y autorización backend por roles, permisos y propiedad del recurso |
+| DA-04, DA-06, DA-12 | Adaptadores de proveedores, procesamiento idempotente y consistencia transaccional |
+| DA-05, DA-11, DA-12 | Monolito modular, Clean Architecture, frontera del motor de recomendaciones y pruebas aisladas |
+| DA-07 | Aislamiento de notificaciones y controles de fallos en dependencias |
+| DA-08 | Identidad independiente de convenios/beneficios |
+| DA-10 | Una única web responsive/PWA sobre API documentada |
+| DA-13 | Cloud administrado, telemetría y presupuestos; evaluar TCO y cuotas reales |
+| DA-14 | Streaming grabado / broadcast / SFU, salas y contratos por sesión |
+| DA-15, DA-17 | RAG con controles editoriales, licencias, indexación y retirada |
+| DA-16 | Publicidad separada de actividades educativas y de datos privados |
+| DA-18 | Ledger de comisiones, idempotencia, liquidaciones por reglas versionadas |
 
-- La decisión seleccionada.
-- El driver o los drivers relacionados.
-- La justificación.
-- El resultado esperado en la estructura del sistema.
+## Nota sobre ADR existentes
 
-La distribución entre el monolito modular y las capacidades serverless se justificará en esa etapa.
-
-## Decisiones arquitectónicas
-
-A partir de los drivers identificados, se establecen las decisiones iniciales de arquitectura de Mentelyx.
-
-Cada decisión se identifica mediante un código ADR, correspondiente a un Registro de Decisión Arquitectónica.
-
-| ID | Decisión arquitectónica | Driver relacionado | Justificación | Resultado |
-|---|---|---|---|---|
-| ADR-001 | Organizar el backend como un monolito modular. | DA-05 — Mantenibilidad; DA-09 — Administración inicial. | Separar las responsabilidades del negocio dentro de una misma aplicación desplegable, manteniendo una complejidad operativa adecuada para la etapa inicial. | El frontend web de Mentelyx, accesible desde el navegador o instalado como PWA, utilizará la API del backend para ejecutar las operaciones del negocio. |
-| ADR-002 | Aplicar Clean Architecture dentro de los módulos del backend. | DA-05 — Mantenibilidad. | Separar las reglas del negocio de las interfaces, la persistencia y los proveedores externos, facilitando los cambios y las pruebas. | Responsabilidades organizadas en Dominio, Aplicación, Presentación e Infraestructura, con dependencias dirigidas hacia el núcleo. |
-| ADR-003 | Desarrollar un único frontend web responsive y mobile-first con capacidades PWA, conectado al backend mediante una API REST sobre HTTPS. | DA-10 — Aplicación web y PWA; DA-05 — Mantenibilidad. | Permitir acceso desde el navegador y mediante instalación utilizando una misma base de frontend, manteniendo las reglas del negocio en el backend. | Una aplicación web instalable como PWA y un backend con una API para las operaciones de Mentelyx. |
-| ADR-004 | Verificar la autenticación y autorización en el backend mediante roles, permisos y acceso a recursos. | DA-03 — Seguridad; DA-09 — Administración inicial. | Proteger las operaciones independientemente de la interfaz utilizada y permitir que el propietario delegue funciones sin entregar acceso general. | Acceso controlado para estudiantes, docentes, superadministrador y administradores delegados. |
-| ADR-005 | Integrar el servicio de pagos mediante una interfaz definida por la aplicación y un adaptador del proveedor. | DA-04 — Pagos externos; DA-05 — Mantenibilidad. | Evitar que las reglas de suscripciones, tutorías y remuneraciones dependan directamente de los detalles de una pasarela específica. | Contrato de integración de pagos y una implementación encargada de comunicarse con el proveedor seleccionado. |
-| ADR-006 | Utilizar persistencia relacional con transacciones y controles de concurrencia para las operaciones críticas. | DA-06 — Consistencia. | Mantener coherencia al asignar cupos, registrar pagos y generar liquidaciones, incluso cuando existan solicitudes simultáneas. | Datos relacionados y operaciones transaccionales que impidan superar cupos o producir registros económicos inconsistentes. |
-| ADR-007 | Procesar los resultados de pagos de forma idempotente. | DA-04 — Pagos externos; DA-06 — Consistencia. | Una notificación repetida del proveedor no debe activar dos veces una suscripción ni duplicar una reserva o liquidación. | Cada operación de pago conserva una identificación única y sus efectos se aplican una sola vez. |
-| ADR-008 | Ejecutar el envío de notificaciones y la activación periódica de recordatorios mediante funciones serverless, utilizando una cola de tareas. | DA-07 — Disponibilidad; DA-09 — Administración inicial. | Separar la ejecución de tareas complementarias de las solicitudes principales, conservando las reglas y la validación de destinatarios en el backend. | Función EnviarNotificacion activada por la cola y función ActivarRecordatorios activada por un programador de ejecuciones. |
-| ADR-009 | Separar el almacenamiento de archivos del almacenamiento de datos académicos y comerciales. | DA-01 — Escalabilidad; DA-02 — Rendimiento. | Los videos, imágenes y materiales educativos tienen necesidades de almacenamiento y distribución diferentes de las reservas, resultados y pagos. | Archivos en almacenamiento especializado y referencias, metadatos y permisos gestionados por el backend. |
-| ADR-010 | Separar la identidad del estudiante de los convenios y beneficios institucionales. | DA-08 — Independencia institucional. | Conservar la cuenta y el historial aunque termine un convenio o cambie la elegibilidad del estudiante. | Cuentas personales independientes y un módulo de convenios que administra asignaciones de beneficios, sin paneles institucionales. |
-| ADR-012 | Incorporar caché para archivos estáticos y consultas públicas frecuentes, utilizando Cache-Aside en el backend. | DA-01 — Escalabilidad; DA-02 — Rendimiento; DA-06 — Consistencia. | Reducir transferencias y consultas repetidas, manteniendo la validación de operaciones críticas en su fuente autorizada. | Caché de recursos del frontend y de consultas seleccionadas, con políticas de expiración, actualización e invalidación. |
-
-### ADR-012. Caché de recursos y consultas frecuentes
-
-**Estado:** Propuesta para la arquitectura inicial.
-
-#### Alcance
-
-- Archivos estáticos versionados del frontend Web + PWA.
-- Catálogo público de áreas, cursos y temas.
-- Información pública de docentes.
-- Imágenes y miniaturas públicas.
-
-#### Reglas
-
-- La base de datos continuará siendo la fuente de información persistente.
-- Las consultas seleccionadas del backend utilizarán Cache-Aside.
-- Cada tipo de información tendrá una política de expiración.
-- Los cambios de publicación deberán invalidar las entradas relacionadas.
-- Las reservas, pagos y autorizaciones no se confirmarán utilizando
-  únicamente una copia de la caché general.
-- La primera implementación no almacenará respuestas personales en
-  cachés compartidas entre usuarios.
-
-#### Ubicación en Clean Architecture
-
-La implementación de caché se ubicará en Infraestructura.
-
-Podrá implementarse como un adaptador o decorador de los repositorios
-de consulta, sin incorporar dependencias del producto de caché al Dominio.
-
-#### Verificación
-
-Se compararán los tiempos de respuesta y las consultas a la base de datos
-con y sin caché.
-
-También se comprobará que las modificaciones e invalidaciones se reflejen
-conforme a la política definida.
-
-El producto de caché y los tiempos de expiración se seleccionarán después
-de evaluar las consultas, la infraestructura y el presupuesto.
-
-### Consideraciones de las decisiones
-
-- Los módulos del backend formarán parte de una misma aplicación desplegable; no serán microservicios independientes.
-- Las funciones serverless complementarán al monolito modular. Las reglas principales de aprendizaje, acceso, reservas y remuneraciones permanecerán en el backend.
-- Las transacciones locales no abarcarán al proveedor externo de pagos. La confirmación de una contratación deberá coordinar el resultado del pago con el estado válido de la reserva.
-- La aplicación web y la aplicación móvil compartirán servicios, aunque podrán ofrecer interfaces y funciones diferentes según el usuario.
-- Los proveedores, frameworks y productos específicos se seleccionarán posteriormente, de acuerdo con estas decisiones y los recursos disponibles.
+El archivo de origen incluía decisiones **ADR-001 a ADR-010 y ADR-012**. Se trasladan sin renumerarlas a `07-decisiones-arquitectonicas.md`. **ADR-011 no figuraba en el archivo recibido**; su posible existencia en el repositorio se debe verificar antes de asignar ese código a una decisión nueva. La elección de proveedor serverless, streaming, caché y comisiones queda sujeta a pruebas y validación comercial, tal como se indica en las ADR. Un driver describe por qué necesitamos una solución; no determina por sí solo una marca.
