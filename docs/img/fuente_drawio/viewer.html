@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentelyx — Visor de Diagramas .drawio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f13;
+            color: #e0e0e6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle { font-size: 13px; color: #8b8b9e; margin-top: 2px; }
+
+        .file-badge {
+            background: rgba(96,165,250,0.12);
+            border: 1px solid rgba(96,165,250,0.25);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #60a5fa;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+        }
+
+        .toolbar {
+            background: #18181f;
+            padding: 10px 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .toolbar button {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #c0c0d0;
+            padding: 7px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toolbar button:hover {
+            background: rgba(96,165,250,0.15);
+            border-color: rgba(96,165,250,0.4);
+            color: #60a5fa;
+            transform: translateY(-1px);
+        }
+
+        .toolbar .separator { width: 1px; height: 24px; background: rgba(255,255,255,0.1); }
+
+        .zoom-label { font-size: 13px; color: #8b8b9e; font-weight: 500; min-width: 60px; text-align: center; }
+
+        .canvas-wrapper {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            background: radial-gradient(circle at 50% 50%, rgba(96,165,250,0.03) 0%, transparent 70%), #101016;
+        }
+
+        .canvas-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #diagram-container {
+            position: absolute;
+            transform-origin: 0 0;
+            cursor: grab;
+            z-index: 1;
+        }
+
+        #diagram-container:active { cursor: grabbing; }
+
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #101016;
+            z-index: 100;
+            transition: opacity 0.4s ease;
+        }
+
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+        .spinner {
+            width: 48px; height: 48px;
+            border: 3px solid rgba(96,165,250,0.15);
+            border-top-color: #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text { margin-top: 16px; font-size: 14px; color: #8b8b9e; }
+
+        .file-picker-area {
+            display: none;
+            padding: 40px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .file-picker-area.show { display: flex; }
+
+        .drop-zone {
+            width: 100%;
+            max-width: 500px;
+            border: 2px dashed rgba(96,165,250,0.3);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(96,165,250,0.03);
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #60a5fa;
+            background: rgba(96,165,250,0.08);
+            transform: scale(1.01);
+        }
+
+        .drop-zone .icon { font-size: 56px; margin-bottom: 16px; }
+        .drop-zone h2 { font-size: 18px; color: #e0e0e6; margin-bottom: 8px; }
+        .drop-zone p { font-size: 13px; color: #8b8b9e; }
+
+        #file-input { display: none; }
+
+        .info-bar {
+            background: #18181f;
+            padding: 8px 32px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            font-size: 12px;
+            color: #6b6b7e;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .info-bar .dot {
+            width: 6px; height: 6px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>📐 Mentelyx — Visor de Diagramas</h1>
+            <div class="subtitle">Renderizado de archivos .drawio</div>
+        </div>
+        <div>
+            <span class="file-badge" id="file-name-badge">mentelyx-estilo-arquitectonico.drawio</span>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button id="btn-open" title="Abrir otro archivo .drawio">📂 Abrir</button>
+        <div class="separator"></div>
+        <button id="btn-zoom-in" title="Acercar">🔍+</button>
+        <button id="btn-zoom-out" title="Alejar">🔍−</button>
+        <span class="zoom-label" id="zoom-label">100%</span>
+        <button id="btn-fit" title="Ajustar a pantalla">⊞ Ajustar</button>
+        <button id="btn-reset" title="Restablecer vista">↺ Reset</button>
+        <div class="separator"></div>
+        <button id="btn-export-svg" title="Exportar como SVG">💾 SVG</button>
+        <button id="btn-export-png" title="Exportar como PNG">🖼️ PNG</button>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-wrapper">
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">Cargando diagrama…</div>
+        </div>
+        <div id="diagram-container"></div>
+    </div>
+
+    <div class="file-picker-area" id="file-picker-area">
+        <div class="drop-zone" id="drop-zone">
+            <div class="icon">📁</div>
+            <h2>Arrastra un archivo .drawio aquí</h2>
+            <p>O haz clic para seleccionar un archivo</p>
+        </div>
+        <input type="file" id="file-input" accept=".drawio,.xml">
+    </div>
+
+    <div class="info-bar">
+        <span><span class="dot"></span> Listo</span>
+        <span>Scroll = zoom · Arrastrar = mover · Doble clic = ajustar</span>
+    </div>
+
+    <script>
+        const state = { scale: 1, panX: 0, panY: 0, isPanning: false, lastX: 0, lastY: 0, svgContent: null };
+        const container = document.getElementById('diagram-container');
+        const wrapper = document.getElementById('canvas-wrapper');
+        const loading = document.getElementById('loading');
+        const zoomLabel = document.getElementById('zoom-label');
+        const filePickerArea = document.getElementById('file-picker-area');
+
+        function decodeHtmlEntities(str) {
+            const t = document.createElement('textarea');
+            t.innerHTML = str;
+            return t.value;
+        }
+
+        function extractTextFromHtml(html) {
+            const d = document.createElement('div');
+            d.innerHTML = html;
+            return d.textContent || '';
+        }
+
+        function parseStyle(s) {
+            if (!s) return {};
+            const r = {};
+            s.split(';').forEach(p => {
+                const [k, ...v] = p.split('=');
+                if (k && v.length) r[k.trim()] = v.join('=').trim();
+                else if (k) r[k.trim()] = true;
+            });
+            return r;
+        }
+
+        function escapeXml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function parseMultiLineHtml(decoded) {
+            const div = document.createElement('div');
+            div.innerHTML = decoded;
+            const lines = [];
+
+            function walk(node) {
+                if (node.nodeType === 3) {
+                    const t = node.textContent.trim();
+                    if (t) lines.push({ text: t, bold: false, size: 12, color: '#111111' });
+                } else if (node.nodeType === 1) {
+                    if (node.tagName === 'BR') return;
+                    const st = node.getAttribute('style') || '';
+                    const bold = st.includes('font-weight:700') || st.includes('font-weight: 700') || node.tagName === 'B' || node.tagName === 'STRONG';
+                    let sz = 12;
+                    const sm = st.match(/font-size:\s*([\d.]+)px/);
+                    if (sm) sz = parseFloat(sm[1]);
+                    let cl = '#111111';
+                    const cm = st.match(/color:\s*(#[0-9a-fA-F]+)/);
+                    if (cm) cl = cm[1];
+
+                    const t = node.textContent.trim();
+                    if (t && node.children.length === 0) {
+                        lines.push({ text: t, bold, size: sz, color: cl });
+                    } else {
+                        node.childNodes.forEach(c => walk(c));
+                    }
+                }
+            }
+
+            div.childNodes.forEach(n => walk(n));
+            return lines;
+        }
+
+        function renderToSVG(xmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(xmlString, 'text/xml');
+            if (doc.querySelector('parsererror')) throw new Error('XML inválido');
+
+            const cells = doc.querySelectorAll('mxCell');
+            if (cells.length === 0) throw new Error('No se encontraron celdas');
+
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+            // Compute bounds
+            cells.forEach(cell => {
+                const geo = cell.querySelector('mxGeometry[as="geometry"]');
+                if (!geo) return;
+                const x = parseFloat(geo.getAttribute('x')) || 0;
+                const y = parseFloat(geo.getAttribute('y')) || 0;
+                const w = parseFloat(geo.getAttribute('width')) || 0;
+                const h = parseFloat(geo.getAttribute('height')) || 0;
+                if (w > 0 || h > 0) {
+                    minX = Math.min(minX, x); minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x + w); maxY = Math.max(maxY, y + h);
+                }
+                ['mxPoint[as="sourcePoint"]', 'mxPoint[as="targetPoint"]', 'Array[as="points"] mxPoint'].forEach(sel => {
+                    geo.querySelectorAll(sel).forEach(pt => {
+                        const px = parseFloat(pt.getAttribute('x')) || 0;
+                        const py = parseFloat(pt.getAttribute('y')) || 0;
+                        minX = Math.min(minX, px); minY = Math.min(minY, py);
+                        maxX = Math.max(maxX, px); maxY = Math.max(maxY, py);
+                    });
+                });
+            });
+
+            const pad = 40;
+            minX -= pad; minY -= pad; maxX += pad; maxY += pad;
+            const svgW = maxX - minX;
+            const svgH = maxY - minY;
+
+            const svg = [];
+            svg.push(`<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="${minX} ${minY} ${svgW} ${svgH}" style="font-family:Arial,sans-serif;">`);
+
+            // Marker defs
+            const markerColors = { '111111': 'arrow-black', '2E7D32': 'arrow-green', '1F3A5F': 'arrow-navy', '2A9D8F': 'arrow-teal' };
+            svg.push('<defs>');
+            Object.entries(markerColors).forEach(([hex, id]) => {
+                svg.push(`<marker id="${id}" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto" fill="#${hex}"><polygon points="0 0,10 3.5,0 7"/></marker>`);
+            });
+            svg.push('</defs>');
+
+            // Separate cells
+            const vertices = [], edges = [], texts = [];
+            cells.forEach(cell => {
+                const st = parseStyle(cell.getAttribute('style') || '');
+                const geo = cell.querySelector('mxGeometry[as="geometry"]');
+                if (cell.getAttribute('edge') === '1') edges.push(cell);
+                else if (cell.getAttribute('vertex') === '1' && geo) {
+                    const w = parseFloat(geo.getAttribute('width')) || 0;
+                    const h = parseFloat(geo.getAttribute('height')) || 0;
+                    if (st.text === true && w === 0 && h === 0) texts.push(cell);
+                    else if (st.text === true || (st.fillColor === undefined && st.strokeColor === undefined && (st.text !== undefined))) texts.push(cell);
+                    else {
+                        // Check if it's a pure text style
+                        const styleStr = cell.getAttribute('style') || '';
+                        if (styleStr.startsWith('text;')) texts.push(cell);
+                        else vertices.push(cell);
+                    }
+                }
+            });
+
+            // Sort vertices by area descending
+            vertices.sort((a, b) => {
+                const ga = a.querySelector('mxGeometry[as="geometry"]');
+                const gb = b.querySelector('mxGeometry[as="geometry"]');
+                const aa = (parseFloat(ga?.getAttribute('width'))||0) * (parseFloat(ga?.getAttribute('height'))||0);
+                const ab = (parseFloat(gb?.getAttribute('width'))||0) * (parseFloat(gb?.getAttribute('height'))||0);
+                return ab - aa;
+            });
+
+            // Render vertices
+            vertices.forEach(cell => {
+                const st = parseStyle(cell.getAttribute('style') || '');
+                const geo = cell.querySelector('mxGeometry[as="geometry"]');
+                const x = parseFloat(geo.getAttribute('x')) || 0;
+                const y = parseFloat(geo.getAttribute('y')) || 0;
+                const w = parseFloat(geo.getAttribute('width')) || 0;
+                const h = parseFloat(geo.getAttribute('height')) || 0;
+                const value = cell.getAttribute('value') || '';
+
+                const fill = st.fillColor || '#ffffff';
+                const stroke = st.strokeColor || '#333333';
+                const sw = parseFloat(st.strokeWidth) || 1;
+                const dashed = st.dashed === '1';
+                const arcSize = parseFloat(st.arcSize) || 0;
+                const rounded = st.rounded === '1';
+                const rx = rounded ? Math.min(8, Math.min(w, h) * 0.1) : arcSize * Math.min(w, h) / 100;
+
+                let da = dashed ? ` stroke-dasharray="${st.dashPattern || '5 4'}"` : '';
+                const fillAttr = fill === 'none' ? 'fill="none"' : `fill="${fill}"`;
+                const strokeAttr = stroke === 'none' ? 'stroke="none"' : `stroke="${stroke}"`;
+
+                svg.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" ${fillAttr} ${strokeAttr} stroke-width="${sw}"${da}/>`);
+
+                // Text inside box
+                if (value && value.trim()) {
+                    const decoded = decodeHtmlEntities(value);
+                    const lines = parseMultiLineHtml(decoded);
+                    if (lines.length > 0) {
+                        const totalH = lines.reduce((s, l) => s + l.size * 1.45, 0);
+                        let ty = y + (h - totalH) / 2 + lines[0].size;
+                        const align = st.align || 'center';
+                        let anchor = 'middle', tx = x + w / 2;
+                        if (align === 'left') { anchor = 'start'; tx = x + 8; }
+                        if (align === 'right') { anchor = 'end'; tx = x + w - 8; }
+
+                        lines.forEach(l => {
+                            svg.push(`<text x="${tx}" y="${ty}" text-anchor="${anchor}" font-size="${l.size}" font-weight="${l.bold?'bold':'normal'}" fill="${l.color}" font-family="Arial,sans-serif">${escapeXml(l.text)}</text>`);
+                            ty += l.size * 1.45;
+                        });
+                    }
+                }
+            });
+
+            // Render edges
+            edges.forEach(cell => {
+                const st = parseStyle(cell.getAttribute('style') || '');
+                const geo = cell.querySelector('mxGeometry[as="geometry"]');
+                const strokeColor = st.strokeColor || '#111111';
+                const sw = parseFloat(st.strokeWidth) || 1.5;
+                const dashed = st.dashed === '1';
+                const hasArrow = st.endArrow !== 'none' && st.endArrow !== undefined;
+
+                let marker = '';
+                if (hasArrow) {
+                    const hex = strokeColor.replace('#', '');
+                    for (const [k, v] of Object.entries(markerColors)) {
+                        if (hex.toUpperCase().includes(k.toUpperCase())) { marker = v; break; }
+                    }
+                    if (!marker) marker = 'arrow-black';
+                }
+
+                const source = cell.getAttribute('source');
+                const target = cell.getAttribute('target');
+                const points = [];
+
+                if (geo) {
+                    const sp = geo.querySelector('mxPoint[as="sourcePoint"]');
+                    const tp = geo.querySelector('mxPoint[as="targetPoint"]');
+                    const wps = geo.querySelectorAll('Array[as="points"] mxPoint');
+
+                    if (sp) {
+                        points.push({ x: parseFloat(sp.getAttribute('x'))||0, y: parseFloat(sp.getAttribute('y'))||0 });
+                    } else if (source) {
+                        const sc = doc.querySelector(`mxCell[id="${source}"]`);
+                        if (sc) {
+                            const sg = sc.querySelector('mxGeometry[as="geometry"]');
+                            if (sg) {
+                                const sx = parseFloat(sg.getAttribute('x'))||0, sy = parseFloat(sg.getAttribute('y'))||0;
+                                const sw2 = parseFloat(sg.getAttribute('width'))||0, sh = parseFloat(sg.getAttribute('height'))||0;
+                                const ex = st.exitX !== undefined ? parseFloat(st.exitX) : 0.5;
+                                const ey = st.exitY !== undefined ? parseFloat(st.exitY) : 1;
+                                points.push({ x: sx + sw2 * ex, y: sy + sh * ey });
+                            }
+                        }
+                    }
+
+                    wps.forEach(wp => points.push({ x: parseFloat(wp.getAttribute('x'))||0, y: parseFloat(wp.getAttribute('y'))||0 }));
+
+                    if (tp) {
+                        points.push({ x: parseFloat(tp.getAttribute('x'))||0, y: parseFloat(tp.getAttribute('y'))||0 });
+                    } else if (target) {
+                        const tc = doc.querySelector(`mxCell[id="${target}"]`);
+                        if (tc) {
+                            const tg = tc.querySelector('mxGeometry[as="geometry"]');
+                            if (tg) {
+                                const tx = parseFloat(tg.getAttribute('x'))||0, ty = parseFloat(tg.getAttribute('y'))||0;
+                                const tw = parseFloat(tg.getAttribute('width'))||0, th = parseFloat(tg.getAttribute('height'))||0;
+                                const nx = st.entryX !== undefined ? parseFloat(st.entryX) : 0.5;
+                                const ny = st.entryY !== undefined ? parseFloat(st.entryY) : 0;
+                                points.push({ x: tx + tw * nx, y: ty + th * ny });
+                            }
+                        }
+                    }
+                }
+
+                if (points.length >= 2) {
+                    const d = points.map((p, i) => `${i===0?'M':'L'}${p.x} ${p.y}`).join(' ');
+                    const da = dashed ? ' stroke-dasharray="6 4"' : '';
+                    const me = marker ? ` marker-end="url(#${marker})"` : '';
+                    svg.push(`<path d="${d}" fill="none" stroke="${strokeColor}" stroke-width="${sw}"${da}${me}/>`);
+                }
+
+                // Edge label
+                const val = cell.getAttribute('value') || '';
+                if (val.trim() && points.length >= 2) {
+                    const mi = Math.floor(points.length / 2);
+                    const lx = (points[mi-1].x + points[mi].x) / 2;
+                    const ly = (points[mi-1].y + points[mi].y) / 2;
+                    svg.push(`<text x="${lx}" y="${ly-4}" text-anchor="middle" font-size="10" fill="#111111" font-family="Arial,sans-serif">${escapeXml(val)}</text>`);
+                }
+            });
+
+            // Render text cells
+            texts.forEach(cell => {
+                const st = parseStyle(cell.getAttribute('style') || '');
+                const geo = cell.querySelector('mxGeometry[as="geometry"]');
+                if (!geo) return;
+                const x = parseFloat(geo.getAttribute('x')) || 0;
+                const y = parseFloat(geo.getAttribute('y')) || 0;
+                const w = parseFloat(geo.getAttribute('width')) || 100;
+                const h = parseFloat(geo.getAttribute('height')) || 20;
+                const value = cell.getAttribute('value') || '';
+                if (!value.trim()) return;
+
+                const fontSize = parseFloat(st.fontSize) || 12;
+                const fontColor = st.fontColor || '#111111';
+                const fontStyleNum = parseInt(st.fontStyle) || 0;
+                const isBold = (fontStyleNum & 1) !== 0;
+                const align = st.align || 'left';
+
+                let anchor = 'start', tx = x;
+                if (align === 'center') { anchor = 'middle'; tx = x + w / 2; }
+                if (align === 'right') { anchor = 'end'; tx = x + w; }
+
+                const ty = y + h / 2 + fontSize * 0.35;
+                const plain = extractTextFromHtml(decodeHtmlEntities(value));
+                svg.push(`<text x="${tx}" y="${ty}" text-anchor="${anchor}" font-size="${fontSize}" font-weight="${isBold?'bold':'normal'}" fill="${fontColor}" font-family="Arial,sans-serif">${escapeXml(plain)}</text>`);
+            });
+
+            svg.push('</svg>');
+            return svg.join('\n');
+        }
+
+        function loadDiagram(xmlString) {
+            loading.classList.remove('hidden');
+            filePickerArea.classList.remove('show');
+            wrapper.style.display = '';
+
+            try {
+                const svgStr = renderToSVG(xmlString);
+                container.innerHTML = svgStr;
+                state.svgContent = svgStr;
+                requestAnimationFrame(() => {
+                    fitToScreen();
+                    loading.classList.add('hidden');
+                });
+            } catch (err) {
+                loading.classList.add('hidden');
+                alert('Error al renderizar: ' + err.message);
+                console.error(err);
+            }
+        }
+
+        function updateTransform() {
+            container.style.transform = `translate(${state.panX}px,${state.panY}px) scale(${state.scale})`;
+            zoomLabel.textContent = `${Math.round(state.scale * 100)}%`;
+        }
+
+        function fitToScreen() {
+            const svg = container.querySelector('svg');
+            if (!svg) return;
+            const sW = parseFloat(svg.getAttribute('width'));
+            const sH = parseFloat(svg.getAttribute('height'));
+            const wW = wrapper.clientWidth;
+            const wH = wrapper.clientHeight;
+            state.scale = Math.min(wW / sW, wH / sH) * 0.92;
+            state.panX = (wW - sW * state.scale) / 2;
+            state.panY = (wH - sH * state.scale) / 2;
+            updateTransform();
+        }
+
+        // Pan
+        wrapper.addEventListener('mousedown', e => {
+            if (e.button !== 0) return;
+            state.isPanning = true;
+            state.lastX = e.clientX;
+            state.lastY = e.clientY;
+            wrapper.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', e => {
+            if (!state.isPanning) return;
+            state.panX += e.clientX - state.lastX;
+            state.panY += e.clientY - state.lastY;
+            state.lastX = e.clientX;
+            state.lastY = e.clientY;
+            updateTransform();
+        });
+        window.addEventListener('mouseup', () => { state.isPanning = false; wrapper.style.cursor = ''; });
+
+        // Zoom
+        wrapper.addEventListener('wheel', e => {
+            e.preventDefault();
+            const rect = wrapper.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const ns = Math.max(0.1, Math.min(5, state.scale * delta));
+            state.panX = mx - (mx - state.panX) * (ns / state.scale);
+            state.panY = my - (my - state.panY) * (ns / state.scale);
+            state.scale = ns;
+            updateTransform();
+        }, { passive: false });
+
+        // Double click to fit
+        wrapper.addEventListener('dblclick', fitToScreen);
+
+        // Toolbar
+        document.getElementById('btn-zoom-in').onclick = () => { state.scale = Math.min(5, state.scale * 1.2); updateTransform(); };
+        document.getElementById('btn-zoom-out').onclick = () => { state.scale = Math.max(0.1, state.scale * 0.8); updateTransform(); };
+        document.getElementById('btn-fit').onclick = fitToScreen;
+        document.getElementById('btn-reset').onclick = () => { state.scale = 1; state.panX = 0; state.panY = 0; updateTransform(); };
+
+        document.getElementById('btn-export-svg').onclick = () => {
+            if (!state.svgContent) return;
+            const blob = new Blob([state.svgContent], { type: 'image/svg+xml' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'mentelyx-arquitectura.svg';
+            a.click();
+        };
+
+        document.getElementById('btn-export-png').onclick = () => {
+            const svg = container.querySelector('svg');
+            if (!svg) return;
+            const data = new XMLSerializer().serializeToString(svg);
+            const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = () => {
+                const c = document.createElement('canvas');
+                c.width = img.width * 2;
+                c.height = img.height * 2;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.drawImage(img, 0, 0, c.width, c.height);
+                c.toBlob(b => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(b);
+                    a.download = 'mentelyx-arquitectura.png';
+                    a.click();
+                }, 'image/png');
+            };
+            img.src = url;
+        };
+
+        // File open
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        document.getElementById('btn-open').onclick = () => fileInput.click();
+        dropZone.onclick = () => fileInput.click();
+
+        fileInput.onchange = e => {
+            const f = e.target.files[0];
+            if (f) { document.getElementById('file-name-badge').textContent = f.name; const r = new FileReader(); r.onload = ev => loadDiagram(ev.target.result); r.readAsText(f); }
+        };
+
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const f = e.dataTransfer.files[0];
+            if (f) { document.getElementById('file-name-badge').textContent = f.name; const r = new FileReader(); r.onload = ev => loadDiagram(ev.target.result); r.readAsText(f); }
+        });
+
+        // Try to load the .drawio file from the same folder
+        async function init() {
+            try {
+                const resp = await fetch('mentelyx-estilo-arquitectonico.drawio');
+                if (resp.ok) {
+                    const xml = await resp.text();
+                    loadDiagram(xml);
+                    return;
+                }
+            } catch(e) {}
+            loading.classList.add('hidden');
+            filePickerArea.classList.add('show');
+            wrapper.style.display = 'none';
+        }
+
+        init();
+    </script>
+</body>
+</html>

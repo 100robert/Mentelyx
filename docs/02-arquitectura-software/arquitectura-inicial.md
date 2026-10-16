@@ -1,72 +1,84 @@
 # Arquitectura inicial de Mentelyx
 
 ```mermaid
-flowchart TD
 
+flowchart TD
     subgraph ACTORES["ACTORES"]
         Estudiante["Estudiante"]
-        Docente["Docente"]
-        Administrador["Superadministrador / Administrador delegado"]
+        Docente["Docente verificado"]
+        Superadmin["Superadministrador"]
+        Delegado["Administrador delegado"]
     end
 
     subgraph PRESENTACION["PRESENTACIÓN"]
-        PWA["Aplicación web responsive e instalable como PWA"]
+        Edge["Cloudflare: DNS, HTTPS, CDN y protección"]
+        Web["Aplicación Web / PWA - Next.js"]
+        API["API REST - TypeScript + Hono / Workers"]
     end
 
-    subgraph BACKEND["BACKEND — MONOLITO MODULAR"]
-        API["API REST — Autenticación y autorización"]
-
-        subgraph NEGOCIO["MÓDULOS DE NEGOCIO"]
-            Usuarios["Usuarios y administración"]
-            Aprendizaje["Contenidos, evaluaciones y aprendizaje personalizado"]
-            Acceso["Suscripciones y convenios"]
-            Tutorias["Docentes, tutorías y reservas"]
-            Pagos["Pagos y remuneraciones"]
-        end
+    subgraph NEGOCIO["LÓGICA DE NEGOCIO - MONOLITO MODULAR"]
+        Identidad["Identidad, roles y permisos"]
+        Academico["Niveles, áreas, cursos y contenidos"]
+        Evaluacion["Diagnóstico, ejercicios y simulacros"]
+        Aprendizaje["Perfil, progreso y recomendaciones"]
+        GestionDocente["Docentes y materiales"]
+        Tutorias["Tutorías y clases en vivo"]
+        Comercial["Planes, convenios, pagos y liquidaciones"]
+        TutorIA["Tutor pedagógico con RAG"]
+        Publicidad["Publicidad y patrocinios"]
     end
 
-    subgraph DATOS["DATOS Y ARCHIVOS"]
-        BD[("Base de datos relacional")]
-        Archivos["Almacenamiento de videos y materiales"]
-    end
-
-    subgraph ASINCRONO["PROCESAMIENTO ASÍNCRONO"]
-        Cola["Cola de tareas"]
-        Funciones["Funciones serverless — Notificaciones y recordatorios"]
+    subgraph DATOS["DATOS Y ALMACENAMIENTO"]
+        SQL[("PostgreSQL + pgvector")]
+        NoSQL[("MongoDB")]
+        Cache[("Redis")]
+        Archivos[("Cloudflare R2")]
     end
 
     subgraph EXTERNOS["SISTEMAS EXTERNOS"]
-        Pasarela["Servicio de pagos"]
-        Notificaciones["Servicio de notificaciones"]
+        Pagos["Pasarela de pagos"]
+        Notificaciones["Cola y servicio de notificaciones"]
+        Video["Streaming de videos"]
+        WebRTC["Videoconferencia WebRTC / SFU"]
+        IA["Proveedor de IA y embeddings"]
+        Anuncios["Servicio publicitario / patrocinadores"]
     end
 
-    Estudiante --> PWA
-    Docente --> PWA
-    Administrador --> PWA
+    ACTORES --> Edge
+    Edge --> Web
+    Web --> API
+    API --> NEGOCIO
+    NEGOCIO --> DATOS
+    NEGOCIO --> EXTERNOS
 
-    PWA -->|"HTTPS"| API
+    Estudiante ~~~ Docente
+    Docente ~~~ Superadmin
+    Superadmin ~~~ Delegado
 
-    API --> Usuarios
-    API --> Aprendizaje
-    API --> Acceso
-    API --> Tutorias
-    API --> Pagos
+    Identidad ~~~ Academico
+    Academico ~~~ Evaluacion
+    Evaluacion ~~~ Aprendizaje
+    Aprendizaje ~~~ GestionDocente
+    GestionDocente ~~~ Tutorias
+    Tutorias ~~~ Comercial
+    Comercial ~~~ TutorIA
+    TutorIA ~~~ Publicidad
 
-    Usuarios --> BD
-    Aprendizaje --> BD
-    Acceso --> BD
-    Tutorias --> BD
-    Pagos --> BD
+    SQL ~~~ NoSQL
+    NoSQL ~~~ Cache
+    Cache ~~~ Archivos
 
-    Aprendizaje --> Archivos
-    Tutorias --> Archivos
+    Pagos ~~~ Notificaciones
+    Notificaciones ~~~ Video
+    Video ~~~ WebRTC
+    WebRTC ~~~ IA
+    IA ~~~ Anuncios
 
-    Pagos <-->|"Solicitudes y resultados de pago"| Pasarela
+    classDef oscuro fill:#222,stroke:#ddd,color:#fff
+    class Estudiante,Docente,Superadmin,Delegado oscuro
+    class Edge,Web,API oscuro
+    class Identidad,Academico,Evaluacion,Aprendizaje,GestionDocente,Tutorias,Comercial,TutorIA,Publicidad oscuro
+    class SQL,NoSQL,Cache,Archivos oscuro
+    class Pagos,Notificaciones,Video,WebRTC,IA,Anuncios oscuro
 
-    Acceso -->|"Avisos de suscripción"| Cola
-    Tutorias -->|"Confirmaciones y recordatorios"| Cola
-    Pagos -->|"Avisos de operaciones"| Cola
-
-    Cola --> Funciones
-    Funciones --> Notificaciones
 ```
