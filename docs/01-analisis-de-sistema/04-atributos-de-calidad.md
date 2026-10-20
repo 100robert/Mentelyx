@@ -10,17 +10,17 @@ Un atributo no queda validado por describirlo: los escenarios medibles, sus tác
 
 | ID | Atributo | Necesidad de calidad | Requisitos vinculados (principalmente) |
 |---|---|---|---|
-| **AC-01** | Rendimiento | Consultar contenidos, resultados, perfiles docentes y operaciones autorizadas con tiempos adecuados bajo carga conocida. | RF-05, RF-07, RF-09, RF-11, RF-20 |
+| **AC-01** | Rendimiento | Consultar contenidos, resultados, perfiles docentes y operaciones autorizadas con tiempos adecuados bajo carga conocida. | RF-05, RF-07, RF-09, RF-11, RF-20, **RF-49, RF-52** |
 | **AC-02** | Disponibilidad | Mantener disponibles las funciones no afectadas por una falla parcial; la caída del proveedor de notificaciones no debe impedir consultar reservas confirmadas. | RF-05, RF-11, RF-24, RF-30, RF-37, RF-48 |
-| **AC-03** | Escalabilidad | Poder incrementar capacidad al crecer la cantidad de estudiantes, contenidos y solicitudes, especialmente durante evaluaciones y simulacros. | RF-05, RF-07, RF-09, RF-10, RF-47, RF-48 |
-| **AC-04** | Seguridad | Proteger datos personales, resultados, sesiones y operaciones económicas, con autorización por usuario y recurso. | RF-02, RF-03, RF-04, RF-11, RF-29, RF-31, RF-40, RF-41, RF-45 |
-| **AC-05** | Mantenibilidad | Cambiar o añadir áreas, cursos, políticas comerciales y estrategias de personalización sin afectar innecesariamente módulos independientes. | RF-05, RF-06, RF-08, RF-12, RF-15, RF-35, RF-41 |
-| **AC-06** | Integridad y consistencia | Preservar resultados académicos y coherencia de reservas, cupos, pagos y liquidaciones; prevenir efectos duplicados. | RF-07, RF-11, RF-22, RF-23, RF-27, RF-28, RF-38 |
-| **AC-07** | Usabilidad | Permitir realizar los flujos principales desde celulares, tabletas y computadoras, tanto en navegador como en PWA compatible. | RF-01, RF-05, RF-07, RF-11, RF-33, RF-34, RF-39, RF-40 |
+| **AC-03** | Escalabilidad | Poder incrementar capacidad al crecer la cantidad de estudiantes, contenidos y solicitudes, especialmente durante evaluaciones y simulacros. | RF-05, RF-07, RF-09, RF-10, RF-47, RF-48, **RF-51** |
+| **AC-04** | Seguridad | Proteger datos personales, resultados, sesiones y operaciones económicas, con autorización por usuario y recurso. | RF-02, RF-03, RF-04, RF-11, RF-29, RF-31, RF-40, RF-41, RF-45, **RF-49, RF-52** |
+| **AC-05** | Mantenibilidad | Cambiar o añadir áreas, cursos, políticas comerciales y estrategias de personalización sin afectar innecesariamente módulos independientes. | RF-05, RF-06, RF-08, RF-12, RF-15, RF-35, RF-41, **RF-50, RF-51** |
+| **AC-06** | Integridad y consistencia | Preservar resultados académicos y coherencia de reservas, cupos, pagos y liquidaciones; prevenir efectos duplicados. | RF-07, RF-11, RF-22, RF-23, RF-27, RF-28, RF-38, **RF-50, RF-51, RF-52** |
+| **AC-07** | Usabilidad | Permitir realizar los flujos principales desde celulares, tabletas y computadoras, tanto en navegador como en PWA compatible. | RF-01, RF-05, RF-07, RF-11, RF-33, RF-34, RF-39, RF-40, **RF-49, RF-50, RF-52** |
 | **AC-08** | Interoperabilidad | Integrar clientes y proveedores mediante contratos claros, verificables y desacoplados de implementaciones específicas. | RF-26, RF-27, RF-30, RF-34, RF-42, RF-48 |
-| **AC-09** | Testabilidad | Poder comprobar casos de uso y reglas del negocio mediante pruebas reproducibles y dependencias sustituibles. | RF-07, RF-08, RF-09, RF-23, RF-27 |
+| **AC-09** | Testabilidad | Poder comprobar casos de uso y reglas del negocio mediante pruebas reproducibles y dependencias sustituibles. | RF-07, RF-08, RF-09, RF-23, RF-27, **RF-50, RF-51** |
 | **AC-10** | Operabilidad y eficiencia económica | Medir y controlar consumo de IA, clases en vivo, streaming y servicios administrados; detectar aumentos de gasto sin requerir intervención diaria del operador. | RF-38, RF-43, RF-44, RF-47, RF-48 |
-| **AC-11** | Confiabilidad pedagógica y gobernanza de fuentes | Las explicaciones asistidas por IA deben usar fuentes autorizadas y trazables, distinguir incertidumbre y no alterar resultados académicos sin un caso de uso verificado. | RF-07, RF-08, RF-35, RF-41, RF-42 |
+| **AC-11** | Confiabilidad pedagógica y gobernanza de fuentes | Las explicaciones asistidas por IA deben usar fuentes autorizadas y trazables, distinguir incertidumbre y no alterar resultados académicos sin un caso de uso verificado. | RF-07, RF-08, RF-35, RF-41, RF-42, **RF-50, RF-51, RF-52** |
 
 **Conservación de códigos:** AC-01 a AC-07 mantienen la numeración y el sentido de la versión aportada; AC-08 y AC-09 incorporan interoperabilidad y testabilidad, citadas en el sílabo. AC-10 y AC-11 se proponen como cualidades adicionales del producto ampliado.
 
@@ -47,3 +47,16 @@ Un atributo no queda validado por describirlo: los escenarios medibles, sus tác
 - **Video:** separar continuidad y capacidad de emisión y reproducción (AC-01 a AC-03) de la corrección del acceso a salas y grabaciones (AC-04 y AC-06).
 - **RAG:** recuperación solo de documentos autorizados; respuesta con referencias a fuentes cuando existan; manejo visible de incertidumbre (AC-11). La indexación no autoriza entrenamiento de modelos.
 - **Economía:** métricas técnicas y costos observados se recopilan para decidir límites, escalabilidad y márgenes; no equivale a asegurar rentabilidad comercial.
+
+## Aplicación de los atributos a preparación de exámenes
+
+La modalidad aprobada en **RF-49 a RF-52** reutiliza los atributos **AC-01 a AC-11**: no necesita inventar un nuevo atributo de calidad.
+
+| Aspecto | Atributos implicados | Evidencia futura |
+|---|---|---|
+| Crear objetivo y consultar avance privado | AC-04, AC-07 | Autorización por propietario; uso móvil de calendario, temario y panel de progreso. |
+| Plan personalizado, explicable y actualizable | AC-05, AC-09, AC-11 | Reglas de planificación reproducibles, diagnóstico y cambios documentados sin promesas de aprobación. |
+| Simulacros con concurrencia y tiempo limitado | AC-01, AC-03, AC-06 | Prueba de carga; duraciones correctas, respuestas íntegras y puntuación consistente con la ficha utilizada. |
+| Fichas/temarios con origen y vigencia | AC-04, AC-05, AC-11 | Registro de fuente y versión; etiquetado entre referencial y verificado. |
+
+**Escenarios nuevos:** EQ-15 a EQ-18 en `08-escenarios-atributos-calidad.md`. Sus metas son **propuestas de prueba, no resultados observados**. Los objetivos escolares y de admisión se diseñan como configuraciones educativas; no se presupone acceso a temarios oficiales ni aval de universidades.

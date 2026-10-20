@@ -4,7 +4,7 @@
 
 Las historias de usuario expresan necesidades desde la perspectiva de quienes interactúan con Mentelyx. Se redactan con el formato: **Como [actor], quiero [acción], para [beneficio]**.
 
-El catálogo base conserva **25 historias de usuario (HU-01 a HU-25)**; se proponen HU-26 a HU-35 como ampliaciones del **producto completo**, no únicamente de los contenidos de demostración del MVP académico. Los identificadores existentes se conservan para mantener la trazabilidad y evitar duplicados. La selección definitiva de historias a implementar en cada incremento debe realizarse en la planificación del proyecto.
+
 
 ## Historias del estudiante
 
@@ -73,6 +73,20 @@ Las siguientes historias **amplían el catálogo previo sin renumerar HU-01 a HU
 > No se incluye la verificación de docentes como servicio de pago. La remuneración por un curso comercial **no se deduce automáticamente** de subir un video demostrativo. Las reglas contractuales precisas, precios y porcentajes deberán aprobarse antes de su implementación. 
 
 
+## Ampliación propuesta: preparación para exámenes
+
+Estas historias desarrollan una modalidad de estudio orientada a un **examen objetivo**. Complementan HU-02 (diagnóstico), HU-03 (ruta personalizada), HU-06 (simulacros) y HU-07 (progreso), sin sustituirlas.
+
+| ID | Actor | Historia de usuario | Etapa sugerida |
+|---|---|---|---|
+| **HU-36** | Estudiante | Como estudiante, quiero seleccionar el tipo de examen para el que me preparo e indicar su fecha prevista cuando la conozca, para definir un objetivo de estudio concreto. | Preparación de exámenes |
+| **HU-37** | Estudiante | Como estudiante, quiero obtener y actualizar un plan de preparación según el temario disponible, mi diagnóstico y el tiempo que puedo dedicar, para organizar mis sesiones de estudio antes del examen. | Preparación de exámenes |
+| **HU-38** | Estudiante | Como estudiante, quiero realizar prácticas y simulacros relacionados con mi examen objetivo, para entrenarme con temas y condiciones semejantes a la evaluación prevista cuando se conozcan. | Preparación de exámenes |
+| **HU-39** | Estudiante | Como estudiante, quiero visualizar el avance de mi plan, mis resultados por área y las dificultades recurrentes, para decidir qué contenidos debo reforzar antes del examen. | Preparación de exámenes |
+| **HU-40** | Administrador académico autorizado | Como administrador académico autorizado, quiero registrar y mantener temarios y configuraciones de exámenes, indicando su fuente y carácter oficial o referencial, para ofrecer preparación basada en contenidos verificables y correctamente identificados. | Catálogo académico |
+
+> La preparación contempla exámenes escolares y, cuando exista información validada, exámenes de admisión específicos. La plataforma no garantiza resultados, ingreso ni afiliación oficial a las instituciones cuyos exámenes utilice como referencia. La gestión de fuentes, derechos y versiones es obligatoria antes de publicar materiales correspondientes.
+
 ## Reglas de negocio y aclaraciones
 
 - El propietario desempeñará inicialmente el rol de superadministrador; las funciones administrativas futuras dependerán de permisos asignados.
@@ -81,6 +95,9 @@ Las siguientes historias **amplían el catálogo previo sin renumerar HU-01 a HU
 - Los planes Gratuito, Plus y Pro y las tutorías son ofertas distintas; **una tutoría no se incluye automáticamente** por contratar Plus o Pro.
 - Los videos demostrativos son promocionales y no generan, por ahora, pagos por visualizaciones.
 - Los precios, comisiones, límites de uso, condiciones de cancelación y reembolsos se determinarán antes de implementar las operaciones comerciales.
+- Las prácticas y simulacros de preparación reutilizan las funciones generales de Evaluaciones y Aprendizaje, vinculadas opcionalmente a un examen objetivo. No se crea un módulo adicional.
+- Las características de un examen específico (temario, duración, calificación y estructura) se declaran oficiales únicamente si están validadas y existe autorización para usar los materiales correspondientes.
+- La preparación no implica garantía de aprobación ni admisión, y una configuración referencial debe identificarse de forma expresa.
 - Estas historias expresan necesidades; **no demuestran implementación ni sustituyen los criterios de aceptación** que deberán establecerse para cada incremento.
 
 ## Política propuesta para monetización y contenidos

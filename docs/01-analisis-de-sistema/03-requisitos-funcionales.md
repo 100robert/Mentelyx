@@ -58,6 +58,10 @@ Los requisitos describen comportamientos observables; sus atributos de calidad, 
 | **RF-46** | El sistema debe permitir a la administración registrar contratos/licencias de contenidos comerciales docentes y a cada docente consultar sus condiciones, versiones, vigencias y remuneraciones correspondientes a los materiales que le pertenecen. |
 | **RF-47** | El sistema debe permitir publicar y reproducir videos grabados mediante un proveedor especializado, comprobando los derechos de acceso antes de entregar credenciales temporales de reproducción y evitando enviar el flujo de video a través del backend de negocio. |
 | **RF-48** | El sistema debe poder crear, autorizar, cerrar y auditar salas o emisiones audiovisuales mediante proveedores externos, diferenciando transmisión uno-a-muchos de tutorías interactivas y protegiendo la incorporación de participantes no autorizados. |
+| **RF-49** | El sistema debe permitir al estudiante crear y consultar un objetivo de preparación, seleccionando un examen disponible (escolar o preuniversitario), y registrar opcionalmente fecha prevista y disponibilidad de estudio, sin requerir afiliación a una institución. |
+| **RF-50** | El sistema debe generar y actualizar un plan de preparación para el objetivo seleccionado, relacionando temario disponible, diagnóstico previo, dificultades identificadas y tiempo previsto o disponible; debe mostrar las actividades por área y tema sin atribuir al plan garantía de éxito. |
+| **RF-51** | El sistema debe permitir a administradores autorizados configurar y versionar fichas de examen con fuente, tipo, temario, estructura, duración y criterios de calificación cuando sean conocidos, diferenciando fichas oficiales verificadas de referencias no oficiales; también debe permitir al estudiante realizar prácticas y simulacros vinculados a esas fichas reutilizando las funciones de ejercicios y evaluaciones existentes. |
+| **RF-52** | El sistema debe permitir al estudiante consultar el seguimiento de su objetivo, incluyendo actividades completadas, progreso por áreas o temas, historial de prácticas y simulacros, dificultades recurrentes y cumplimiento del plan, sin presentar esas métricas como predicción garantizada de su resultado real. |
 
 ## Matriz de trazabilidad: historias de usuario y requisitos
 
@@ -98,6 +102,11 @@ Los requisitos describen comportamientos observables; sus atributos de calidad, 
 | HU-33. Control de cuotas y costos | RF-43, RF-44 |
 | HU-34. Control de grabaciones | RF-45, RF-48 |
 | HU-35. Licencias comerciales docentes | RF-38, RF-46 |
+| **HU-36. Definición de examen objetivo** | **RF-49**, RF-05 |
+| **HU-37. Plan de preparación personalizado** | **RF-50**, RF-07, RF-08, RF-09 |
+| **HU-38. Prácticas y simulacros específicos** | **RF-51**, RF-09, RF-10 |
+| **HU-39. Seguimiento de preparación** | **RF-52**, RF-11 |
+| **HU-40. Gestión de temarios y fichas de examen** | **RF-51**, RF-06 |
 
 **Nota:** RF-04, RF-14, RF-30 y RF-31 cumplen funciones transversales y pueden relacionarse con varias historias; la matriz registra los vínculos principales, no necesariamente todos los escenarios de uso indirectos.
 
@@ -117,6 +126,9 @@ Los requisitos describen comportamientos observables; sus atributos de calidad, 
 12. Las tarifas sugeridas de suscripción (Plus S/24,90; Pro S/49,90), comisiones docentes y cuotas de IA son parámetros **comerciales pendientes de aprobación**, no prestaciones definitivas del sistema.
 13. Los contenidos grabados y en vivo deben mantener autorización de reproducción según plan, inscripción, licencia y vigencia.
 14. El presupuesto de infraestructura no debe depender de la premisa de que los 1.500 estudiantes y 200 docentes están siempre viendo o transmitiendo video simultáneamente.
+15. La preparación para exámenes será una modalidad transversal del producto, no un módulo nuevo; sus objetivos, planes y simulacros reutilizarán las capacidades ya definidas de diagnóstico, evaluación, contenidos y seguimiento.
+16. Las fichas y materiales de examen distinguirán información verificada de configuraciones referenciales y respetarán fuentes, licencias y versiones; no se afirmará que Mentelyx representa oficialmente a una universidad sin autorización.
+17. Los indicadores de preparación no garantizan aprobación, calificación o admisión, y los datos del progreso académico no se utilizarán para segmentar publicidad.
 
 ## Comprobación futura de requisitos
 
@@ -132,13 +144,24 @@ Para considerar un requisito listo para implementación deberán añadirse **cri
 | RF-27 | La recepción repetida de una misma confirmación válida de pago no duplica una activación ni una operación. |
 | RF-33 / RF-34 | En un navegador compatible se puede iniciar la PWA instalada y utilizar la misma cuenta que desde la web. |
 
+### Verificación propuesta para preparación de exámenes
+
+Los siguientes ejemplos expresan criterios iniciales **pendientes de validación**; serán detallados como casos de prueba cuando se priorice el desarrollo de esta modalidad.
+
+| Requisito | Comprobación mínima sugerida |
+|---|---|
+| RF-49 | El estudiante puede seleccionar una ficha de examen válida y guardar un objetivo con fecha opcional; otro estudiante no puede modificarlo. |
+| RF-50 | Con un temario vinculado y un diagnóstico registrado se genera un plan por temas; una nueva evaluación permite actualizar las prioridades sin borrar el historial previo. |
+| RF-51 | Un administrador autorizado publica una ficha con su versión, fuente y condición referencial/verificada; las prácticas y simulacros se vinculan a esa ficha y respetan la configuración disponible. |
+| RF-52 | Un estudiante consulta el avance de su propio objetivo y visualiza resultados por tema, dificultades y actividades completadas; no puede consultar información privada de terceros. |
+
 ## Delimitación del MVP académico
 
-El **MVP académico de Mentelyx** comprobará el flujo de cuenta, diagnóstico, perfil de aprendizaje, recomendación, actividades educativas y consulta del progreso. La organización de contenidos y evaluaciones se diseñará para **múltiples niveles educativos, áreas, cursos y temas**, sin restringir los requisitos a Matemática ni a Secundaria. Para la demostración se podrá cargar una cantidad reducida de contenidos de ejemplo y comprobar que es posible incorporar otras áreas o cursos sin rehacer los módulos académicos. La selección de contenidos y la asignación de RF por sprint se definirán en la planificación; no modifican el alcance funcional global.
+El **MVP académico de Mentelyx** comprobará el flujo de cuenta, diagnóstico, perfil de aprendizaje, recomendación, actividades educativas y consulta del progreso. La organización de contenidos y evaluaciones se diseñará para **múltiples niveles educativos, áreas, cursos y temas**, sin restringir los requisitos a Matemática ni a Secundaria. Para la demostración se podrá cargar una cantidad reducida de contenidos de ejemplo y comprobar que es posible incorporar otras áreas o cursos sin rehacer los módulos académicos. **La preparación de exámenes (RF-49 a RF-52) se mantiene como ampliación funcional propuesta**: podrá demostrarse con una ficha y un temario representativos, sin afirmar que se hayan cargado convocatorias oficiales ni que exista integración con universidades. La selección de contenidos y la asignación de RF por sprint se definirán en la planificación; no modifican el alcance funcional global.
 
 ## Alcance incremental y validación
 
-Los RF-35 a RF-48 son **especificación del producto ampliado**. Para el proyecto del curso se prioriza un flujo vertical demostrable de autenticación, catálogo multidisciplinario, diagnóstico, perfil, recomendaciones y progreso; el resto se incorpora mediante prototipos o incrementos según el cronograma, no se declara implementado. La arquitectura deberá soportar todas las capacidades, pero una decisión de proveedor no sustituye una prueba.
+Los RF-35 a RF-52 son **especificación del producto ampliado**. Para el proyecto del curso se prioriza un flujo vertical demostrable de autenticación, catálogo multidisciplinario, diagnóstico, perfil, recomendaciones y progreso; el resto se incorpora mediante prototipos o incrementos según el cronograma, no se declara implementado. La arquitectura deberá soportar todas las capacidades, pero una decisión de proveedor no sustituye una prueba.
 
 | Flujo | Ejemplo de aceptación verificable |
 |---|---|

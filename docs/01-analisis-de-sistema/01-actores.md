@@ -8,10 +8,10 @@ Este documento identifica las **personas que interactúan directamente** con Men
 
 | Actor | Descripción | Interacciones y responsabilidades |
 |---|---|---|
-| **Estudiante** | Persona que utiliza la plataforma para su aprendizaje en Primaria, Secundaria o Preuniversitario. Su acceso es independiente de una institución. | Registrar y acceder a su cuenta; seleccionar nivel; realizar diagnósticos; consultar contenidos; resolver ejercicios; recibir orientación y recomendaciones; rendir simulacros; revisar su progreso; gestionar suscripciones y beneficios; consultar, reservar y gestionar tutorías. |
+| **Estudiante** | Persona que utiliza la plataforma para su aprendizaje en Primaria, Secundaria o Preuniversitario. Su acceso es independiente de una institución. | Registrar y acceder a su cuenta; seleccionar nivel; realizar diagnósticos; consultar contenidos; resolver ejercicios; recibir orientación y recomendaciones; rendir simulacros; **seleccionar un examen objetivo, seguir su plan de preparación, practicar y consultar el avance por temario**; revisar su progreso; gestionar suscripciones y beneficios; consultar, reservar y gestionar tutorías. |
 | **Docente** | Persona que solicita incorporarse para ofrecer servicios educativos. **Los permisos docentes solo se habilitan después de una verificación y aprobación por Mentelyx.** | Presentar su solicitud; una vez habilitado, gestionar su perfil y materiales demostrativos sujetos a revisión, configurar tutorías, tarifas, horarios y cupos, consultar reservas y sesiones, y revisar liquidaciones y pagos propios. |
-| **Superadministrador** | Rol de máxima administración funcional dentro de Mentelyx. En la etapa inicial, lo ejercerá el propietario. | Gestionar usuarios, roles y permisos; autorizar docentes; administrar contenidos, planes y convenios; supervisar reservas, operaciones económicas, incidencias y auditoría. |
-| **Administrador delegado** | Cuenta autorizada por el superadministrador para realizar determinadas actividades de gestión. | Administrar únicamente los recursos y operaciones que permita su autorización, por ejemplo contenido académico, docentes, convenios, finanzas o soporte. |
+| **Superadministrador** | Rol de máxima administración funcional dentro de Mentelyx. En la etapa inicial, lo ejercerá el propietario. | Gestionar usuarios, roles y permisos; autorizar docentes; administrar contenidos, **fichas de exámenes, versiones y temarios**, planes y convenios; supervisar reservas, operaciones económicas, incidencias y auditoría. |
+| **Administrador delegado** | Cuenta autorizada por el superadministrador para realizar determinadas actividades de gestión. | Administrar únicamente los recursos y operaciones que permita su autorización, por ejemplo contenido académico, **fichas de examen y temarios**, docentes, convenios, finanzas o soporte. |
 
 ### Estado de incorporación docente
 
@@ -43,6 +43,13 @@ La **personalización del aprendizaje** y el **motor RAG** son capacidades inter
 - **Editoriales y anunciantes:** potenciales socios comerciales; no reciben acceso a diagnósticos, notas, dificultades ni perfiles personales para publicidad.
 - **Instituciones con convenio:** colegios, academias y centros preuniversitarios podrán tener acuerdos comerciales con Mentelyx, pero **no tendrán cuentas, paneles ni acceso a datos académicos** de estudiantes. Los beneficios serán administrados por Mentelyx.
 
+## Ampliación: preparación de exámenes (HU-36 a HU-40)
+
+- **Estudiante:** puede elegir un examen disponible (escolar o preuniversitario), registrar opcionalmente fecha y disponibilidad, solicitar un plan, realizar prácticas y simulacros relacionados y revisar **únicamente su propio** avance. No necesita asociarse a una institución para definir el objetivo (HU-36 a HU-39; RF-49, RF-50, RF-51, RF-52).
+- **Superadministrador y administradores autorizados:** gestionan las **fichas de examen** y sus versiones, identificando fuente, vigencia y carácter **verificado o referencial** (HU-40; RF-51). La delegación se somete a los permisos ya existentes; **no se añade un actor nuevo**.
+- **Docente:** puede prestar tutorías de refuerzo orientadas a exámenes mediante las funciones docentes ya descritas; no se crean privilegios docentes nuevos ni acceso automático al historial privado de estudiantes.
+- **Universidades y colegios citados como referencia de un examen** no son actores de Mentelyx por este solo hecho; no se presumirá convenio, acceso institucional ni respaldo oficial.
+
 ## Reglas y límites de acceso
 
 1. La cuenta del estudiante es personal y no exige correo institucional ni afiliación a un centro educativo.
@@ -54,3 +61,4 @@ La **personalización del aprendizaje** y el **motor RAG** son capacidades inter
 7. Los usuarios de planes de pago no verán anuncios en su experiencia educativa. La publicidad contextual aprobada se limita a ubicaciones previamente determinadas y no interfiere con tareas académicas.
 
 > No se incorpora un actor de padre, madre o apoderado ni se propone un panel familiar en el alcance funcional actual. Los asuntos de protección de datos aplicables se tratarán al definir restricciones y controles, sin añadir funciones no acordadas.
+    

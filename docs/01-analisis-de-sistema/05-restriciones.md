@@ -22,6 +22,8 @@ Las restricciones son condiciones **impuestas o acordadas** que limitan alternat
 | **RC-13** | Privacidad audiovisual | Grabación opcional | Las clases en vivo no se grabarán automáticamente; su activación exige avisos, permisos, alcance de acceso y reglas de conservación y retirada. |
 | **RC-14** | Comercial | Tutorías independientes de planes | La compra de Plus o Pro no incluye automáticamente tutorías o clases individuales pagadas; los beneficios excepcionales deben configurarse expresamente. |
 | **RC-15** | Negocio / datos | Prohibición de segmentación académica | No se utilizarán notas, dificultades, diagnósticos, conversaciones privadas o perfil individual de aprendizaje para orientar publicidad. En menores, respetar normativa y políticas del proveedor; no implementar segmentación conductual. |
+| **RC-16** | Editorial / trazabilidad | Verificabilidad de fichas de examen | Cada ficha y temario de preparación debe conservar fuente, fecha/versión, tipo de evaluación y estado referencial o verificado. Sin evidencia suficiente, no se publicará como ficha oficial, ni se sugerirá aval institucional. |
+| **RC-17** | Comunicación responsable | Sin garantía de resultados | Los indicadores, simulacros y planes de preparación no garantizan nota, aprobación o admisión. La plataforma identificará claramente estimaciones e información de referencia. |
 
 ## Alcance de un hito académico anterior (referencia histórica)
 
@@ -37,6 +39,7 @@ El hito de **análisis y decisiones arquitectónicas** de la guía actual no exi
 | Políticas comerciales | Precios, comisiones, descuentos, vencimientos, reembolsos y liquidaciones. | Necesario para implementar módulos comerciales; los porcentajes propuestos no constituyen obligación aprobada. |
 | Licencias docentes y consentimientos | Modelos contractuales, titularidad de material, tratamiento de grabaciones y procedimiento de retiro. | Condiciona RAG, videos y cursos comercializados; revisar jurídicamente antes de producir. |
 | Objetivos de carga y disponibilidad | Validar con medidas y presupuesto las cifras del README. | Son objetivos de calidad / dimensionamiento, no restricciones tecnológicas automáticas. |
+| Catálogo de exámenes escolares y de admisión | Definir qué fichas y convocatorias se publicarán primero y cómo se documentarán versiones, derechos y evidencia. | Evita atribuir carácter oficial a material referencial; permite ampliar sin rediseñar módulos. |
 
 ## Lo que no se impone aquí
 
@@ -55,7 +58,7 @@ El hito de **análisis y decisiones arquitectónicas** de la guía actual no exi
 ## Restricciones legales por revisar antes del lanzamiento
 
 - Evaluar la Ley N.º 29733 y el reglamento peruano vigente para datos personales de menores; **esto no crea un panel de padres/apoderados**.
-- Verificar titularidad y licencias de imágenes, presentaciones, guías, voces y grabaciones publicadas, así como derechos de estudiantes que participen en videoclases.
+- Verificar titularidad y licencias de imágenes, presentaciones, guías, **bancos de preguntas y temarios**, voces y grabaciones publicadas, así como derechos de estudiantes que participen en videoclases. Un examen de referencia no autoriza a afirmar afiliación o aval de una universidad.
 - Revisar políticas del proveedor publicitario y prohibiciones sobre personalización para menores; considerar únicamente patrocinios contextuales y controlados.
 - Validar tributación peruana, protección al consumidor, emisión de comprobantes, políticas de renovación, reembolso y reparto económico con asesoría competente.
 
@@ -65,3 +68,5 @@ El hito de **análisis y decisiones arquitectónicas** de la guía actual no exi
 - RC-11 y RC-12 → RF-35, RF-41, RF-42, RF-46; AC-04 y AC-11.
 - RC-13 → RF-37, RF-45, RF-48; AC-04, AC-06.
 - RC-14 → RF-12, RF-14, RF-21, RF-43.
+- **RC-16 → RF-49, RF-51; HU-36, HU-40; AC-05, AC-11.**
+- **RC-17 → RF-50, RF-52; HU-37, HU-39; AC-07, AC-11.**

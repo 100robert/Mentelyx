@@ -1,18 +1,22 @@
 # 07. Decisiones arquitectónicas — Mentelyx
-Las deciciones fueron tomadas teniendo en cuenta los drivres que se tiene y las posibilidades vistas para el desarrolo del 
 
+**Versión:** propuesta integrada 0.6 — 16 de octubre de 2026 (preparación para exámenes)  
+**Estado:** decisiones base aprobables y selecciones de proveedor sujetas a pruebas de concepto, presupuesto y revisión del equipo.  
+**Alcance:** centro educativo multidisciplinario (Primaria, Secundaria y Preuniversitario), acceso web/PWA; cursos grabados, tutorías y videoclases, personalización, suscripciones y convenios. Incluye **persistencia políglota SQL + NoSQL documental** según DA-19 y **preparación de exámenes escolares y preuniversitarios** según DA-20 y RF-49 a RF-52.
+
+> **Convención:** «Adoptar» es la opción elegida para implementar y validar; no significa que haya sido desplegada, probada o que el docente haya aprobado el costo. «Condicionada» necesita una prueba de concepto, validación comercial o de demanda. **Se conserva ADR-011 sin asignar**, porque no estaba en el documento anterior. Las nuevas propuestas comienzan en ADR-013.
 
 ## 1. Criterios de evaluación
 
 Las alternativas se evalúan por (1) trazabilidad con RF, AC, RC y drivers; (2) costo total de propiedad —no solo precio de VM—; (3) trabajo de operación; (4) privacidad e integridad; (5) disponibilidad y degradación ante fallas; (6) facilidad de probar y sustituir proveedores; y (7) capacidad de evolución sin imponer microservicios prematuros.
 
-
+Los valores «1.500 estudiantes concurrentes» y «200 docentes activos» son **supuestos de dimensionamiento**, NO una prueba de carga realizada. «Activos» no implica necesariamente que los 200 docentes estén transmitiendo video al mismo tiempo. Las cuentas reales se basarán en usuarios, sesiones, duración, bitrate y tipo de interacción.
 
 ## 2. Tabla de decisiones principales
 
 | ID | Decisión arquitectónica | Driver relacionado | Justificación | Resultado / tecnología | Estado |
 |---|---|---|---|---|---|
-| ADR-001 | **Monolito modular**, no microservicios en el inicio | DA-05, DA-09 | Menos despliegues, menor complejidad de integración, módulos independientes de negocio | Identidad, Académico, Evaluación, Perfil, Recomendación, Docentes, Tutorías, Pagos, Convenios, Notificaciones | Adoptar |
+| ADR-001 | **Monolito modular**, no microservicios en el inicio | DA-05, DA-09 | Menos despliegues, menor complejidad de integración, módulos independientes de negocio | **Siete módulos lógicos agrupados:** Usuarios y Administración; Cursos y Contenidos; Evaluaciones y Aprendizaje; Docentes y Clases; Suscripciones y Pagos; Tutor IA y RAG; Publicidad y Patrocinios. Notificaciones = capacidad transversal asíncrona, no módulo de negocio adicional. | Adoptar |
 | ADR-002 | **Clean Architecture y puertos/adaptadores por módulo** | DA-05, DA-11, DA-12 | Reglas educativas y comerciales independientes de HTTP, ORM, cloud e IA | Dominio → aplicación ← adaptadores de infraestructura y presentación; pruebas aisladas | Adoptar |
 | ADR-003 | **TypeScript en Web/PWA y API REST** | DA-05, DA-10 | Un stack tipado con ecosistema web y posibilidad de compartir contratos | **Next.js** (exportación estática donde aplique) + API **Hono/Cloudflare Workers** sobre HTTPS; OpenAPI. Next.js dinámico/SSR será evaluado por separado | Adoptar con prueba del runtime |
 | ADR-004 | **Identidad y autorización en backend** | DA-03, DA-09 | Impedir acceso a calificaciones y pagos ajenos; impedir privilegios docentes sin aprobación | Sesiones seguras, roles, permisos y autorización por recurso, controles de auditoría | Adoptar |
@@ -40,6 +44,7 @@ Las alternativas se evalúan por (1) trazabilidad con RF, AC, RC y drivers; (2) 
 | ADR-027 | **Comisiones docentes con ledger y reglas versionadas** | DA-18, DA-06 | Separar precio, impuestos, comisión de cobro, porcentaje de reparto y costos para liquidaciones auditables. | Tablas de tarifas/versiones, transacciones, eventos y liquidaciones, saldos por docente y conciliación verificable. | Adoptar diseño; porcentajes condicionados |
 | ADR-028 | **Derechos de plan y cuotas medibles** | DA-13, DA-15, DA-16, DA-18 | Limitar consumos variables caros sin impedir el aprendizaje básico autorizado. | Entitlements por plan/convenio, medidor de tokens/minutos, límites de IA, alertas y reglas de expiración de beneficios. | Adoptar; cuotas/precios condicionados |
 | ADR-029 | **Cursos comerciales docentes sujetos a acuerdo separado** | DA-17, DA-18 | Los videos demostrativos son promocionales y no generan regalías automáticas; los cursos integrales pueden requerir otra remuneración. | Registro de contratos, licencia por contenido, alcance de distribución y estados de liquidación diferenciados de tutorías. | Adoptar modelo contractual, condiciones condicionadas |
+| **ADR-030** | **Preparación para exámenes como modalidad transversal; reutilizar los siete módulos** | **DA-20, DA-05, DA-06, DA-11; RF-49 a RF-52; RC-16, RC-17** | Evitar duplicar evaluación, cursos y perfiles; permitir nuevas convocatorias y preservar la historia del estudiante con planes comprobables. | **Evaluaciones y Aprendizaje:** objetivos, planificación, simulacros, seguimiento; **Cursos y Contenidos:** fichas/temarios/preguntas versionadas; **Usuarios y Administración:** permisos; **Tutor IA y RAG:** explicaciones opcionales; **Docentes y Clases:** refuerzo. Reglas de planificación deterministas y verificables; resultados y versiones históricas en PostgreSQL; estructura de ejercicios en MongoDB según ADR-023. | **Adoptar como diseño; implementación y fuentes verificadas pendientes de prueba** |
 
 **Drivers ampliados y trazados en `../01-analisis-del-sistema/06-drivers-arquitectonicos.md`:**
 
@@ -50,8 +55,9 @@ Las alternativas se evalúan por (1) trazabilidad con RF, AC, RC y drivers; (2) 
 - **DA-17:** derechos de contenidos docentes, versiones, licencias y desindexación verificable.
 - **DA-18:** comisiones, pagos y liquidaciones docentes consistentes y auditables.
 - **DA-19:** persistencia heterogénea de datos transaccionales, contenidos pedagógicos documentales y archivos de gran tamaño.
+- **DA-20:** exámenes configurables, planes de preparación por temario y trazabilidad de simulacros sin añadir módulos ni desplegables.
 
-> Una ADR no crea por sí sola un requisito funcional. Las historias HU-26 a HU-35 y los requisitos RF-35 a RF-48 fueron incorporados como **ampliaciones propuestas** en los documentos `../01-analisis-del-sistema/02-historias-del-usuario.md` y `../01-analisis-del-sistema/03-requisitos-funcionales.md`; su incorporación no significa que los componentes estén implementados o probados.
+> Una ADR no crea por sí sola un requisito funcional. Las historias HU-26 a HU-40 y los requisitos RF-35 a RF-52 fueron incorporados como **ampliaciones del alcance funcional** en los documentos `../01-analisis-del-sistema/02-historias-del-usuario.md` y `../01-analisis-del-sistema/03-requisitos-funcionales.md`; su incorporación no significa que los componentes estén implementados o probados.
 
 ## 3. Stack de tecnología seleccionado
 
@@ -70,7 +76,7 @@ Las alternativas se evalúan por (1) trazabilidad con RF, AC, RC y drivers; (2) 
 | Cursos grabados | Bunny Stream | Almacenar video, transcodificar, HLS, CDN y tokens; probar red Volume/Standard en Perú |
 | Clases masivas | Cloudflare Stream Live + preguntas por API/canal en tiempo real | Broadcast uno-a-muchos; no asumir videollamada bidireccional |
 | Tutorías interactivas | Cloudflare RealtimeKit inicialmente; Realtime SFU como alternativa escalable | La tarifa por participante y la tarifa por egress se modelan por separado |
-| Motor recomendador | Reglas/algoritmos propios detrás de puerto | Menor costo, auditabilidad, independencia del LLM |
+| Motor recomendador | Reglas/algoritmos propios detrás de puerto | Menor costo, auditabilidad, independencia del LLM; **planes de preparación por examen reutilizan este motor sin exigir llamadas LLM** |
 | Tutor IA | Modelo de lenguaje externo + RAG; prompt versionado | Enseñanza contextual, límites por plan, monitoreo de tokens, evaluación pedagógica |
 | Monitoreo | Workers observability, analítica cloud, alertas + seguimiento de costos | Operación de bajo mantenimiento |
 | Entrega | GitHub Actions, Cloudflare deploy, Docker Compose local | Evidencia de curso e infraestructura reproducible |
@@ -260,10 +266,35 @@ Usar **WebRTC SFU** administrado con salas, cupos, permisos, activación de cám
 
 > **Estado general:** arquitectura seleccionada para el proyecto y su prototipo, con proveedores y cifras comerciales todavía sujetos a validación. Ninguna ADR de esta versión implica evidencia de implementación.
 
-## 14. Registro de actualización de persistencia — 14-10-2026
+## 14. Decisión aplicada a RF-49 a RF-52 — flujo de preparación de exámenes
+
+**ADR-030 (aceptada como diseño, no implementada).** La preparación para exámenes amplía funcionalidades existentes y no cambia el estilo, la infraestructura ni los siete módulos de negocio.
+
+| Operación del estudiante o administración | Módulo responsable | Colaboración y datos |
+|---|---|---|
+| Seleccionar examen y crear objetivo (RF-49) | **Evaluaciones y Aprendizaje** | Obtiene la ficha publicada desde **Cursos y Contenidos**, autoriza por usuario y guarda objetivo/fecha opcional en PostgreSQL. |
+| Configurar fichas y temarios (RF-51; HU-40) | **Cursos y Contenidos** | Administración autorizada, fuente y versión de ficha en PostgreSQL, estructura pedagógica documentada en MongoDB cuando corresponda. No se atribuye carácter oficial sin verificación. |
+| Generar y reprogramar plan (RF-50) | **Evaluaciones y Aprendizaje** | Reutiliza diagnóstico/perfil, reglas de priorización y temario versionado. Plan y revisiones persistidos; IA explicativa es opcional, no motor obligatorio. |
+| Resolver práctica/simulacro (RF-51) | **Evaluaciones y Aprendizaje** | Reutiliza RF-09 y RF-10; cada intento conserva versión de ficha, configuración, respuestas y calificación, con control de tiempo en servidor. |
+| Consultar avance de preparación (RF-52) | **Evaluaciones y Aprendizaje** | Integra historial, dificultades y cumplimiento del plan; la autorización se comprueba sobre el propietario del recurso. |
+
+**Puertos propuestos, no interfaces implementadas:** `ExamenCatalogoPort` (consultar ficha/version), `PlanificacionPort` (proponer prioridades), `IntentosEvaluacionPort` (guardar resultados), `AutorizacionPort` (comprobar propiedad), con adaptadores concretos independientes del dominio.
+
+**Restricciones funcionales:** no suponer acceso automático a preguntas oficiales, convenios universitarios ni predicción garantizada de admisión. Fichas pueden ser **referenciales** o **verificadas** según evidencias y licencias; la revisión editorial y los datos de menores requieren políticas adicionales antes del lanzamiento.
+
+**Criterios de prueba:** planes deterministas para fixtures controlados, actualización sin borrar historial, acceso denegado entre estudiantes, simulacros simultáneos sin sobrescritura de respuestas y preservación de versión tras cambiar un temario (EQ-15 a EQ-18).
+
+## 15. Registro de actualización de persistencia — 14-10-2026
 
 - Se alinean **ADR-006, ADR-009 y ADR-023** con **DA-19** de `06-drivers-arquitectonicos.md`.
 - Se adopta como **arquitectura objetivo** PostgreSQL + MongoDB para datos relacionales y documentales respectivamente; Redis y los servicios de archivos mantienen responsabilidades propias.
 - Se actualizan diagrama, stack, efectos de caída, recuperación, costos y evidencias de validación.
 - Se mantienen los identificadores y demás decisiones sin renumerar. **ADR-011 continúa reservado**.
 - La integración con MongoDB administrado todavía necesita verificar compatibilidad de acceso desde Cloudflare Workers y costo de operación; no se presenta como infraestructura ya desplegada.
+
+## 16. Registro de actualización funcional — 16-10-2026
+
+- Se vincula **ADR-030** con **DA-20**, **RF-49 a RF-52** y **HU-36 a HU-40**.
+- Se hace explícita la agrupación acordada de **siete módulos de negocio** en ADR-001; las capacidades de notificación siguen como soporte transversal, sin eliminar funciones.
+- Se mantienen los identificadores **ADR-001 a ADR-029**, con **ADR-011 reservado**; no se asignan nuevas tecnologías por esta funcionalidad.
+- Los casos de prueba futuros se detallan en **EQ-15 a EQ-18**.

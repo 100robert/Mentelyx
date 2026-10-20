@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Un driver arquitectónico es un **requisito, atributo de calidad o restricción que cambia de forma significativa el diseño de la solución**. 
+Un driver arquitectónico es un **requisito, atributo de calidad o restricción que cambia de forma significativa el diseño de la solución**. Los drivers derivan de `03-requisitos-funcionales.md`, `04-atributos-de-calidad.md` y `05-restricciones.md`; **no son decisiones técnicas** ni sustituyen los escenarios medibles.
 
 El alcance abarca el **producto completo**; la prioridad de implementación se definirá por sprint. Un driver comercial puede ser importante para la arquitectura futura sin requerir implementación en el MVP educativo.
 
@@ -31,6 +31,7 @@ El alcance abarca el **producto completo**; la prioridad de implementación se d
 | **DA-17** | Gestionar derechos de contenidos, contratos editoriales y desindexación verificable. | RF-35, RF-41, RF-45, RF-46; AC-04, AC-11; RC-11, RC-12, RC-13 | Licencias y versiones, estados de autorización, revocación, auditoría y borrado del índice de recuperación. |
 | **DA-18** | Rentabilizar tutorías y clases docentes mediante comisiones y liquidaciones auditables. | RF-21 a RF-29, RF-36 a RF-38, RF-44; AC-06, AC-10; RC-05, RC-14 | Modelo de precios, estados contractuales, procesamiento idempotente, desglose contable por transacción y métricas de costo por sesión. |
 | **DA-19** | Gestionar de forma diferenciada **datos relacionales/transaccionales, contenidos pedagógicos semiestructurados y archivos de gran tamaño**, manteniendo coherencia y capacidad de evolución. | RF-05, RF-06, RF-07, RF-09, RF-11, RF-35, RF-41, RF-47; AC-03, AC-05, AC-06, AC-09; RC-11 | Definir propietarios de datos y límites de persistencia por módulo, identificadores y versionado de contenidos, vínculos entre registros y objetos, manejo de consistencia entre almacenes, índices, respaldos y escalado independiente. |
+| **DA-20** | Preparación configurable para exámenes escolares y preuniversitarios sin crear otro módulo de negocio. | **RF-49 a RF-52; HU-36 a HU-40; AC-01, AC-03, AC-04, AC-05, AC-06, AC-07, AC-09, AC-11; RC-16, RC-17** | Reutilizar contenidos, diagnósticos y simulacros; versionar fichas/temarios y mantener resultados históricos, controlar simultaneidad y generar planes reproducibles, explicables y actualizables. |
 
 **Actualización de persistencia:** se conservan DA-01 a DA-18, se precisan DA-01 y DA-05 y se incorpora **DA-19** para justificar distintas formas de persistencia en Mentelyx. No se presume que todos los materiales deben guardarse en una base documental: los archivos binarios se gestionan como objetos; sus metadatos, permisos y referencias requieren fuentes de verdad claramente definidas. Las selecciones de tecnologías y proveedores se documentan en ADR, no aquí.
 
@@ -44,6 +45,7 @@ El alcance abarca el **producto completo**; la prioridad de implementación se d
 | **Alta para el producto comercial; posterior en el MVP académico** | DA-04 | Pagos obligan a integración segura cuando entren en alcance. |
 | **Media inicialmente** | DA-09 | Administración simple al inicio, sin perder posibilidad de delegación. |
 | **Alta al abrir servicios comerciales** | DA-13, DA-14, DA-15, DA-16, DA-17, DA-18 | Control de gastos, video, privacidad editorial y márgenes docentes; no significa implementar todo durante el primer sprint. |
+| **Alta para la evolución educativa; despliegue incremental** | **DA-20** | Los objetivos de examen, planes y simulacros forman parte del producto, pero su entrada en el MVP depende de prioridades y datos de prueba. |
 | **Alta para el diseño de datos; implementación gradual** | DA-19 | Definir desde el inicio los límites entre información transaccional, estructuras educativas flexibles y archivos; dimensionar la base documental según casos reales y costo. |
 
 La prioridad arquitectónica no equivale a la fecha de implementación. Por ejemplo, DA-04 debe modelarse desde el análisis, pero las integraciones de pagos pueden planificarse para una fase posterior.
@@ -67,6 +69,7 @@ Cada decisión posterior debe registrar: **ID, estado (propuesta/aceptada), cont
 | DA-16 | Publicidad separada de actividades educativas y de datos privados |
 | DA-18 | Ledger de comisiones, idempotencia, liquidaciones por reglas versionadas |
 | **DA-19** | **ADR-006** (datos relacionales y transacciones), **ADR-009** (objetos y videos), **ADR-023** (persistencia políglota: base relacional + base documental NoSQL por dominio); Redis para caché/estado efímero, no como registro transaccional. |
+| **DA-20** | **ADR-030** (preparación por objetivo de examen dentro de los siete módulos), respaldada por ADR-002 (Clean Architecture), ADR-006 y ADR-023 (persistencia), ADR-018 (planificación determinista) y ADR-020 (observabilidad). |
 
 ## Detalle de DA-19: necesidad de persistencia heterogénea
 
@@ -78,6 +81,14 @@ Cada decisión posterior debe registrar: **ID, estado (propuesta/aceptada), cont
 - **Verificación:** demostrar una publicación de material compuesto por metadatos, estructura pedagógica y archivo; comprobar consistencia de referencias, cambios de versión, acceso autorizado, recuperación y eliminación/desindexación cuando corresponda; medir latencia, complejidad y costo respecto de una alternativa con un único almacén.
 
 **Decisión objetivo asociada:** la arquitectura contempla **PostgreSQL + MongoDB** con responsabilidades diferenciadas, además de almacenamiento de objetos y caché. La elección de MongoDB pertenece a ADR-023 y su despliegue inicial se programará según los contenidos que realmente implementemos. La existencia de muchos PDF o videos, por sí sola, **no** demuestra necesidad de MongoDB.
+
+## Detalle de DA-20: preparación de exámenes sin nueva frontera de despliegue
+
+La preparación es una **modalidad de uso**, no un octavo módulo. Los siete módulos existentes se mantienen: el de **Evaluaciones y Aprendizaje** posee objetivo, diagnóstico, plan, intentos y seguimiento; **Cursos y Contenidos** administra fichas, temarios, versiones y preguntas; **Usuarios y Administración** controla identidad, permisos y edición; **Tutor IA y RAG** puede explicar errores sin controlar por sí solo las calificaciones; **Docentes y Clases** ofrece refuerzo opcional. Los demás módulos se reutilizan según plan y políticas comerciales sin nuevas dependencias obligatorias.
+
+Los registros de objetivos, intentos y resultados requieren integridad y autorización individual en PostgreSQL; el temario y la estructura heterogénea de actividades pueden referirse a documentos versionados en MongoDB según ADR-023. Una versión de examen debe permanecer identificable aunque se actualice la ficha posteriormente. **No se requiere una nueva base de datos, microservicio ni proveedor LLM para ejecutar el plan**.
+
+**Verificación propuesta:** crear ficha de referencia con versión; asociar un objetivo, generar plan, registrar simulacro bajo carga y demostrar que se preservan respuestas, resultados, privacidad y trazabilidad de fuentes. Los escenarios detallados serán EQ-15 a EQ-18.
 
 ## Nota sobre ADR existentes
 

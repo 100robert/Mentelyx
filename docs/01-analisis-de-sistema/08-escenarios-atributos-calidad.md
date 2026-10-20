@@ -186,9 +186,62 @@ Cada escenario explicita **fuente, estímulo, artefacto, entorno, respuesta y me
 | Tácticas | Token de corta duración, SFU para interacción, broadcast para audiencia masiva, CDN, degradación y alertas. |
 | Verificación | Sesiones piloto con redes móviles/peruanas, monitoreo del proveedor y revisión de costos. |
 
+### EQ-15 — AC-01, AC-03 y AC-06: simulacro concurrente sin pérdida de respuestas
+
+| Campo | Escenario propuesto |
+|---|---|
+| Fuente | Estudiantes que presentan simultáneamente un simulacro vinculado a una ficha de examen. |
+| Estímulo | Cien participantes de prueba inician, envían respuestas y finalizan dentro del tiempo configurado. |
+| Artefacto | Evaluaciones y Aprendizaje, temporizador del servidor, API, PostgreSQL y preguntas referenciadas por versión. |
+| Entorno | **Piloto propuesto**, 100 estudiantes virtuales, 30 minutos, conjunto fijo de preguntas y tráfico documentado; no equivale a 1.500 usuarios simultáneos ya soportados. |
+| Respuesta | Registrar intentos, conservar todas las respuestas aceptadas y calcular la puntuación según la versión de examen; rechazar entregas fuera de las reglas temporales. |
+| Medida | **Objetivo por validar:** p95 de operaciones de guardado ≤ 3 s y errores 5xx < 1 %; **0 respuestas confirmadas perdidas y 0 intentos asociados a un estudiante distinto** en la muestra. |
+| Tácticas | Transacciones e índices, operaciones idempotentes cuando corresponda, fecha/hora de servidor, persistencia por intento y simulación de concurrencia. |
+| Verificación | Prueba k6 de 100 sesiones, auditoría de intentos persistidos, revisión de resultados/versiones y casos de reconexión. |
+
+### EQ-16 — AC-05, AC-09 y AC-11: plan de preparación reproducible
+
+| Campo | Escenario propuesto |
+|---|---|
+| Fuente | Estudiante que agrega un objetivo y posteriormente completa un nuevo diagnóstico. |
+| Estímulo | Se calcula un plan por temario y luego se actualizan prioridades ante nueva evidencia de desempeño. |
+| Artefacto | Motor de planificación, perfil académico, fichas de examen y planes versionados. |
+| Entorno | Datos controlados: temario fijo, historial ficticio y algoritmo de priorización versionado. |
+| Respuesta | Producir un plan acorde con temas, dificultad y tiempo disponible; actualizarlo sin eliminar su versión anterior. |
+| Medida | **Propuesta:** para iguales datos y versión de reglas, 100 % de las ejecuciones de prueba producen igual resultado; en 100 % de los casos de modificación se preserva al menos la versión anterior del plan. |
+| Tácticas | Algoritmos deterministas, contratos de dominio, historial de revisiones, pruebas unitarias sin proveedor LLM. |
+| Verificación | Fixtures y pruebas unitarias repetidas, inspección de datos y trazabilidad del motivo de cambios. |
+
+### EQ-17 — AC-04 y AC-11: fichas de examen verificables y protegidas
+
+| Campo | Escenario propuesto |
+|---|---|
+| Fuente | Administrador que actualiza un temario; usuario sin permiso que intenta editarlo o consultar el avance ajeno. |
+| Estímulo | Se publica una nueva versión de ficha referencial o verificada; se comprueban acceso y procedencia. |
+| Artefacto | Catálogo de fichas, temarios, objetivos y resultados con identificadores estables. |
+| Entorno | Dos cuentas de estudiantes, una de administración autorizada y fichas con fuentes verificables y otras referenciales. |
+| Respuesta | Restringir cambios a autorizados, etiquetar la procedencia con claridad, preservar versión de intentos antiguos y denegar consulta de objetivos ajenos. |
+| Medida | **Propuesta:** 100 % de intentos no autorizados denegados; 0 fichas etiquetadas como verificadas sin fuente registrada; 100 % de intentos históricos conservan versión de la ficha aplicada. |
+| Tácticas | RBAC/ABAC por recurso, autoría y versiones en fuente transaccional, validaciones editoriales, registro de auditoría. |
+| Verificación | Tests de autorización, control editorial y migración entre versiones de fichas. |
+
+### EQ-18 — AC-07: realización móvil de un plan y simulacro
+
+| Campo | Escenario propuesto |
+|---|---|
+| Fuente | Estudiante que utiliza Mentelyx desde un teléfono compatible. |
+| Estímulo | Selecciona un examen, consulta el plan, resuelve una práctica y revisa el progreso. |
+| Artefacto | Web/PWA, formularios, temporizador, navegación por temario y panel de resultados. |
+| Entorno | Dispositivos y tamaños de pantalla representativos; conectividad móvil variable durante una prueba guiada. |
+| Respuesta | Poder completar los flujos sin texto inaccesible, pérdida de intentos confirmados o controles imposibles de activar. |
+| Medida | **Propuesta:** 4 de 5 participantes completan las tareas sin asistencia; registrar explícitamente incidencias de reconexión, persistencia y comprensión del progreso. |
+| Tácticas | Diseño mobile-first, retroalimentación de guardado, estado de progreso claro y manejo explícito de pérdida de conectividad. |
+| Verificación | Sesiones con usuarios, pruebas E2E y revisión en navegadores/dispositivos diferentes. |
+
 ## Seguimiento de evidencia
 
 | Código | Estado inicial |
 |---|---|
 | EQ-01 a EQ-09 | **Propuesto, no validado**. Actualizar al implementar cada capacidad y realizar sus ensayos. |
 | EQ-10 a EQ-14 | **Propuesto por ampliación comercial/audiovisual/IA**, no validado. Requiere funcionalidades y entorno de prueba. |
+| **EQ-15 a EQ-18** | **Propuesto para RF-49 a RF-52**, no validado. Las cifras deben someterse a prueba de carga y evaluación de uso, sin atribuir respaldo institucional a fichas referenciales. |
