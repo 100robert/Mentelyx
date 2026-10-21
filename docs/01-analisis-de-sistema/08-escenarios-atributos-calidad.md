@@ -1,8 +1,11 @@
-# 08. Escenarios medibles de atributos de calidad — Mentelyx
+# 08. Escenarios de atributos de calidad — Mentelyx
 
-## Criterios de lectura
+> **Versión:** 1.6 (sincronización con actores v1.5) — revisión integral del análisis de Mentelyx (20 de octubre de 2026).  **Estado:** arquitectura de referencia definida; importes comerciales, cuotas y contratos sujetos a validación. No implica software ya desarrollado ni servicios contratados.
 
-Cada escenario explicita **fuente, estímulo, artefacto, entorno, respuesta y medida**, más tácticas y verificación. Las medidas numéricas son **hipótesis iniciales para validar con el docente y con pruebas**: no constituyen evidencia de cumplimiento. Las pruebas del MVP utilizarán los módulos efectivamente implementados; se declaran los escenarios comerciales futuros por trazabilidad.
+
+## 1. Cómo se interpretan las medidas
+
+Cada escenario define fuente, estímulo, artefacto, ambiente, respuesta y medida; cifras **son objetivos propuestos y no resultados**. Los escenarios EQ-01 a EQ-23 se conservan de la base documental; EQ-24 a EQ-31 amplían la parte comercial actual.
 
 ### EQ-01 — AC-01 Rendimiento: consulta de contenido
 
@@ -186,6 +189,8 @@ Cada escenario explicita **fuente, estímulo, artefacto, entorno, respuesta y me
 | Tácticas | Token de corta duración, SFU para interacción, broadcast para audiencia masiva, CDN, degradación y alertas. |
 | Verificación | Sesiones piloto con redes móviles/peruanas, monitoreo del proveedor y revisión de costos. |
 
+> **Aclaración v1.3:** capacidad inicial objetivo: 35 estudiantes y 1 docente mediante SFU administrado. Validación aún pendiente.
+
 ### EQ-15 — AC-01, AC-03 y AC-06: simulacro concurrente sin pérdida de respuestas
 
 | Campo | Escenario propuesto |
@@ -245,3 +250,167 @@ Cada escenario explicita **fuente, estímulo, artefacto, entorno, respuesta y me
 | EQ-01 a EQ-09 | **Propuesto, no validado**. Actualizar al implementar cada capacidad y realizar sus ensayos. |
 | EQ-10 a EQ-14 | **Propuesto por ampliación comercial/audiovisual/IA**, no validado. Requiere funcionalidades y entorno de prueba. |
 | **EQ-15 a EQ-18** | **Propuesto para RF-49 a RF-52**, no validado. Las cifras deben someterse a prueba de carga y evaluación de uso, sin atribuir respaldo institucional a fichas referenciales. |
+
+
+## Escenarios 20-10-2026: disponibilidad, registro y Studio
+
+### EQ-19 — AC-02 / AC-10: falla de API o Worker
+
+| Campo | Escenario de aceptación propuesto |
+|---|---|
+| Fuente / estímulo | Monitor externo detecta 3 comprobaciones fallidas consecutivas de `/health/ready` o p95 de API > 1s durante 10 min. |
+| Artefacto / entorno | API Hono sobre Workers, pruebas staging con falla inyectada sin afectar producción. |
+| Respuesta | Alerta al operador; rutas no afectadas continúan; se restaura la implementación o se revierte el despliegue cuando la causa es un release. |
+| Medida | Detección ≤ 5 min en ensayos; documentar RTO real; meta orientativa disponibilidad mensual ≥ 99,5 %, **no SLA garantizado**. |
+| Verificación | Monitores sintéticos y simulación de fallo/rollback, incluyendo reporte de latencias, incidentes y causa. |
+
+### EQ-20 — AC-02 / AC-06: PostgreSQL o MongoDB indisponible
+
+| Campo | Escenario de aceptación propuesto |
+|---|---|
+| Fuente / estímulo | Se corta la conectividad a PostgreSQL/MongoDB durante un guardado de progreso o recurso Studio. |
+| Artefacto / entorno | Adaptadores SQL/NoSQL, registro de operaciones confirmadas y caché local de borradores. |
+| Respuesta | Timeout y mensaje controlado, no emitir confirmación falsa, reintentos acotados; al restablecerse la conexión, sincronización idempotente y conciliación. |
+| Medida | **Cero guardados falsamente confirmados** en casos de prueba; ningún resultado de evaluación previamente confirmado se sobrescribe. Medir RTO real de proveedor. |
+| Verificación | Interrupción de red controlada, consulta de último estado confirmado, trazas y ensayo de reconciliación. |
+
+### EQ-21 — AC-02 / AC-06: copia de seguridad y restauración
+
+| Campo | Escenario de aceptación propuesto |
+|---|---|
+| Fuente / estímulo | Fallo o borrado accidental en un entorno de ensayo. |
+| Artefacto / entorno | Backups de PostgreSQL y MongoDB; inventario R2; registro de versiones/documentos relacionados. |
+| Respuesta | Ejecutar restauración **en entorno aislado**, validar integridad y consistencia, y autorizar recuperación real solo con procedimiento. |
+| Medida | Restauración trimestral probada; registrar RTO y RPO observados, checksums/integridad, discrepancias SQL/NoSQL. |
+| Verificación | Runbook, evidencia de prueba, captura métricas, checksum de registros y comparación de versiones. |
+
+### EQ-22 — AC-04: tres cuentas públicas, dos modalidades docentes y acreditaciones
+
+| Campo | Escenario de aceptación propuesto |
+|---|---|
+| Fuente / estímulo | Adulto se registra como Docente (libre o por nivel) y solicita impartir tutoría remunerada; estudiante universitario adulto solicita permiso adicional y otro Estudiante sube archivo. |
+| Artefacto / entorno | Better Auth (si se valida), RBAC/atributos, registros de verificación y recursos. |
+| Respuesta | Docente puede usar el editor manual de Studio según los límites vigentes; tutoría remunerada denegada si falta habilitación; solo la modalidad Docente por nivel permite solicitar acreditación académica verificable; estudiante tutor autorizado sigue siendo Estudiante. |
+| Medida | 100 % de pruebas negativas de acceso indebido denegadas; toda inscripción conserva tipo principal; ninguna cuenta de menor como Creador/Docente ni tutor remunerado. |
+| Verificación | Pruebas de registro, rutas API, propiedad de materiales y estados de credenciales. |
+
+### EQ-23 — AC-01 / AC-07: experiencia de Studio con pérdida de conexión
+
+| Campo | Escenario de aceptación propuesto |
+|---|---|
+| Fuente / estímulo | El autor edita una presentación y se desconecta temporalmente. |
+| Artefacto / entorno | Next.js, IndexedDB/estado local, API, versión MongoDB y propietario en PostgreSQL. |
+| Respuesta | Seguir editando donde sea posible, indicar cambios pendientes, sincronizar cuando vuelva conexión sin destruir versiones confirmadas. |
+| Medida | Ningún cambio marcado como «guardado remoto» sin ACK persistente; completar prueba de pérdida y retorno de conectividad con 5 casos. |
+| Verificación | Pruebas e2e offline/online en móvil de gama media y escritorio; seguimiento de versiones. |
+
+**No confundir objetivos con prestaciones contratadas:** si la caída es regional y tanto la única PostgreSQL como MongoDB están en esa región sin secundarias contratadas, EQ-19 a EQ-21 no prueban continuidad total.
+
+
+## Complemento transversal v0.9 — Redis
+Redis se adopta como caché temporal y mecanismo de contadores de limitación de solicitudes. No modifica los RF/HU ni sus identificadores originales: es una decisión de infraestructura trazada a rendimiento, seguridad y disponibilidad. Ante su fallo, las lecturas públicas podrán usar origen con protección de carga; las operaciones sensibles deben mantener autorización y límites seguros. Ver `14-redis-cache-y-resiliencia.md`.
+
+## 2. Nuevos escenarios (EQ-24 a EQ-31)
+
+### EQ-24 — AC-06 y AC-10: compra Live y movimientos de créditos
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Dos intentos simultáneos del mismo estudiante y webhook repetido de su suscripción. |
+| Artefacto | PostgreSQL / suscripciones y reservas |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | 1 suscripción produce exactamente 4 créditos Live; se impide reserva que exceda saldo; evento duplicado no aplica dos veces; 0 sobrecupos en ensayos. |
+| Verificación | Simular 100 reintentos/dobles webhooks con transacciones y revisar ledger SQL. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-25 — AC-06 y AC-10: liquidación contractual de docente
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Clase con 3 alumnos de 2 créditos cada uno, luego cambio de tarifa contractual. |
+| Artefacto | Pago a tutores y ledger |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | Pago por política original versionada: si tarifa candidata S/8/crédito y 6 créditos válidos, liquidación prevista S/48; cambio posterior no altera compromiso previo. |
+| Verificación | Probar cierre de clase, ausencias, cancelación, cambio de precio e idempotencia. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-26 — AC-01, AC-02 y AC-03: 35+1 participantes por aula
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Docente abre sesión y 35 estudiantes autorizados entran desde redes diferentes; 36º alumno solicita cupo adicional. |
+| Artefacto | RealtimeKit/WebRTC + reserva SQL |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | Aforo ≤35 alumnos, acceso no autorizado denegado, duración/latencia/jitter/reconexiones registrados; carga/costo por minuto-participante medidos; umbrales audiovisuales finales tras piloto. |
+| Verificación | Prueba con emulación 36 clientes y, después, móviles reales en redes representativas. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-27 — AC-07 y AC-10: edición y cuotas Studio
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Docente modifica 10 gráficos manuales y luego solicita presentación IA con crédito limitado. |
+| Artefacto | Studio/API IA/ledger Studio |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | 10 cambios manuales consumen 0 créditos de IA; cada generación válida usa la tarifa mostrada exactamente una vez; resultados de costos registrados sin PII. |
+| Verificación | Automatizar prueba de saldo y UI; repetir entrega y reembolso por error elegible. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-28 — AC-10: margen negativo detectado y bloqueado
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Docente ofrece clase individual a S/8 con pasarela de comisión mínima y costos superiores al margen. |
+| Artefacto | Motor de reglas comerciales |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | Antes de publicar: precio, tarifa docente, pasarela, audio/video, impuestos y margen visible; se bloquea oferta no viable salvo patrocinio/presupuesto explícito. |
+| Verificación | Pruebas con 1, 3, 5 y 35 inscritos, venta directa y suscripción; escenarios costo multiplicado. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-29 — AC-02 y AC-06: fallo de Redis
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Redis no responde al consultar contenido y se intenta consumir créditos de Live. |
+| Artefacto | Redis/cache + API |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | Lecturas no sensibles pueden degradar a BD con control de carga; créditos y permisos siguen comprobándose en PostgreSQL; operación sensible con rate limit no debe quedar sin control. |
+| Verificación | Cortar conexión Redis durante test; verificar registros, latencia y ausencia de dobles consumos. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-30 — AC-02 y AC-10: agotamiento de IA durante Studio
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | El suscriptor Pro consume su última cuota y luego realiza nueva solicitud. |
+| Artefacto | API IA y ledger Studio |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | La solicitud adicional se rechaza sin cargo ni sobrecoste imprevisto; UI explica saldo; editor manual sigue operativo. |
+| Verificación | Test de concurrencia, presupuesto, límites por operación, reembolsos y error de proveedor. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-31 — AC-02, AC-06 y AC-10: conciliación tras estado de pago incierto
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Pasarela tarda, responde timeout y envía webhooks repetidos. |
+| Artefacto | PaymentPort, PostgreSQL y outbox |
+| Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
+| Respuesta y medida | Orden permanece pendiente hasta verificación; no se emite nuevo cargo con clave nueva por timeout; 0 duplicados en pruebas; revisión de DLQ y conciliación. |
+| Verificación | Repetir webhooks, fallos de red y reinicios del Worker; comparar estado local/proveedor. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+## 3. Matriz de evidencia por escenario
+
+| Escenarios | Evidencia necesaria | Estado |
+|---|---|---|
+| EQ-01–EQ-05, EQ-07–EQ-09 | Pruebas de carga, autorizaciones, UX, contratos y suite CI | Pendiente |
+| EQ-06, EQ-13, EQ-24, EQ-25, EQ-31 | Pruebas SQL de concurrencia, pagos, ledger e idempotencia | Pendiente |
+| EQ-10, EQ-27, EQ-28, EQ-30 | Métricas de tokens/costo/planes y simulaciones peor caso | Pendiente |
+| EQ-14, EQ-26 | SFU real con 35+1, ancho de banda, reconexiones, uso moderado y costo | Pendiente |
+| EQ-19–EQ-23, EQ-29 | Caídas de proveedores, backups/restauraciones, desconexión Studio y Redis | Pendiente |
+| EQ-15–EQ-18 | Simulacros, preparación, derechos, UX móvil y verificación de fuentes | Pendiente |
+
+## 4. Política de aceptación
+
+Una medición se aprueba solo al registrar: fecha, commit, entorno, número de usuarios/aulas, datos de prueba, capturas/logs anonimizados, tasa de éxito, costo asociado y responsable. *Disponibilidad 99,5 %*, créditos y precios son metas/políticas de diseño hasta que la operación y el marco comercial los sustenten.

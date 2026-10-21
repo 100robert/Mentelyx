@@ -1,163 +1,113 @@
-# Mentelyx
-
-## Centro educativo virtual de aprendizaje personalizado y preparación para exámenes
-
-### Descripción
-
-Mentelyx es un centro educativo virtual independiente orientado al **aprendizaje personalizado y la preparación para exámenes** de estudiantes de Primaria, Secundaria y Preuniversitario. Combina recursos educativos, evaluación del desempeño, recomendaciones adaptativas y apoyo pedagógico mediante inteligencia artificial.
-
-La plataforma se desarrollará como una aplicación web responsive y
-mobile-first, instalable como PWA en dispositivos compatibles.
-
-Los usuarios podrán acceder desde el navegador de una computadora,
-celular o tablet, o mediante la PWA instalada, utilizando la misma
-cuenta y consultando su información académica, progreso, suscripciones
-y tutorías.
-
-La primera versión no incluirá una aplicación móvil nativa independiente.
-
-Mentelyx permitirá que cada estudiante siga un proceso de aprendizaje adaptado a sus conocimientos, dificultades y ritmo de progreso. Para ello, construirá y actualizará un perfil individual de aprendizaje.
-
-Al iniciar un área de aprendizaje, el estudiante podrá realizar una evaluación diagnóstica que permitirá estimar su nivel inicial de dominio e identificar conocimientos que requieren refuerzo.
-
-Posteriormente, las respuestas, intentos, dificultades, pistas utilizadas y resultados obtenidos durante las actividades permitirán actualizar progresivamente su perfil.
-
-El sistema utilizará reglas y algoritmos de recomendación basados en esta información para proponer actividades, ajustar la ruta de aprendizaje y adaptar la dificultad de los ejercicios. El tutor con inteligencia artificial complementará este proceso mediante explicaciones basadas en materiales autorizados, sin sustituir las reglas de evaluación.
-
-Cuando se identifiquen dificultades, la plataforma podrá recomendar actividades de refuerzo o retomar conocimientos prerrequisitos. Cuando el estudiante demuestre un dominio suficiente, podrá avanzar hacia actividades de mayor dificultad.
-
-Además del aprendizaje adaptativo, Mentelyx permitirá consultar contenidos educativos, resolver ejercicios, participar en evaluaciones y simulacros, revisar el progreso académico y contratar tutorías con docentes verificados.
-
-### Modalidades educativas
-
-Mentelyx ofrecerá dos modalidades complementarias que comparten el perfil académico del estudiante:
-
-1. **Aprendizaje y refuerzo:** estudiar áreas, cursos y temas; practicar ejercicios; recibir retroalimentación y seguir rutas personalizadas para mejorar conocimientos.
-2. **Preparación para exámenes:** definir un examen objetivo, identificar contenidos exigidos, realizar diagnósticos, seguir un plan de preparación, practicar con simulacros relacionados y consultar el avance hacia el objetivo.
-
-### Preparación para exámenes
-
-La preparación cubrirá tanto **evaluaciones escolares** (por ejemplo, exámenes de unidad, bimestrales, finales o de recuperación) como **exámenes preuniversitarios y de admisión** cuando se disponga de temarios y características verificables de la evaluación correspondiente. No se limita a una sola asignatura ni a una universidad específica.
-
-El estudiante podrá seleccionar un tipo de examen y, cuando corresponda, una institución, convocatoria o modalidad disponible; además, podrá registrar una fecha objetivo opcional y su disponibilidad estimada de estudio. Según los contenidos asociados al examen y los resultados de su diagnóstico, Mentelyx podrá proponer un plan por áreas y temas que se actualice a medida que avance.
-
-Las prácticas y simulacros utilizarán las capacidades generales de evaluación de Mentelyx, pero podrán estar **vinculados a un examen objetivo** y aplicar una configuración específica de temario, duración, estructura y criterios de calificación cuando dicha información esté disponible y validada. La plataforma mostrará el progreso por áreas, dificultades persistentes, resultados de simulacros y cumplimiento del plan.
-
-Los temarios, preguntas y modelos de examen se publicarán según su fuente, versión, derechos de uso y nivel de verificación. Cuando un simulacro sea referencial, se identificará como tal; Mentelyx **no garantizará una calificación ni la admisión** a una institución educativa. Tampoco afirmará contar con convenios ni materiales oficiales sin autorización.
-
-Estas capacidades amplían el **Módulo de Evaluaciones y Aprendizaje**, en coordinación con los módulos de Cursos y Contenidos, Tutor IA y RAG y Docentes y Clases; **no requieren añadir un octavo módulo de negocio**.
-
-### Modelo de acceso
-
-Los estudiantes podrán registrarse directamente en Mentelyx sin exigir un correo institucional ni pertenecer a un colegio, academia o centro preuniversitario.
-
-Se contemplan las siguientes modalidades de acceso:
-
-- Modalidad gratuita, con recursos y funcionalidades limitados.
-- Plan Plus, con beneficios adicionales.
-- Plan Pro, con beneficios ampliados.
-
-Los contenidos, funcionalidades, límites y precios correspondientes a cada modalidad serán definidos mediante las políticas comerciales de Mentelyx.
-
-Las tutorías individuales y grupales tendrán condiciones de contratación propias. Su inclusión o descuento dentro de una suscripción deberá establecerse expresamente y no se considerará automática.
-
-### Convenios institucionales
-
-Mentelyx podrá establecer convenios con colegios, academias y centros preuniversitarios para ofrecer beneficios a sus estudiantes.
-
-Estos beneficios podrán incluir acceso gratuito limitado a determinados recursos o descuentos en los planes Plus y Pro, de acuerdo con las condiciones y vigencia de cada convenio.
-
-Las instituciones asociadas no tendrán cuentas administrativas, paneles institucionales ni acceso directo a la información académica de los estudiantes.
-
-La administración de Mentelyx será responsable de registrar los convenios, verificar la elegibilidad de los estudiantes y asignar los beneficios correspondientes.
-
-La cuenta personal y el historial académico del estudiante se conservarán independientemente de la vigencia del convenio o de su relación con una institución.
-
-### Docentes y tutorías
-
-Mentelyx permitirá la participación de docentes verificados que ofrezcan servicios de acompañamiento, orientación y refuerzo educativo.
-
-Las personas interesadas deberán presentar una solicitud y pasar por un proceso de verificación y aprobación antes de obtener los permisos docentes.
-
-Los docentes autorizados podrán:
-
-- Gestionar su perfil profesional.
-- Presentar videos demostrativos y materiales para promocionar su forma de enseñanza, sujetos a las condiciones de publicación.
-- Ofrecer tutorías individuales y grupales.
-- Configurar su disponibilidad, cupos y tarifas conforme a las políticas de Mentelyx.
-- Consultar sus reservas y gestionar las sesiones a su cargo.
-- Revisar las liquidaciones y pagos correspondientes a sus servicios.
-
-Los estudiantes podrán consultar los perfiles docentes, revisar los servicios disponibles y contratar una tutoría según el tema, horario, modalidad y precio ofrecidos.
-
-Mentelyx gestionará las reservas y verificará los pagos, evitando confirmar participantes por encima de los cupos disponibles.
-
-La remuneración docente se determinará según los servicios prestados y las condiciones económicas acordadas. Las comisiones, plazos de liquidación y políticas de cancelación y reembolso deberán definirse antes de implementar estas operaciones.
-
-Los videos demostrativos tendrán una finalidad promocional. Su publicación no implicará remuneración por visualizaciones dentro del alcance actual.
-
-### Administración de la plataforma
-
-La dirección del negocio y la administración inicial de Mentelyx serán asumidas por el propietario del proyecto.
-
-Se distinguirán dos responsabilidades:
-
-- Propietario: establece los objetivos y las políticas educativas, comerciales y operativas.
-- Superadministrador: ejecuta las operaciones de administración autorizadas dentro del sistema.
-
-Inicialmente, ambas responsabilidades serán asumidas por la misma persona.
-
-La plataforma permitirá delegar posteriormente funciones de gestión académica, docentes, finanzas, convenios y soporte mediante cuentas individuales y permisos específicos.
-
-Los docentes tendrán acceso únicamente a las funciones y recursos relacionados con sus servicios, sin recibir privilegios de administración global.
-
-### Alcance educativo
-
-Mentelyx contempla tres niveles educativos:
-
-- Primaria.
-- Secundaria.
-- Preuniversitario.
-
-La plataforma deberá permitir incorporar progresivamente diferentes áreas, cursos, temas y habilidades.
-
-Para la demostración académica se utilizará **una selección representativa de contenidos**, suficiente para comprobar diagnóstico, perfil, rutas adaptativas, evaluaciones, preparación de un examen objetivo y seguimiento del progreso. El producto se diseñará para incorporar distintas áreas y cursos de los tres niveles educativos; ningún nivel ni área específicos se consideran una limitación funcional permanente.
-
-La preparación para exámenes específicos podrá incorporarse de forma incremental según la disponibilidad y validación de temarios, modelos y permisos de uso. No se presupone que todas las universidades o convocatorias estén cargadas desde el primer incremento.
-
-El modelo completo de suscripciones, convenios y servicios docentes formará parte del análisis arquitectónico. Su implementación se organizará progresivamente según las prioridades y el cronograma del proyecto.
-
-### Orientación arquitectónica
-
-Mentelyx se diseñará con un backend monolítico modular que organizará las responsabilidades educativas, administrativas y comerciales de la plataforma.
-
-El cliente web responsive y su versión instalable como PWA compartirán los servicios y las reglas del negocio mediante una misma cuenta; no se contempla una aplicación móvil nativa independiente en el alcance inicial.
-
-Se incorporarán capacidades serverless para responsabilidades complementarias cuya conveniencia se justifique durante el diseño arquitectónico.
-
-La organización interna seguirá el enfoque Clean Architecture, separando las reglas del negocio de las interfaces de usuario, el almacenamiento y los servicios externos.
-
-La distribución de responsabilidades entre el monolito modular y las capacidades serverless, así como la selección de tecnologías, se documentará mediante decisiones arquitectónicas relacionadas con los requisitos y drivers del proyecto.
-
-### Escalabilidad
-
-Mentelyx estará orientado a usuarios de diferentes regiones del país.
-
-Como escenarios de dimensionamiento y validación se consideran:
-
-- Un escenario habitual de referencia de aproximadamente 1 500 usuarios concurrentes.
-- Escenarios de prueba de hasta 15 000 usuarios concurrentes.
-
-Los simulacros, las evaluaciones escolares y las pruebas asociadas a exámenes de admisión representan situaciones en las que puede aumentar considerablemente la cantidad de usuarios simultáneos.
-
-Estas cifras constituyen objetivos de diseño y prueba, no una capacidad ya demostrada. Su cumplimiento deberá evaluarse considerando la infraestructura, el presupuesto y el tipo de actividad realizada por los usuarios.
-
-Las pruebas deberán distinguir entre consultas de contenido, resolución de ejercicios, solicitudes de ayuda mediante inteligencia artificial y contratación de tutorías, porque generan cargas diferentes sobre el sistema.
-
-### Curso
-
-Arquitectura de Software - IS-488
-
-### Semestre
-
-2026-II
+# Mentelyx — Plataforma educativa y arquitectura de software
+
+> **Versión:** 1.5 — revisión integral del análisis de Mentelyx (20 de octubre de 2026).  **Estado:** arquitectura de referencia definida; importes comerciales, cuotas y contratos sujetos a validación. No implica software ya desarrollado ni servicios contratados.
+
+## 1. Propósito del proyecto
+
+Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria, Secundaria, Preuniversitario y Universitario**, que combina contenido educativo, diagnóstico, prácticas y simulacros, rutas adaptativas, preparación de exámenes, tutor IA con RAG, autoría en Mentelyx Studio y aulas virtuales con docentes habilitados y estudiantes universitarios tutores autorizados. Se desarrolla como **web mobile-first y PWA**; la inscripción no depende de colegios o dominios de correo institucional.
+
+**Diferenciación:** existen **tres cuentas públicas** (Estudiante, Creador educativo y Docente). Dentro de Docente se elige **perfil independiente/libre** (temas y experiencia, sin perfil de especialización acreditada) o **perfil por nivel académico** (niveles y materias, con formación acreditable tras verificación). Un estudiante universitario adulto puede solicitar autorización adicional para impartir tutorías sin convertirse en Docente. Autenticación, acreditación profesional, habilitación para cobrar y suscripción son estados **distintos**. Los menores requieren salvaguardas específicas.
+
+## 2. Necesidad del negocio y propuesta de valor
+
+- **Para estudiantes:** estudiar a su ritmo, reforzar áreas de dificultad, prepararse para exámenes y acceder a clases con profesores reales, desde cualquier región y sin requerir relación con institución educativa.
+- **Para docentes y estudiantes tutores habilitados:** gestionar clases, cupos, remuneraciones y preparar material visual profesional.
+- **Para creadores:** utilizar Studio como entorno de autoría, publicación autorizada y herramientas de IA bajo límites claros.
+- **Para Mentelyx:** ingresos sostenibles procedentes de suscripciones educativas, de Aulas Live, de Studio y de clases individuales; los costos de IA, cobros, docentes y audiovisuales deben medirse por producto.
+
+## 3. Modelo de producto y monetización
+
+| Línea | Producto | Precio de referencia | Prestación y límite | Estado |
+|---|---|---:|---|---|
+| Estudiante | Gratuito | S/0 | Contenido y funciones gratuitas limitadas, prueba acotada de IA | Dirección de producto |
+| Estudiante | Plus | **S/29,90/mes** | Aprendizaje con IA y funciones educativas; sin clases humanas incluidas | Precio **propuesto** |
+| Estudiante | Pro | **S/59,90/mes** | Cuota IA mayor y preparación avanzada; sin Live ilimitado | Precio **propuesto** |
+| Aulas | Aulas Live | **S/99,90/mes** | **4 créditos Live por mes** para inscribirse individualmente a clases; no incluye IA premium | Precio y reglas **propuestos** |
+| Autoría | Studio Free | S/0 | Editor, pizarra y gráficos manuales; IA de prueba limitada | Dirección de producto |
+| Autoría | Studio Plus | **S/29,90/mes** | **300 créditos de Studio** como hipótesis; generación asistida con cuota | Precio/cuota **propuestos** |
+| Autoría | Studio Pro | **S/69,90/mes** | **900 créditos de Studio** como hipótesis; autoría avanzada | Precio/cuota **propuestos** |
+| Autoría | Studio Equipos | Por definir | Colaboración institucional o de equipo | **Posterior** |
+
+**Importante:** un **crédito Live** compra derecho limitado a una participación en clase según modalidad; un **crédito Studio** mide consumo de operaciones de IA. **No son intercambiables ni dinero electrónico**, ni pueden convertirse en saldo retirable. Ningún plan promete consumo ilimitado ni resultados académicos garantizados. Los precios son hipótesis a revisar con tarifas de proveedores, impuestos y costos medidos, y no constituyen tarifas publicadas.
+
+### Aulas Live y tutores
+
+- Aula/seminario: **6–35 estudiantes**, 1 crédito Live por estudiante para sesión de hasta **60 min**; Reforzamiento reducido: **2–5**, 2 créditos; individual: **1**, 3 créditos. Se prevén clases de grupos de 3 o 5, incluidos tutores universitarios **adultos habilitados**; no existe mínimo general de 15 alumnos.
+- **35 alumnos + 1 docente** es capacidad objetivo inicial de aula, **no límite perpetuo** ni afirmación de concurrencia ya probada. El sistema permitirá múltiples salas y ajustará costos según ocupación y duración.
+- **Modelo económico por crédito Live:** tarifa de pago a docente candidata **S/8 por crédito efectivamente consumido** (es decir, S/8, S/16 o S/24 por participante según modalidad), distinta de una comisión 70/30 para venta individual. Debe constar en contrato, junto a cancelaciones, asistencia y liquidación. Se cambia respecto de la propuesta preliminar anterior de S/10 por crédito para preservar margen potencial; **ambas cifras requieren negociación**, y el valor de S/8 NO está aprobado contractualmente.
+- Las ventas directas de clase (fuera de Live) podrán tener precio definido por tutor, pero se someterán a **simulación de rentabilidad**: comisión pasarela, minutos-participante, impuestos, grabación, costos de transferencia, compensaciones y márgenes. La referencia **S/8 por inscripción no garantiza rentabilidad** cuando la pasarela aplica mínimo por transacción; no depender de compras grupales.
+- **Aulas gratuitas**: se autorizan solo con patrocinio, presupuesto promocional o fuente de financiación verificada; la publicidad no se presume suficiente y no debe interrumpir clase ni perfilar académicamente a menores.
+- La entrega de cuatro créditos exige oferta real de clases y horarios, política de reprogramación, devolución/restitución y liquidación transparente. Nadie recibe pagos por simples reservas no prestadas, salvo condiciones contractuales específicas.
+
+### Studio y rentabilidad de IA
+
+**300/900 créditos de Studio** son unidades comerciales de prueba, no una cantidad de generaciones verificadas. Ejemplos ilustrativos a calibrar con modelos medidos: presentación de 12 diapositivas = 5 créditos; lote de 10 ejercicios = 1; PDF educativo de 30 páginas = 8; imagen IA estándar = 10; imagen premium = 20. Editor, funciones gráficas deterministas y escritura manual **no gastan IA**. Se deberá medir tokens, imágenes, uso real y reintentos por cuenta, con presupuestos internos y límite por operación. El acceso a Studio no habilita por sí mismo a cobrar tutorías.
+
+## 4. Siete módulos de negocio
+
+| Módulo | Propiedad funcional |
+|---|---|
+| 1. Usuarios y Administración | Cuentas, autenticación, permisos, protección de menores, moderación, auditoría y operación |
+| 2. Cursos y Contenidos | Catálogo, licencias, objetos y documentos educativos, **Mentelyx Studio** |
+| 3. Evaluaciones y Aprendizaje | Diagnóstico, ejercicios, simulacros, planes de examen y seguimiento |
+| 4. Docentes y Clases | Perfiles, acreditación, habilitación, aulas, grabaciones, asistencia y reservas |
+| 5. Suscripciones y Pagos | Productos, créditos y cuotas, órdenes, idempotencia, saldos, liquidaciones y conciliación |
+| 6. Tutor IA y RAG | Explicaciones autorizadas, recuperación, cuotas de consumo IA y fuentes |
+| 7. Publicidad y Patrocinios | Campañas permitidas, patrocinios y seguimiento agregado |
+
+**No se agregan módulos** por Redis, Queues, WebRTC o pagos: son servicios transversales o adaptadores técnicos.
+
+## 5. Arquitectura objetivo y entornos
+
+| Área | Desarrollo local | Despliegue comercial objetivo |
+|---|---|---|
+| Frontend | Next.js/React/TypeScript | Cloudflare Pages **si la exportación estática resulta compatible**; SSR requeriría otra estrategia |
+| Backend REST | Hono + TypeScript | Cloudflare Workers + Hono, monolito modular |
+| Datos SQL | **PostgreSQL local** + migraciones | **Neon PostgreSQL + pgvector** (seleccionado, no contratado) |
+| Documentos educativos | MongoDB local | **MongoDB Atlas** (seleccionado, conectividad Workers por validar) |
+| Caché | Redis local | Redis administrado compatible con Workers, proveedor por elegir |
+| Binarios/video | Carpeta/objeto de prueba | R2 para archivos; Bunny Stream para video publicado |
+| Tareas y colas | Adaptador local / Worker de pruebas | Cloudflare Queues con DLQ y procesadores idempotentes |
+| Aulas | WebRTC de prueba | Cloudflare RealtimeKit/SFU **candidato inicial** sujeto a prueba de 36 participantes |
+| Autenticación | Integración Hono + biblioteca | **Better Auth candidato** para credenciales/sesiones; permisos propios RBAC/ABAC |
+| IA | Proveedor simulado o llamadas medidas | LLM externo intercambiable, presupuestos y RAG autorizado |
+| Extensión pesada | Proceso local/Docker | Cloud Run solo para tareas pesadas si Workers no basta |
+
+**Persistencia:** PostgreSQL es fuente de verdad de pagos, cupos, créditos, permisos, resultados confirmados y liquidaciones; MongoDB almacena estructuras flexibles versionadas; Redis es solo caché/contadores efímeros. Objetos y video fuera de las BD. Entre motores no existe una transacción ACID global: usar outbox, identificadores y procesos idempotentes.
+
+## 6. Disponibilidad, seguridad y control de costos
+
+- **AC-02 disponibilidad** prioritaria: propuesta de **99,5 % mensual** para funciones educativas críticas, **meta de diseño y no SLA**. Caída de Redis debe degradar de manera segura; la de IA no debe bloquear contenido ordinario; pagos/exámenes no pueden confirmar acciones antes de persistirlas.
+- **Recuperación:** monitoreo/alertas, salud de servicios, DLQ, compensaciones, backups con restauraciones ensayadas, métricas de RTO/RPO. Plan Free no implica HA automática de PostgreSQL/Atlas ni failover regional.
+- **Seguridad:** TLS, Cloudflare WAF/DDoS, autorización estricta en API, sesiones, MFA administrativo, validación, límites, registros sin secretos, controles de derechos y consentimiento audiovisual.
+- **Ingresos vs costos:** cada plan debe preservar contribución positiva **a uso completo**, separando IGV cuando corresponda, pasarela, pagos a docentes, IA, video, storage, soporte, devoluciones, infraestructura fija y tributos. Las estimaciones previas **no son utilidad neta**.
+- **Balanceador dedicado:** solo se añadirá si hay destinos independientes con health checks y justificación operativa; no confundir CDN/WAF con balanceo de orígenes para recuperación de una BD.
+
+## 7. Fases y límites
+
+1. **Documentación y prototipos:** este conjunto `README`+`01–08`; luego estilo y enfoque arquitectónico.
+2. **Construcción local:** identidad, catálogo, evaluaciones, Studio MVP, planes/créditos, pagos sandbox y pruebas de calidad; desplegar por incrementos.
+3. **Piloto limitado:** medir IA real por generación, pruebas docentes, verificaciones de capacidad WebRTC, funcionamiento pasarela, conciliación, costos y restauración.
+4. **Lanzamiento comercial:** solo servicios cuyos permisos, seguridad, capacidad, costos, términos y disponibilidad hayan sido verificados; activación progresiva de planes.
+5. **Posterior:** convenios escolares, Studio Equipos, clases masivas más allá de 35, modelos IA propios, eventual Kafka y alta disponibilidad superior contratada.
+
+## 8. Estructura documental y estado
+
+| Archivo | Propósito |
+|---|---|
+| `01-actores.md` | Usuarios, sistemas externos y permisos por cuenta |
+| `02-historias-del-usuario.md` | Catálogo HU-01–HU-70, sin perder identificadores originales |
+| `03-requisitos-funcionales.md` | RF-01–RF-99 con priorización, reglas y trazabilidad |
+| `04-atributos-de-calidad.md` | AC-01–AC-11 y objetivos verificables |
+| `05-restricciones.md` | RC-01–RC-37 y límites comerciales, regulatorios y técnicos |
+| `06-drivers-arquitectonicos.md` | DA-01–DA-31, relación RF/AC/RC ↔ decisiones |
+| `07-decisiones-arquitectonicas.md` | ADR-001–ADR-055 (ADR-011 reservado) con alternativas y estados |
+| `08-escenarios-atributos-calidad.md` | EQ-01–EQ-31 con pruebas y métricas; resultados pendientes |
+
+### Glosario breve
+
+- **Hono:** framework TypeScript de API HTTP; **Better Auth:** biblioteca que integraríamos en el código para credenciales/sesiones; **RBAC/ABAC:** permisos por roles y contexto.
+- **WebRTC/SFU:** comunicación audiovisual en tiempo real; **Queues/DLQ:** tareas y cola de fallidos, con posible redelivery; **Redis:** caché, no billetera ni base financiera.
+- **RAG:** recuperación de documentos autorizados para responder; **outbox:** registro transaccional de eventos pendientes de publicar; **idempotencia:** evitar efectos duplicados ante reintentos.
+
+**Documentos de fuentes internas integrados:** versión documental anterior `01–08`, `16-plan-aulas-live.md`, `17-planes-y-rentabilidad.md`, `18-revision-tributaria-y-precios.md` y `19-estudio-de-rentabilidad-studio.md`. La siguiente etapa es documentar **estilo** y **enfoque Clean Architecture**; este paquete no pretende implementarlos todavía.

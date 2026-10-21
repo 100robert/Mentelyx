@@ -1,62 +1,59 @@
 # 04. Atributos de calidad — Mentelyx
 
-## Propósito y alcance
+> **Versión:** 1.3 — revisión integral del análisis de Mentelyx (20 de octubre de 2026).  **Estado:** arquitectura de referencia definida; importes comerciales, cuotas y contratos sujetos a validación. No implica software ya desarrollado ni servicios contratados.
 
-Los atributos de calidad expresan **cómo debe comportarse Mentelyx**, además de las funcionalidades definidas en `03-requisitos-funcionales.md`. Este catálogo abarca el **producto completo** (Primaria, Secundaria y Preuniversitario; diferentes áreas, cursos y temas); no implica que todos los módulos estén implementados en el MVP académico.
 
-Un atributo no queda validado por describirlo: los escenarios medibles, sus tácticas y métodos de verificación se detallan en `08-escenarios-atributos-calidad.md`. Los valores indicados allí son **propuestas por validar**, no resultados observados.
+## 1. Catálogo vigente
 
-## Catálogo de atributos
+Se conservan **AC-01 a AC-11**. Los atributos expresan propiedades del sistema, no prestaciones de suscripción ni cifras de rentabilidad. Escenarios EQ en `08-escenarios-atributos-calidad.md`.
 
-| ID | Atributo | Necesidad de calidad | Requisitos vinculados (principalmente) |
+| ID | Atributo | Definición orientada al producto actualizado | Requisitos clave |
 |---|---|---|---|
-| **AC-01** | Rendimiento | Consultar contenidos, resultados, perfiles docentes y operaciones autorizadas con tiempos adecuados bajo carga conocida. | RF-05, RF-07, RF-09, RF-11, RF-20, **RF-49, RF-52** |
-| **AC-02** | Disponibilidad | Mantener disponibles las funciones no afectadas por una falla parcial; la caída del proveedor de notificaciones no debe impedir consultar reservas confirmadas. | RF-05, RF-11, RF-24, RF-30, RF-37, RF-48 |
-| **AC-03** | Escalabilidad | Poder incrementar capacidad al crecer la cantidad de estudiantes, contenidos y solicitudes, especialmente durante evaluaciones y simulacros. | RF-05, RF-07, RF-09, RF-10, RF-47, RF-48, **RF-51** |
-| **AC-04** | Seguridad | Proteger datos personales, resultados, sesiones y operaciones económicas, con autorización por usuario y recurso. | RF-02, RF-03, RF-04, RF-11, RF-29, RF-31, RF-40, RF-41, RF-45, **RF-49, RF-52** |
-| **AC-05** | Mantenibilidad | Cambiar o añadir áreas, cursos, políticas comerciales y estrategias de personalización sin afectar innecesariamente módulos independientes. | RF-05, RF-06, RF-08, RF-12, RF-15, RF-35, RF-41, **RF-50, RF-51** |
-| **AC-06** | Integridad y consistencia | Preservar resultados académicos y coherencia de reservas, cupos, pagos y liquidaciones; prevenir efectos duplicados. | RF-07, RF-11, RF-22, RF-23, RF-27, RF-28, RF-38, **RF-50, RF-51, RF-52** |
-| **AC-07** | Usabilidad | Permitir realizar los flujos principales desde celulares, tabletas y computadoras, tanto en navegador como en PWA compatible. | RF-01, RF-05, RF-07, RF-11, RF-33, RF-34, RF-39, RF-40, **RF-49, RF-50, RF-52** |
-| **AC-08** | Interoperabilidad | Integrar clientes y proveedores mediante contratos claros, verificables y desacoplados de implementaciones específicas. | RF-26, RF-27, RF-30, RF-34, RF-42, RF-48 |
-| **AC-09** | Testabilidad | Poder comprobar casos de uso y reglas del negocio mediante pruebas reproducibles y dependencias sustituibles. | RF-07, RF-08, RF-09, RF-23, RF-27, **RF-50, RF-51** |
-| **AC-10** | Operabilidad y eficiencia económica | Medir y controlar consumo de IA, clases en vivo, streaming y servicios administrados; detectar aumentos de gasto sin requerir intervención diaria del operador. | RF-38, RF-43, RF-44, RF-47, RF-48 |
-| **AC-11** | Confiabilidad pedagógica y gobernanza de fuentes | Las explicaciones asistidas por IA deben usar fuentes autorizadas y trazables, distinguir incertidumbre y no alterar resultados académicos sin un caso de uso verificado. | RF-07, RF-08, RF-35, RF-41, RF-42, **RF-50, RF-51, RF-52** |
+| AC-01 | Rendimiento | Consultar contenidos, resultados, perfiles docentes y operaciones autorizadas con tiempos adecuados bajo carga conocida. | RF-05, RF-37, RF-60, RF-84, RF-89 |
+| AC-02 | Disponibilidad | Garantizar continuidad proporcional de flujos esenciales, detección y recuperación de fallas, y degradación selectiva cuando fallen servicios no esenciales; documentar dependencias y límites de los niveles gratuitos. | RF-63, RF-64, RF-66, RF-90, RF-95, RF-96 |
+| AC-03 | Escalabilidad | Poder incrementar capacidad al crecer la cantidad de estudiantes, contenidos y solicitudes, especialmente durante evaluaciones y simulacros. | RF-10, RF-48, RF-77, RF-89, RF-91 |
+| AC-04 | Seguridad | Proteger datos personales, resultados, sesiones y operaciones económicas, con autorización por usuario y recurso. | RF-02, RF-04, RF-54, RF-58, RF-90, RF-93, RF-99 |
+| AC-05 | Mantenibilidad | Cambiar o añadir áreas, cursos, políticas comerciales y estrategias de personalización sin afectar innecesariamente módulos independientes. | RF-43, RF-65, RF-73, RF-97 |
+| AC-06 | Integridad y consistencia | Preservar resultados académicos y coherencia de reservas, cupos, pagos y liquidaciones; prevenir efectos duplicados. | RF-22, RF-27, RF-68, RF-74–RF-85, RF-92, RF-96 |
+| AC-07 | Usabilidad | Permitir realizar los flujos principales desde celulares, tabletas y computadoras, tanto en navegador como en PWA compatible. | RF-33, RF-34, RF-55, RF-69, RF-76, RF-83 |
+| AC-08 | Interoperabilidad | Integrar clientes y proveedores mediante contratos claros, verificables y desacoplados de implementaciones específicas. | RF-26, RF-27, RF-48, RF-90, RF-93 |
+| AC-09 | Testabilidad | Poder comprobar casos de uso y reglas del negocio mediante pruebas reproducibles y dependencias sustituibles. | RF-07, RF-50, RF-68, RF-91–RF-96 |
+| AC-10 | Operabilidad y eficiencia económica | Medir y controlar consumo de IA, clases en vivo, streaming y servicios administrados; detectar aumentos de gasto sin requerir intervención diaria del operador. | RF-38, RF-44, RF-63, RF-71, RF-79, RF-84–RF-87 |
+| AC-11 | Confiabilidad pedagógica y gobernanza de fuentes | Las explicaciones asistidas por IA deben usar fuentes autorizadas y trazables, distinguir incertidumbre y no alterar resultados académicos sin un caso de uso verificado. | RF-35, RF-41, RF-42, RF-62, RF-99 |
 
-**Conservación de códigos:** AC-01 a AC-07 mantienen la numeración y el sentido de la versión aportada; AC-08 y AC-09 incorporan interoperabilidad y testabilidad, citadas en el sílabo. AC-10 y AC-11 se proponen como cualidades adicionales del producto ampliado.
+## 2. Prioridad y métricas preliminares
 
-## Priorización preliminar
-
-| Prioridad | Atributos | Justificación |
+| Prioridad | Atributo | Medida de referencia por verificar |
 |---|---|---|
-| Crítica | AC-04, AC-06 | Protección de datos y coherencia de información académica, reservas y pagos. |
-| Alta | AC-01, AC-05, AC-07, AC-09 | Experiencia de aprendizaje fluida, facilidad de evolución, acceso usable y capacidad de validar reglas. |
-| Alta con metas escalonadas | AC-02, AC-03 | Continuidad y crecimiento: los umbrales deben verificarse contra recursos y demanda reales. |
-| Alta en integraciones; gradual en MVP | AC-08 | Los contratos de la API son necesarios desde el inicio; pagos y otros proveedores pueden incorporarse progresivamente. |
-| Alta para comercialización | AC-10, AC-11 | Sostenibilidad, control del uso y fuentes pedagógicas confiables; se activan junto a IA/video/mercado de docentes. |
+| **Crítica** | AC-02 Disponibilidad | **Meta 99,5 % mensual** para API educativa esencial (solo objetivo, no SLA), pruebas de fallos y restauración; definir RTO/RPO por servicio con presupuestos reales. |
+| **Crítica** | AC-04 Seguridad | 100 % de accesos no autorizados previstos denegados en pruebas; secretos en backend; MFA para administración y protección para menores. |
+| **Crítica** | AC-06 Consistencia | 0 pagos dobles, 0 créditos Live/Studio gastados dos veces y 0 sobrecupos en conjunto de pruebas concurrentes; confirmaciones duraderas. |
+| **Alta** | AC-01 Rendimiento | API catálogo p95 ≤ 2 s con 100 usuarios de prueba; 5xx <1 %; Studio y llamadas IA se miden aparte sin prometer tiempos del proveedor. |
+| **Alta** | AC-03 Escalabilidad | Ensayos graduados hasta 200 usuarios API; sesión audiovisual de **35 alumnos + 1 docente**, y varios grupos simultáneos bajo pruebas específicas. |
+| **Alta** | AC-07 Usabilidad | Pruebas móviles de inscripción Live y generación Studio; mostrar saldo, tipo de crédito, precio/uso, estado de guardado y errores. |
+| **Alta** | AC-10 Operabilidad / costo | Costo por generación IA, por participante-minuto, por alumno y por plan; alertas y límite duro de uso en backend; margen calculado con utilización completa. |
+| **Alta** | AC-05/08/09 | Sustituir proveedor de IA/pagos/video mediante adaptador sin modificar núcleo de dominio; CI y pruebas de contratos. |
+| **Alta** | AC-11 Confiabilidad pedagógica | Recuperación autorizada y atribuible; sin usar IA para inventar notas o adjudicar resultados académicos. |
 
-## Notas de control
+## 3. Disponibilidad y degradación — criterios diferenciados
 
-- **El alcance es multidisciplinario**: ninguna calidad se restringe a Matemática ni a Secundaria.
-- Los aproximadamente **1 500 usuarios concurrentes** mencionados como escenario habitual de referencia y **15 000** como estrés exploratorio son hipótesis de dimensionamiento del README; **no** capacidades demostradas ni criterios de aceptación aprobados.
-- La prioridad de los atributos no equivale a su implementación simultánea: se validarán incrementalmente con los casos de uso de cada sprint.
-- Seguridad, consistencia y autorización requieren pruebas también para las funciones comerciales cuando estas se implementen.
+| Falla | Comportamiento seguro esperado |
+|---|---|
+| Redis | Caché deja de funcionar; consulta pública podrá ir a origen con protección de carga. Autenticación/limitación sensible mantendrá controles conservadores o denegará operación riesgosa. |
+| Proveedor IA | Mantener material ya publicado y edición manual; informar que generación no está disponible y no consumir créditos sin resultado válido. |
+| PostgreSQL/Neon | No aceptar pagos, cambios de créditos ni respuestas confirmadas sin escritura duradera; modo lectura solo si existe fuente coherente y autorizada. |
+| MongoDB Atlas | Bloquear edición/publicación documental que requiera confirmación; preservar borrador local indicando estado. |
+| RealtimeKit | Intentar reconexión, preservar reserva y facilitar compensación/reprogramación; no prometer continuidad sin cortes. |
+| Pasarela | Resultado incierto permanece pendiente y se concilia; no reintentar el cargo con otra clave de idempotencia sin determinar estado. |
+| Queues | Eventos de outbox durables y reintentos; DLQ revisable; no perder notificaciones críticas de negocio. |
 
-## Criterios especiales acordados
+## 4. Experiencia Studio y aulas (calidad percibida)
 
-- **Publicidad:** pertinencia educativa y no intrusión durante el aprendizaje (AC-07), protección de datos y menores (AC-04) y consumo controlado de recursos (AC-10).
-- **Video:** separar continuidad y capacidad de emisión y reproducción (AC-01 a AC-03) de la corrección del acceso a salas y grabaciones (AC-04 y AC-06).
-- **RAG:** recuperación solo de documentos autorizados; respuesta con referencias a fuentes cuando existan; manejo visible de incertidumbre (AC-11). La indexación no autoriza entrenamiento de modelos.
-- **Economía:** métricas técnicas y costos observados se recopilan para decidir límites, escalabilidad y márgenes; no equivale a asegurar rentabilidad comercial.
+- **Créditos transparentes:** la UI explica antes de ejecutar cuánto descuenta y muestra historial. Cambiar colores o modificar gráficos deterministas no consume IA.
+- **Trabajo recuperable:** guardado local y servidor diferenciados; conflictos y reconexión explicados sin falsa confirmación.
+- **Calidad de enseñanza:** en sala, controlar emisores simultáneos para no saturar 36 mosaicos; audio/video separado de API.
+- **Sostenibilidad:** el plan debe soportar usuarios que realmente utilicen todas las cuotas; un bajo uso no es un atributo de calidad ni garantía de rentabilidad.
 
-## Aplicación de los atributos a preparación de exámenes
+## 5. Validación
 
-La modalidad aprobada en **RF-49 a RF-52** reutiliza los atributos **AC-01 a AC-11**: no necesita inventar un nuevo atributo de calidad.
-
-| Aspecto | Atributos implicados | Evidencia futura |
-|---|---|---|
-| Crear objetivo y consultar avance privado | AC-04, AC-07 | Autorización por propietario; uso móvil de calendario, temario y panel de progreso. |
-| Plan personalizado, explicable y actualizable | AC-05, AC-09, AC-11 | Reglas de planificación reproducibles, diagnóstico y cambios documentados sin promesas de aprobación. |
-| Simulacros con concurrencia y tiempo limitado | AC-01, AC-03, AC-06 | Prueba de carga; duraciones correctas, respuestas íntegras y puntuación consistente con la ficha utilizada. |
-| Fichas/temarios con origen y vigencia | AC-04, AC-05, AC-11 | Registro de fuente y versión; etiquetado entre referencial y verificado. |
-
-**Escenarios nuevos:** EQ-15 a EQ-18 en `08-escenarios-atributos-calidad.md`. Sus metas son **propuestas de prueba, no resultados observados**. Los objetivos escolares y de admisión se diseñan como configuraciones educativas; no se presupone acceso a temarios oficiales ni aval de universidades.
+Toda cifra anterior está **propuesta**. Debe pasar pruebas reproducibles con k6, pruebas de integración, simulaciones de pagos, pruebas de reconexión y piloto de generación con costo real, registrando fecha, región, proveedor, plan contratado, carga y evidencia.
