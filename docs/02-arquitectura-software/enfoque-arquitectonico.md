@@ -18,7 +18,7 @@ Este documento describe **el enfoque de organización interna y la dirección de
 
 ## 2. Diagrama del enfoque arquitectónico
 
-![Diagrama de Clean Architecture de Mentelyx](../img/fuentes-svg/estilo-arquitectonico.svg)
+![Diagrama de Clean Architecture de Mentelyx](../img/enfoque-arquitectonico.png)
 
 **Figura 1.** Enfoque Clean Architecture aplicado al backend de Mentelyx: presentación, aplicación, dominio, contratos, adaptadores y sistemas externos. **Fuente:** elaboración propia.
 

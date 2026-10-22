@@ -1,0 +1,1 @@
+![componentes arquitectónicos](../img/mentelyx-componentes-arquitectonicos.png)
