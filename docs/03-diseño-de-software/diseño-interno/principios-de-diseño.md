@@ -1,9 +1,7 @@
 # Principios de diseño (SOLID) — Mentelyx
 
 > **Documento:** `principios-de-diseno.md`  
-> **Alcance:** los siete módulos del backend de Mentelyx (M1–M7).  
-> **Estado:** propuesta arquitectónica previa a la implementación; las clases, interfaces, archivos y pruebas indicados son **diseños previstos**, no componentes ya desarrollados.  
-> **Referencia:** decisiones arquitectónicas de Mentelyx (ADR), estilo monolito modular y enfoque Clean Architecture.
+
 
 ## 1. Objetivo
 

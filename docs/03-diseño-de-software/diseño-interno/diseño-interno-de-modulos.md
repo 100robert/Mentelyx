@@ -1,10 +1,6 @@
 # Diseño interno de módulos — Mentelyx
 
-> **Proyecto:** Mentelyx, centro educativo virtual con aprendizaje personalizado.  
-> **Versión:** 1.0 — 22 de octubre de 2026.  
-> **Estado:** diseño propuesto, **no** evidencia de implementación ni de despliegue.  
-> **Documento:** `docs/03-diseño-de-software/diseño-interno/diseño-interno-de-modulos.md`.  
-> **Base de decisiones:** `07-decisiones-arquitectonicas.md`, `componentes-arquitectonicos.md`, `enfoque-arquitectonico.md`, `estilo-arquitectonico.md`, `principios-de-diseno.md` y `patrones-de-diseno.md`.
+
 
 ## 1. Propósito y alcance
 

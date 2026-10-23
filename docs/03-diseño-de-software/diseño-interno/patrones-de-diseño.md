@@ -1,6 +1,5 @@
 # Patrones de diseño — Mentelyx
 
-> **Versión:** 2.1 — revisión focalizada por riesgos y cobertura de funciones (22 de octubre de 2026).  
 
 
 ## Objetivo
