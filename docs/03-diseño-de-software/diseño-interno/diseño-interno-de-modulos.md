@@ -1,599 +1,1022 @@
 # Diseño interno de módulos — Mentelyx
 
+> **Proyecto:** Mentelyx · **Backend propuesto:** Hono + TypeScript sobre Cloudflare Workers  
+> **Estilo de construcción:** monolito modular · **Enfoque dentro de cada módulo:** Clean Architecture  
+> **Cobertura de estructuras:** M1–M7 · **Referencia para UML detallado y código:** M5 — Suscripciones y Pagos  
+> **Nivel de detalle:** diseño de código (vistas de paquetes M1–M7 y UML detallado de M5)  
+> **Versión:** 3.0 · **Estado:** diseño objetivo; archivos, clases y rutas aún no implementados.
 
+## 1. Propósito
 
-## 1. Propósito y alcance
+Este documento define **cómo se organizará el código dentro de los módulos del backend** de Mentelyx. Tiene tres objetivos:
 
-Este documento descompone **internamente los siete módulos de negocio de Mentelyx**, identifica sus responsabilidades, casos de uso, reglas, interfaces, adaptadores, dependencias y datos; además, ilustra las colaboraciones que requieren controles arquitectónicos especiales. Sirve como base para la implementación posterior y para explicar de qué decisiones arquitectónicas proviene cada componente.
+- especificar los archivos, responsabilidades y contratos de los siete módulos como base del sprint de implementación;
+- mantener las reglas educativas y comerciales independientes de Hono, bases de datos y proveedores;
+- demostrar, mediante diagramas UML y código TypeScript de referencia, **qué responsabilidad cumple cada elemento y de qué puede depender**.
 
-El **Marketplace de productos para mascotas (GoPet)** de la Guía 004 es solamente un **caso de referencia para organizar la documentación**: los actores, módulos y diagramas de Mentelyx responden a un negocio educativo distinto. No se copian `Sellers`, carrito, pedidos ni otras funciones de ese Marketplace.
+El alcance es **diseño interno**, no descripción del negocio ni despliegue. El mapa de contexto, atributos de calidad, ADR, componentes C4 de mayor nivel y patrones generales están documentados en sus propios archivos y **no se reproducen aquí**.
 
-**Decisiones ya adoptadas para el diseño:**
+Como en el ejemplo de la Guía 004, se profundiza en un **módulo de referencia**. Para Mentelyx se elige **M5 — Suscripciones y Pagos**, porque concentra invariantes que no pueden quedar implícitas: autenticidad de notificaciones, transacciones, idempotencia, derechos de acceso y movimientos de créditos. M1–M7 cuentan con un inventario detallado de archivos, responsabilidades, contratos y pruebas; solo M5 incluye además el ejemplo de código TypeScript para explicar el mecanismo de inyección de dependencias sin repetir siete implementaciones de muestra.
 
-- **Estilo general:** cliente-servidor y **monolito modular**, con un backend lógico distribuido internamente en **M1 a M7**, no en siete microservicios desplegados por separado (ADR-001).
-- **Enfoque interno:** Clean Architecture, con dominio, aplicación, adaptadores de entrada/salida y composición de dependencias por módulo (ADR-002).
-- **Cliente:** Next.js, React y TypeScript para Web/PWA. El alcance de exportación estática y SSR se comprobará por separado (ADR-003).
-- **Backend objetivo:** Hono y TypeScript sobre Cloudflare Workers; API REST/HTTPS documentada mediante OpenAPI. Se debe validar compatibilidad del runtime y de las integraciones antes de producción (ADR-003, ADR-013).
-- **Almacenamiento:** PostgreSQL local / Neon PostgreSQL en producción para operaciones transaccionales y `pgvector` para embeddings; MongoDB local / Atlas para contenido pedagógico y proyectos Studio; Cloudflare R2 para objetos; Bunny Stream para vídeo grabado cuando se valide; Redis para caché y controles efímeros (ADR-006, ADR-009, ADR-012, ADR-023, ADR-041).
-- **Procesamiento asíncrono:** Cloudflare Queues, consumidores idempotentes y DLQ. Las operaciones económicas conservan su registro autoritativo en PostgreSQL, nunca en una cola o caché (ADR-042, ADR-043).
+## 2. Estructura de carpetas de M1 a M7
 
-**Regla de interpretación:** las imágenes de este documento son **vistas del diseño objetivo**, no capturas de software ejecutado. Los nombres de interfaces y clases son **orientativos** hasta la implementación. Los proveedores marcados como candidatos y las capacidades sujetas a pruebas no se presentan como contratados ni plenamente operativos.
+Esta sección es el **inventario propuesto de implementación de los siete módulos**, no únicamente un ejemplo. Cada entrada `*.ts` tiene una responsabilidad definida para que pueda transformarse en historias, tareas y archivos del repositorio durante los sprints. No supone que el código ya exista.
 
-## 2. Vistas, notación e inventario visual
+**Convención común:** `dominio/` reúne entidades, invariantes y puertos independientes de proveedores; `aplicacion/` implementa casos de uso y comandos; `infraestructura/` contiene adaptadores concretos; `presentacion/` expone controladores y rutas de Hono; `*.module.ts` construye e inyecta dependencias, e `index.ts` limita la API pública que otros módulos pueden importar. Las pruebas por módulo viven junto al código en `tests/` y las pruebas de contratos públicos se ejecutan también desde la integración. Los archivos `index.ts` **no** deben exportar repositorios concretos de infraestructura.
 
-Los diagramas **1 a 10** se entregan como archivos PNG y SVG dentro de `./imagenes/`, acompañados de su fuente DOT para poder corregirlos sin redibujar desde cero. Los diagramas **11 a 15** se expresan como **Mermaid**, que GitHub muestra directamente en el Markdown.
+```text
+src/
+├── modules/
+│   ├── usuarios-admin/              # M1: identidad y administración
+│   ├── cursos-contenidos/           # M2: catálogo, documentos, licencias y Studio
+│   ├── evaluaciones-aprendizaje/    # M3: diagnósticos, simulacros y progreso
+│   ├── docentes-clases/             # M4: habilitación docente, reservas y aulas Live
+│   ├── suscripciones-pagos/         # M5: órdenes, derechos, créditos y liquidaciones
+│   ├── tutor-ia-rag/                # M6: explicaciones, RAG y consumo IA
+│   └── publicidad-patrocinios/     # M7: campañas, emplazamientos y patrocinios
+├── shared/                         # Errores, IDs, fechas, correlación y contratos técnicos puros
+├── workers/                        # Entradas de ejecución auxiliares (no octavo módulo)
+└── app.ts                           # Composición general y montaje de los siete módulos
+```
 
-| Figura | Vista | Propósito |
+> **Reglas del inventario:** (1) los nombres son propuestas verificables en la fase de programación; (2) `index.ts` publica casos de uso de consulta o fachadas, no modelos de BD; (3) los permisos se comprueban en el caso de uso y no se delegan solamente al middleware; (4) `POSTERIOR` señala una capacidad prevista pero no comprometida en el primer lanzamiento; (5) no se crean carpetas duplicadas para cada suscripción, nivel académico o modalidad de clase.
+
+### 2.1. Estructura detallada de M1 — Usuarios y Administración
+
+**Responsable de:** cuenta, sesión, rol, permisos y auditoría administrativa. **No es responsable de:** cobros, créditos, calendario de clases ni acreditación pedagógica de un docente (esta se tramita en M4). Tener rol `Docente` no implica autorización automática para ofrecer servicios.
+
+```text
+src/modules/usuarios-admin/
+├── dominio/
+│   ├── cuenta.ts                        # Identidad, estado y datos básicos de la cuenta
+│   ├── rol.ts                           # Roles y modalidades de cuenta permitidos
+│   ├── habilitacion-docente.ts          # Referencia al permiso de servicio; no acredita títulos
+│   ├── permiso.ts                       # Identificador de capacidad autorizable
+│   ├── politica-autorizacion.ts         # Validación RBAC/ABAC y acceso por recurso
+│   ├── identidad.repository.ts          # Puerto de persistencia de cuentas
+│   ├── authorization.port.ts            # Puerto de autorización para operaciones protegidas
+│   ├── session.port.ts                  # Puerto de sesiones y revocación
+│   └── audit-log.repository.ts          # Puerto de auditoría de acciones sensibles
+├── aplicacion/
+│   ├── registrar-cuenta.use-case.ts      # Registrar cuenta personal sin colegio obligatorio
+│   ├── iniciar-sesion.use-case.ts        # Autenticar y emitir sesión
+│   ├── cerrar-sesion.use-case.ts         # Revocar sesión
+│   ├── gestionar-permisos.use-case.ts    # Cambiar permisos autorizados con auditoría
+│   ├── habilitar-docente.use-case.ts     # Actualizar permiso tras decisión emitida por M4
+│   ├── consultar-permisos.use-case.ts    # Consultar autorización por recurso
+│   ├── registrar-cuenta.command.ts      # Datos de alta validados
+│   └── gestionar-permisos.command.ts    # Actor, destinatario y cambio solicitado
+├── infraestructura/
+│   ├── postgres-identidad.repository.ts # Adaptador PostgreSQL de cuentas
+│   ├── auth-library.adapter.ts          # Biblioteca de autenticación candidata (Better Auth)
+│   ├── postgres-audit.adapter.ts         # Auditoría persistente
+│   └── postgres-authorization.adapter.ts # Lectura de permisos desde PostgreSQL
+├── presentacion/
+│   ├── auth.controller.ts               # Alta, sesión y revocación HTTP
+│   ├── usuarios.controller.ts           # Consultar y editar perfil propio
+│   ├── admin-usuarios.controller.ts     # Operaciones administrativas auditadas
+│   ├── usuarios.routes.ts               # Rutas de cuenta y perfil
+│   └── auth.routes.ts                   # Rutas de autenticación
+├── tests/
+│   ├── autorizacion.unit.test.ts         # Denegación y permisos por recurso
+│   ├── registro.unit.test.ts             # Registro sin afiliación institucional
+│   └── sesiones.contract.test.ts         # Sesión, revocación y adaptador elegido
+├── usuarios-admin.module.ts            # Inyección de puertos y adaptadores
+└── index.ts                             # API pública: verificar permisos e identidad mínima
+```
+
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
 |---|---|---|
-| 1 | Mapa modular | Delimitar el backend y los siete módulos. |
-| 2 | Clean Architecture por módulo | Explicar dirección de dependencias, no el orden de ejecución. |
-| 3 | Propiedad de datos | Distinguir información persistente, multimedia y temporal. |
-| 4–10 | Diseño interno M1–M7 | Detallar reglas, casos de uso, puertos y adaptadores por módulo. |
-| 11 | Diagnóstico | Comprender la colaboración entre evaluaciones, contenido y personalización. |
-| 12 | Reserva de clase Live | Proteger cupos y créditos ante concurrencia. |
-| 13 | Confirmación de pago | Verificar idempotencia, ledger y outbox. |
-| 14 | Tutor IA con RAG | Autorizar fuentes, cuota y costo antes de responder. |
-| 15 | Generación de Studio | Distinguir proyecto, consumo de créditos y ejecución de IA. |
+| `cuenta.ts`, `rol.ts`, `politica-autorizacion.ts` | Evitar privilegios implícitos y acceso a cuentas de terceros | Dominio M1 |
+| `gestionar-permisos.use-case.ts` | Comprobar que el actor puede modificar el permiso, persistirlo y auditarlo | `authorization.port.ts`, `audit-log.repository.ts` |
+| `habilitar-docente.use-case.ts` | Recibir un evento/orden de habilitación tras validación de M4; no inferir acreditación por un formulario | Evento de M4 (sin importar su infraestructura) |
+| `session.port.ts` / `auth-library.adapter.ts` | Aislar sesiones de la biblioteca concreta | Candidato Better Auth, sujeto a prueba en Workers |
+| `index.ts` | Exponer `obtenerActor`, `verificarPermiso` y consulta mínima de rol por contrato | M2, M3, M4, M5, M6 |
 
-**Convenciones:** las flechas continuas entre código indican quién **depende de** quién; la línea discontinua de infraestructura a puerto significa «implementa una interfaz». En los diagramas de secuencia, las flechas representan **mensajes en tiempo de ejecución**. Una llamada entre módulos del mismo backend representa un **contrato interno**, no una llamada HTTP ni un microservicio nuevo.
+**Pruebas de salida del sprint:** registro sin correo institucional; prohibición de consultar/modificar recursos ajenos; revocación de sesión; rol Docente sin habilitación de servicio; cambios administrativos auditados. **Referencias:** ADR-004, ADR-010, ADR-034, ADR-044.
 
-## 3. Descomposición general de la aplicación
+### 2.2. Estructura detallada de M2 — Cursos y Contenidos
 
-![Figura 1. Mapa general de módulos de Mentelyx](./imagenes/01-mapa-modular.png)
+**Responsable de:** catálogo, niveles educativos, lecciones, versiones, licencias y documentos/proyectos **Mentelyx Studio**. **No es responsable de:** notas oficiales, cuotas ni saldo de créditos de Studio (M5). Los archivos binarios están en R2; las referencias/editorialidad críticas están en PostgreSQL y los documentos flexibles versionados en MongoDB.
 
-*Figura 1. Un backend con siete módulos lógicos. Las integraciones y almacenes se alcanzan mediante adaptadores; la API frontal no debe exponer directamente las bases de datos.*
+```text
+src/modules/cursos-contenidos/
+├── dominio/
+│   ├── curso.ts                         # Curso y publicación autorizada
+│   ├── leccion-version.ts               # Versión inmutable de lección/material
+│   ├── licencia-contenido.ts            # Derechos de uso, distribución e indexación RAG
+│   ├── politica-publicacion.ts          # Requisitos de licencia/revisión antes de publicar
+│   ├── proyecto-studio.ts               # Proyecto de autoría y versiones editables
+│   ├── recurso-digital.ts               # Referencia y tipo de archivo, nunca bytes SQL
+│   ├── course.repository.ts             # Puerto SQL de catálogo y metadatos
+│   ├── contenido.repository.ts          # Puerto documental MongoDB de lecciones
+│   ├── studio.repository.ts             # Puerto documental de proyectos Studio
+│   ├── document-storage.port.ts         # Puerto de objetos privados (R2)
+│   ├── video-stream.port.ts             # Puerto de carga y reproducción de videos
+│   ├── catalogo-lectura.port.ts         # Contrato de contenidos publicados/autorizados
+│   └── eventos-contenido.port.ts        # Solicitud de indexar/desindexar por versión
+├── aplicacion/
+│   ├── crear-curso.use-case.ts           # Crear ficha y nivel curricular
+│   ├── publicar-leccion.use-case.ts      # Publicar versión tras validar licencia
+│   ├── versionar-documento.use-case.ts   # Guardar nueva versión sin borrar historial
+│   ├── subir-recurso.use-case.ts         # Autorizar y registrar recursos privados
+│   ├── consultar-catalogo.use-case.ts    # Filtrar cursos/niveles y paginar
+│   ├── validar-acceso-contenido.use-case.ts # Acceso por licencia/titularidad/derechos
+│   ├── crear-proyecto-studio.use-case.ts # Iniciar proyecto manual de Studio
+│   ├── guardar-proyecto-studio.use-case.ts # Versionar edición manual gratuita autorizada
+│   ├── solicitar-ia-studio.use-case.ts    # Orquestar derecho M5 y generación M6
+│   ├── publicar-leccion.command.ts       # IDs, versión y licencia elegida
+│   └── guardar-proyecto-studio.command.ts # Documento y versión esperada
+├── infraestructura/
+│   ├── postgres-course.repository.ts    # Fichas, dueños y licencias en SQL
+│   ├── mongo-contenido.repository.ts    # Estructura/versiones pedagógicas MongoDB
+│   ├── mongo-studio.repository.ts       # Documentos de proyectos Studio
+│   ├── r2-storage.adapter.ts            # Objetos privados y URLs temporales
+│   ├── bunny-stream.adapter.ts          # Video bajo permisos, proveedor condicionado
+│   ├── m5-studio-credits.adapter.ts      # Consume solo API pública de M5
+│   ├── queue-studio-ai.adapter.ts        # Envía trabajo Studio; M6 lo consume por evento
+│   └── queue-content-events.adapter.ts  # Trabajos por ID/versión, sin enviar binarios
+├── presentacion/
+│   ├── catalogo.controller.ts          # Búsquedas/paginación HTTP
+│   ├── contenidos.controller.ts        # Lecciones y recursos
+│   ├── studio.controller.ts            # Proyectos y solicitudes de IA
+│   ├── contenidos.routes.ts            # Endpoints editoriales y materiales
+│   └── studio.routes.ts                # Endpoints de proyectos Studio
+├── tests/
+│   ├── publicacion.unit.test.ts         # Licencias y versiones válidas
+│   ├── permisos-contenido.unit.test.ts  # Solo recursos autorizados
+│   └── studio-versionado.contract.test.ts # Consistencia documental y archivos R2
+├── cursos-contenidos.module.ts         # Raíz de composición M2
+└── index.ts                            # API: catálogo, referencias y acceso autorizado
+```
 
-| ID | Módulo de negocio | Responsabilidad principal | Ejemplos de capacidades |
-|---|---|---|---|
-| **M1** | Usuarios y Administración | Identidad, sesiones, roles, autorizaciones y auditoría. | Registro; perfiles; control de acceso; habilitación docente. |
-| **M2** | Cursos y Contenidos | Catálogo académico, lecciones, archivos, versiones, derechos editoriales y proyectos Studio. | Cursos por nivel; recursos; videos; publicación; editor Studio. |
-| **M3** | Evaluaciones y Aprendizaje | Diagnósticos, ejercicios, calificación reproducible, progreso y recomendaciones deterministas. | Simulacros; planes de estudio; habilidades y prerrequisitos. |
-| **M4** | Docentes y Clases | Perfiles docentes habilitados, programación, cupos, reservas y acceso a aulas Live. | Tutorías; videoclases; salas moderadas; grabaciones autorizadas. |
-| **M5** | Suscripciones y Pagos | Catálogo de planes, derechos de uso, cobros, créditos, devoluciones y liquidaciones. | Free/Plus/Pro; Live; Studio; ledger y webhooks. |
-| **M6** | Tutor IA y RAG | Asistencia académica IA, búsqueda autorizada, generación de respuestas y medición de consumo. | Tutor conversacional; recuperación semántica; explicaciones. |
-| **M7** | Publicidad y Patrocinios | Campañas contextuales y ubicaciones aprobadas sin explotar información académica privada. | Patrocinios; campañas; métricas agregadas. |
-
-**Capacidades transversales**, sin crear un octavo módulo de negocio: notificaciones y colas, observabilidad, políticas comunes de seguridad, configuración, gestión de errores, correlación de solicitudes y contratos compartidos. Sus implementaciones viven en bibliotecas de soporte y adaptadores, mientras cada módulo conserva la responsabilidad sobre el evento o acción que origina una notificación.
-
-La oferta de educación **primaria, secundaria, preuniversitaria y universitaria** se modela en **M2 y M3** como niveles, programas y evaluaciones; no exige un módulo distinto por nivel. Los **convenios institucionales** son una evolución comercial posterior: no crean, por defecto, paneles institucionales ni acceso a información privada de estudiantes (ADR-010, ADR-039, ADR-040).
-
-### 3.1. Esqueleto lógico común
-
-![Figura 2. Clean Architecture utilizada en cada módulo](./imagenes/02-clean-architecture.png)
-
-*Figura 2. La aplicación depende del dominio y de sus interfaces; los adaptadores concretos implementan los puertos. La infraestructura nunca dicta las reglas educativas o comerciales.*
-
-| Capa / pieza | Responsabilidad | No debe hacer |
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
 |---|---|---|
-| **Entrada** (`http`, `consumers`, `handlers`) | Validar formato y autenticación inicial; convertir una solicitud en un comando; transformar errores en respuestas HTTP o de cola. | Introducir reglas financieras, académicas o permisos basados solo en la interfaz. |
-| **Aplicación** (`use-cases`, `ports`) | Coordinar un caso de uso, verificar autorización por recurso, aplicar políticas y trabajar con contratos públicos internos. | Crear SDK de proveedor, ejecutar SQL en controladores o depender de un repositorio concreto. |
-| **Dominio** (`entities`, `value-objects`, `policies`) | Expresar invariantes, estados y reglas que deben seguir funcionando al sustituir proveedor o framework. | Importar Hono, Next.js, Prisma/ORM, Redis, servicios de IA o interfaces de nube. |
-| **Salida** (`adapters`, `repositories`) | Implementar puertos hacia PostgreSQL, MongoDB, R2, pasarela de pago, SFU, vídeo e IA. | Autorizar operaciones sensibles usando solo valores que provienen del navegador. |
-| **Composición** (`bootstrap`) | Construir e inyectar implementaciones por módulo, montar rutas y consumidores. | Convertirse en un módulo de negocio centralizado con todas las reglas. |
+| `licencia-contenido.ts`, `politica-publicacion.ts` | Diferenciar permiso de publicar, distribuir e indexar; respetar cada versión | PostgreSQL / M6 mediante evento |
+| `contenido.repository.ts`, `studio.repository.ts` | Leer/escribir documentos con identidad y versión; no mantener derechos financieros | MongoDB |
+| `document-storage.port.ts`, `video-stream.port.ts` | Obtener acceso firmado/temporal a binarios y reproducción | R2; Bunny Stream como candidato |
+| `solicitar-ia-studio.use-case.ts` | No generar ni cobrar sin derecho y presupuesto autorizado | API M5 + trabajo dirigido a M6 por cola |
+| `index.ts` | Exponer `consultarTemario`, `obtenerFuenteAutorizada`, `verificarLicencia` | M3 y M6 |
 
-**Dos restricciones esenciales:** (a) un módulo solo accede a **sus propias tablas/colecciones o datos externos a través de su adaptador**; para obtener información de otro módulo utiliza su contrato público; (b) los roles y permisos se comprueban **de nuevo en el backend** en cada caso de uso o recurso privado. Una interfaz Web/PWA que oculta un botón no constituye un control de seguridad.
+**Pruebas de salida del sprint:** publicación sin licencia rechazada; documento previo recuperable; lectura privada denegada; edición manual Studio sin descontar créditos; fallo MongoDB/R2 sin declarar operación completa. **Referencias:** ADR-009, ADR-014, ADR-023, ADR-026, ADR-035, ADR-050.
 
-### 3.2. Propiedad y persistencia de datos
+### 2.3. Estructura detallada de M3 — Evaluaciones y Aprendizaje
 
-![Figura 3. Responsabilidad de datos por módulo](./imagenes/03-propiedad-datos.png)
+**Responsable de:** diagnósticos, pruebas, simulacros, objetivos de preparación, intentos, notas oficiales, reglas de avance y recomendaciones deterministas. **No delega calificaciones al LLM de M6.** El banco flexible de preguntas puede usar MongoDB, pero el resultado oficial y el historial de intentos viven en PostgreSQL.
 
-*Figura 3. PostgreSQL constituye la fuente de verdad de identidades, notas oficiales, créditos, pagos y reservas; MongoDB almacena documentos versionables; R2/Bunny, archivos y vídeo; Redis/Queues, datos y trabajo temporal.*
+```text
+src/modules/evaluaciones-aprendizaje/
+├── dominio/
+│   ├── evaluacion.ts                    # Evaluación y rúbrica versionada
+│   ├── intento.ts                       # Intento y máquina de estados
+│   ├── progreso.ts                      # Progreso por habilidad/objetivo
+│   ├── regla-avance.ts                  # Prerrequisitos y criterios reproducibles
+│   ├── objetivo-examen.ts               # Meta de convocatoria/simulacro
+│   ├── plan-estudio.ts                  # Plan determinista de preparación
+│   ├── evaluacion.repository.ts         # Puerto de configuración oficial
+│   ├── intento.repository.ts            # Puerto SQL de intentos y resultados
+│   ├── progreso.repository.ts           # Puerto SQL de progreso
+│   ├── question-bank.port.ts            # Puerto a preguntas versionadas
+│   ├── recommendation.port.ts           # Puerto a motor de recomendación sin LLM obligatorio
+│   └── academic-unit-of-work.port.ts    # Transacción de intento y progreso
+├── aplicacion/
+│   ├── iniciar-intento.use-case.ts       # Autorizar e iniciar evaluación
+│   ├── calificar-intento.use-case.ts     # Corregir y persistir nota oficial
+│   ├── actualizar-progreso.use-case.ts   # Aplicar reglas de avance
+│   ├── generar-plan-estudio.use-case.ts  # Planificación a partir de diagnóstico
+│   ├── presentar-simulacro.use-case.ts   # Ejecutar simulacro y preservar versión
+│   ├── consultar-recomendacion.use-case.ts # Siguiente actividad determinista
+│   ├── calificar-intento.command.ts      # Respuestas e identificador de intento
+│   └── iniciar-intento.command.ts        # Objetivo, estudiante y versión
+├── infraestructura/
+│   ├── postgres-evaluacion.repository.ts # Versiones y requisitos oficiales
+│   ├── postgres-intento.repository.ts    # Resultados transaccionales
+│   ├── postgres-progreso.repository.ts   # Dominio/avance de habilidades
+│   ├── postgres-academic-uow.adapter.ts  # Transacción intento + resultado + progreso
+│   ├── mongo-question-bank.adapter.ts   # Preguntas flexibles con versión
+│   ├── rules-recommendation.adapter.ts   # Motor local verificable; no LLM
+│   └── m2-catalogo.adapter.ts           # Consulta temarios por API pública de M2
+├── presentacion/
+│   ├── evaluaciones.controller.ts       # Pruebas e intentos
+│   ├── progreso.controller.ts           # Progreso académico autorizado
+│   ├── simulacros.controller.ts         # Objetivos y simulacros
+│   ├── evaluaciones.routes.ts           # Endpoints de evaluaciones
+│   └── progreso.routes.ts              # Endpoints de progreso
+├── tests/
+│   ├── correccion.unit.test.ts          # Corrección y estados deterministas
+│   ├── intento-concurrente.integration.test.ts # Intento único y control temporal
+│   └── progreso-atomico.integration.test.ts # Nota y progreso consistentes
+├── evaluaciones-aprendizaje.module.ts   # Raíz de composición M3
+└── index.ts                             # API: progreso/resumen con autorización
+```
 
-| Datos | Dueño lógico | Tecnología objetivo | Restricción |
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
+|---|---|---|
+| `calificar-intento.use-case.ts` | Validar intentos y reglas; no confiar en una nota enviada por el cliente | `academic-unit-of-work.port.ts` |
+| `question-bank.port.ts`, `m2-catalogo.adapter.ts` | Consultar preguntas/versiones y fuentes sin acceder a tablas privadas de M2 | M2 por contrato |
+| `regla-avance.ts`, `rules-recommendation.adapter.ts` | Criterios verificables e independientes de IA generativa | Dominio M3 |
+| `objetivo-examen.ts`, `plan-estudio.ts` | Preparación preuniversitaria y otras convocatorias sin nuevo módulo | Fuentes validadas / M2 |
+| `index.ts` | Exponer `consultarProgresoAutorizado` y evidencia resumida | M6, M1 autorizado |
+
+**Pruebas de salida del sprint:** reintento de calificación sin doble registro; nota no alterable por usuario; notas y progreso actualizados de forma coherente; recomendación reproducible; reglas de convocatorias versionadas. **Referencias:** ADR-006, ADR-018, ADR-023, ADR-030, ADR-040.
+
+### 2.4. Estructura detallada de M4 — Docentes y Clases
+
+**Responsable de:** perfiles, acreditación/habilitación de servicios docentes, programación, reservas, aforo, participación en aulas Live, tutorías y evidencia de asistencia. **No es dueño del ledger Live ni de las liquidaciones** (M5). Se propone separar reserva provisional y confirmación para resolver correctamente fallos entre cupos y derechos de crédito.
+
+```text
+src/modules/docentes-clases/
+├── dominio/
+│   ├── docente.ts                       # Perfil y acreditación del prestador
+│   ├── verificacion-docente.ts          # Expediente/estado de validación
+│   ├── clase-live.ts                    # Sala, aforo y estados de clase
+│   ├── reserva.ts                       # Reserva provisional/confirmada/cancelada
+│   ├── asistencia.ts                    # Evidencia de participación
+│   ├── politica-aforo.ts                # Aforo por modalidad; no constante arbitraria
+│   ├── politica-grabacion.ts            # Grabación por consentimiento, desactivada por defecto
+│   ├── reservation.repository.ts        # Puerto de reservas
+│   ├── class.repository.ts              # Puerto SQL de programación/cupos
+│   ├── teacher.repository.ts            # Puerto SQL de docentes
+│   ├── reservation-unit-of-work.port.ts # Transacción local de reserva y aforo
+│   ├── live-room.port.ts                # Puerto de sala audiovisual SFU
+│   └── credits.port.ts                  # Operaciones idempotentes de crédito Live de M5
+├── aplicacion/
+│   ├── solicitar-verificacion.use-case.ts # Enviar expediente de docente
+│   ├── aprobar-docente.use-case.ts       # Verificar autorización antes de habilitar
+│   ├── publicar-clase.use-case.ts        # Validar docente, modalidad y viabilidad
+│   ├── reservar-cupo.use-case.ts         # Reserva sin sobreventa + derecho Live
+│   ├── confirmar-reserva.use-case.ts     # Consolidar/compensar crédito reservado
+│   ├── cancelar-reserva.use-case.ts      # Reverso conforme a versión comercial
+│   ├── emitir-acceso.use-case.ts         # Token temporal y rol SFU autorizado
+│   ├── registrar-asistencia.use-case.ts  # Evidencia para remuneración posterior
+│   ├── autorizar-grabacion.use-case.ts   # Validar consentimiento y retención
+│   └── reservar-cupo.command.ts         # Sesión y actor autenticado
+├── infraestructura/
+│   ├── postgres-class.repository.ts     # Cupos y sesiones programadas
+│   ├── postgres-reservation.repository.ts # Reservas y unicidad por alumno/sesión
+│   ├── postgres-teacher.repository.ts   # Perfil y acreditación
+│   ├── postgres-reservation-uow.adapter.ts # Bloqueo/UPDATE condicional y transacción
+│   ├── sfu-room.adapter.ts             # RealtimeKit candidato; audio/video fuera de Hono
+│   ├── m1-permissions.adapter.ts       # Consulta y actualiza permiso aprobado por API M1
+│   ├── m5-live-credits.adapter.ts      # Reserva/consume/revierte a través de API M5
+│   ├── m5-class-viability.adapter.ts   # Consulta viabilidad y política comercial M5
+│   └── r2-recording.adapter.ts        # Acceso privado a grabación autorizada
+├── presentacion/
+│   ├── docentes.controller.ts         # Perfil y expediente
+│   ├── clases.controller.ts           # Gestión y publicación de aulas
+│   ├── reservas.controller.ts         # Reservas, cancelaciones y acceso
+│   ├── live.routes.ts                 # Entradas del producto Aulas Live
+│   └── docentes.routes.ts             # Entradas de docente
+├── tests/
+│   ├── verificacion-docente.unit.test.ts # Rol no equivale a autorización
+│   ├── aforo-concurrente.integration.test.ts # Último cupo atómico
+│   └── reserva-credito.contract.test.ts  # Reintentos y compensaciones con M5
+├── docentes-clases.module.ts          # Raíz de composición M4
+└── index.ts                           # API: habilitación, consulta y estado de clases
+```
+
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
+|---|---|---|
+| `verificacion-docente.ts`, `aprobar-docente.use-case.ts` | Distinguir rol, identidad, acreditación y permiso para prestar tutorías | API pública M1 |
+| `reservation-unit-of-work.port.ts` | Impedir reserva doble y sobreventa de cupos por transacción SQL | PostgreSQL |
+| `credits.port.ts` | Solicitar reserva/reverso idempotente a M5; no escribir su ledger | API pública M5 |
+| `confirmar-reserva.use-case.ts` | Finalizar reserva tras validar crédito; reintentar o compensar operaciones pendientes | M4/M5 sin acceso cruzado a tablas |
+| `live-room.port.ts` | Crear sala/tokens por rol; el audio/video se transporta por SFU | Proveedor SFU candidato |
+| `politica-grabacion.ts` | Bloquear grabación hasta permiso y consentimiento pertinentes | Política de privacidad |
+
+**Importante:** llamar dos módulos dentro del mismo backend **no hace automáticamente atómicas** dos transacciones independientes. Si no se acuerda un `Unit of Work` conjunto mediante contratos, M4 manejará reserva **provisional → confirmada** y compensaciones idempotentes de crédito en M5. Este es un contrato pendiente de prueba de integración, no una garantía inventada.
+
+**Pruebas de salida del sprint:** dos alumnos por último cupo → solo uno confirmado; pérdida de respuesta M5 → reintento seguro; acceso a sala sin reserva → denegado; permiso docente revocado → no se publica; grabación desactivada por defecto. **Referencias:** ADR-015, ADR-016, ADR-024, ADR-045, ADR-046, ADR-048, ADR-051.
+
+### 2.5. Estructura detallada de M5 — Suscripciones y Pagos
+
+**Responsable de:** órdenes de pago, versiones comerciales, derechos (`entitlements`), suscripciones estudiantiles, créditos **Live** y **Studio** independientes, comisiones, liquidaciones, conciliación y outbox. **No** guarda saldos autoritativos en Redis, no administra la reserva de asiento de M4 ni decide los resultados académicos.
+
+```text
+src/modules/suscripciones-pagos/
+├── dominio/
+│   ├── payment-order.ts                   # Entidad y transiciones de orden
+│   ├── verified-payment-event.ts          # Evento auténtico y normalizado del proveedor
+│   ├── plan-version.ts                    # Condiciones/beneficios históricos por producto
+│   ├── subscription.ts                    # Vigencia de producto contratado
+│   ├── product-entitlement.ts             # Derecho habilitado con fecha/versión
+│   ├── credit-ledger.ts                   # Movimiento inmutable Live o Studio (no mezclarlos)
+│   ├── commercial-policy.ts               # Condiciones y tarifas versionadas
+│   ├── teacher-settlement.ts              # Obligación y estado de liquidación
+│   ├── payment-unit-of-work.port.ts       # Contrato de transacción financiera local
+│   ├── webhook-verifier.port.ts           # Verificación oficial de notificación
+│   ├── payment-gateway.port.ts            # Solicitud/estado de cobro externo
+│   ├── plan-catalog.repository.ts         # Consulta de planes/precios aprobados
+│   ├── entitlement-query.port.ts          # Consulta pública de derechos por producto
+│   ├── live-credit-operations.port.ts     # Reservar/consumir/revertir saldo Live
+│   ├── studio-credit-operations.port.ts   # Reservar/consumir/revertir saldo Studio
+│   └── settlement.repository.ts           # Obligaciones de remuneración contractual
+├── aplicacion/
+│   ├── confirmar-pago-webhook.use-case.ts  # Verificar, deduplicar y aplicar efectos ACID
+│   ├── confirmar-pago-webhook.command.ts   # Cuerpo crudo y cabeceras originales
+│   ├── comprar-plan.use-case.ts           # Iniciar pago con versión comercial fija
+│   ├── consultar-entitlements.use-case.ts  # Derechos del producto sin saldos inventados
+│   ├── reservar-credito-live.use-case.ts   # Reserva idempotente de saldo Live
+│   ├── consumir-credito-live.use-case.ts   # Consumo válido al confirmar prestación
+│   ├── revertir-credito-live.use-case.ts   # Reverso según cancelación/versiones
+│   ├── consumir-credito-studio.use-case.ts # Descuento IA medido e idempotente
+│   ├── evaluar-viabilidad-clase.use-case.ts # Margen/aforo/costo antes de publicar
+│   ├── liquidar-docente.use-case.ts        # Liquidación separada de cobro confirmado
+│   ├── conciliar-pagos.use-case.ts         # Eventos fuera de orden/estado incierto
+│   └── comprar-plan.command.ts           # Producto y actor, sin precio del cliente
+├── infraestructura/
+│   ├── postgres-payment-uow.adapter.ts    # Transacciones, UNIQUE, ledger y outbox SQL
+│   ├── postgres-plan-catalog.repository.ts # Precio, política y vigencia aprobada
+│   ├── postgres-entitlement-query.adapter.ts # Lectura autoritativa de derechos
+│   ├── postgres-live-credits.adapter.ts   # Ledger de créditos Live
+│   ├── postgres-studio-credits.adapter.ts # Ledger de créditos IA Studio
+│   ├── postgres-settlement.repository.ts  # Liquidaciones/versión de tarifa docente
+│   ├── pasarela-webhook.adapter.ts        # Verificación según pasarela elegida
+│   ├── pasarela-cobro.adapter.ts          # Crear pago/consultar estado proveedor
+│   ├── outbox-publisher.worker.ts        # Publicación diferida a Queues
+│   └── postgres-reconciliation.adapter.ts # Conciliación de eventos y cobros
+├── presentacion/
+│   ├── pagos-webhook.controller.ts        # Traduce HTTP a comando; no confía en approved
+│   ├── pagos.routes.ts                   # Rutas Hono de pago y notificación
+│   ├── suscripciones.controller.ts       # Derechos, vigencia y gestión de producto
+│   ├── creditos.controller.ts            # Consulta autorizada de movimientos
+│   └── liquidaciones.controller.ts       # Acceso protegido de liquidaciones
+├── tests/
+│   ├── webhook-idempotente.integration.test.ts # Eventos repetidos y concurrentes
+│   ├── creditos-concurrentes.integration.test.ts # No doble gasto ni saldo negativo
+│   ├── outbox-atomico.integration.test.ts # COMMIT, rollback y publicación posterior
+│   └── liquidacion-versionada.unit.test.ts # No reescribir tarifas históricas
+├── suscripciones-pagos.module.ts         # Raíz de composición
+└── index.ts                              # API: derechos, créditos y viabilidad
+```
+
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
+|---|---|---|
+| `payment-unit-of-work.port.ts` | Guardar evento, orden, derechos, movimientos y outbox en una transacción local | PostgreSQL SQL ACID |
+| `webhook-verifier.port.ts`, `pasarela-webhook.adapter.ts` | Verificar notificación real antes de modificar estado financiero | Pasarela elegida, actualmente condicionada |
+| `entitlement-query.port.ts`, `index.ts` | Permitir consultas de derechos sin exponer tablas | M2, M4, M6 |
+| `live-credit-operations.port.ts` / `studio-credit-operations.port.ts` | Mantener ledgers distintos, claves de operación y reversos | M4 / M2-M6 respectivamente |
+| `evaluar-viabilidad-clase.use-case.ts` | Comprobar precio, costos y tarifa vigente; no aprobar pérdidas inadvertidas | M4 y políticas versionadas |
+| `liquidar-docente.use-case.ts`, `settlement.repository.ts` | Separar pago de cliente de transferencia contractual al docente | Evidencias autorizadas de M4 |
+
+**POSTERIOR, no parte de la implementación inicial:** convenios con colegios/academias, descuentos acordados y vigencia de beneficios institucionales dentro de M5, sin crear cuenta/panel institucional ni modificar cuentas de M1. Cuando se active, añadir `convenio.ts`, `beneficio-convenio.ts`, `gestionar-convenio.use-case.ts` y su repositorio, con una ADR de detalle y pruebas propias.
+
+**Pruebas de salida del sprint:** evento repetido diez veces → un único efecto; diferentes eventos de la misma orden no duplican derecho/crédito; rollback no publica beneficios; crédito Live distinto de Studio; liquidación solo tras prestación y con tarifa versionada. **Referencias:** ADR-005, ADR-007, ADR-027, ADR-039, ADR-043, ADR-047, ADR-048, ADR-049, ADR-050, ADR-052, ADR-055.
+
+### 2.6. Estructura detallada de M6 — Tutor IA y RAG
+
+**Responsable de:** consulta pedagógica, recuperación de fragmentos por ACL/licencia/versión, embeddings, indexación/desindexación, inferencia y medición de consumo/costo IA. **No** decide notas académicas ni es dueño del ledger Studio o de los permisos originales del contenido.
+
+```text
+src/modules/tutor-ia-rag/
+├── dominio/
+│   ├── consulta-ia.ts                    # Pregunta y contexto educativo permitido
+│   ├── rag-context.ts                    # Fragmentos, versión y referencias de fuente
+│   ├── respuesta-ia.ts                   # Respuesta, citas y estado
+│   ├── rag-acl.policy.ts                 # Restricciones por identidad/licencia/recurso
+│   ├── quota.policy.ts                   # Límites de consumo por producto aprobado
+│   ├── indexacion-documento.ts           # Estado/documento/versión de indexación
+│   ├── retrieval.port.ts                 # Recuperación vectorial filtrada
+│   ├── llm.port.ts                       # Inferencia intercambiable del LLM
+│   ├── embeddings.port.ts                # Generación de embeddings
+│   ├── content-access.port.ts            # Consulta de licencia/autorización a M2
+│   ├── ai-entitlements.port.ts           # Consulta de derechos/cuota a M5
+│   ├── usage.repository.ts               # Medición y atribución de uso
+│   └── rag-index.repository.ts           # Estado/versión de chunks indexados
+├── aplicacion/
+│   ├── responder-consulta.use-case.ts    # Recuperar fuentes permitidas + generar respuesta
+│   ├── indexar-documento.use-case.ts     # Extracción y embeddings por versión
+│   ├── desindexar-documento.use-case.ts  # Retirar fuentes al revocar licencia
+│   ├── registrar-uso-ia.use-case.ts      # Registrar costo/tokens de operación
+│   ├── generar-recurso-studio.use-case.ts # Generación IA por contrato con M2 y M5
+│   ├── responder-consulta.command.ts    # Pregunta, recurso y actor autenticado
+│   └── indexar-documento.command.ts     # IDs y versión; no binarios en cola
+├── infraestructura/
+│   ├── pgvector-retrieval.adapter.ts     # Búsqueda pgvector con filtros ACL SQL
+│   ├── llm-provider.adapter.ts          # SDK/HTTPS del proveedor LLM elegido
+│   ├── embeddings-provider.adapter.ts   # Embeddings externos o alternativos
+│   ├── postgres-usage.repository.ts     # Contadores/costo de operaciones IA
+│   ├── postgres-rag-index.repository.ts # Chunks/versión y estado de indexación
+│   ├── m2-content-access.adapter.ts     # Consulta contenido/licencia vía API M2
+│   ├── m5-ai-entitlements.adapter.ts    # Consulta/cuota/crédito vía API M5
+│   ├── queue-indexer.worker.ts          # Consumidor idempotente, reintentos y DLQ
+│   └── r2-document-reader.adapter.ts    # Lectura privada autorizada de archivos
+├── presentacion/
+│   ├── tutor.controller.ts              # Solicitud y respuesta IA
+│   ├── rag.controller.ts                # Estado de indexación autorizado
+│   ├── tutor.routes.ts                  # Rutas Hono de tutoría IA
+│   └── rag.routes.ts                    # Rutas de gestión de indexación
+├── tests/
+│   ├── rag-acl.unit.test.ts             # Deniega fragmentos fuera de licencia/usuario
+│   ├── reindexacion-idempotente.test.ts  # No duplica indexaciones por versión
+│   └── ia-cuotas.contract.test.ts       # Fallos proveedor y consumo coherente M5
+├── tutor-ia-rag.module.ts              # Raíz de composición M6
+└── index.ts                            # API: explicación y generación autorizada
+```
+
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
+|---|---|---|
+| `content-access.port.ts`, `rag-acl.policy.ts` | Excluir siempre fragmentos con licencia o permiso caducado/revocado | M2 y M1 vía contratos |
+| `indexar-documento.use-case.ts`, `queue-indexer.worker.ts` | Indexar por `(documento, versión, etapa)` con retry/DLQ y deduplicación | Queues, R2, pgvector |
+| `ai-entitlements.port.ts`, `m5-ai-entitlements.adapter.ts` | No confiar en el plan declarado por cliente ni otorgar generaciones ilimitadas | M5 |
+| `usage.repository.ts`, `registrar-uso-ia.use-case.ts` | Medir tokens, costo y resultado; no ser el libro mayor financiero | PostgreSQL |
+| `llm.port.ts` | Sustituir proveedor sin contaminar reglas o permisos | Proveedor de IA aún sujeto a ensayo |
+
+**Pruebas de salida del sprint:** recuperar sin licencia → cero fragmentos; documento despublicado → acceso denegado incluso con índice desactualizado; cola duplicada → una versión lógica; fallas LLM → respuesta controlada y consumo conciliable; usuario sin cuota → no genera. **Referencias:** ADR-018, ADR-019, ADR-026, ADR-042, ADR-050, ADR-053, ADR-054.
+
+### 2.7. Estructura detallada de M7 — Publicidad y Patrocinios
+
+**Responsable de:** patrocinadores, campañas, ubicaciones autorizadas y estadísticas agregadas. **No** utiliza datos académicos privados ni personalización basada en calificaciones; no inserta anuncios durante evaluaciones, clases Live, editor Studio, lecciones pagadas ni liquidaciones.
+
+```text
+src/modules/publicidad-patrocinios/
+├── dominio/
+│   ├── campania.ts                      # Campaña, presupuesto y estado
+│   ├── convenio-patrocinio.ts           # Acuerdo comercial con patrocinador
+│   ├── ubicacion.ts                     # Superficies autorizadas para mostrar anuncios
+│   ├── placement.policy.ts             # Restricción por contexto, edad y producto
+│   ├── estadistica-impresion.ts          # Evento minimizado y métricas agregadas
+│   ├── campaign.repository.ts           # Puerto de campañas
+│   ├── sponsor.repository.ts            # Puerto de patrocinadores/acuerdos
+│   └── impression.repository.ts         # Puerto de métricas agregadas
+├── aplicacion/
+│   ├── crear-campania.use-case.ts        # Definir campaña con permisos administrativos
+│   ├── seleccionar-anuncio.use-case.ts   # Elegir sólo en contexto permitido
+│   ├── validar-ubicacion.use-case.ts     # Denegar rutas y vistas restringidas
+│   ├── registrar-impresion.use-case.ts   # Registro mínimo/agregado
+│   └── seleccionar-anuncio.command.ts   # Contexto, plan elegible y señal de edad segura
+├── infraestructura/
+│   ├── postgres-campaign.repository.ts  # Campañas y acuerdos
+│   ├── postgres-sponsor.repository.ts   # Patrocinadores
+│   ├── postgres-impression.repository.ts # Métricas sin historial académico
+│   └── m1-authorization.adapter.ts      # Rol autorizado para campañas
+├── presentacion/
+│   ├── campanias.controller.ts         # Administración protegida
+│   ├── patrocinios.controller.ts       # Acuerdos/ubicaciones
+│   ├── anuncios.controller.ts          # Selección contextual pública
+│   └── publicidad.routes.ts            # Rutas Hono de anuncios
+├── tests/
+│   ├── placement.unit.test.ts          # Prohibiciones por pantalla y menor
+│   ├── datos-privados.unit.test.ts     # No uso de notas/perfil académico
+│   └── presupuestos.integration.test.ts # No superar presupuesto de campaña
+├── publicidad-patrocinios.module.ts   # Raíz de composición M7
+└── index.ts                            # API pública mínima: anuncio permitido
+```
+
+| Archivo / contrato clave | Responsabilidad comprobable | Colabora con |
+|---|---|---|
+| `placement.policy.ts`, `validar-ubicacion.use-case.ts` | Rechazar ubicaciones excluidas incluso si el frontend las solicita | Contexto declarado y validado |
+| `seleccionar-anuncio.use-case.ts` | Seleccionar campañas activas y planes/contextos elegibles | `campaign.repository.ts` |
+| `registrar-impresion.use-case.ts` | Medición sin exponer identidad académica | `impression.repository.ts` |
+| `m1-authorization.adapter.ts` | Proteger administración de campañas | API pública M1 |
+| `index.ts` | Responder a los espacios aprobados desde Web/PWA | Aplicación web |
+
+**Pruebas de salida del sprint:** ninguna publicidad en evaluación/Live/Studio o cobros; no usar notas ni rutas privadas; campañas expiradas no se seleccionan; métricas sin identificadores innecesarios. **Referencias:** ADR-004, ADR-020, ADR-025.
+
+### 2.8. Contratos permitidos entre módulos
+
+Las colaboraciones siguientes son **llamadas internas TypeScript** dentro del monolito modular, expuestas por `index.ts`, no peticiones HTTP entre microservicios ni consultas directas a tablas privadas. Cada adaptador consumidor se declara en su `infraestructura/` y traduce la interfaz que necesita el caso de uso.
+
+| Módulo consumidor | Módulo propietario | Contrato público previsto | Regla de frontera |
 |---|---|---|---|
-| Cuentas, permisos, verificaciones, auditorías | M1 | PostgreSQL | No confundir tipo de cuenta, rol, habilitación y título acreditado. |
-| Catálogo, derechos de publicación, licencias y metadatos | M2 | PostgreSQL | La licencia de publicar no implica permiso para RAG, entrenamiento o explotación distinta. |
-| Lecciones estructuradas, ejercicios y versiones Studio | M2 | MongoDB | Usar identificadores/versiones estables; un documento no es prueba de derecho comercial. |
-| PDFs, imágenes y adjuntos privados; vídeo grabado | M2/M4 según propiedad del recurso | R2; Bunny Stream si es aplicable | Autorización antes de emitir URL temporal; no exponer URL de almacenamiento como permiso permanente. |
-| Intentos, resultados oficiales, perfiles de progreso | M3 | PostgreSQL | Resultados reproducibles; trazabilidad de versión del ejercicio. |
-| Agenda, cupos, reservas, asistencia y sesiones Live | M4 | PostgreSQL | Cambios de cupo y reserva deben ser atómicos. |
-| Órdenes, suscripciones, derechos, créditos y liquidaciones | M5 | PostgreSQL | ACID, restricciones `UNIQUE`, idempotencia, ledger y políticas versionadas. |
-| Índice semántico y metadatos autorizados | M6, tomando fuentes de M2 | PostgreSQL + `pgvector` | Validar ACL al recuperar; desindexar materiales revocados o sustituidos. |
-| Campañas, ubicaciones permitidas y agregados de campañas | M7 | PostgreSQL | No almacenar perfiles pedagógicos individuales para publicidad. |
-| Cachés, límites temporales y trabajos asíncronos | Transversal, con responsables por mensaje | Redis / Queues / DLQ | No son fuente de verdad de saldos, notas oficiales ni permisos. |
+| M2 / M3 / M4 / M5 / M6 / M7 | **M1** | `consultarIdentidadAutorizada`, `verificarPermiso` | No importan tablas de usuarios o sesiones |
+| M3 | **M2** | `consultarTemarioVersionado`, `consultarMaterialEvaluable` | No importa repositorios Mongo ajenos |
+| M6 | **M2** | `verificarLicenciaYAcceso`, `obtenerFuenteVersionada` | RAG verifica autorización en cada recuperación |
+| M4 | **M5** | `reservarCreditoLive`, `confirmarConsumoLive`, `revertirCreditoLive`, `evaluarViabilidadClase` | M4 no escribe ledger de M5 |
+| M2 / M6 | **M5** | `consultarDerechoStudio`, `consumirOperacionStudio` | Una solicitud IA no descuenta dos veces |
+| M6 | **M5** | `consultarDerechoTutorIA` | Plus/Pro y Studio no comparten cuota implícita |
+| M4 → evento de prestación | **M5** | `ClasePrestadaValidada` con referencia verificable y deduplicación | M5 registra evidencia sin importar implementaciones M4 |
+| M2 → cola de trabajos | **M6** | Evento `StudioGenerationRequested` con ID, versión y derecho verificado | M6 procesa asíncronamente; M2 no importa implementación M6 |
+| M4 | **M1** | `registrarHabilitacionAprobada` tras verificar el expediente | M1 no lee expedientes privados de M4 |
 
-Los enlaces entre documentos de MongoDB y registros de PostgreSQL **no forman una transacción distribuida automática**. Deben existir estados explícitos, claves de operación, procesos de reintento/conciliación y limpieza para cambios que crucen almacenes (ADR-022, ADR-023, ADR-035).
+**Sin ciclos de importación:** M4 llama la API pública de M1 y M5; M6 consulta M2 y M5. El regreso funcional desde M4 a M5 (asistencia validada) y desde M6 a M2 (resultado Studio) se integra por **eventos de negocio**, no por referencias TypeScript circulares. El grafo de importaciones deberá pasar una comprobación automática de ciclos antes de programar; los contratos de puertos se inyectan en las raíces de composición.
 
-## 4. M1 — Usuarios y Administración
+### 2.9. Criterios de preparación de los siete módulos para los sprints de implementación
 
-![Figura 4. Diseño interno de M1](./imagenes/m1-interno.png)
-
-*Figura 4. M1 concentra el control autoritativo de cuentas y permisos.*
-
-**Responsabilidad:** administrar identidad, sesiones, perfiles, roles, autorización por recurso, habilitaciones docentes y registros de auditoría. Un estudiante puede usar funcionalidades comerciales bajo los derechos de M5 sin cambiar automáticamente su **tipo de cuenta**. Una persona con permiso para publicar o tutorizar no es, por ese solo hecho, profesional titulado o verificado.
-
-| Elemento | Diseño propuesto |
+| Comprobación | Criterio de aceptación del diseño |
 |---|---|
-| **Casos de uso** | `RegistrarCuenta`, `IniciarSesion`, `GestionarPerfil`, `ResolverPermisos`, `HabilitarDocente`, `RegistrarAuditoria`. |
-| **Reglas / entidades** | `Cuenta`, `Rol`, `Permiso`, `HabilitacionDocente`, `EventoAuditoria`; prohibir exposición de recursos de otra cuenta. |
-| **Contratos publicados** | `IdentityQueryPort`, `AuthorizationPort`, `TeacherEligibilityPort`: devuelven identidad mínima y decisiones de permiso verificables por los demás módulos. |
-| **Puertos de salida** | `IdentityRepository`, `AuditRepository`, `AuthSessionPort`. |
-| **Adaptadores previstos** | PostgreSQL; biblioteca de autenticación evaluada (Better Auth como candidato); validadores y auditoría persistente. |
-| **Dependencias legítimas** | Ninguna dependencia de lógica de M2–M7 para determinar la identidad; M4 pide una habilitación por contrato a M1. |
-| **Restricción importante** | El middleware autentica, pero cada caso de uso aplica autorización de **objeto**: estudiante, documento, aula, resultado o pago. |
+| Inventario | M1–M7 tienen `dominio/`, `aplicacion/`, `infraestructura/`, `presentacion/`, `*.module.ts`, `index.ts` y pruebas previstas |
+| Responsabilidad | Cada archivo del árbol explica para qué existe; funciones de otros módulos se consumen por contrato |
+| Estado de decisiones | Proveedores condicionados siguen marcados como candidatos; no se codifica precio/cuota hipotética en dominio |
+| Flujo crítico | Registro, publicación, evaluación, reserva, pago, RAG y anuncio tienen operación principal identificable |
+| Integridad | Transacciones SQL para notas/pagos/cupos; idempotencia para eventos, crédito e indexación |
+| Seguridad | Autenticación de entrada **y** autorización por recurso dentro del caso de uso |
+| Implementación gradual | Los archivos muestran el **diseño objetivo**; su existencia en esta lista no equivale a tarea implementada |
+| Extensiones | Convenios institucionales permanecen `POSTERIOR`; no se fuerza a crear código de una función aplazada |
 
-**Trazabilidad:** ADR-004, ADR-010, ADR-033, ADR-034 y ADR-044.
+**Nota de consistencia con las figuras de la sección 3:** los siete diagramas `m1-interno.png` a `m7-interno.png` son **vistas resumidas de los paquetes principales**. La lista **detallada y normativa de archivos propuestos** es la de esta sección. Una figura no debe interpretarse como inventario exhaustivo de todos los archivos del módulo.
 
-## 5. M2 — Cursos y Contenidos
+## 3. Capas del módulo y regla de dependencia
 
-![Figura 5. Diseño interno de M2](./imagenes/m2-interno.png)
+La regla es que **el código de negocio no dependa de detalles externos**. El módulo de composición es la excepción explícita: necesita conocer los adaptadores concretos para conectarlos. La flecha en un diagrama de paquetes indica **dependencia del código**, no una petición de red.
 
-*Figura 5. M2 administra material educativo y Studio, pero no es propietario de los saldos de IA ni de las notas oficiales.*
+| Capa | Contiene | Responsabilidad | Puede depender de | No debe depender de |
+|---|---|---|---|---|
+| **Dominio** | Entidades, políticas, estados, puertos | Proteger invariantes de negocio | Tipos internos puros | Hono, PostgreSQL, MongoDB, Cloudflare, SDK externos |
+| **Aplicación** | Casos de uso, comandos | Coordinar reglas, autorización y operaciones | Dominio | Controladores, adaptadores concretos, SQL |
+| **Infraestructura** | Repositorios y adaptadores | Implementar persistencia y conexiones externas | Interfaces del dominio y bibliotecas técnicas | Controladores, lógica de otros módulos |
+| **Presentación** | Controladores y rutas HTTP | Validar estructura de entrada y traducir respuestas | Aplicación, framework HTTP | SQL, pasarelas concretas, reglas contables |
+| **Composición** | `*.module.ts` | Elegir e inyectar implementaciones | Todas, de manera explícita | — |
 
-**Responsabilidad:** crear y publicar cursos, unidades, lecciones y ejercicios; conservar versiones del material y sus permisos; organizar recursos PDF/imagen/video; administrar derechos editoriales, licencia para RAG y proyectos de **Mentelyx Studio**. Incluye todos los niveles educativos acordados.
+### 3.1. Diagramas de paquetes M1–M7
 
-| Elemento | Diseño propuesto |
-|---|---|
-| **Casos de uso** | `CrearCurso`, `PublicarVersion`, `ConsultarCatalogo`, `VerificarAccesoAContenido`, `RegistrarLicencia`, `CrearProyectoStudio`, `GuardarVersionStudio`. |
-| **Reglas / entidades** | `Curso`, `Unidad`, `ContenidoVersionado`, `Licencia`, `DerechoEditorial`, `ProyectoStudio`; publicación y indexación son permisos distintos. |
-| **Contratos publicados** | `ContentCatalogPort`, `ContentVersionPort`, `LicensedDocumentPort` para M3 y M6. |
-| **Puertos de salida** | `CourseRepository`, `PedagogicalDocumentRepository`, `ObjectStoragePort`, `VideoCatalogPort`; para Studio, `StudioGenerationPort` (implementado por adaptación al procesamiento de M6). |
-| **Adaptadores previstos** | PostgreSQL (catálogo/licencias), MongoDB (lecciones y proyectos Studio versionados), R2 (binarios), Bunny Stream (video grabado cuando se valide). |
-| **Dependencias legítimas** | M1 autoriza autor/editor; M5 comprueba derechos y créditos; M6 procesa solicitudes de IA mediante contrato. |
-| **Restricción importante** | `R2` y `Bunny` nunca determinan por sí solos la autorización: el backend emite accesos limitados según la política vigente. |
+Los siete diagramas siguientes son **vistas estáticas internas** y muestran archivos significativos, no un inventario exhaustivo. El inventario de archivos propuestos para construir cada módulo está en las subsecciones 2.1–2.7. En todos se mantiene la misma dirección de dependencia y una raíz de composición. Los nombres son parte de la propuesta, no evidencia de código existente.
 
-**Pipeline de material para RAG:** M2 registra versión, propietario, licencia y permiso de indexación; después publica una referencia a un trabajo asíncrono. M6 recibe esa referencia, verifica nuevamente que sea indexable, extrae texto y mantiene índice por **documento + versión**. Si se revoca una licencia, se desencadena desindexación idempotente. No se asume que publicar un documento autorice entrenar un modelo.
+#### M1. Usuarios y Administración
 
-**Studio:** las ediciones manuales no consumen créditos IA; los trabajos de generación con costo deben solicitar una **autorización/reserva de créditos M5**, registrar uso real y manejar fallos parciales. Los costos y cantidades de créditos son hipótesis comerciales por validar, no cifras fijadas por este diseño.
+![Figura 1. Paquetes de M1 — Usuarios y Administración](../../img/m1-interno.png)
 
-**Trazabilidad:** ADR-009, ADR-014, ADR-023, ADR-026, ADR-035, ADR-042 y ADR-050.
+M1 mantiene identidad, roles, autorizaciones por recurso y habilitación docente. **Una cuenta, su rol, su habilitación para enseñar y su suscripción son conceptos distintos**.
 
-## 6. M3 — Evaluaciones y Aprendizaje
+#### M2. Cursos y Contenidos
 
-![Figura 6. Diseño interno de M3](./imagenes/m3-interno.png)
+![Figura 2. Paquetes de M2 — Cursos y Contenidos](../../img/m2-interno.png)
 
-*Figura 6. M3 califica de forma determinista y almacena los resultados oficiales.*
+M2 conserva el catálogo, versiones, licencias, archivos y proyectos Studio. No calcula notas oficiales ni es dueño del ledger de créditos.
 
-**Responsabilidad:** diagnósticos iniciales, intentos, respuestas, criterios de corrección, historial académico, habilidades y prerrequisitos, avance, planes de estudio y **preparación para exámenes** (temarios, simulacros y seguimiento). La recomendación y planificación iniciales se basan en reglas y datos verificables; el modelo de lenguaje no decide unilateralmente la nota.
+#### M3. Evaluaciones y Aprendizaje
 
-| Elemento | Diseño propuesto |
-|---|---|
-| **Casos de uso** | `IniciarDiagnostico`, `EnviarRespuestas`, `CalificarIntento`, `ActualizarPerfilAprendizaje`, `ProponerSiguienteActividad`, `GenerarPlanPreparacion`. |
-| **Reglas / entidades** | `Evaluacion`, `Intento`, `Respuesta`, `Resultado`, `Habilidad`, `Prerrequisito`, `PerfilAprendizaje`; una calificación queda vinculada a la versión exacta del ejercicio. |
-| **Contratos publicados** | `LearningProgressPort`, `AssessmentSummaryPort` con acceso restringido para el propio estudiante y operaciones autorizadas. |
-| **Puertos de salida** | `AttemptRepository`, `ProgressRepository`, `ContentCatalogPort` (M2), `RecommendationPort` (motor determinista/adaptativo reemplazable). |
-| **Adaptadores previstos** | PostgreSQL transaccional; consulta a preguntas/versiones por interfaz de M2; motor de reglas con pruebas unitarias. |
-| **Dependencias legítimas** | M1 permisos; M2 preguntas y recursos autorizados; M5 derechos para funciones de pago; M6 solo explicaciones opcionales, no calificaciones oficiales. |
-| **Restricción importante** | Nunca aceptar del navegador una nota, resultado final o estado de prerrequisitos como fuente autoritativa. |
+![Figura 3. Paquetes de M3 — Evaluaciones y Aprendizaje](../../img/m3-interno.png)
 
-**Trazabilidad:** ADR-006, ADR-018 y ADR-030.
+M3 administra intentos, corrección y progreso mediante reglas reproducibles. Las explicaciones del Tutor IA no sustituyen la calificación oficial.
 
-## 7. M4 — Docentes y Clases
+#### M4. Docentes y Clases
 
-![Figura 7. Diseño interno de M4](./imagenes/m4-interno.png)
+![Figura 4. Paquetes de M4 — Docentes y Clases](../../img/m4-interno.png)
 
-*Figura 7. M4 administra reservas y aulas Live; el audio/vídeo fluye por el proveedor SFU, no a través de Hono.*
+M4 administra sesiones, autorizaciones, reservas y aforo. El servicio SFU gestiona medios audiovisuales; **los créditos pertenecen a M5** y se consultan mediante un contrato.
 
-**Responsabilidad:** gestionar las ofertas y horarios docentes, autorizar su publicación según habilitación, reservar cupos, registrar asistencia, crear salas moderadas, autorizar entrada temporal y conservar el estado de grabaciones consentidas. La **liquidación económica** de tutores pertenece a M5.
+#### M5. Suscripciones y Pagos — referencia
 
-| Elemento | Diseño propuesto |
-|---|---|
-| **Casos de uso** | `PublicarClase`, `ReservarCupo`, `CancelarReserva`, `EmitirAccesoLive`, `RegistrarAsistencia`, `SolicitarGrabacionAutorizada`. |
-| **Reglas / entidades** | `Clase`, `Sesion`, `Aforo`, `Reserva`, `Asistencia`, `EstadoGrabacion`; transiciones de reserva explícitas y no repetibles. |
-| **Contratos publicados** | `ClassBookingPort`, `ClassAttendancePort`, `ClassAvailabilityPort`, `TeacherSessionPort`. |
-| **Puertos de salida** | `ClassRepository`, `ReservationUnitOfWork`, `TeacherEligibilityPort` (M1), `CreditEntitlementPort` (M5), `LiveRoomPort`, `RecordingPort`. |
-| **Adaptadores previstos** | PostgreSQL; SFU/WebRTC administrado (**RealtimeKit, candidato**); R2/servicio de grabación autorizado. |
-| **Dependencias legítimas** | M1 verifica docencia; M5 valida acceso a Live y créditos; M2 puede ofrecer recursos de refuerzo. |
-| **Restricción importante** | Aforo inicial **35 estudiantes + 1 docente** es meta de diseño por probar, no un rendimiento garantizado. No se exige que 36 cámaras estén abiertas. |
+![Figura 5. Paquetes de M5 — Suscripciones y Pagos](../../img/m5-interno.png)
 
-La reserva del último cupo requiere **control de concurrencia SQL** (bloqueo/actualización condicional y claves únicas). Para una reserva que además consume créditos, los módulos colaboran mediante **contratos internos** y una coordinación transaccional explícita cuando comparten PostgreSQL. Si el método de integración elegido no permite atomicidad conjunta, se documentan estados de reserva provisional, expiración y compensación idempotente antes de declararlo listo.
+M5 es responsable de las órdenes, derechos, créditos Live/Studio, conciliación, contratos comerciales y outbox. **No** se usa Redis como libro mayor ni se presume que todos los planes otorguen créditos Live.
 
-**Trazabilidad:** ADR-015, ADR-016, ADR-024, ADR-045, ADR-046, ADR-048 y ADR-051.
+#### M6. Tutor IA y RAG
 
-## 8. M5 — Suscripciones y Pagos
+![Figura 6. Paquetes de M6 — Tutor IA y RAG](../../img/m6-interno.png)
 
-![Figura 8. Diseño interno de M5](./imagenes/m5-interno.png)
+M6 ejecuta recuperación con control de permisos, llamadas al proveedor de IA y registro de consumo. Solo puede recuperar fragmentos autorizados por usuario, licencia y versión.
 
-*Figura 8. M5 es dueño de los derechos de acceso, créditos, pagos, políticas versionadas y liquidaciones; jamás usa Redis como libro contable.*
+#### M7. Publicidad y Patrocinios
 
-**Responsabilidad:** administrar planes Free/Plus/Pro, productos Live y Studio, cobros y reembolsos, emisión de derechos (*entitlements*), movimientos de créditos, consumo de cupos comerciales, conciliación con pasarelas y liquidaciones contractuales de docentes.
+![Figura 7. Paquetes de M7 — Publicidad y Patrocinios](../../img/m7-interno.png)
 
-| Elemento | Diseño propuesto |
-|---|---|
-| **Casos de uso** | `CrearOrden`, `SolicitarCobro`, `ConfirmarPago`, `ActivarEntitlement`, `ReservarCredito`, `ConsumirCredito`, `RevertirCredito`, `ConciliarPago`, `CalcularLiquidacion`. |
-| **Reglas / entidades** | `PlanVersionado`, `OrdenPago`, `Suscripcion`, `Entitlement`, `MovimientoLedger`, `CreditoLive`, `CreditoStudio`, `TarifaDocente`, `Liquidacion`. |
-| **Contratos publicados** | `EntitlementQueryPort`, `CreditReservationPort`, `PaymentStatusPort`, `SettlementQueryPort`. |
-| **Puertos de salida** | `PaymentPort`, `PaymentRepository`, `CreditLedgerRepository`, `UnitOfWork`, `OutboxRepository`, `PricingPolicyPort`. |
-| **Adaptadores previstos** | PostgreSQL/Neon + índices y transacciones; pasarela peruana **por seleccionar**; webhooks firmados; Outbox + Queues. |
-| **Dependencias legítimas** | M1 identidad; M4 confirma/solicita reserva de clase; M2 y M6 consumen derechos y presupuesto IA según producto. |
-| **Restricción importante** | Un mismo pago, una reentrega de webhook o un reintento de generación **no** acreditan o descuentan dos veces la misma operación lógica. |
+M7 aplica políticas de ubicación y público permitido sin usar datos académicos privados ni mostrar anuncios dentro de evaluaciones, clases Live, editor o procesos comerciales sensibles.
 
-**Invariantes contables que se deben implementar y probar:**
+**Comprobación en código:** si `src/modules/suscripciones-pagos/dominio/` importa `hono`, un SDK de pagos, un cliente PostgreSQL o archivos de `infraestructura/`, la regla se ha roto. Del mismo modo, ningún módulo debe consultar directamente las tablas privadas de otro: la colaboración debe pasar por la API pública interna correspondiente.
 
-1. Toda orden y sus eventos externos usan identificadores estables; verificar firma y validez del emisor del webhook.
-2. La deduplicación necesita restricción `UNIQUE` persistente, asociada al proveedor/evento **y** a la operación de negocio que se pretende acreditar; un `SELECT` previo sin restricción no es suficiente.
-3. La activación de un derecho, el movimiento de ledger y el evento Outbox deben quedar en la **misma transacción PostgreSQL** cuando pertenecen al mismo efecto de negocio.
-4. Los productos Live y Studio mantienen **ledgers separados**; la cuota del Tutor IA Plus/Pro se controla con su propia política de uso, sin intercambiar créditos automáticamente.
-5. El valor y la versión de una regla comercial aplicable quedan asociados al contrato, reserva o liquidación histórica. Los cambios posteriores no alteran operaciones anteriores.
-6. El pago confirmado por pasarela **no equivale** a transferencia realizada a un docente; conciliación y liquidación son estados separados.
+## 4. Diagrama de clases
 
-**Trazabilidad:** ADR-005, ADR-007, ADR-027, ADR-028, ADR-043 y ADR-047–055.
+Se detalla el **caso de uso `ConfirmarPagoWebhook` de M5**, por ser un ejemplo concreto de cómo las clases de aplicación dependen de interfaces y no de implementaciones.
 
-## 9. M6 — Tutor IA y RAG
+```mermaid
+classDiagram
+  direction TB
 
-![Figura 9. Diseño interno de M6](./imagenes/m6-interno.png)
+  class PagosWebhookController {
+    <<Presentación>>
+    -confirmarPago: ConfirmarPagoWebhookUseCase
+    +recibir(c: Context) Promise~Response~
+  }
 
-*Figura 9. M6 verifica autorización y presupuesto, recupera solo material válido y mide cada llamada de IA.*
+  class ConfirmarPagoWebhookCommand {
+    <<DTO / Comando>>
+    +rawBody: Uint8Array
+    +headers: Record~string, string~
+  }
 
-**Responsabilidad:** generar apoyo conversacional contextualizado, recuperar fragmentos académicos autorizados mediante RAG, consumir cuotas según plan, registrar consumo técnico y económico, y administrar procesos de embeddings/indexación/versionado. La evaluación oficial permanece en M3.
+  class ConfirmarPagoWebhookUseCase {
+    <<Aplicación>>
+    -verifier: WebhookVerifierPort
+    -uow: PaymentUnitOfWorkPort
+    +ejecutar(cmd: ConfirmarPagoWebhookCommand) Promise~ResultadoWebhook~
+  }
 
-| Elemento | Diseño propuesto |
-|---|---|
-| **Casos de uso** | `ResponderConsulta`, `RecuperarContextoAutorizado`, `IndexarVersionDocumento`, `DesindexarDocumento`, `RegistrarUsoIA`. |
-| **Reglas / entidades** | `SolicitudTutor`, `ContextoAutorizado`, `IndiceVersionado`, `PoliticaCuotaIA`, `ConsumoIA`; no utilizar documentos sin licencia vigente ni datos de terceros. |
-| **Contratos publicados** | `TutorExplanationPort`, `AuthorizedSearchPort`, `AIGenerationPort`, `IndexingRequestPort`. |
-| **Puertos de salida** | `LLMPort`, `EmbeddingPort`, `AuthorizedRetrieverPort`, `LearningContextPort` (M3), `LicensedDocumentPort` (M2), `UsageAndQuotaPort` (M5). |
-| **Adaptadores previstos** | `pgvector`/PostgreSQL; proveedores de embeddings/LLM por seleccionar; Cloudflare Queues/DLQ para indexación. |
-| **Dependencias legítimas** | M1 identidad; M2 licencia/versiones; M3 evidencia y progreso autorizado; M5 derecho de plan y límite de costo/uso. |
-| **Restricción importante** | Filtrar ACL **antes y durante la recuperación**, no solo ocultar una fuente después de que el LLM la haya visto. |
+  class WebhookVerifierPort {
+    <<interface>>
+    +verificar(rawBody: Uint8Array, headers: Record) Promise~VerifiedPaymentEvent~
+  }
 
-Cuando falle IA, la plataforma debe **degradar con seguridad**: mantener accesible el contenido autorizado que no dependa de generación y mostrar un mensaje controlado; no aprobar una nota ni gastar créditos por un resultado no verificable. Los timeouts, reintentos y costos reales deben probarse contra los contratos del proveedor (ADR-019, ADR-026, ADR-053, ADR-054).
+  class PaymentUnitOfWorkPort {
+    <<interface>>
+    +transaccion~T~(fn: (tx: PaymentTransactionPort) => Promise~T~) Promise~T~
+  }
 
-**Trazabilidad:** ADR-018, ADR-019, ADR-026, ADR-042, ADR-053 y ADR-054.
+  class PaymentTransactionPort {
+    <<interface>>
+    +registrarEventoSiNuevo(provider: string, eventId: string) Promise~boolean~
+    +buscarOrdenBloqueada(orderId: string) Promise~PaymentOrder~
+    +guardarOrden(order: PaymentOrder) Promise~void~
+    +activarDerechosDeOrden(order: PaymentOrder) Promise~void~
+    +registrarCreditoInicialSiCorresponde(order: PaymentOrder) Promise~void~
+    +agregarOutbox(tipo: string, orderId: string) Promise~void~
+  }
 
-## 10. M7 — Publicidad y Patrocinios
+  class PaymentOrder {
+    <<Entidad de Dominio>>
+    +id: string
+    +userId: string
+    +productCode: string
+    +policyVersion: string
+    -status: EstadoOrden
+    -referenciaCobro: string
+    +aprobar(referencia: string) void
+    +rechazar() void
+  }
 
-![Figura 10. Diseño interno de M7](./imagenes/m7-interno.png)
+  class VerifiedPaymentEvent {
+    <<Value Object>>
+    +provider: string
+    +eventId: string
+    +orderId: string
+    +reference: string
+    +status: EstadoEvento
+  }
 
-*Figura 10. M7 mantiene independientes las campañas de la información privada sobre aprendizaje.*
+  class PasarelaWebhookAdapter {
+    <<Infraestructura>>
+    -verificarConProveedor: VerificacionOficial
+    +verificar(body: Uint8Array, headers: Record) Promise~VerifiedPaymentEvent~
+  }
 
-**Responsabilidad:** gestionar ubicaciones de anuncios aprobadas, reglas por plan/contexto/edad, campañas, vigencias y métricas agregadas, sin emplear notas, historial de estudios, conversaciones del tutor IA ni información sensible de menores para segmentación.
+  class PostgresPaymentUowAdapter {
+    <<Infraestructura>>
+    -sql: SqlTransactionClient
+    -makeTx: PaymentTransactionFactory
+    +transaccion~T~(fn) Promise~T~
+  }
 
-| Elemento | Diseño propuesto |
-|---|---|
-| **Casos de uso** | `ConfigurarCampana`, `EvaluarUbicacion`, `ObtenerPatrocinioContextual`, `RegistrarImpresionAgregada`. |
-| **Reglas / entidades** | `Campana`, `Ubicacion`, `PoliticaPublicidad`, `MetricaAgregada`; permitir solo ubicaciones autorizadas. |
-| **Contratos publicados** | `AdPlacementQueryPort`, que solo entrega piezas aptas para el contexto declarado. |
-| **Puertos de salida** | `CampaignRepository`, `PlacementPolicyPort`, `AggregatedMetricsPort`. |
-| **Adaptadores previstos** | PostgreSQL; entrega contextual propia; proveedor externo únicamente si sus condiciones de privacidad se validan. |
-| **Dependencias legítimas** | M1 confirma edad/permisos pertinentes sin divulgar datos sensibles; M5 informa derecho del plan sin compartir pagos detallados. |
-| **Restricción importante** | No mostrar publicidad dentro de exámenes, clases Live, editor Studio, contenido de pago ni procesos de liquidación. |
+  PagosWebhookController --> ConfirmarPagoWebhookUseCase : invoca
+  PagosWebhookController ..> ConfirmarPagoWebhookCommand : construye
+  ConfirmarPagoWebhookUseCase --> WebhookVerifierPort : depende de puerto
+  ConfirmarPagoWebhookUseCase --> PaymentUnitOfWorkPort : depende de puerto
+  ConfirmarPagoWebhookUseCase ..> PaymentTransactionPort : opera en transacción
+  ConfirmarPagoWebhookUseCase ..> PaymentOrder : aplica reglas
+  WebhookVerifierPort ..> VerifiedPaymentEvent : retorna
+  PaymentTransactionPort ..> PaymentOrder : hidrata y persiste
+  PasarelaWebhookAdapter ..|> WebhookVerifierPort : implementa
+  PostgresPaymentUowAdapter ..|> PaymentUnitOfWorkPort : implementa
+```
 
-**Trazabilidad:** ADR-025. Las medidas de consentimiento, tratamiento de información de menores y cumplimiento legal necesitan validación específica antes de activar campañas.
+**Figura 8.** Diagrama de clases UML del flujo `ConfirmarPagoWebhook` en **M5 — Suscripciones y Pagos**.
 
-## 11. Dependencias y contratos entre módulos
+### 4.1. Notación UML utilizada
 
-La matriz indica **quién consume el contrato** y **quién lo ofrece**. No deben crearse llamadas directas a repositorios privados ni a esquemas de la base de datos de otro módulo.
+| Símbolo | Significado | Aplicación a Mentelyx |
+|---|---|---|
+| Línea continua con flecha | Asociación o referencia | `ConfirmarPagoWebhookUseCase` utiliza un puerto |
+| Línea discontinua con flecha | Dependencia temporal | El caso de uso utiliza la entidad `PaymentOrder` |
+| Línea discontinua con triángulo hueco | Realización de interfaz | `PostgresPaymentUowAdapter` implementa `PaymentUnitOfWorkPort` |
+| `«interface»` | Contrato independiente del proveedor | `WebhookVerifierPort` |
+| `«entidad»` | Objeto con identidad e invariantes | `PaymentOrder` |
+| `+` / `-` | Miembro público / privado | `+ aprobar()` / `- status` |
 
-| Consumidor | Proveedor | Contrato interno propuesto | Datos mínimos / razón |
+### 4.2. Reglas expresadas por las clases
+
+- `PagosWebhookController` recibe **cuerpo crudo y cabeceras**; no acepta un campo `approved` como confirmación confiable del cobro.
+- `WebhookVerifierPort` exige validar la notificación según el protocolo de la pasarela seleccionada, incluso una consulta a la API del proveedor si su contrato lo exige.
+- `PaymentOrder` conserva transiciones válidas de la orden y la versión de condiciones comerciales asociada.
+- `PaymentUnitOfWorkPort` representa el límite de una **única transacción local PostgreSQL**. Es necesario combinar deduplicación persistente, estado de orden, derechos, movimientos aplicables y outbox.
+- `PostgresPaymentUowAdapter` implementa ese contrato sin que la aplicación importe el driver SQL.
+
+Los movimientos de **Live** y **Studio** no se confunden; el producto **Plus/Pro** utiliza sus propias cuotas IA y puede no requerir crédito Live. Los importes y cantidades finales quedan condicionados a la política comercial aprobada.
+
+## 5. Flujo de ejecución: confirmar pago y activar derechos
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant GW as Pasarela de Pagos
+  participant CTRL as PagosWebhookController
+  participant UC as ConfirmarPagoWebhookUseCase
+  participant VER as PasarelaWebhookAdapter (WebhookVerifierPort)
+  participant UOW as PostgresPaymentUowAdapter (PaymentUnitOfWorkPort)
+  participant ORD as PaymentOrder (Dominio)
+  participant DB as Neon PostgreSQL (ACID)
+  participant Q as Outbox / Cloudflare Queues
+
+  GW->>CTRL: POST /api/v1/pagos/webhook (rawBody + headers)
+  CTRL->>UC: ejecutar({rawBody, headers})
+  UC->>VER: verificar(rawBody, headers)
+  VER-->>UC: VerifiedPaymentEvent (provider, eventId, orderId, reference, status)
+
+  UC->>UOW: transaccion(async tx => ...)
+  UOW->>DB: BEGIN TRANSACTION
+  UOW->>DB: INSERT processed_webhooks (provider, eventId) ON CONFLICT DO NOTHING
+  alt Evento ya procesado (duplicado)
+    DB-->>UOW: 0 filas afectadas
+    UOW->>DB: COMMIT
+    UOW-->>UC: 'duplicado'
+    UC-->>CTRL: 'duplicado'
+    CTRL-->>GW: 200 OK {recibido: true, resultado: 'duplicado'}
+  else Evento nuevo
+    DB-->>UOW: 1 fila insertada
+    UOW->>DB: SELECT * FROM payment_orders WHERE id = orderId FOR UPDATE
+    DB-->>UOW: Datos de PaymentOrder
+    alt Orden en estado PENDIENTE y evento APROBADO
+      UC->>ORD: aprobar(reference)
+      UC->>UOW: guardarOrden(order)
+      UOW->>DB: UPDATE payment_orders SET status = 'APROBADA'
+      UC->>UOW: activarDerechosDeOrden(order)
+      UOW->>DB: INSERT/UPDATE subscriptions & entitlements (según policyVersion)
+      UC->>UOW: registrarCreditoInicialSiCorresponde(order)
+      UOW->>DB: INSERT credit_ledger_entries (UNIQUE operation_key)
+      UC->>UOW: agregarOutbox('PagoConfirmado', order.id)
+      UOW->>DB: INSERT outbox_events
+      UOW->>DB: COMMIT
+      UOW-->>UC: 'procesado'
+      UC-->>CTRL: 'procesado'
+      CTRL-->>GW: 200 OK {recibido: true, resultado: 'procesado'}
+      DB--)Q: Publicación asíncrona diferida (Outbox Publisher -> Queues)
+    else Evento RECHAZADO
+      UC->>ORD: rechazar()
+      UC->>UOW: guardarOrden(order) + agregarOutbox('PagoRechazado', order.id)
+      UOW->>DB: UPDATE payment_orders + INSERT outbox_events + COMMIT
+      UOW-->>UC: 'procesado'
+      UC-->>CTRL: 'procesado'
+      CTRL-->>GW: 200 OK {recibido: true, resultado: 'procesado'}
+    end
+  end
+```
+
+**Figura 9.** Diagrama de secuencia UML de confirmación idempotente de webhook de pago en **M5 — Suscripciones y Pagos**.
+
+**Escenario:** una pasarela envía una notificación de pago de una orden creada previamente en Mentelyx. La ruta es ilustrativa: `POST /api/v1/pagos/webhook`. El flujo describe la confirmación **asíncrona** y no la creación del pago.
+
+| Paso | Origen → destino | Acción | Capa |
 |---|---|---|---|
-| M2 | M1 | `AuthorizationPort` | Autor/autorización para publicar o editar. |
-| M2 | M5 | `EntitlementQueryPort` / `CreditReservationPort` | Acceso a contenido de pago y consumos Studio. |
-| M3 | M2 | `ContentCatalogPort` | Ejercicio y versión autorizada que se evalúan. |
-| M3 | M5 | `EntitlementQueryPort` | Derecho a una evaluación o simulacro premium. |
-| M4 | M1 | `TeacherEligibilityPort` | Habilitación para impartir la actividad. |
-| M4 | M5 | `CreditReservationPort` | Reservar/consumir derecho a una clase Live. |
-| M6 | M1 | `AuthorizationPort` | Identidad y políticas por recurso. |
-| M6 | M2 | `LicensedDocumentPort` | Material autorizado, licencia y versión. |
-| M6 | M3 | `LearningProgressPort` | Progreso autorizado necesario para contextualizar. |
-| M6 | M5 | `EntitlementQueryPort` / `UsageAndQuotaPort` | Cuotas, autorización de consumo y presupuesto IA. |
-| M7 | M1, M5 | `AuthorizationPort` / `EntitlementQueryPort` | Solo condiciones mínimas de contexto/plan, sin perfil académico. |
-| M5 | M4 | `ClassAttendancePort` | Evidencia autorizada cuando se liquida una clase bajo contrato. |
+| 1 | Pasarela → controlador | Enviar notificación HTTPS con cuerpo y cabeceras originales | Externo → Presentación |
+| 2 | Controlador → caso de uso | `ejecutar({rawBody, headers})` | Presentación → Aplicación |
+| 3 | Caso de uso → `WebhookVerifierPort` | Comprobar firma/origen y, si corresponde, consultar estado real en proveedor | Aplicación → Dominio (puerto) |
+| 4 | Verificador → caso de uso | Retornar evento normalizado y **verificado**: proveedor, ID, orden, referencia y estado | Infraestructura → Aplicación |
+| 5 | Caso de uso → `PaymentUnitOfWorkPort` | Abrir transacción PostgreSQL | Aplicación → Dominio (puerto) |
+| 6 | Adaptador SQL → PostgreSQL | Registrar `(proveedor, eventoId)` con restricción `UNIQUE` | Infraestructura → BD |
+| 7A | PostgreSQL → caso de uso | Si el evento ya fue procesado, omitir efectos nuevos | Infraestructura → Aplicación |
+| 8A | Caso de uso → controlador | Cerrar de forma segura y responder `200 OK` | Aplicación → Presentación |
+| 7B | PostgreSQL → caso de uso | Si el evento es nuevo, bloquear/leer la orden y validar transición | Infraestructura → Aplicación |
+| 8B | Caso de uso → dominio | Aplicar estado de la orden y versión comercial registrada | Aplicación → Dominio |
+| 9B | Caso de uso → transacción | Activar **derechos por producto**, sin inventar beneficios | Aplicación → BD mediante puerto |
+| 10B | Caso de uso → transacción | Registrar **créditos solo si corresponden**; clave única por operación | Aplicación → BD mediante puerto |
+| 11B | Caso de uso → transacción | Guardar evento outbox y finalizar estado de la notificación | Aplicación → BD mediante puerto |
+| 12B | Transacción → PostgreSQL | `COMMIT` atómico; si hay error, `ROLLBACK` | Infraestructura → BD |
+| 13B | Caso de uso → controlador | Responder `200 OK` después de una confirmación durable | Aplicación → Presentación |
+| Posterior | Publicador outbox → Queues | Publicación diferida y reintentos; consumidor idempotente | Infraestructura |
 
-**Regla contra dependencias circulares:** cuando dos módulos necesitan colaborar en ambos sentidos (por ejemplo, M4↔M5), se separan **interfaces de lectura y comandos**, el coordinador de caso de uso queda definido y los tipos compartidos se reducen a DTO de contrato. No se permite `import` de repositorios o entidades internas de otro módulo. Los diagramas de dependencias se verifican con una herramienta de análisis estático en CI.
+**Alternativas que no deben ocultarse en el diagrama:** firma inválida → rechazar la notificación sin modificar la orden; orden inexistente o evento contradictorio → guardar evidencia/reconciliar o reintentar según causa, sin conceder beneficios; error de base de datos → **no responder éxito como si el cobro ya estuviera aplicado**. Un reembolso es otro evento de negocio y no equivale a una duplicación de la confirmación.
 
-## 12. Flujos dinámicos críticos
+**Garantía técnica exigida:** `INSERT ... ON CONFLICT` o una operación equivalente **dentro de una transacción**, más restricciones de unicidad de negocio sobre el derecho/movimiento. Consultar primero con un `SELECT` sin `UNIQUE` no basta ante dos webhooks concurrentes. No existe una transacción distribuida entre PostgreSQL y la pasarela: ante estados inciertos se necesita conciliación.
 
-### 12.1. Diagnóstico académico (figura 11)
+## 6. Código de referencia
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor E as Estudiante
-    participant W as Web/PWA
-    participant M1 as M1 Identidad
-    participant M3 as M3 Evaluación
-    participant M2 as M2 Contenidos
-    participant SQL as PostgreSQL
+Los ejemplos expresan **contratos y organización**, como en la guía docente. Son fragmentos de diseño para revisar antes de programar, no una implementación desplegada. Se omiten migraciones completas, autenticación administrativa, logs, instrumentación y configuración del proveedor porque corresponden a sus archivos especializados.
 
-    E->>W: Solicitar diagnóstico
-    W->>M3: IniciarDiagnostico (token)
-    M3->>M1: Autorizar estudiante y recurso
-    M1-->>M3: Permiso y sujeto verificado
-    M3->>M2: Obtener preguntas y versiones autorizadas
-    M2-->>M3: Preguntas/versiones
-    M3-->>W: Intento + preguntas permitidas
-    E->>W: Enviar respuestas
-    W->>M3: EnviarRespuestas (idIntento)
-    M3->>M3: Corregir con reglas deterministas
-    M3->>SQL: Transacción: resultado + progreso
-    SQL-->>M3: Confirmación
-    M3-->>W: Resultado y siguiente actividad
-    Note over M3: El LLM no establece la nota oficial
-```
-
-**Condición de aceptación:** una solicitud reintentada no genera dos resultados oficiales para el mismo intento; el resultado apunta a la **versión** de los ítems evaluados. La recomendación puede explicarse sin depender de un LLM.
-
-### 12.2. Reserva de aula Live con créditos (figura 12)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor E as Estudiante
-    participant M4 as M4 Clases
-    participant M1 as M1 Identidad
-    participant M5 as M5 Créditos
-    participant SQL as PostgreSQL
-    participant SFU as SFU administrado
-
-    E->>M4: ReservarCupo(sesionId, clave)
-    M4->>M1: Autorizar estudiante
-    M1-->>M4: Autorizado
-    M4->>M5: Consultar derecho Live
-    M5-->>M4: Derecho válido / inválido
-    alt Derecho válido y cupo disponible
-        Note over M4,SQL: Coordinación SQL con invariantes de M4 y M5
-        M4->>SQL: Bloquear/actualizar cupo y verificar unicidad
-        M4->>M5: Reservar crédito (misma operación lógica)
-        M5->>SQL: Registrar movimiento y estado
-        SQL-->>M4: Confirmación consistente
-        M4-->>E: Reserva confirmada
-        E->>M4: Solicitar acceso al iniciar sesión
-        M4->>SFU: Crear credencial temporal con rol autorizado
-        SFU-->>M4: Token de acceso temporal
-        M4-->>E: Token efímero para conexión directa
-    else Sin cupo, sin crédito o fallo
-        M4-->>E: Rechazo o reserva pendiente sin doble consumo
-    end
-    Note over E,SFU: El audio/vídeo circula E↔SFU, no a través de la API
-```
-
-**Condición de aceptación:** dos usuarios no pueden confirmar el mismo último cupo, y un reintento no puede consumir crédito dos veces. El mecanismo de transacción compartida o compensación debe definirse y verificarse antes de habilitar venta de clases.
-
-### 12.3. Webhook de pago e idempotencia (figura 13)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant PAY as Pasarela de pago
-    participant H as Webhook Hono
-    participant M5 as M5 Pagos
-    participant SQL as PostgreSQL
-    participant OUT as Publicador Outbox
-    participant Q as Cloudflare Queues
-
-    PAY->>H: Evento firmado de pago
-    H->>H: Validar firma y formato
-    H->>M5: ConfirmarPago(proveedor, evento, orden)
-    M5->>SQL: Iniciar transacción
-    M5->>SQL: Insertar clave de evento con UNIQUE
-    alt Evento y acreditación nuevos, transición válida
-        M5->>SQL: Actualizar orden y entitlement
-        M5->>SQL: Registrar movimiento ledger (si aplica)
-        M5->>SQL: Insertar outbox dentro de transacción
-        M5->>SQL: Commit
-        M5-->>H: Confirmación aplicada
-    else Reentrega sin nuevos efectos
-        M5-->>H: Evento ya gestionado / estado seguro
-    end
-    H-->>PAY: Respuesta HTTP según contrato
-    OUT->>SQL: Leer outbox pendiente
-    OUT->>Q: Publicar con idempotencia
-    Q-->>OUT: Aceptación
-    OUT->>SQL: Marcar publicado
-    Note over PAY,SQL: No confundir deduplicación de evento con acreditación lógica única
-```
-
-**Condición de aceptación:** entregar diez veces el mismo webhook (incluso concurrentemente) no cambia más de una vez el derecho lógico ni repite el movimiento. Un fallo al publicar Queues **después** del commit deja el evento en Outbox para reintento. Reembolsos son eventos distintos y requieren transición válida; no se eliminan como si fueran duplicados.
-
-### 12.4. Consulta de Tutor IA con RAG (figura 14)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor E as Estudiante
-    participant M6 as M6 Tutor IA
-    participant M1 as M1 Identidad
-    participant M5 as M5 Cuotas IA
-    participant M2 as M2 Contenidos
-    participant V as pgvector
-    participant AI as Proveedor IA
-
-    E->>M6: Formular pregunta
-    M6->>M1: Autorizar usuario
-    M1-->>M6: Identidad y permisos
-    M6->>M5: Validar cuota/presupuesto de operación
-    alt Autorizado y dentro del límite
-        M5-->>M6: Presupuesto permitido
-        M6->>M2: Consultar materiales licenciados por contexto
-        M2-->>M6: IDs, versiones y ACL válidos
-        M6->>V: Búsqueda semántica filtrada por autorización
-        V-->>M6: Fragmentos candidatos
-        M6->>M6: Revalidar ACL y límites del contexto
-        M6->>AI: Prompt acotado + fragmentos autorizados
-        AI-->>M6: Respuesta / consumo medido
-        M6->>M5: Registrar uso según política e idempotencia
-        M6-->>E: Explicación y referencias permitidas
-    else Sin derecho o proveedor no disponible
-        M6-->>E: Respuesta controlada sin divulgar material
-    end
-    Note over M6,V: Nunca consultar fragmentos privados sin aplicar ACL
-```
-
-**Condición de aceptación:** un usuario no obtiene material de otro estudiante, de contenido sin licencia o de una versión revocada; el costo se registra según resultado del proveedor, evitando consumo duplicado por reintento.
-
-### 12.5. Generación de recurso Studio (figura 15)
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor U as Usuario Studio
-    participant M2 as M2 Studio y contenidos
-    participant M5 as M5 Créditos Studio
-    participant Q as Queue / consumidor
-    participant M6 as M6 Motor IA
-    participant DB as MongoDB + R2 + PostgreSQL
-
-    U->>M2: Generar recurso a partir de proyecto
-    M2->>M5: Reservar crédito según política versionada
-    alt Saldo/presupuesto válido
-        M5-->>M2: Reserva con identificador único
-        M2->>DB: Crear trabajo y versión pendiente
-        M2->>Q: Solicitar ejecución asíncrona
-        Q->>M6: Ejecutar generación con clave de idempotencia
-        M6-->>Q: Resultado o error trazable + consumo
-        Q->>M2: Resultado y referencias a objetos
-        M2->>DB: Guardar versión y objeto resultante
-        M2->>M5: Confirmar consumo real o revertir según política
-        M2-->>U: Versión disponible / estado recuperable
-    else Sin saldo o presupuesto
-        M2-->>U: Denegar generación sin crear cargo
-    end
-    Note over M2,M5: Edición manual: sin consumo de créditos IA
-    Note over Q,M6: Queues admite reentregas: consumidor idempotente
-```
-
-**Condición de aceptación:** repetir una solicitud con la misma clave lógica no duplica generación ni débito; un error parcial permite reconciliar costo y estado antes de reversar, sin asumir que un timeout no tuvo gasto real.
-
-## 13. Interfaces públicas internas: ejemplos de contratos
-
-El siguiente fragmento TypeScript es **pseudocódigo de diseño**, no implementación existente. Muestra contratos pequeños que ocultan los adaptadores y permiten pruebas con dobles (*mocks/fakes*).
+### 6.1. Dominio: entidad y contratos
 
 ```ts
-// Contratos ilustrativos: NO representan código ya desarrollado.
-type ResourceRef = { kind: string; id: string };
+// dominio/payment-order.ts
+export type EstadoOrden = 'PENDIENTE' | 'APROBADA' | 'RECHAZADA';
 
-type AuthorizationPort = {
-  canAccess(input: {
-    subjectId: string;
-    action: string;
-    resource: ResourceRef;
-  }): Promise<boolean>;
-};
+export class PaymentOrder {
+  private status: EstadoOrden;
+  private referenciaCobro?: string;
 
-type ContentVersionPort = {
-  getAuthorizedVersion(input: {
-    subjectId: string;
-    contentId: string;
-    versionId: string;
-  }): Promise<{ id: string; versionId: string } | null>;
-};
+  constructor(
+    readonly id: string,
+    readonly userId: string,
+    readonly productCode: string,
+    readonly policyVersion: string,
+    status: EstadoOrden,
+  ) {
+    this.status = status;
+  }
 
-type CreditReservationPort = {
-  reserve(input: {
-    ownerId: string;
-    product: 'LIVE' | 'STUDIO';
-    operationId: string; // clave estable de operación lógica
-    policyVersion: string;
-  }): Promise<{ reservationId: string; status: 'RESERVED' | 'REJECTED' }>;
-};
+  get estado(): EstadoOrden { return this.status; }
 
-type PaymentPort = {
-  createPayment(input: {
-    orderId: string;
-    amountMinorUnits: number;
-    currency: string;
-    idempotencyKey: string;
-  }): Promise<{ providerPaymentId: string; state: string }>;
+  aprobar(referencia: string): void {
+    if (this.status !== 'PENDIENTE' || !referencia) {
+      throw new Error('Transición de pago inválida');
+    }
+    this.status = 'APROBADA';
+    this.referenciaCobro = referencia;
+  }
+
+  rechazar(): void {
+    if (this.status !== 'PENDIENTE') {
+      throw new Error('Solo puede rechazarse una orden pendiente');
+    }
+    this.status = 'RECHAZADA';
+  }
+}
+```
+
+```ts
+// dominio/verified-payment-event.ts
+export type VerifiedPaymentEvent = {
+  provider: string;
+  eventId: string;
+  orderId: string;
+  reference: string;
+  status: 'APROBADO' | 'RECHAZADO';
 };
 ```
 
-Estos tipos ilustran los **límites** de responsabilidad. Antes de publicar los contratos finales se deben fijar **DTO, códigos de error, permisos de invocación, invariantes, claves idempotentes, control de transacciones y compatibilidad de versiones**. Las cantidades de dinero en unidades menores evitan representar importes contables con números flotantes sin política de redondeo.
+```ts
+// dominio/webhook-verifier.port.ts
+import type { VerifiedPaymentEvent } from './verified-payment-event';
 
-## 14. Organización referencial del código
-
-**Estructura objetivo** (no supone que estas carpetas existan todavía):
-
-```text
-tecnologia/
-└── backend/
-    └── src/
-        ├── app/
-        │   ├── http/                  # Hono: rutas, auth inicial y errores
-        │   ├── bootstrap/             # Composición e inyección de dependencias
-        │   └── workers/               # Consumidores de Queues / jobs
-        ├── modules/
-        │   ├── m1-usuarios/
-        │   ├── m2-contenidos/
-        │   ├── m3-aprendizaje/
-        │   ├── m4-clases/
-        │   ├── m5-pagos/
-        │   ├── m6-tutor-ia/
-        │   └── m7-publicidad/
-        └── shared/
-            ├── contracts/             # DTO compartidos mínimos
-            ├── infrastructure/        # Configuración técnica reutilizable
-            └── observability/         # Trazabilidad sin datos sensibles
+export interface WebhookVerifierPort {
+  verificar(
+    rawBody: Uint8Array,
+    headers: Record<string, string>,
+  ): Promise<VerifiedPaymentEvent>;
+}
 ```
 
-Dentro de **cada módulo**, se propone una estructura proporcional a su complejidad:
+```ts
+// dominio/payment-unit-of-work.port.ts
+import type { PaymentOrder } from './payment-order';
 
-```text
-m5-pagos/                          # Ejemplo de módulo, no todo el backend
-├── domain/                        # Entidades, políticas, invariantes
-├── application/
-│   ├── use-cases/                 # ConfirmarPago, ReservarCredito...
-│   └── ports/                     # PaymentPort, UnitOfWork...
-├── adapters/
-│   ├── inbound/                   # Rutas, handlers de webhook
-│   └── outbound/                  # Repositorios SQL, pasarela, outbox
-├── public/                        # Contratos que otros módulos pueden importar
-└── tests/                         # Pruebas de dominio, contratos y concurrencia
+export interface PaymentTransactionPort {
+  registrarEventoSiNuevo(provider: string, eventId: string): Promise<boolean>;
+  buscarOrdenBloqueada(orderId: string): Promise<PaymentOrder | null>;
+  guardarOrden(order: PaymentOrder): Promise<void>;
+  activarDerechosDeOrden(order: PaymentOrder): Promise<void>;
+  registrarCreditoInicialSiCorresponde(order: PaymentOrder): Promise<void>;
+  agregarOutbox(tipo: string, orderId: string): Promise<void>;
+}
+
+export interface PaymentUnitOfWorkPort {
+  transaccion<T>(fn: (tx: PaymentTransactionPort) => Promise<T>): Promise<T>;
+}
 ```
 
-La estructura de carpetas **no basta** para aplicar Clean Architecture: importaciones, pruebas, propiedad de datos y ensamblaje deben cumplir la regla de dependencias. Se evitan jerarquías de clases innecesarias para módulos sencillos.
+Los métodos `activarDerechosDeOrden` y `registrarCreditoInicialSiCorresponde` **no son escrituras sin controles**: su implementación debe consultar la versión comercial vinculada a la orden y aplicar `UNIQUE` por operación. Una suscripción Plus/Pro no se interpreta automáticamente como saldo Live.
 
-## 15. Verificación del diseño y criterios de aceptación
+### 6.2. Aplicación: caso de uso
 
-| Prueba de arquitectura / comportamiento | Resultado exigido antes de implementar la función en producción | Responsable |
-|---|---|---|
-| Dependencias estáticas | Dominio sin importaciones de SDK, Hono, ORM o código interno de otro módulo. | M1–M7 |
-| Autorización por recurso | Intentar consultar resultados, proyectos, clases o pagos ajenos devuelve rechazo sin filtrar información. | M1 y consumidores |
-| Reproducibilidad del diagnóstico | Mismo intento/versión/criterio da resultado consistente; auditoría de revisiones cuando aplique. | M3 + M2 |
-| Último cupo Live | Reservas simultáneas no exceden el aforo ni crean consumos duplicados. | M4 + M5 |
-| Reentrega de pago | Repetir webhooks no duplica entitlements, movimientos ni liquidaciones. | M5 |
-| Falla entre SQL y cola | El evento Outbox pendiente vuelve a publicarse; consumidores idempotentes. | M5 + transversal |
-| ACL en RAG | Fragmentos privados, revocados o no licenciados nunca se entregan al LLM. | M6 + M2 + M1 |
-| Fallo de proveedor IA | Mantener contenido no generativo autorizado; no acreditar un resultado ni cobrar sin registrar el estado real. | M6 + M5 |
-| Generación Studio duplicada | Reintentos con la misma clave no duplican el costo ni crean versiones conflictivas. | M2 + M5 + M6 |
-| Anuncios restringidos | No renderizar campañas en exámenes, clases Live, Studio, lecciones de pago o liquidaciones. | M7 |
-| Resiliencia de Redis | Falla de caché no autoriza acceso, cambia una nota ni modifica un saldo. | Transversal |
-| Proveedores externos | Pruebas de contrato, costos, latencia y disponibilidad real en Perú antes de afirmaciones de capacidad. | M2, M4, M5, M6 |
+```ts
+// aplicacion/confirmar-pago-webhook.command.ts
+export type ConfirmarPagoWebhookCommand = {
+  rawBody: Uint8Array;
+  headers: Record<string, string>;
+};
+```
 
-**No se declaran cumplidas** estas pruebas: son condiciones verificables para el desarrollo del primer y sucesivos sprints.
+```ts
+// aplicacion/confirmar-pago-webhook.use-case.ts
+import type { WebhookVerifierPort } from '../dominio/webhook-verifier.port';
+import type { PaymentUnitOfWorkPort } from '../dominio/payment-unit-of-work.port';
+import type { ConfirmarPagoWebhookCommand } from './confirmar-pago-webhook.command';
 
-## 16. Riesgos y decisiones pendientes
+export class ConfirmarPagoWebhookUseCase {
+  constructor(
+    private readonly verifier: WebhookVerifierPort,
+    private readonly uow: PaymentUnitOfWorkPort,
+  ) {}
 
-| Tema | Decisión que ya existe | Lo pendiente de demostrar |
-|---|---|---|
-| Runtime Hono/Workers | Objetivo de backend serverless con TypeScript. | Compatibilidad y conexión segura a Neon/Atlas, límites de tiempo, subidas y consumo. |
-| PostgreSQL + MongoDB | Responsabilidades separadas por dominio. | Reconciliación entre almacenes, migraciones y restauración conjunta de referencias. |
-| Pagos | `PaymentPort`, ledger SQL, webhook, Outbox e idempotencia. | Proveedor final y garantías de firma, reembolso, consulta de estado e idempotencia. |
-| Live | WebRTC SFU gestionado, aulas moderadas (35+1 como referencia). | Aforo real, rendimiento, grabaciones, reconexión, minutos-participante y costo. |
-| RAG | `pgvector`, indexación asíncrona y verificación de ACL. | Calidad pedagógica, desindexación, latencia, costo por uso y privacidad. |
-| Studio | Proyectos versionados en MongoDB; binarios en R2; consumo en ledger M5. | Política final de créditos y conciliación por resultado/timeout. |
-| Seguridad y menores | Autorización backend; publicidad contextual sin segmentación académica. | Políticas de privacidad, consentimiento y tratamiento de datos antes de lanzar. |
-| Disponibilidad | Timeouts, degradación, respaldo y recuperación. | RTO/RPO y pruebas reales; Workers no garantiza por sí solo HA de Neon, Atlas o proveedores. |
+  async ejecutar(cmd: ConfirmarPagoWebhookCommand): Promise<'procesado' | 'duplicado' | 'sin_cambios'> {
+    // El adaptador debe validar la firma y, si aplica, verificar con el proveedor.
+    const event = await this.verifier.verificar(cmd.rawBody, cmd.headers);
 
-## 17. Relación con requisitos, atributos y ADR
+    return this.uow.transaccion(async (tx) => {
+      const nuevo = await tx.registrarEventoSiNuevo(event.provider, event.eventId);
+      if (!nuevo) return 'duplicado';
 
-| Driver / decisión | Módulos afectados | Evidencia en este documento |
-|---|---|---|
-| **ADR-001 / ADR-002**: monolito modular y Clean Architecture | M1–M7 | Figuras 1–2, contratos y estructura de carpetas. |
-| **ADR-004 / ADR-034**: permisos, roles y habilitación | M1, M4, M6 | Figura 4; verificaciones previas a Live/RAG. |
-| **ADR-006 / ADR-023**: consistencia SQL y contenido documental | M1–M6 | Figura 3, tabla de propiedad y puertos de datos. |
-| **ADR-018 / ADR-030**: evaluación reproducible y preparación | M2, M3 | Figura 6 y secuencia 11. |
-| **ADR-015 / ADR-045–046**: aulas Live | M4, M5 | Figura 7 y secuencia 12. |
-| **ADR-007 / ADR-043 / ADR-048 / ADR-052**: transacciones e idempotencia | M5 | Figura 8 y secuencia 13. |
-| **ADR-019 / ADR-026 / ADR-053–054**: tutor RAG y costos | M2, M5, M6 | Figura 9 y secuencia 14. |
-| **ADR-035 / ADR-050**: Studio versionado y créditos | M2, M5, M6 | Figuras 5/8/9 y secuencia 15. |
-| **ADR-025**: anuncios contextuales | M7 | Figura 10 y pruebas de ubicaciones permitidas. |
+      const order = await tx.buscarOrdenBloqueada(event.orderId);
+      if (!order) throw new Error('Orden no encontrada; requiere conciliación');
 
-Para sostener la **trazabilidad completa a RF, atributos AC y drivers DA** frente al docente, debe cotejarse esta tabla con las versiones finales de `03-requisitos-funcionales.md`, `04-atributos-de-calidad.md`, `06-drivers-arquitectonicos.md` y `07-decisiones-arquitectonicas.md`. No se asignan códigos RF nuevos ni números de exigencia no confirmados aquí.
+      // Distintos eventos de la misma operación NO deben repetir sus efectos.
+      if (order.estado !== 'PENDIENTE') return 'sin_cambios';
 
-## 18. Fuentes y documentos relacionados
+      if (event.status === 'RECHAZADO') {
+        order.rechazar();
+        await tx.guardarOrden(order);
+        await tx.agregarOutbox('PagoRechazado', order.id);
+        return 'procesado';
+      }
 
-**Fuentes de arquitectura y notación:**
+      order.aprobar(event.reference);
+      await tx.guardarOrden(order);
+      await tx.activarDerechosDeOrden(order);
+      await tx.registrarCreditoInicialSiCorresponde(order);
+      await tx.agregarOutbox('PagoConfirmado', order.id);
+      return 'procesado';
+    }); // Se confirma todo, o se revierte todo.
+  }
+}
+```
 
-- Martin, R. C. (2017). *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall.
-- Cervantes Maceda, H., Velasco-Elizondo, P., y Castro Careaga, L. (2016). *Arquitectura de software: conceptos y ciclo de desarrollo*. Cengage Learning. Capítulos 3 y 4: diseño, interfaces y documentación mediante vistas.
-- [Simon Brown — C4 model](https://c4model.com/): descomposición del sistema en niveles de abstracción complementarios.
-- [Hono — documentación oficial](https://hono.dev/docs/getting-started/cloudflare-workers): API y ejecución sobre Cloudflare Workers.
-- [GitHub — Mermaid en archivos Markdown](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams): renderizado y edición versionable de diagramas.
-- [Repositorio académico de referencia (Marketplace, Guía 004)](https://github.com/devlizbethjaico/Marketplace-arquitSoft-02): modelo de organización documental; el diseño de Mentelyx es original.
+**Condición previa:** `registrarEventoSiNuevo` debe distinguir un evento **ya completado** de uno pendiente o fallido; el registro y los efectos de negocio se hacen en la misma transacción. La API real de la pasarela puede exigir estados adicionales y reglas de conciliación. El caso anterior es el flujo conceptual mínimo, no una máquina de estados financiera completa.
 
-**Documentación interna de Mentelyx:** `07-decisiones-arquitectonicas.md`, `enfoque-arquitectonico.md`, `estilo-arquitectonico.md`, `componentes-arquitectonicos.md`, `principios-de-diseno.md`, `patrones-de-diseno.md`. La Guía 004 exige guardar texto e imágenes con rutas correctas y exponer la documentación versionada del proyecto en su repositorio.
+### 6.3. Infraestructura: adaptadores
+
+Un adaptador implementa la interfaz sin trasladar el SDK al dominio. La verificación real de firma, timestamp y consulta al proveedor se implementará **solo cuando se seleccione y valide la pasarela**; no se simula una verificación insegura para aparentar que está terminada.
+
+```ts
+// infraestructura/pasarela-webhook.adapter.ts
+import type { VerifiedPaymentEvent } from '../dominio/verified-payment-event';
+import type { WebhookVerifierPort } from '../dominio/webhook-verifier.port';
+
+export type VerificacionOficial = (
+  body: Uint8Array,
+  headers: Record<string, string>,
+) => Promise<VerifiedPaymentEvent>;
+
+export class PasarelaWebhookAdapter implements WebhookVerifierPort {
+  constructor(private readonly verificarConProveedor: VerificacionOficial) {}
+
+  verificar(body: Uint8Array, headers: Record<string, string>) {
+    return this.verificarConProveedor(body, headers);
+  }
+}
+```
+
+```ts
+// infraestructura/postgres-payment-uow.adapter.ts
+import type {
+  PaymentTransactionPort, PaymentUnitOfWorkPort,
+} from '../dominio/payment-unit-of-work.port';
+
+// Se conecta mediante un cliente de transacciones compatible con Workers.
+// El driver concreto se decidirá en la prueba técnica de conectividad.
+export interface SqlTransactionClient {
+  transaction<T>(run: (session: unknown) => Promise<T>): Promise<T>;
+}
+
+export type PaymentTransactionFactory = (session: unknown) => PaymentTransactionPort;
+
+export class PostgresPaymentUowAdapter implements PaymentUnitOfWorkPort {
+  constructor(
+    private readonly sql: SqlTransactionClient,
+    private readonly makeTx: PaymentTransactionFactory,
+  ) {}
+
+  transaccion<T>(fn: (tx: PaymentTransactionPort) => Promise<T>): Promise<T> {
+    return this.sql.transaction((session) => fn(this.makeTx(session)));
+  }
+}
+```
+
+**Implementación posterior imprescindible:** `PaymentTransactionFactory` construirá los repositorios transaccionales concretos que comparten **la misma sesión y el mismo COMMIT**. Debe implementar índices `UNIQUE`, bloqueos apropiados, outbox y ledger por producto. El fragmento no pretende sustituir ese código ni garantizar por sí solo la seguridad.
+
+### 6.4. Presentación: controlador Hono
+
+```ts
+// presentacion/pagos-webhook.controller.ts
+import type { Context } from 'hono';
+import { ConfirmarPagoWebhookUseCase } from '../aplicacion/confirmar-pago-webhook.use-case';
+
+export class PagosWebhookController {
+  constructor(private readonly confirmarPago: ConfirmarPagoWebhookUseCase) {}
+
+  recibir = async (c: Context): Promise<Response> => {
+    const rawBody = new Uint8Array(await c.req.arrayBuffer());
+    const headers = Object.fromEntries(c.req.raw.headers.entries());
+    const resultado = await this.confirmarPago.ejecutar({ rawBody, headers });
+    return c.json({ recibido: true, resultado }, 200);
+  };
+}
+```
+
+La ruta se monta mediante Hono bajo el prefijo de la API, por ejemplo `app.route('/api/v1/pagos', modulo.routes)`. Los errores de firma, validación o persistencia se traducen por el manejo global de errores; **no** deben producir un `200 OK` ficticio. La respuesta HTTP se ajustará al contrato de la pasarela escogida.
+
+### 6.5. Raíz de composición
+
+```ts
+// suscripciones-pagos.module.ts
+import { Hono } from 'hono';
+import { ConfirmarPagoWebhookUseCase } from './aplicacion/confirmar-pago-webhook.use-case';
+import { PagosWebhookController } from './presentacion/pagos-webhook.controller';
+import {
+  PasarelaWebhookAdapter, type VerificacionOficial,
+} from './infraestructura/pasarela-webhook.adapter';
+import {
+  PostgresPaymentUowAdapter,
+  type SqlTransactionClient,
+  type PaymentTransactionFactory,
+} from './infraestructura/postgres-payment-uow.adapter';
+
+export function crearModuloSuscripcionesPagos(deps: {
+  verificarConProveedor: VerificacionOficial;
+  sql: SqlTransactionClient;
+  makeTx: PaymentTransactionFactory;
+}) {
+  const verifier = new PasarelaWebhookAdapter(deps.verificarConProveedor);
+  const uow = new PostgresPaymentUowAdapter(deps.sql, deps.makeTx);
+  const useCase = new ConfirmarPagoWebhookUseCase(verifier, uow);
+  const controller = new PagosWebhookController(useCase);
+
+  const routes = new Hono();
+  routes.post('/webhook', (c) => controller.recibir(c));
+  return { routes };
+}
+```
+
+Este archivo es el **punto de ensamblaje**: conoce la infraestructura y las clases de aplicación, mientras `ConfirmarPagoWebhookUseCase` depende exclusivamente de puertos. El `index.ts` solo debe exportar lo necesario para el ensamblaje global y los **contratos internos autorizados**, no tablas ni repositorios concretos.
 
 ---
 
-**Conclusión arquitectónica:** Mentelyx mantiene **siete módulos de negocio claramente delimitados** en un monolito modular, aplica Clean Architecture dentro de cada uno y separa la propiedad de datos y los contratos. Las operaciones de **evaluación, reservas, pagos, créditos, contenido privado e IA** poseen mecanismos explícitos para evitar duplicidades, accesos indebidos y dependencias ocultas. Este documento describe el diseño a implementar y las pruebas necesarias para validarlo, no un producto ya construido.
+**Documentos relacionados (sin duplicarlos aquí):** `componentes-arquitectonicos.md` (C4 nivel 3), `enfoque-arquitectonico.md` (Clean Architecture), `07-decisiones-arquitectonicas.md` (ADR), `patrones-de-diseno.md` (mecanismos compartidos) y los requisitos/atributos de calidad en `01-analisis-de-sistema/`.
+
+**Referencias metodológicas:** [Ejemplo de la docente — `diseño-interno-de-modulos.md`](https://github.com/devlizbethjaico/Marketplace-arquitSoft-02/blob/main/docs/03-dise%C3%B1o-de-software/dise%C3%B1o-interno/dise%C3%B1o-interno-de-modulos.md) · [Clean Architecture — Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) · [C4 Model — Code diagrams](https://c4model.com/diagrams/code).

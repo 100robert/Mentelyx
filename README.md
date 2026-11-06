@@ -1,6 +1,7 @@
 # Mentelyx — Plataforma educativa y arquitectura de software
 
-> **Versión:** 1.5 — revisión integral del análisis de Mentelyx (20 de octubre de 2026).  **Estado:** arquitectura de referencia definida; importes comerciales, cuotas y contratos sujetos a validación. No implica software ya desarrollado ni servicios contratados.
+> **Versión:** 2.0 — documentación integral finalizada (Análisis, Arquitectura, Diseño Interno/Externo y Modelo C4).  
+> **Estado:** arquitectura y diseño de software completos y listos para iniciar la fase de desarrollo; importes comerciales, cuotas y contratos sujetos a validación en piloto. No implica software ya desplegado en producción ni servicios externos contratados.
 
 ## 1. Propósito del proyecto
 
@@ -85,29 +86,54 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 
 ## 7. Fases y límites
 
-1. **Documentación y prototipos:** este conjunto `README`+`01–08`; luego estilo y enfoque arquitectónico.
-2. **Construcción local:** identidad, catálogo, evaluaciones, Studio MVP, planes/créditos, pagos sandbox y pruebas de calidad; desplegar por incrementos.
-3. **Piloto limitado:** medir IA real por generación, pruebas docentes, verificaciones de capacidad WebRTC, funcionamiento pasarela, conciliación, costos y restauración.
+1. **Documentación y diseño (Completado):** análisis de sistema (`01`), arquitectura de software (`02`), diseño interno/externo (`03`) y modelo C4 (`04`).
+2. **Construcción local (Siguiente paso):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, identidad (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
+3. **Piloto limitado:** medir IA real por generación, pruebas docentes, verificaciones de capacidad WebRTC (35+1), funcionamiento pasarela, conciliación, costos y restauración.
 4. **Lanzamiento comercial:** solo servicios cuyos permisos, seguridad, capacidad, costos, términos y disponibilidad hayan sido verificados; activación progresiva de planes.
 5. **Posterior:** convenios escolares, Studio Equipos, clases masivas más allá de 35, modelos IA propios, eventual Kafka y alta disponibilidad superior contratada.
 
-## 8. Estructura documental y estado
+## 8. Estructura documental completa y estado
 
-| Archivo | Propósito |
-|---|---|
-| `01-actores.md` | Usuarios, sistemas externos y permisos por cuenta |
-| `02-historias-del-usuario.md` | Catálogo HU-01–HU-70, sin perder identificadores originales |
-| `03-requisitos-funcionales.md` | RF-01–RF-99 con priorización, reglas y trazabilidad |
-| `04-atributos-de-calidad.md` | AC-01–AC-11 y objetivos verificables |
-| `05-restricciones.md` | RC-01–RC-37 y límites comerciales, regulatorios y técnicos |
-| `06-drivers-arquitectonicos.md` | DA-01–DA-31, relación RF/AC/RC ↔ decisiones |
-| `07-decisiones-arquitectonicas.md` | ADR-001–ADR-055 (ADR-011 reservado) con alternativas y estados |
-| `08-escenarios-atributos-calidad.md` | EQ-01–EQ-31 con pruebas y métricas; resultados pendientes |
+### 8.1. `docs/01-analisis-de-sistema/` — Análisis del Sistema
+| Archivo | Propósito | Estado |
+|---|---|---|
+| [`01-actores.md`](docs/01-analisis-de-sistema/01-actores.md) | Usuarios, sistemas externos y permisos por cuenta | Completado |
+| [`02-historias-del-usuario.md`](docs/01-analisis-de-sistema/02-historias-del-usuario.md) | Catálogo HU-01–HU-70, sin perder identificadores originales | Completado |
+| [`03-requisitos-funcionales.md`](docs/01-analisis-de-sistema/03-requisitos-funcionales.md) | RF-01–RF-99 con priorización, reglas y trazabilidad | Completado |
+| [`04-atributos-de-calidad.md`](docs/01-analisis-de-sistema/04-atributos-de-calidad.md) | AC-01–AC-11 y objetivos verificables | Completado |
+| [`05-restricciones.md`](docs/01-analisis-de-sistema/05-restricciones.md) | RC-01–RC-37 y límites comerciales, regulatorios y técnicos | Completado |
+| [`06-drivers-arquitectonicos.md`](docs/01-analisis-de-sistema/06-drivers-arquitectonicos.md) | DA-01–DA-31, relación RF/AC/RC ↔ decisiones | Completado |
+| [`07-decisiones-arquitectonicas.md`](docs/01-analisis-de-sistema/07-decisiones-arquitectonicas.md) | ADR-001–ADR-055 (ADR-011 reservado) con alternativas y estados | Completado |
+| [`08-escenarios-atributos-calidad.md`](docs/01-analisis-de-sistema/08-escenarios-atributos-calidad.md) | EQ-01–EQ-31 con pruebas y métricas; resultados pendientes | Completado |
+
+### 8.2. `docs/02-arquitectura-software/` — Arquitectura de Software
+| Archivo | Propósito | Estado |
+|---|---|---|
+| [`arquitectura-inicial.md`](docs/02-arquitectura-software/arquitectura-inicial.md) | Modelo general, entornos y flujos prioritarios de Mentelyx | Completado |
+| [`estilo-arquitectonico.md`](docs/02-arquitectura-software/estilo-arquitectonico.md) | Estilo monolito modular en tres capas y despliegue serverless-first | Completado |
+| [`enfoque-arquitectonico.md`](docs/02-arquitectura-software/enfoque-arquitectonico.md) | Enfoque Clean Architecture, puertos/adaptadores y dirección de dependencias | Completado |
+| [`componentes-arquitectonicos.md`](docs/02-arquitectura-software/componentes-arquitectonicos.md) | Vista de los 7 componentes principales del backend (`C01–C07`) | Completado |
+
+### 8.3. `docs/03-diseño-de-software/` — Diseño Interno y Externo
+| Subcarpeta / Archivo | Propósito | Estado |
+|---|---|---|
+| [`diseño-interno/principios-de-diseño.md`](docs/03-diseño-de-software/diseño-interno/principios-de-diseño.md) | Aplicación de principios SOLID con diagramas por módulo (`M1–M7`) | Completado |
+| [`diseño-interno/patrones-de-diseño.md`](docs/03-diseño-de-software/diseño-interno/patrones-de-diseño.md) | Patrones GoF y de integración (Repository, Adapter, Idempotent Receiver, Outbox, Ledger) | Completado |
+| [`diseño-interno/diseño-interno-de-modulos.md`](docs/03-diseño-de-software/diseño-interno/diseño-interno-de-modulos.md) | Estructura de código de `M1–M7`, vistas de paquetes y UML/TypeScript detallado de `M5` | Completado |
+| [`diseño-externo/01-diseño-de-persistencia-y-datos.md`](docs/03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md) | Esquema ER en PostgreSQL + `pgvector`, colecciones MongoDB, claves Redis y R2 | Completado |
+| [`diseño-externo/02-diseño-de-api-y-contratos.md`](docs/03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md) | Endpoints REST `/api/v1/*`, payloads, idempotencia, webhooks y eventos de Queues | Completado |
+| [`diseño-externo/03-diseño-de-interfaces-y-flujos.md`](docs/03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md) | Mapa de navegación Next.js Web/PWA, vistas por actor y salvaguardas de UI | Completado |
+
+### 8.4. `docs/04-modelo-c4/` — Modelo C4 Completo (Niveles 1 al 4)
+| Archivo | Propósito | Estado |
+|---|---|---|
+| [`Nivel1-DiagramadeContextodelSistema.md`](docs/04-modelo-c4/Nivel1-DiagramadeContextodelSistema.md) | Nivel 1: Actores, sistema central Mentelyx y proveedores externos | Completado |
+| [`Nivel2-DiagramadeContenedores.md`](docs/04-modelo-c4/Nivel2-DiagramadeContenedores.md) | Nivel 2: Web/PWA, Edge, API Hono/Workers, Queues y bases de datos | Completado |
+| [`Nivel3-DiagramadeComponentes.md`](docs/04-modelo-c4/Nivel3-DiagramadeComponentes.md) | Nivel 3: Componentes `C01–C07` del backend, contratos y adaptadores | Completado |
+| [`Nivel4-DiagramadeCodigo.md`](docs/04-modelo-c4/Nivel4-DiagramadeCodigo.md) | Nivel 4: Paquetes `M1–M7`, SOLID y diagramas UML de clases y secuencia | Completado |
 
 ### Glosario breve
 
 - **Hono:** framework TypeScript de API HTTP; **Better Auth:** biblioteca que integraríamos en el código para credenciales/sesiones; **RBAC/ABAC:** permisos por roles y contexto.
 - **WebRTC/SFU:** comunicación audiovisual en tiempo real; **Queues/DLQ:** tareas y cola de fallidos, con posible redelivery; **Redis:** caché, no billetera ni base financiera.
 - **RAG:** recuperación de documentos autorizados para responder; **outbox:** registro transaccional de eventos pendientes de publicar; **idempotencia:** evitar efectos duplicados ante reintentos.
-
-**Documentos de fuentes internas integrados:** versión documental anterior `01–08`, `16-plan-aulas-live.md`, `17-planes-y-rentabilidad.md`, `18-revision-tributaria-y-precios.md` y `19-estudio-de-rentabilidad-studio.md`. La siguiente etapa es documentar **estilo** y **enfoque Clean Architecture**; este paquete no pretende implementarlos todavía.

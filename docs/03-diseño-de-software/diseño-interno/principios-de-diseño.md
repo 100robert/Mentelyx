@@ -42,18 +42,22 @@ La elección de un **monolito modular** no implica que los módulos deban compar
 
 ![Principios SOLID aplicados a M5 — Suscripciones y Pagos de Mentelyx](../../img/principios-solid-mentelyx.png)
 
-**Figura 1.** Diagrama UML representativo de SOLID en **M5 — Suscripciones y Pagos**. Se muestran las cuatro responsabilidades de Clean Architecture y las relaciones entre controladores, casos de uso, entidades, puertos y adaptadores. Las letras S, O, L, I y D identifican ejemplos de principios en clases y contratos. **La figura corresponde a un módulo ilustrativo; SOLID se define para M1–M7 en las secciones siguientes.** Fuente: elaboración propia basada en el formato académico compartido por la docente.
+**Figura 1.** Diagrama UML representativo de SOLID en **M5 — Suscripciones y Pagos**. Se muestran las cuatro responsabilidades de Clean Architecture y las relaciones entre controladores, casos de uso, entidades, puertos y adaptadores. Las letras S, O, L, I y D identifican ejemplos de principios en clases y contratos. **Además de este diagrama general de referencia, en la sección 5 se incluyen las vistas específicas de cada módulo (M1–M7).** Fuente: elaboración propia basada en el formato académico compartido por la docente.
 
 
 > El diagrama es conceptual: la ubicación visual de los puertos junto al dominio no obliga a ubicar sus archivos en `domain/`; los puertos de casos de uso se definirán preferentemente en `application/ports/`. Los adaptadores externos **implementan** esos puertos; el dominio no importa los adaptadores.
 
 ## 5. Aplicación de SOLID por módulo
 
-Los nombres de clases y rutas son **propuestas de implementación TypeScript**, que se validarán cuando diseñemos contratos y persistencia. Cada tabla identifica cómo se aplicará **cada uno de los cinco principios**, no solo el módulo de Pagos.
+Los nombres de clases y rutas son **propuestas de implementación TypeScript**, que se validarán cuando diseñemos contratos y persistencia. Cada tabla y diagrama identifica cómo se aplicará **cada uno de los cinco principios** en M1–M7.
 
 ### 5.1. M1 — Usuarios y Administración
 
 **Responsabilidad:** registro y perfiles, tipos de cuenta, modalidad docente, autenticación integrada, autorizaciones, acreditaciones y operaciones del Superadministrador. La solicitud de tutorías de un universitario adulto autorizado no cambia por sí misma el tipo de cuenta Estudiante.
+
+![Principios SOLID aplicados a M1 — Usuarios y Administración](../../img/principios-solid-m1.png)
+
+**Figura 2.** Aplicación de principios SOLID en **M1 — Usuarios y Administración**.
 
 | SOLID | Aplicación concreta en M1 | Elementos de código previstos |
 |---|---|---|
@@ -70,6 +74,10 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 ### 5.2. M2 — Cursos y Contenidos (Mentelyx Studio)
 
 **Responsabilidad:** cursos, lecciones, materiales, estructura de presentaciones y recursos interactivos; publicación, versionado, archivos, derechos de acceso y gestión de contenido de Studio.
+
+![Principios SOLID aplicados a M2 — Cursos y Contenidos](../../img/principios-solid-m2.png)
+
+**Figura 3.** Aplicación de principios SOLID en **M2 — Cursos y Contenidos (Mentelyx Studio)**.
 
 | SOLID | Aplicación concreta en M2 | Elementos de código previstos |
 |---|---|---|
@@ -89,6 +97,10 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 
 **Responsabilidad:** diagnósticos, ejercicios, simulacros, calificaciones, evidencias y progreso académico. La evaluación oficial debe ser reproducible y no depender de una respuesta generativa no verificable.
 
+![Principios SOLID aplicados a M3 — Evaluaciones y Aprendizaje](../../img/principios-solid-m3.png)
+
+**Figura 4.** Aplicación de principios SOLID en **M3 — Evaluaciones y Aprendizaje**.
+
 | SOLID | Aplicación concreta en M3 | Elementos de código previstos |
 |---|---|---|
 | **S** | Separar entrega de evaluación, corrección, registro de resultado y actualización de progreso; el controlador no calcula notas. | `submit-evaluation.use-case.ts`, `grade-evaluation.use-case.ts`, `record-progress.use-case.ts` |
@@ -105,6 +117,10 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 
 **Responsabilidad:** oferta de sesiones, horarios, cupos, reservas, tutorías, asistencia y conexión controlada con la plataforma audiovisual. Aforo inicial de diseño: hasta **35 estudiantes y un docente** por aula, sujeto a pruebas del proveedor.
 
+![Principios SOLID aplicados a M4 — Docentes y Clases](../../img/principios-solid-m4.png)
+
+**Figura 5.** Aplicación de principios SOLID en **M4 — Docentes y Clases**.
+
 | SOLID | Aplicación concreta en M4 | Elementos de código previstos |
 |---|---|---|
 | **S** | Separar creación de clase, disponibilidad, reserva, validación de habilitación, acceso al aula y registro de asistencia. | `create-class.use-case.ts`, `reserve-class.use-case.ts`, `join-class.use-case.ts` |
@@ -119,7 +135,7 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 
 ### 5.5. M5 — Suscripciones y Pagos
 
-**Responsabilidad:** planes y beneficios, órdenes de pago, webhooks, activación de suscripciones, créditos de Aulas Live y Studio, cancelaciones, reembolsos, conciliación y liquidaciones docentes. **PostgreSQL es la fuente de verdad** para pagos, créditos y movimientos; Redis no se usa como libro mayor.
+**Responsabilidad:** planes y beneficios, órdenes de pago, webhooks, activación de suscripciones, créditos de Aulas Live y Studio, cancelaciones, reembolsos, conciliación y liquidaciones docentes. **PostgreSQL es la fuente de verdad** para pagos, créditos y movimientos; Redis no se usa como libro mayor. *(Diagrama detallado en la Figura 1 de la sección 4).*
 
 | SOLID | Aplicación concreta en M5 | Elementos de código previstos |
 |---|---|---|
@@ -147,6 +163,10 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 
 **Responsabilidad:** tutor educativo, consultas personalizadas, recuperación semántica autorizada (RAG), embeddings, generación de explicaciones, uso de contexto verificable y registro de cuotas/costos de IA.
 
+![Principios SOLID aplicados a M6 — Tutor IA y RAG](../../img/principios-solid-m6.png)
+
+**Figura 6.** Aplicación de principios SOLID en **M6 — Tutor IA y RAG**.
+
 | SOLID | Aplicación concreta en M6 | Elementos de código previstos |
 |---|---|---|
 | **S** | Separar autorización y selección de material, generación de embeddings, recuperación de fragmentos, construcción de contexto, llamada al LLM y medición de consumo. | `answer-with-rag.use-case.ts`, `retrieve-context.service.ts`, `record-ai-usage.use-case.ts` |
@@ -162,6 +182,10 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 ### 5.7. M7 — Publicidad y Patrocinios
 
 **Responsabilidad:** propuestas de campañas, aprobación, ubicaciones permitidas, patrocinios educativos y métricas agregadas sin exposición de datos educativos individuales de menores. **Su implementación comercial puede posponerse** sin eliminar la definición modular.
+
+![Principios SOLID aplicados a M7 — Publicidad y Patrocinios](../../img/principios-solid-m7.png)
+
+**Figura 7.** Aplicación de principios SOLID en **M7 — Publicidad y Patrocinios**.
 
 | SOLID | Aplicación concreta en M7 | Elementos de código previstos |
 |---|---|---|
@@ -347,7 +371,7 @@ La aplicación de SOLID a los siete módulos permite organizar el trabajo por re
 
 No obstante, SOLID **no garantiza** que la plataforma sea segura, rentable, disponible o correcta por sí sola. Son indispensables validaciones de concurrencia, privacidad de menores, costos de IA y video, integridad SQL, contratos con proveedores, observabilidad y pruebas de recuperación.
 
-**Conclusión:** Mentelyx utilizará SOLID como **criterio transversal verificable en M1–M7**. M5 sirve solo como caso de estudio de la **figura UML única**, mientras que este documento establece para todos los módulos los contratos, responsabilidades, puntos de extensión y pruebas que orientarán el desarrollo.
+**Conclusión:** Mentelyx utilizará SOLID como **criterio transversal verificable en M1–M7**. M5 sirve como caso de estudio de la **figura UML general (Figura 1)**, acompañada de las vistas específicas para cada uno de los demás módulos (Figuras 2–7), estableciendo los contratos, responsabilidades, puntos de extensión y pruebas que orientarán el desarrollo.
 
 ## Documentos relacionados
 
@@ -355,4 +379,3 @@ No obstante, SOLID **no garantiza** que la plataforma sea segura, rentable, disp
 - `enfoque-arquitectonico.md`: Clean Architecture y dirección de dependencias.
 - `componentes-arquitectonicos.md`: componentes C4 nivel 3 y relaciones del backend.
 - `patrones-de-diseno.md`: patrones de implementación, idempotencia, consistencia y resiliencia.
-
