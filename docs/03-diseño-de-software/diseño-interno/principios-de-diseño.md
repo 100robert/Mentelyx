@@ -20,8 +20,8 @@ En particular, se busca impedir que los controladores contengan reglas de negoci
 | **Datos** | PostgreSQL local / Neon PostgreSQL + pgvector en producción; MongoDB local / MongoDB Atlas en producción; Redis para caché y estados temporales. |
 | **Archivos y tareas** | Cloudflare R2, Cloudflare Queues y consumidores con DLQ. |
 | **Servicios integrados** | Proveedor de modelos LLM y embeddings; WebRTC/SFU administrado (RealtimeKit candidato); Bunny Stream; pasarela de pagos externa aún por seleccionar. |
-| **Identidad** | Biblioteca de autenticación candidata (Better Auth); reglas propias de autorización RBAC/ABAC y acceso por recurso. |
-| **Tipos de cuenta públicos** | Estudiante, Creador educativo y Docente; Superadministrador como actor interno. Docente independiente o por nivel académico son modalidades del mismo actor. |
+| **Autenticación y control de acceso** | Biblioteca de autenticación candidata (Better Auth); reglas propias de autorización RBAC/ABAC y acceso por recurso. |
+| **Tipos de cuenta públicos** | Estudiante y Docente; Superadministrador como actor interno. Docente independiente o por nivel académico son modalidades del mismo actor. |
 | **Productos** | Suscripciones estudiantiles, Aulas Live y Studio; límites, precios y remuneraciones sujetos a validación. |
 
 La elección de un **monolito modular** no implica que los módulos deban compartir lógica indiscriminadamente. Cada módulo es dueño de sus casos de uso y persistencia; otros módulos colaboran mediante **contratos públicos internos**. Los módulos tampoco son microservicios independientes.
@@ -53,7 +53,7 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 
 ### 5.1. M1 — Usuarios y Administración
 
-**Responsabilidad:** registro y perfiles, tipos de cuenta, modalidad docente, autenticación integrada, autorizaciones, acreditaciones y operaciones del Superadministrador. La solicitud de tutorías de un universitario adulto autorizado no cambia por sí misma el tipo de cuenta Estudiante.
+**Responsabilidad:** gestión de cuentas, autenticación, sesiones y control de acceso; perfiles, tipos de cuenta, modalidad docente, permisos y estados comunicados por M4, y operaciones del Superadministrador. La solicitud de tutorías de un universitario adulto autorizado no cambia por sí misma el tipo de cuenta Estudiante.
 
 ![Principios SOLID aplicados a M1 — Usuarios y Administración](../../img/principios-solid-m1.png)
 
@@ -62,10 +62,12 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 | SOLID | Aplicación concreta en M1 | Elementos de código previstos |
 |---|---|---|
 | **S** | Separar registro, edición de perfiles, solicitud de habilitación, verificación de títulos y autorización de recursos. El controlador no valida títulos ni ejecuta consultas SQL. | `register-user.use-case.ts`, `update-profile.use-case.ts`, `approve-teaching-permission.use-case.ts`, `users.controller.ts` |
-| **O** | Permitir incorporar un mecanismo compatible de verificación de credenciales o correo mediante adaptadores, sin modificar las reglas de autorización del usuario. | `CredentialVerificationPort`, `MailPort`, `verification.adapter.ts` |
-| **L** | Un repositorio PostgreSQL y un doble de prueba deben respetar las mismas reglas sobre usuario inexistente, identificadores y unicidad; el adaptador de identidad debe preservar identidad y estados verificados. | `UserRepository`, `PostgresUserRepository`, `user-repository.contract.spec.ts` |
-| **I** | Separar `UserRepository`, `IdentitySessionPort`, `CredentialVerificationPort` y `MailPort`; quien consulta permisos no debe depender del servicio de correo ni de recuperación de contraseña. | `application/ports/*.port.ts` |
+| **O** | Permitir incorporar adaptadores de consulta de verificaciones del expediente docente o de correo, sin mezclar esos resultados con la autenticación ni modificar las reglas de autorización del usuario. | `CredentialVerificationPort`, `MailPort`, `verification.adapter.ts` |
+| **L** | Un repositorio PostgreSQL y un doble de prueba deben respetar las mismas reglas sobre usuario inexistente, identificadores y unicidad; el adaptador de autenticación debe conservar la asociación entre sesión y cuenta y los estados de autenticación; no debe inferir verificaciones documentales ni habilitaciones. | `UserRepository`, `PostgresUserRepository`, `user-repository.contract.spec.ts` |
+| **I** | Separar `UserRepository`, `SessionPort`, `CredentialVerificationPort` y `MailPort`; quien consulta permisos no debe depender del servicio de correo ni de recuperación de contraseña. | `application/ports/*.port.ts` |
 | **D** | Casos de uso dependen de puertos y políticas internas; adaptadores PostgreSQL, correo y biblioteca de autenticación se conectan en composición. | `check-resource-access.use-case.ts`, `bootstrap/container.ts` |
+
+**Contrato pendiente:** `CredentialVerificationPort` y su adaptador todavía no especifican qué resultado del expediente consultan ni distinguen documentación personal, credenciales académicas y habilitación docente. El contrato debe precisarse con M4 antes de implementarse; no representa validación de contraseñas ni permite exigir títulos a docentes independientes. `SessionPort` se limita a las sesiones de autenticación.
 
 **Reglas que deben permanecer protegidas:** una cuenta Docente puede registrar una modalidad libre o académica; declarar una licenciatura o doctorado **no equivale a una acreditación verificada**; ofrecer tutorías remuneradas exige habilitación; el Superadministrador no obtiene acceso indiscriminado a información sensible fuera de políticas auditables.
 
@@ -141,11 +143,11 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 |---|---|---|
 | **S** | Diferenciar crear checkout, verificar firma y evento de webhook, confirmar pago, consumir créditos y liquidar a un docente. Evitar un `billing.service` que concentre todos los procesos. | `create-checkout.use-case.ts`, `process-payment-webhook.use-case.ts`, `consume-credit.use-case.ts`, `calculate-settlement.use-case.ts` |
 | **O** | Una nueva pasarela con capacidades compatibles entra mediante adaptadores; las reglas comerciales no dependen de los códigos específicos de Culqi o Mercado Pago. | `PaymentCheckoutPort`, `CulqiCheckoutAdapter`, `MercadoPagoCheckoutAdapter` |
-| **L** | Las implementaciones deben respetar importe, moneda, identidad de la orden, estados, errores, idempotencia y garantías de evento. Que dos pasarelas devuelvan `{approved: true}` no las convierte en equivalentes. | `checkout-adapter.contract.spec.ts`, `PaymentEventVerifierPort` |
+| **L** | Las implementaciones deben respetar importe, moneda, identificador de la orden, estados, errores, idempotencia y garantías de evento. Que dos pasarelas devuelvan `{approved: true}` no las convierte en equivalentes. | `checkout-adapter.contract.spec.ts`, `PaymentEventVerifierPort` |
 | **I** | Puertos separados para checkout, verificación de eventos, reembolso (si se admite), repositorios, créditos y transacción. Un caso de uso de confirmación no debe conocer métodos para abrir videollamadas ni generar facturas. | `PaymentCheckoutPort`, `PaymentEventVerifierPort`, `PaymentRefundPort`, `CreditLedgerRepository`, `UnitOfWork` |
 | **D** | Los casos de uso dependen de `PaymentRepository`, `UnitOfWork` y `OutboxRepository`, no de drivers SQL ni clientes de Queues. El Composition Root inyecta adaptadores. | `PostgresPaymentRepository`, `PostgresUnitOfWork`, `PostgresOutboxRepository`, `bootstrap/container.ts` |
 
-**Reglas protegidas:** activar una suscripción **solo después de una confirmación válida**; registrar una única acreditación por compra; realizar movimientos de créditos con identidad, razón y versión de la política; distinguir pago recibido de liquidación docente; prohibir saldos negativos y movimientos duplicados. Los precios, tarifas y condiciones de planes deben versionarse para no alterar obligaciones previas.
+**Reglas protegidas:** activar una suscripción **solo después de una confirmación válida**; registrar una única acreditación por compra; realizar movimientos de créditos con identificador único, razón y versión de la política; distinguir pago recibido de liquidación docente; prohibir saldos negativos y movimientos duplicados. Los precios, tarifas y condiciones de planes deben versionarse para no alterar obligaciones previas.
 
 **Flujo de referencia:**
 
@@ -205,7 +207,7 @@ Esta matriz sintetiza qué problema justifica SOLID **en cada módulo**, no decl
 
 | Módulo | SRP: separación principal | OCP/LSP: variación controlada | ISP: puertos focalizados | DIP: dependencia de abstracciones |
 |---|---|---|---|---|
-| **M1 Usuarios** | Registro, perfil, habilitación, credenciales | Verificadores y repositorios compatibles | Identidad / permisos / correo | Casos de uso ↔ interfaces propias |
+| **M1 Usuarios** | Registro, perfil, habilitación, credenciales | Verificadores y repositorios compatibles | Cuentas y sesiones / permisos / correo | Casos de uso ↔ interfaces propias |
 | **M2 Contenidos** | Edición, publicación, exportación, archivos | Almacenamiento y exportadores compatibles | Contenido / archivos / video | Sin dependencias directas de MongoDB/R2 |
 | **M3 Evaluaciones** | Respuesta, corrección, resultado, progreso | Corrección variable cuando exista | Preguntas / resultados / progreso | Sin drivers SQL en calificación |
 | **M4 Clases** | Oferta, reserva, acceso, asistencia | Proveedores de aula equivalentes | Reservas / video / habilitación / créditos | Contratos M1 y M5, no tablas ajenas |
@@ -292,7 +294,7 @@ La calidad de la propuesta se medirá mediante revisiones de dependencias, prueb
 
 | Módulo | Pruebas prioritarias | Principio/s verificados |
 |---|---|---|
-| **M1** | Diferenciar tipo de cuenta, modalidad docente y habilitación; impedir acceso a cuentas ajenas; contratos de identidad/repositorio. | SRP, LSP, ISP, DIP |
+| **M1** | Diferenciar tipo de cuenta, modalidad docente y habilitación; impedir acceso a cuentas ajenas; contratos de cuentas, sesiones y repositorio. | SRP, LSP, ISP, DIP |
 | **M2** | Edición manual sin descuento IA; publicación autorizada; fallos de almacenamiento; pruebas de exportación. | SRP, OCP, LSP, DIP |
 | **M3** | Misma evaluación y rúbrica producen resultado repetible; permisos; guardar una sola vez el intento. | SRP, OCP/LSP cuando haya varias estrategias, DIP |
 | **M4** | Reservas concurrentes del último cupo; credenciales temporales solo para usuarios autorizados; sustitución controlada de SFU. | SRP, LSP, ISP, DIP + consistencia |
@@ -353,7 +355,7 @@ No convertir los contratos en capas vacías o complejidad accidental: agrupar ar
 |---|---|---|
 | **ADR-001** | Monolito modular de siete módulos. | SRP entre módulos; contratos públicos y separación de responsabilidades. |
 | **ADR-002** | Clean Architecture y puertos/adaptadores. | DIP e ISP; dominio independiente de SDKs y HTTP. |
-| **ADR-004** | Identidad, sesiones y autorización en backend. | SRP de autenticación frente a autorización y políticas por recurso. |
+| **ADR-004** | Gestión de cuentas, autenticación y autorización en backend. | SRP de autenticación frente a autorización y políticas por recurso. |
 | **ADR-005** | Pasarela de pagos desacoplada. | OCP, LSP, ISP y DIP para adaptar checkout, eventos y reembolsos. |
 | **ADR-006 / ADR-007** | Fuente transaccional e idempotencia. | Contratos separados que permiten transacciones y deduplicación. |
 | **ADR-019 / ADR-026** | Tutor IA y RAG autorizado. | SRP entre recuperación, embeddings y generación; puertos de IA. |

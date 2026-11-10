@@ -4,7 +4,7 @@
 
 ## 1. Propósito y alcance
 
-Mentelyx es un **centro educativo virtual independiente** orientado a Primaria, Secundaria, Preuniversitario y Universitario. Se utiliza desde una aplicación web *mobile-first* instalable como PWA. Se registran públicamente **Estudiante, Creador educativo y Docente**; el **Superadministrador** es una cuenta interna. Docente comprende las modalidades **independiente/libre** y **por nivel académico**. Un Estudiante universitario adulto puede obtener una habilitación adicional para tutorías sin cambiar de cuenta.
+Mentelyx es un **centro educativo virtual independiente** orientado a Primaria, Secundaria, Preuniversitario y Universitario. Se utiliza desde una aplicación web *mobile-first* instalable como PWA. Se registran públicamente **Estudiante y Docente**; el **Superadministrador** es una cuenta interna. Docente comprende las modalidades **independiente/libre** y **por nivel académico**. Un Estudiante universitario adulto puede obtener una habilitación adicional para tutorías sin cambiar de cuenta.
 
 La arquitectura propuesta es un **cliente–servidor con separación en presentación, lógica de negocio y persistencia/integraciones**, implementado inicialmente mediante **un backend monolítico modular de siete módulos**. El enfoque interno por módulos será **Clean Architecture**: el dominio y los casos de uso no dependen de Cloudflare ni de las bases de datos. Son dos descripciones complementarias: el estilo describe organización/despliegue; el enfoque describe dependencias del código.
 
@@ -14,7 +14,7 @@ La arquitectura propuesta es un **cliente–servidor con separación en presenta
 flowchart TB
   subgraph USUARIOS["ACTORES PRINCIPALES"]
     EST["Estudiante · tutor universitario autorizado si corresponde"]
-    CREA["Creador educativo"]
+    CREA["Estudiante / Docente · autoría Studio según permisos"]
     DOC["Docente · libre / por nivel"]
     ADMIN["Superadministrador"]
   end
@@ -67,13 +67,13 @@ flowchart TB
   MOD --> MAIL
 ```
 
-**Nota de representación:** las líneas `MOD → servicio` muestran dependencias lógicas **a través de puertos/adaptadores**, no conexiones físicas directas desde cada módulo. El audio/video en vivo viaja entre dispositivos y la infraestructura WebRTC; **no atraviesa** la API Hono. Queues procesa tareas en segundo plano, sin transportar el archivo completo.
+**Nota de representación:** la etiqueta de autoría Studio representa una capacidad de Estudiantes y Docentes, no un actor ni un tipo de cuenta adicional. Las líneas `MOD → servicio` muestran dependencias lógicas **a través de puertos/adaptadores**, no conexiones físicas directas desde cada módulo. El audio/video en vivo viaja entre dispositivos y la infraestructura WebRTC; **no atraviesa** la API Hono. Queues procesa tareas en segundo plano, sin transportar el archivo completo.
 
 ## 3. Responsabilidades de los siete módulos
 
 | Módulo | Responsabilidades principales | Datos y dependencias relevantes |
 |---|---|---|
-| **1. Usuarios y Administración** | Registro de tres tipos de cuenta, sesiones, roles, modalidades docentes, permisos, moderación, identidad y auditoría. | Neon; Better Auth candidato; Redis para límites efímeros. |
+| **1. Usuarios y Administración** | Gestión de cuentas, autenticación, sesiones y control de acceso; registro público de Estudiante y Docente, modalidades docentes, moderación y auditoría. | Neon; Better Auth candidato; Redis para límites efímeros. |
 | **2. Cursos y Contenidos** | Catálogo de cuatro niveles, contenidos, versiones, licencias, Mentelyx Studio y archivos. | Atlas (documentos), Neon (derechos/metadatos), R2, Queues. |
 | **3. Evaluaciones y Aprendizaje** | Diagnósticos, ejercicios, simulacros, preparación de exámenes, progreso y rutas de estudio. | Neon para resultados confirmados; Atlas para materiales. |
 | **4. Docentes y Clases** | Perfiles de dos modalidades, autorización del estudiante tutor, acreditaciones, oferta, reservas, aulas hasta 35 alumnos inicialmente, asistencia y grabación opcional. | Neon, WebRTC/SFU, video y Queues. |
@@ -102,7 +102,7 @@ flowchart TB
 
 ### 5.1 Registro y habilitación para enseñar
 
-El usuario escoge Estudiante, Creador educativo o Docente. Si escoge Docente define la modalidad libre/independiente o por nivel académico; en este último caso puede declarar formación, **sin acreditación automática**. El backend verifica edad, identidad y acceso por recurso. Un universitario adulto mantiene su cuenta Estudiante aun cuando obtenga un **permiso adicional** para tutorías. Las tutorías remuneradas siempre requieren habilitación, separada del acceso al editor.
+El usuario escoge Estudiante o Docente. Si escoge Docente define la modalidad libre/independiente o por nivel académico; en este último caso puede declarar formación, **sin acreditación automática**. El backend comprueba la edad y, para las operaciones protegidas, valida la sesión autenticada y los permisos por recurso. La solicitud de habilitación requiere la verificación documental del solicitante; esta no equivale a la validación de credenciales académicas. Un universitario adulto mantiene su cuenta Estudiante aun cuando obtenga un **permiso adicional** para tutorías. Las tutorías remuneradas siempre requieren habilitación, separada del acceso al editor.
 
 ### 5.2 Creación de contenidos y documentos
 

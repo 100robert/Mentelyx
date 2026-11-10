@@ -1,7 +1,9 @@
 # 08. Escenarios de atributos de calidad — Mentelyx
 
-> **Versión:** 1.6 (sincronización con actores v1.5) — revisión integral del análisis de Mentelyx (20 de octubre de 2026).  **Estado:** arquitectura de referencia definida; importes comerciales, cuotas y contratos sujetos a validación. No implica software ya desarrollado ni servicios contratados.
+> **Versión:** 2.0 — 09/11/2026. **Base revisada:** v1.6 (20/10/2026). **Estado:** diseño documental sincronizado con dos tipos de cuenta públicos; requisitos y políticas comerciales sujetos a pruebas y validación. No supone código implementado ni servicios contratados.
 
+
+> **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
 
 ## 1. Cómo se interpretan las medidas
 
@@ -284,14 +286,14 @@ Cada escenario define fuente, estímulo, artefacto, ambiente, respuesta y medida
 | Medida | Restauración trimestral probada; registrar RTO y RPO observados, checksums/integridad, discrepancias SQL/NoSQL. |
 | Verificación | Runbook, evidencia de prueba, captura métricas, checksum de registros y comparación de versiones. |
 
-### EQ-22 — AC-04: tres cuentas públicas, dos modalidades docentes y acreditaciones
+### EQ-22 — AC-04: dos tipos públicos, dos modalidades docentes y acreditaciones
 
 | Campo | Escenario de aceptación propuesto |
 |---|---|
 | Fuente / estímulo | Adulto se registra como Docente (libre o por nivel) y solicita impartir tutoría remunerada; estudiante universitario adulto solicita permiso adicional y otro Estudiante sube archivo. |
 | Artefacto / entorno | Better Auth (si se valida), RBAC/atributos, registros de verificación y recursos. |
-| Respuesta | Docente puede usar el editor manual de Studio según los límites vigentes; tutoría remunerada denegada si falta habilitación; solo la modalidad Docente por nivel permite solicitar acreditación académica verificable; estudiante tutor autorizado sigue siendo Estudiante. |
-| Medida | 100 % de pruebas negativas de acceso indebido denegadas; toda inscripción conserva tipo principal; ninguna cuenta de menor como Creador/Docente ni tutor remunerado. |
+| Respuesta | Registro acepta únicamente Estudiante o Docente; Docente puede usar el editor manual de Studio según los límites vigentes; Estudiante puede crear contenido según permisos/edad. Tutoría remunerada denegada si falta habilitación; solo la modalidad Docente por nivel permite solicitar acreditación académica verificable; estudiante tutor autorizado sigue siendo Estudiante. |
+| Medida | 100 % de pruebas negativas de acceso indebido denegadas; toda inscripción pública conserva tipo principal Estudiante/Docente; ningún menor obtiene cuenta Docente ni permiso para tutoría remunerada; usar Studio no cambia tipo de cuenta. |
 | Verificación | Pruebas de registro, rutas API, propiedad de materiales y estados de credenciales. |
 
 ### EQ-23 — AC-01 / AC-07: experiencia de Studio con pérdida de conexión

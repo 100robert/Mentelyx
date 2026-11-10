@@ -7,13 +7,13 @@
 
 Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria, Secundaria, Preuniversitario y Universitario**, que combina contenido educativo, diagnóstico, prácticas y simulacros, rutas adaptativas, preparación de exámenes, tutor IA con RAG, autoría en Mentelyx Studio y aulas virtuales con docentes habilitados y estudiantes universitarios tutores autorizados. Se desarrolla como **web mobile-first y PWA**; la inscripción no depende de colegios o dominios de correo institucional.
 
-**Diferenciación:** existen **tres cuentas públicas** (Estudiante, Creador educativo y Docente). Dentro de Docente se elige **perfil independiente/libre** (temas y experiencia, sin perfil de especialización acreditada) o **perfil por nivel académico** (niveles y materias, con formación acreditable tras verificación). Un estudiante universitario adulto puede solicitar autorización adicional para impartir tutorías sin convertirse en Docente. Autenticación, acreditación profesional, habilitación para cobrar y suscripción son estados **distintos**. Los menores requieren salvaguardas específicas.
+**Diferenciación:** existen **dos cuentas públicas** (Estudiante y Docente); el Superadministrador es una cuenta interna. Dentro de Docente se elige **perfil independiente/libre** (temas y experiencia, sin perfil de especialización acreditada) o **perfil por nivel académico** (niveles y materias, con formación acreditable tras verificación). Un estudiante universitario adulto puede solicitar autorización adicional para impartir tutorías sin convertirse en Docente. Autenticación, acreditación profesional, habilitación para cobrar y suscripción son estados **distintos**. Los menores requieren salvaguardas específicas.
 
 ## 2. Necesidad del negocio y propuesta de valor
 
 - **Para estudiantes:** estudiar a su ritmo, reforzar áreas de dificultad, prepararse para exámenes y acceder a clases con profesores reales, desde cualquier región y sin requerir relación con institución educativa.
 - **Para docentes y estudiantes tutores habilitados:** gestionar clases, cupos, remuneraciones y preparar material visual profesional.
-- **Para creadores:** utilizar Studio como entorno de autoría, publicación autorizada y herramientas de IA bajo límites claros.
+- **Para Estudiantes y Docentes con permisos de autoría:** utilizar Studio como entorno de autoría, publicación autorizada y herramientas de IA bajo límites claros.
 - **Para Mentelyx:** ingresos sostenibles procedentes de suscripciones educativas, de Aulas Live, de Studio y de clases individuales; los costos de IA, cobros, docentes y audiovisuales deben medirse por producto.
 
 ## 3. Modelo de producto y monetización
@@ -48,7 +48,7 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 
 | Módulo | Propiedad funcional |
 |---|---|
-| 1. Usuarios y Administración | Cuentas, autenticación, permisos, protección de menores, moderación, auditoría y operación |
+| 1. Usuarios y Administración | Gestión de cuentas, autenticación, sesiones y control de acceso, protección de menores, moderación, auditoría y operación |
 | 2. Cursos y Contenidos | Catálogo, licencias, objetos y documentos educativos, **Mentelyx Studio** |
 | 3. Evaluaciones y Aprendizaje | Diagnóstico, ejercicios, simulacros, planes de examen y seguimiento |
 | 4. Docentes y Clases | Perfiles, acreditación, habilitación, aulas, grabaciones, asistencia y reservas |
@@ -87,7 +87,7 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 ## 7. Fases y límites
 
 1. **Documentación y diseño (Completado):** análisis de sistema (`01`), arquitectura de software (`02`), diseño interno/externo (`03`) y modelo C4 (`04`).
-2. **Construcción local (Siguiente paso):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, identidad (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
+2. **Construcción local (Siguiente paso):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, gestión de cuentas y control de acceso (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
 3. **Piloto limitado:** medir IA real por generación, pruebas docentes, verificaciones de capacidad WebRTC (35+1), funcionamiento pasarela, conciliación, costos y restauración.
 4. **Lanzamiento comercial:** solo servicios cuyos permisos, seguridad, capacidad, costos, términos y disponibilidad hayan sido verificados; activación progresiva de planes.
 5. **Posterior:** convenios escolares, Studio Equipos, clases masivas más allá de 35, modelos IA propios, eventual Kafka y alta disponibilidad superior contratada.
@@ -133,6 +133,24 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`Nivel4-DiagramadeCodigo.md`](docs/04-modelo-c4/Nivel4-DiagramadeCodigo.md) | Nivel 4: Paquetes `M1–M7`, SOLID y diagramas UML de clases y secuencia | Completado |
 
 ### Glosario breve
+
+| Término normalizado | Significado y estado asociado | No implica por sí solo |
+|---|---|---|
+| Gestión de cuentas y perfiles | Registro de usuarios, administración de datos y estados de cuenta, perfiles y recuperación de acceso. Una cuenta registrada existe en el sistema. | Una sesión autenticada, permisos de publicación o habilitación docente. |
+| Autenticación (AuthN) | Validación de credenciales de acceso, inicio de sesión, MFA y gestión, renovación o cierre de sesiones. Una sesión autenticada vincula una solicitud con una cuenta. | Autorización para operar sobre cualquier recurso. |
+| Autorización y control de acceso (AuthZ) | Comprobación de roles, permisos y condiciones por recurso y operación, incluidas las capacidades de Studio e IA. | Verificación documental ni acreditación académica. |
+| Verificación documental del solicitante | Comprobación de que la persona corresponde a los documentos personales oficiales presentados; produce el estado de documentación personal verificada. | Validación de títulos ni habilitación para cobrar tutorías. |
+| Validación de credenciales académicas | Verificación de títulos, grados y certificados; permite acreditar la formación demostrada del perfil Docente por nivel académico. | Habilitación docente automática; no es requisito general para la modalidad independiente. |
+| Habilitación docente | Autorización aprobada y vigente para impartir tutorías remuneradas según las condiciones aplicables. Un Estudiante universitario adulto habilitado conserva su tipo de cuenta. | Cambio de cuenta, título profesional o suscripción activa. |
+| Derecho de uso o suscripción activa | Beneficio o cuota de un producto, con alcance y vigencia propios; para productos de pago se activa tras la confirmación válida correspondiente. | Autorización para enseñar ni acceso irrestricto a recursos. |
+| Pago confirmado | Operación económica validada y registrada conforme a las reglas de la pasarela y de Mentelyx. | Acreditación académica, habilitación docente ni liquidación por una clase aún no prestada. |
+| Identificador de cuenta, orden o movimiento | Clave que referencia de forma inequívoca un registro del dominio correspondiente. | Verificación documental o autenticación. |
+
+El registro y el inicio de sesión son posibles sin habilitación docente. La verificación documental, la validación académica y la habilitación mantienen resultados separados; no forman una aprobación única. Esta terminología precisa las reglas vigentes sin añadir documentos obligatorios, requisitos legales ni condiciones comerciales.
+
+La descripción de **M1 — Usuarios y Administración** es «gestión de cuentas, autenticación, sesiones y control de acceso». M4 tramita los expedientes docentes y comunica a M1 las decisiones que afectan a los permisos, conforme al diseño interno.
+
+La revisión y sus pendientes se registran en el [informe de auditoría terminológica](docs/auditoria-terminologica.md).
 
 - **Hono:** framework TypeScript de API HTTP; **Better Auth:** biblioteca que integraríamos en el código para credenciales/sesiones; **RBAC/ABAC:** permisos por roles y contexto.
 - **WebRTC/SFU:** comunicación audiovisual en tiempo real; **Queues/DLQ:** tareas y cola de fallidos, con posible redelivery; **Redis:** caché, no billetera ni base financiera.

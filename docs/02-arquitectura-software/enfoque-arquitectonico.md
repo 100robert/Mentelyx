@@ -40,7 +40,7 @@ Orquesta los procesos de negocio. Para mostrar que Clean Architecture se aplica 
 
 | Módulo de Mentelyx | Caso de uso ilustrativo | Qué coordina |
 |---|---|---|
-| Usuarios y Administración | Registrar o autenticar estudiante | Credenciales, identidad y permisos. |
+| Usuarios y Administración | Registrar o autenticar estudiante | Gestión de cuentas, validación de credenciales de acceso, sesiones y permisos. |
 | Cursos y Contenidos | Publicar una lección | Metadatos, licencias y material pedagógico. |
 | Evaluaciones y Aprendizaje | Resolver una evaluación | Reglas de intento, calificación y progreso. |
 | Docentes y Clases | Reservar una tutoría | Disponibilidad, cupo y condiciones de reserva. |
@@ -85,7 +85,7 @@ La flecha de ejecución hacia una base de datos **no debe interpretarse como un 
 
 ## 5. Ejemplo aplicado: reservar una tutoría
 
-Un estudiante solicita una tutoría desde la Web/PWA. El controlador recibe y valida la petición; `ReservarTutoriaCasoUso` comprueba, mediante contratos internos, la identidad autorizada del estudiante, la disponibilidad del docente, los cupos y las reglas de la reserva. Para guardar el resultado, solicita una operación a una interfaz de repositorio, implementada por un adaptador sobre PostgreSQL. Si es necesario cobrar una sesión, se utiliza un puerto de pagos y su adaptador correspondiente. Las reglas de disponibilidad y reserva no importan ni dependen del SDK del proveedor de pagos ni de Hono.
+Un estudiante solicita una tutoría desde la Web/PWA. El controlador recibe y valida la petición; `ReservarTutoriaCasoUso` comprueba, mediante contratos internos, la sesión autenticada y los permisos del estudiante, la disponibilidad del docente, los cupos y las reglas de la reserva. Para guardar el resultado, solicita una operación a una interfaz de repositorio, implementada por un adaptador sobre PostgreSQL. Si es necesario cobrar una sesión, se utiliza un puerto de pagos y su adaptador correspondiente. Las reglas de disponibilidad y reserva no importan ni dependen del SDK del proveedor de pagos ni de Hono.
 
 El mismo criterio se aplica a la publicación de cursos, ejecución de evaluaciones, pagos recurrentes, recuperación RAG autorizada y campañas de publicidad.
 

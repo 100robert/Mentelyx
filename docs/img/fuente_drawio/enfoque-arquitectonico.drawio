@@ -14,7 +14,7 @@
         <mxCell id="4" value="Estudiante" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=#9BA4D9;fillColor=#EFF1FF;strokeWidth=2;fontColor=#1A2939;fontSize=19;fontFamily=Arial;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="425" y="165" width="285" height="63" as="geometry"/>
         </mxCell>
-        <mxCell id="5" value="Docente verificado" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=#9BA4D9;fillColor=#EFF1FF;strokeWidth=2;fontColor=#1A2939;fontSize=19;fontFamily=Arial;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="5" value="Docente" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=#9BA4D9;fillColor=#EFF1FF;strokeWidth=2;fontColor=#1A2939;fontSize=19;fontFamily=Arial;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="735" y="165" width="285" height="63" as="geometry"/>
         </mxCell>
         <mxCell id="6" value="Superadministrador" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=#9BA4D9;fillColor=#EFF1FF;strokeWidth=2;fontColor=#1A2939;fontSize=19;fontFamily=Arial;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">

@@ -6,7 +6,7 @@
 
 ## 1. Principios de diseño de interfaz en Mentelyx
 
-1. **Separación clara de cuentas y estados (DA-01, ADR-034):** la interfaz distingue explícitamente las **tres cuentas públicas** (**Estudiante**, **Creador educativo**, **Docente**) y la cuenta interna (**Superadministrador**). En el perfil Docente se muestra con claridad si opera bajo modalidad **independiente/libre** o **por nivel académico** (indicando si su formación está *Verificada* o *Pendiente de verificación*).
+1. **Separación clara de cuentas y estados (DA-01, ADR-034):** la interfaz distingue explícitamente las **dos cuentas públicas** (**Estudiante** y **Docente**) y la cuenta interna (**Superadministrador**). En el perfil Docente se muestra con claridad si opera bajo modalidad **independiente/libre** o **por nivel académico** (la formación y su estado de validación se muestran únicamente en la modalidad por nivel académico).
 2. **Transparencia de créditos y productos (RC-23, ADR-047, ADR-050):** la billetera visual del usuario nunca mezcla **créditos Live** (inscripción a clases en vivo) con **créditos Studio** (operaciones generativas de IA). Antes de ejecutar cualquier acción generativa en Studio o reservar un aula Live, la interfaz muestra el costo exacto en créditos y solicita confirmación explícita.
 3. **Herramientas manuales sin cobro de IA en Studio (ADR-053):** en **Mentelyx Studio**, los botones de texto manual, pizarra, figuras geométricas y diagramación determinista llevan el distintivo **"Manual · 0 créditos IA"**, diferenciándolos de los asistentes generativos.
 4. **Protección de menores y zonas libres de publicidad (RC-07, ADR-020, ADR-025):** las pantallas de **Evaluaciones/Simulacros**, **Sala de Aulas Live**, **Mentelyx Studio** y **Checkout/Pagos** tienen prohibida cualquier inserción publicitaria por diseño de layout.
@@ -18,7 +18,7 @@
 ```mermaid
 flowchart TD
   PUB["/ (Landing Pública · Catálogo · Precios transparentes)"]
-  AUTH["/auth/* (Registro en 3 cuentas · Login · Consentimiento menor)"]
+  AUTH["/auth/* (Registro en 2 tipos de cuenta · Login · Consentimiento menor)"]
 
   subgraph APP_EST["Panel Estudiante (/estudiante/*)"]
     E_DASH["/estudiante/inicio (Ruta adaptativa y progreso)"]
@@ -46,7 +46,7 @@ flowchart TD
   end
 
   subgraph APP_ADMIN["Consola Superadministrador (/admin/* · Requiere MFA)"]
-    A_MOD["/admin/acreditaciones (Revisión de títulos y habilitación docente)"]
+    A_MOD["/admin/acreditaciones (Verificación documental, títulos y habilitación: estados separados)"]
     A_FIN["/admin/conciliacion (Órdenes, Outbox, DLQ y Liquidaciones)"]
     A_ADS["/admin/patrocinios (Campañas permitidas y auditoría)"]
   end
@@ -63,11 +63,13 @@ flowchart TD
 
 ---
 
+El acceso a Studio depende de permisos, edad y plan, no de un tipo de cuenta adicional. Las pantallas administrativas deben distinguir documentación personal verificada, credenciales académicas validadas y habilitación docente aprobada. El nombre propuesto `/admin/acreditaciones` no unifica esos estados; su organización definitiva debe resolverse junto con los contratos de M4.
+
 ## 3. Especificación de vistas críticas por módulo
 
 | Vista / Pantalla | Módulo backend | Componentes clave de UI | Salvaguardas y validaciones en cliente y servidor |
 |---|---|---|---|
-| **Registro y Selección de Cuenta** (`/auth/registro`) | M1 | Selector de cuenta (`Estudiante`, `Creador educativo`, `Docente`); selector de modalidad docente (`Libre` / `Por nivel académico`); formulario de consentimiento parental para menores. | No exige dominio de colegio. Aclara que declarar un título académico requiere verificación posterior antes de mostrar insignia acreditada. |
+| **Registro y Selección de Cuenta** (`/auth/registro`) | M1 | Selector de cuenta (`Estudiante`, `Docente`); selector de modalidad docente (`Libre` / `Por nivel académico`); formulario de consentimiento parental para menores. | No exige dominio de colegio. Aclara que declarar un título académico requiere verificación posterior antes de mostrar insignia acreditada. |
 | **Visor de Lección + Tutor IA** (`/estudiante/cursos/[id]`) | M2, M6 | Reproductor de contenido versionado, panel lateral de **Tutor IA** con referencias clicables a los fragmentos oficiales del curso e indicador de cuota IA restante. | Si el proveedor LLM falla o se agota la cuota, el estudiante sigue leyendo la lección y sus apuntes sin bloqueo (**degradación elegante**). |
 | **Entorno de Evaluación / Simulacro** (`/estudiante/evaluaciones/[id]`) | M3 | Temporizador sincronizado, navegador de preguntas, guardado local preventivo en PWA y botón de entrega idempotente. | **Cero publicidad**. El botón de envío deshabilita dobles clics y envía la misma `Idempotency-Key` si hay reconexión de red. |
 | **Reserva y Sala de Aulas Live** (`/estudiante/aulas-live` y `/aula-virtual/[id]`) | M4, M5 | Filtro por modalidad (`Aula 6–35 = 1 cr`, `Reforzamiento 2–5 = 2 cr`, `Individual = 1 a 1 = 3 cr`), contador de cupos en tiempo real y sala audiovisual WebRTC. | El cliente se conecta directamente al SFU con token efímero. En cuentas de menores, exige consentimiento verificable para activar cámara/micrófono o grabación. |
@@ -86,7 +88,7 @@ frontend/
 ├── src/
 │   ├── app/                          # Rutas Next.js (App Router)
 │   │   ├── (public)/                 # Landing, catálogo público, precios
-│   │   ├── (auth)/                   # Login, registro de 3 cuentas, verificación
+│   │   ├── (auth)/                   # Login, registro de 2 tipos de cuenta, verificación de correo
 │   │   ├── (estudiante)/             # Cursos, diagnósticos, simulacros, reservas Live
 │   │   ├── (docente)/                # Perfil, programación de clases, liquidaciones
 │   │   ├── (studio)/                 # Editor Mentelyx Studio y gestión de recursos

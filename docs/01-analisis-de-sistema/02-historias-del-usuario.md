@@ -1,11 +1,13 @@
 # 02. Historias de usuario por actor — Mentelyx
 
-> **Versión:** 1.5 — 20/10/2026. 
+> **Versión:** 2.0 — 09/11/2026. **Base revisada:** v1.5 (20/10/2026). **Estado:** diseño documental sincronizado con dos tipos de cuenta públicos; requisitos y políticas comerciales sujetos a pruebas y validación. No supone código implementado ni servicios contratados.
+
+> **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
 
 ## 1. Criterio de organización
 
-- Las historias se organizan alrededor de **cuatro actores humanos**: Estudiante, Creador educativo, Docente y Superadministrador.
-- El registro ofrece tres tipos de cuenta pública. El **Docente** elige una **modalidad de perfil**: independiente (libre) o por nivel académico. Ninguna modalidad constituye otro actor.
+- Las historias se organizan alrededor de **tres actores humanos activos**: Estudiante (ACT-01), Docente (ACT-03) y Superadministrador (ACT-04). ACT-02 queda retirado, sin renumerar identificadores.
+- El registro ofrece **dos tipos de cuenta pública: Estudiante y Docente**. El **Docente** elige una **modalidad de perfil**: independiente (libre) o por nivel académico. Ninguna modalidad constituye otro actor.
 - Un **Estudiante universitario mayor de edad** puede solicitar permiso especial para impartir tutorías sobre temas que domina; conserva su cuenta Estudiante. No se presenta como docente titulado.
 - Las historias compartidas de Studio y clases aparecen **una sola vez**. El permiso individual, no el nombre de la sección, determina quién puede realizarlas.
 - Las acreditaciones profesionales y la habilitación comercial son procesos diferentes. Escribir un grado no equivale a verificarlo.
@@ -14,11 +16,11 @@
 
 ## 2. Registro público compartido
 
-**Aplica a:** Estudiante, Creador educativo y Docente. El superadministrador no se registra públicamente.
+**Aplica a:** Estudiante y Docente. El superadministrador no se registra públicamente.
 
 | ID | Historia de usuario | Estado |
 |---|---|---|
-| HU-41 | Como persona que se registra, quiero elegir entre Estudiante, Creador educativo y Docente, y, si elijo Docente, seleccionar la modalidad independiente o por nivel académico, para configurar mi perfil sin crear tipos de cuenta innecesarios. | Definida para análisis |
+| HU-41 | Como persona que se registra, quiero elegir entre Estudiante y Docente y, si elijo Docente, seleccionar la modalidad independiente o por nivel académico, para configurar mi perfil sin crear tipos de cuenta innecesarios. | Definida para análisis |
 
 ## 3. Estudiante (ACT-01)
 
@@ -56,16 +58,7 @@
 | HU-66 | Como estudiante, quiero inscribirme en clases desde cualquier región individualmente, sin coordinación de un pago grupal, para utilizar Mentelyx con autonomía. | Definida para análisis |
 | HU-70 | Como estudiante, quiero distinguir claramente qué beneficios son créditos de clases y cuáles son créditos de IA, para no confundir planes. | Política comercial propuesta |
 
-## 4. Creador educativo (ACT-02)
-
-**Alcance:** creación y publicación autorizada de materiales; no obtiene habilitación automática para clases pagadas.
-
-| ID | Historia de usuario | Estado |
-|---|---|---|
-| HU-43 | Como creador, quiero usar gratuitamente las herramientas manuales de Mentelyx Studio y guardar borradores privados sin pedir autorización administrativa, para diseñar materiales. | Definida para análisis |
-| HU-53 | Como creador, quiero gestionar publicación, licencias y accesos de cada versión, para controlar qué material puede verse, venderse, recuperarse por RAG o entrenar modelos. | Definida para análisis |
-
-## 5. Docente (ACT-03): historias comunes y modalidades
+## 4. Docente (ACT-03): historias comunes y modalidades
 
 **Modalidad libre:** temas y experiencia declarada, sin campos ni insignias de títulos/especializaciones. **Modalidad por nivel:** niveles impartidos y formación declarada; acreditación visible solo después de verificación. Ambas modalidades utilizan una cuenta Docente.
 
@@ -76,22 +69,24 @@
 | HU-45 | Como docente que elige modalidad por nivel académico, quiero indicar los niveles, asignaturas y mi formación declarada, para presentar el perfil adecuado y solicitar acreditación cuando corresponda. | Definida para análisis |
 | HU-46 | Como docente de modalidad por nivel, quiero presentar documentos de licenciatura, maestría, doctorado u otros estudios para revisión, de modo que la plataforma solo muestre credenciales verificadas tras su validación. | Definida para análisis |
 
-## 6. Autoría compartida: Studio y publicaciones
+## 5. Autoría compartida: Studio y publicaciones
 
-**Aplica:** a Creador, Docente y a Estudiante en las funcionalidades que se le habiliten. La edición de materiales no crea un nuevo tipo de cuenta.
+**Aplica:** a Docente y a Estudiante según funcionalidades, permisos y edad. Studio no es un tipo de cuenta, y elaborar un material no habilita de por sí para impartir tutorías remuneradas.
 
 | ID | Historia de usuario | Estado |
 |---|---|---|
-| HU-26 | Como autor educativo autorizado (Creador, Docente o Estudiante con permisos), quiero controlar licencias y permisos de publicación y RAG de mis materiales, para proteger su uso. | Definida para análisis |
+| HU-26 | Como autor de contenidos autorizado (Docente o Estudiante con permisos), quiero controlar licencias y permisos de publicación y RAG de mis materiales, para proteger su uso. | Definida para análisis |
+| HU-43 | Como Docente o Estudiante con acceso autorizado a Studio, quiero utilizar las herramientas manuales disponibles sin consumir créditos de IA y guardar borradores privados sin aprobación editorial previa, para diseñar materiales. | Definida para análisis |
+| HU-53 | Como Docente o Estudiante con permisos de publicación, quiero gestionar publicación, licencias y accesos de cada versión, para controlar qué material puede verse, venderse, recuperarse por RAG o entrenar modelos conforme a autorizaciones distintas. | Definida para análisis |
 | HU-47 | Como usuario con acceso a Studio, quiero crear presentaciones, gráficos, pizarras y actividades interactivas, para preparar recursos educativos claros. | Definida para análisis |
 | HU-48 | Como usuario con acceso a Studio IA, quiero consultar la cuota y el costo en créditos de las herramientas, para controlar mi consumo. | Definida para análisis |
 | HU-60 | Como usuario con acceso a Studio, quiero comparar sus planes Free, Plus y Pro, para elegir las herramientas de creación apropiadas. | Política comercial propuesta |
 | HU-61 | Como usuario con acceso a Studio, quiero editar manualmente presentaciones, gráficos y pizarras sin gastar créditos de IA, para preparar materiales con libertad. | Definida para análisis |
 | HU-62 | Como usuario con acceso a Studio IA, quiero recuperar créditos de operaciones fallidas imputables a Mentelyx, para evitar pérdidas injustas de mi cuota. | Política comercial propuesta |
 
-## 7. Tutorías y aulas: usuarios habilitados para enseñar
+## 6. Tutorías y aulas: usuarios habilitados para enseñar
 
-**Aplica:** a Docentes de ambas modalidades y a Estudiantes universitarios mayores de edad **solo después de habilitación específica**. Un Creador no adquiere este derecho por registrarse.
+**Aplica:** a Docentes de ambas modalidades y a Estudiantes universitarios mayores de edad **solo después de habilitación específica**. El acceso a Studio y la publicación de materiales no otorgan automáticamente este derecho.
 
 | ID | Historia de usuario | Estado |
 |---|---|---|
@@ -107,15 +102,15 @@
 | HU-65 | Como usuario habilitado para impartir clases, quiero gestionar grabaciones autorizadas y accesos permitidos, para proteger los datos y derechos de sus participantes. | Definida para análisis |
 | HU-69 | Como usuario habilitado para impartir clases, quiero ofrecer tutorías fuera de la suscripción Aulas Live con una tarifa viable, para atender consultas puntuales. | Política comercial propuesta |
 
-## 8. Superadministrador (ACT-04)
+## 7. Superadministrador (ACT-04)
 
-**Cuenta interna**, distinta de los tres tipos de registro público.
+**Cuenta interna**, distinta de los dos tipos de registro público.
 
 | ID | Historia de usuario | Estado |
 |---|---|---|
 | HU-18 | Como superadministrador, quiero gestionar cuentas, estados y permisos de acceso, para administrar Mentelyx de manera segura y auditable. | Definida para análisis |
 | HU-19 | Como superadministrador, quiero gestionar contenidos, ejercicios y evaluaciones, para mantener organizada y actualizada la oferta educativa. | Definida para análisis |
-| HU-20 | Como superadministrador, quiero revisar por separado la habilitación para impartir clases, la identidad del tutor y las acreditaciones académicas de docentes por nivel, para proteger a estudiantes sin exigir títulos a quien enseña como independiente. | Definida para análisis |
+| HU-20 | Como superadministrador, quiero evaluar por separado la habilitación para impartir clases, la verificación documental del solicitante y la validación de credenciales académicas de docentes por nivel, para proteger a estudiantes sin exigir títulos a quien enseña como independiente. | Definida para análisis |
 | HU-21 | Como superadministrador, quiero configurar precios, planes, cuotas y condiciones comerciales, para administrar los servicios y mantener su sostenibilidad. | Definida para análisis |
 | HU-22 | Como superadministrador, quiero gestionar convenios y beneficios cuando se active esa etapa, para incorporar instituciones sin condicionar el registro independiente de estudiantes. | Posterior |
 | HU-23 | Como superadministrador, quiero supervisar cobros, reembolsos y liquidaciones docentes, para detectar inconsistencias y asegurar el registro de cada operación. | Definida para análisis |
@@ -131,18 +126,18 @@
 | HU-67 | Como superadministrador, quiero aprobar clases gratuitas solamente cuando su financiación promocional o patrocinio esté presupuestada, para evitar sesiones con costos no cubiertos. | Política comercial propuesta |
 | HU-68 | Como superadministrador, quiero conciliar cobros, comisiones, reembolsos y liquidaciones y detectar duplicaciones, para controlar la integridad económica de Mentelyx. | Operación crítica |
 
-## 9. Reglas de negocio vinculadas a las historias
+## 8. Reglas de negocio vinculadas a las historias
 
-1. **Registro:** tres tipos de cuenta públicos. Dos modalidades dentro de Docente, no dos actores ni dos cuentas.
+1. **Registro:** dos tipos de cuenta públicos (Estudiante y Docente). Dos modalidades dentro de Docente, no dos actores ni dos cuentas.
 2. **Docente libre:** puede configurar temas, materiales y horarios, pero no un perfil de especialización o grado académico acreditado; impartirá servicios pagados solo después de habilitarse.
 3. **Docente por nivel:** indica uno o varios niveles de enseñanza y materias; puede declarar grados académicos, pero solo los documentos validados autorizan insignias de acreditación.
 4. **Estudiante tutor:** solo para estudiante universitario adulto y habilitado. Conserva su cuenta y aparece con una denominación que no implique título docente oficial.
 5. **Clases pequeñas:** tutorías individuales o de pocos estudiantes están permitidas según condiciones de autorización, reserva y rentabilidad. Aula estándar objetivo: 35 estudiantes más la persona que imparte la sesión.
 6. **Planes:** Plus, Pro y Aulas Live para estudiantes; Studio Free, Plus y Pro para autoría. Ninguno constituye actor adicional. Las cuotas Live y Studio no se mezclan.
-7. **Pagos y acreditaciones:** no confundir inscripción con pago confirmado ni identidad verificada con título académico. Deben aplicarse transacciones/idempotencia, auditoría y controles adecuados para menores.
+7. **Pagos y acreditaciones:** el registro de una cuenta no equivale a un pago confirmado; asimismo, la verificación documental del solicitante no equivale a la validación de sus credenciales académicas. Deben aplicarse transacciones/idempotencia, auditoría y controles adecuados para menores.
 8. **Fase posterior:** convenios institucionales y productos no priorizados no son precondición para el lanzamiento.
 
-## 10. Trazabilidad
+## 9. Trazabilidad
 
-Se conservan todas las **70 HU-01 a HU-70**. `03-requisitos-funcionales.md` requiere corrección coordinada en RF-01, RF-18, RF-19, RF-21, RF-35, RF-36, RF-53, RF-54, RF-56, RF-57 y RF-88, entre otros, para evitar referencias obsoletas a Instructor como actor. Se adjunta una versión sincronizada sin renumerar requisitos.
+Se conservan todas las **70 HU-01 a HU-70**, sin reutilizar los códigos de actor. HU-41 registra los dos tipos públicos; **HU-43 y HU-53** pasan a la sección de autoría compartida sin perder su identificador. Se corresponden con RF-01, RF-35, RF-53, RF-54, RF-55, RF-56 y RF-60; la habilitación docente y de universitarios adultos sigue su propia trazabilidad (RF-18, RF-21, RF-58, RF-70, RF-88).
 

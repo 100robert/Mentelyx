@@ -41,7 +41,7 @@ erDiagram
   USERS {
     uuid id PK
     varchar email UK
-    varchar account_type "ESTUDIANTE | CREADOR | DOCENTE | SUPERADMIN"
+    varchar account_type "ESTUDIANTE | DOCENTE | SUPERADMIN"
     boolean is_minor
     boolean is_university_student
     boolean tutor_enabled "Habilitación explícita p/ enseñar"
@@ -152,7 +152,7 @@ erDiagram
 ### 3.1. Módulo 1 — Usuarios y Administración (`schema: m1_users`)
 | Tabla | Propósito | Restricciones e índices críticos |
 |---|---|---|
-| `users` | Identidad base, tipo de cuenta (`ESTUDIANTE`, `CREADOR`, `DOCENTE`, `SUPERADMIN`), indicador de menor de edad (`is_minor`). | `UNIQUE (email)`, `CHECK (account_type IN (...))` |
+| `users` | Datos de cuenta y perfil, tipo de cuenta (`ESTUDIANTE`, `DOCENTE`, `SUPERADMIN`; este último solo interno), indicador de menor de edad (`is_minor`). | `UNIQUE (email)`, `CHECK (account_type IN (...))` |
 | `user_sessions` | Sesiones activas gestionadas por el adaptador de autenticación (Better Auth candidato). | `INDEX (user_id, expires_at)`, `UNIQUE (session_token_hash)` |
 | `user_permissions` | Permisos granulares RBAC/ABAC y habilitación especial (`tutor_universitario_habilitado`). | `UNIQUE (user_id, permission_code, scope)` |
 | `parental_consents` | Registro verificable de autorización de adulto responsable para cuentas de menores y uso audiovisual. | `INDEX (minor_user_id, status)` |

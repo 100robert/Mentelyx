@@ -8,9 +8,9 @@
 
 1. **Formato y transporte:** HTTPS obligatorio (TLS 1.3 en Cloudflare Edge), cuerpo JSON en UTF-8 (`application/json`), excepto en webhooks de pasarela donde se lee el cuerpo crudo (`Uint8Array`) para verificar la firma criptográfica.
 2. **Autenticación y sesiones:** gestión de sesión mediante cookies seguras (`HttpOnly`, `Secure`, `SameSite=Lax`) o token Bearer emitido por el adaptador de autenticación (Better Auth candidato).
-3. **Autorización en dos niveles (ADR-004, ADR-034):**
-   - **Middleware HTTP:** verifica sesión válida, estado de cuenta activo y rol base.
-   - **Caso de uso / Política de dominio:** verifica propiedad del recurso, vigencia de suscripción, saldo de créditos (`LIVE` vs `STUDIO`), mayoría de edad o habilitación docente (`can_charge_classes`).
+3. **Autenticación (AuthN) y autorización (AuthZ) diferenciadas (ADR-004, ADR-034):**
+   - **Middleware HTTP:** autentica mediante una sesión válida y aplica controles iniciales de acceso según el estado de cuenta y el rol base; una sesión autenticada no concede todos los permisos.
+   - **Caso de uso / Política de dominio:** autoriza la operación verificando propiedad del recurso y los permisos aplicables; comprueba por separado, cuando corresponda, vigencia de suscripción, saldo de créditos (`LIVE` vs `STUDIO`), mayoría de edad y habilitación docente (`can_charge_classes`).
 4. **Idempotencia en operaciones mutables:** las peticiones de creación de órdenes, reserva de clases, envío de evaluaciones y consumo de créditos Studio aceptan la cabecera `Idempotency-Key: <uuid-v4>`.
 5. **Estructura estándar de respuesta y error:**
 
@@ -47,7 +47,7 @@
 
 | Método | Ruta | Actor / Permiso | Caso de uso conectado | Descripción |
 |---|---|---|---|---|
-| `POST` | `/api/v1/auth/registro` | Público | `RegistrarCuentaUseCase` | Registra cuenta (`ESTUDIANTE`, `CREADOR`, `DOCENTE`) sin exigir correo institucional. Si es Docente, define modalidad `LIBRE` o `NIVEL_ACADEMICO`. |
+| `POST` | `/api/v1/auth/registro` | Público | `RegistrarCuentaUseCase` | Registra cuenta (`ESTUDIANTE`, `DOCENTE`) sin exigir correo institucional. Si es Docente, define modalidad `LIBRE` o `NIVEL_ACADEMICO`. |
 | `POST` | `/api/v1/auth/login` | Público | `IniciarSesionUseCase` | Autentica credenciales y establece sesión segura. |
 | `POST` | `/api/v1/auth/logout` | Autenticado | `CerrarSesionUseCase` | Revoca la sesión activa. |
 | `GET` | `/api/v1/usuarios/me` | Autenticado | `ConsultarPermisosUseCase` | Devuelve perfil, tipo de cuenta, modalidad docente, estado de habilitación y banderas de protección de menor. |
@@ -58,9 +58,9 @@
 | Método | Ruta | Actor / Permiso | Caso de uso conectado | Descripción |
 |---|---|---|---|---|
 | `GET` | `/api/v1/cursos` | Público / Estudiante | `ListarCatalogoUseCase` | Lista cursos por nivel (`PRIMARIA`, `SECUNDARIA`, `PREUNI`, `UNIVERSITARIO`) con soporte de caché Redis. |
-| `POST` | `/api/v1/studio/proyectos` | Creador / Docente / Estudiante | `CrearProyectoStudioUseCase` | Crea o guarda edición manual en Studio (**0 créditos IA consumidos**). |
+| `POST` | `/api/v1/studio/proyectos` | Estudiante / Docente con permiso de Studio | `CrearProyectoStudioUseCase` | Crea o guarda edición manual en Studio (**0 créditos IA consumidos**). |
 | `POST` | `/api/v1/studio/proyectos/:id/archivos/url-subida` | Propietario del proyecto | `EmitirUrlSubidaR2UseCase` | Genera URL pre-firmada temporal hacia Cloudflare R2 y registra metadatos en PostgreSQL. |
-| `POST` | `/api/v1/studio/proyectos/:id/publicar` | Creador / Docente autorizado | `PublicarVersionContenidoUseCase` | Sella una versión inmutable en MongoDB/PostgreSQL y encola indexación RAG si la licencia lo permite. |
+| `POST` | `/api/v1/studio/proyectos/:id/publicar` | Estudiante / Docente con autorización editorial | `PublicarVersionContenidoUseCase` | Sella una versión inmutable en MongoDB/PostgreSQL y encola indexación RAG si la licencia lo permite. |
 | `POST` | `/api/v1/studio/proyectos/:id/generar-ia` | Usuario con cuota Studio | `SolicitarGeneracionStudioUseCase` | Muestra/valida el costo en **créditos Studio** (ej. 5 créditos presentación, 10 imagen estándar) y descuenta de forma idempotente vía M5. |
 
 ### 2.3. Módulo 3 — Evaluaciones y Aprendizaje (`/api/v1/evaluaciones`)
@@ -75,11 +75,13 @@
 
 | Método | Ruta | Actor / Permiso | Caso de uso conectado | Descripción |
 |---|---|---|---|---|
-| `POST` | `/api/v1/docentes/acreditaciones` | Docente / Est. Universitario adulto | `SolicitarHabilitacionDocenteUseCase` | Envía expediente para acreditar nivel académico o solicitar habilitación de tutor universitario adulto. |
+| `POST` | `/api/v1/docentes/acreditaciones` | Docente / Est. Universitario adulto | `SolicitarHabilitacionDocenteUseCase` | Envía una solicitud de habilitación docente con verificación documental del solicitante; la validación de credenciales académicas se tramita por separado y solo corresponde al perfil Docente por nivel académico. No se acredita un título por aprobar la habilitación. |
 | `POST` | `/api/v1/clases/sesiones` | Docente / Tutor habilitado | `ProgramarSesionLiveUseCase` | Crea sesión grupal (6–35 alumnos, 1 crédito), reforzamiento (2–5, 2 créditos) o individual (1, 3 créditos), validando viabilidad con M5. |
 | `POST` | `/api/v1/clases/sesiones/:id/reservar` | Estudiante | `ReservarClaseUseCase` | Verifica cupo con control de concurrencia SQL y descuenta **créditos Live** (1, 2 o 3) mediante contrato con M5. |
 | `POST` | `/api/v1/clases/sesiones/:id/ingresar` | Estudiante con reserva / Docente | `EmitirCredencialAulaUseCase` | Verifica permiso y consentimiento audiovisual (menores) y devuelve token efímero para conectarse directo al SFU/WebRTC. |
 | `POST` | `/api/v1/clases/sesiones/:id/cerrar-asistencia` | Docente / Sistema | `ConfirmarPrestacionClaseUseCase` | Registra asistencia efectiva y emite evento `ClasePrestadaValidada` hacia M5 para habilitar liquidación. |
+
+**Contrato pendiente de revisión:** la ruta propuesta `/api/v1/docentes/acreditaciones` y el caso `SolicitarHabilitacionDocenteUseCase` nombran procesos distintos. Deben definirse contratos diferenciados para verificación documental, validación de credenciales académicas y habilitación docente antes de implementarlos. Se conserva la ruta como propuesta pendiente, sin asumir un contrato público ya desplegado.
 
 ### 2.5. Módulo 5 — Suscripciones, Pagos y Créditos (`/api/v1/pagos` y `/api/v1/suscripciones`)
 
