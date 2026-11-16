@@ -30,7 +30,7 @@ Cada módulo organizará internamente sus responsabilidades mediante **Clean Arc
 
 ## 2. Diagrama
 
-![Diagrama de componentes de la API Backend Mentelyx](../img/mentelyx-componentes-arquitectonicos.png)
+![Diagrama de componentes de la API Backend Mentelyx](../img/fuentes-svg/nivel3-componentes.svg)
 
 > Archivo editable: [mentelyx-componentes-arquitectonicos.drawio](../img/fuente_drawio/mentelyx-componentes-arquitectonicos.drawio)
 

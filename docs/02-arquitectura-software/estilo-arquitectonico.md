@@ -14,7 +14,7 @@ Se adopta el estilo de **monolito modular en tres capas** con despliegue **serve
 | **Integraciones y asincronía** | Proveedor de IA (LLM/embeddings), pasarela de pagos, WebRTC/SFU (RealtimeKit candidato), Bunny Stream, servicio de correo y **Cloudflare Queues + Worker consumidor + DLQ**. |
 | **Beneficios** | Despliegue unificado en Cloudflare Workers, latencia nula en llamadas entre módulos mediante contratos internos TypeScript, transacciones ACID locales en PostgreSQL y evolución ordenada por dominios. |
 
-![Estilo arquitectónico de Mentelyx](../img/mentelyx-estilo-arquitectonico.png)
+![Estilo arquitectónico de Mentelyx](../img/estilo-arquitectonico.png)
 
 **Figura 1.** Estilo arquitectónico de Mentelyx: monolito modular en tres capas con siete módulos de negocio, persistencia políglota controlada, procesamiento asíncrono con colas y servicios externos. *Fuente: elaboración propia, con base en las decisiones arquitectónicas del proyecto (ADR-001, ADR-002, ADR-013, ADR-023).*
 
