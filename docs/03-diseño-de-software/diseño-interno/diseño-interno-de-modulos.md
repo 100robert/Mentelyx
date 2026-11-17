@@ -4,7 +4,7 @@
 > **Estilo de construcción:** monolito modular · **Enfoque dentro de cada módulo:** Clean Architecture  
 > **Cobertura de estructuras:** M1–M7 · **Referencia principal para UML detallado y código:** M6 — Tutor IA y RAG · **Ejemplo complementario transaccional:** M5 — Suscripciones y Pagos\
 > **Nivel de detalle:** diseño de código (vistas de paquetes M1–M7 y UML detallado de M6 y M5)\
-> **Versión:** 3.1 · **Estado:** diseño objetivo; archivos, clases y rutas aún no implementados.
+> **Versión:** 3.2 · **Estado:** diseño objetivo; archivos, clases y rutas aún no implementados. **Cambios 3.2:** notas de sincronización CO-08 (secciones 8.1.2 y 8.5.5) y contratos nuevos de la API sección 2.8 en la sección 10.1. El código de referencia no se modifica.
 
 > **Revisión terminológica:** 10/11/2026. Ajustes de lenguaje y nombres de contratos de diseño; no implica cambios en código ejecutable.
 
@@ -255,7 +255,7 @@ La regla es que **el código de negocio no dependa de detalles externos**. El m�
 
 ### 4.3. Diagrama de clases
 
-![Diagrama de clases de M2 — Cursos y Contenidos](../../img/m2-diagrama-clases.png)
+![Diagrama de clases de M2 — Cursos y Contenidos](../../img/m2-clases.png)
 
 La imagen de clases corresponde exclusivamente a **M2 — Cursos y Contenidos**. Sus clases e interfaces deben contrastarse con el inventario definido en 4.1; aquí no se inventan diagramas ni relaciones adicionales que no aparezcan en los archivos de origen.
 
@@ -270,7 +270,7 @@ La imagen de clases corresponde exclusivamente a **M2 — Cursos y Contenidos**.
 
 ### 4.4. Flujo de ejecución y diagrama de secuencia
 
-![Diagrama de secuencia de M2 — Publicación de lección](../../img/m2-diagrama-secuencia.png)
+![Diagrama de secuencia de M2 — Publicación de lección](../../img/m2-secuencia.png)
 
 **Flujo de referencia:** publicación de lección. El detalle de mensajes y alternativas debe leerse en la imagen independiente de M2; el Markdown original no describe una tabla de pasos para este módulo.
 
@@ -380,7 +380,7 @@ La regla es que **el código de negocio no dependa de detalles externos**. El m�
 
 ### 5.3. Diagrama de clases
 
-![Diagrama de clases de M3 — Evaluaciones y Aprendizaje](../../img/m3-diagrama-clases.png)
+![Diagrama de clases de M3 — Evaluaciones y Aprendizaje](../../img/m3-clases.png)
 
 La imagen de clases corresponde exclusivamente a **M3 — Evaluaciones y Aprendizaje**. Sus clases e interfaces deben contrastarse con el inventario definido en 5.1; aquí no se inventan diagramas ni relaciones adicionales que no aparezcan en los archivos de origen.
 
@@ -395,7 +395,7 @@ La imagen de clases corresponde exclusivamente a **M3 — Evaluaciones y Aprendi
 
 ### 5.4. Flujo de ejecución y diagrama de secuencia
 
-![Diagrama de secuencia de M3 — Evaluación e intento](../../img/m3-diagrama-secuencia.png)
+![Diagrama de secuencia de M3 — Evaluación e intento](../../img/m3-secuencia.png)
 
 **Flujo de referencia:** evaluación e intento. El detalle de mensajes y alternativas debe leerse en la imagen independiente de M3; el Markdown original no describe una tabla de pasos para este módulo.
 
@@ -513,7 +513,7 @@ La regla es que **el código de negocio no dependa de detalles externos**. El m�
 
 ### 6.3. Diagrama de clases
 
-![Diagrama de clases de M4 — Docentes y Clases](../../img/m4-diagrama-clases.png)
+![Diagrama de clases de M4 — Docentes y Clases](../../img/m4-clases.png)
 
 La imagen de clases corresponde exclusivamente a **M4 — Docentes y Clases**. Sus clases e interfaces deben contrastarse con el inventario definido en 6.1; aquí no se inventan diagramas ni relaciones adicionales que no aparezcan en los archivos de origen.
 
@@ -528,7 +528,7 @@ La imagen de clases corresponde exclusivamente a **M4 — Docentes y Clases**. S
 
 ### 6.4. Flujo de ejecución y diagrama de secuencia
 
-![Diagrama de secuencia de M4 — Reserva de clase](../../img/m4-diagrama-secuencia.png)
+![Diagrama de secuencia de M4 — Reserva de clase](../../img/m4-secuencia.png)
 
 **Flujo de referencia:** reserva de clase. El detalle de mensajes y alternativas debe leerse en la imagen independiente de M4; el Markdown original no describe una tabla de pasos para este módulo.
 
@@ -657,7 +657,7 @@ La regla es que **el código de negocio no dependa de detalles externos**. El m�
 
 Se detalla el **caso de uso `ConfirmarPagoWebhook` de M5**, por ser un ejemplo concreto de cómo las clases de aplicación dependen de interfaces y no de implementaciones.
 
-![Diagrama de clases de M5 — ConfirmarPagoWebhook](../../img/m5-diagrama-clases.png)
+![Diagrama de clases de M5 — ConfirmarPagoWebhook](../../img/m5-clases.png)
 
 **Figura M5-C.** Diagrama de clases UML del flujo `ConfirmarPagoWebhook` en **M5 — Suscripciones y Pagos**.
 
@@ -686,7 +686,7 @@ Los movimientos de **Live** y **Studio** no se confunden; el producto **Plus/Pro
 
 El flujo educativo principal de M6 se añade en **5.1**. El título, la figura 9 y el desarrollo transaccional siguiente de M5 se mantienen para conservar las referencias existentes.
 
-![Diagrama de secuencia de M5 — Confirmar pago y activar derechos](../../img/m5-diagrama-secuencia-pagos.png)
+![Diagrama de secuencia de M5 — Confirmar pago y activar derechos](../../img/m5-secuencia.png)
 
 **Figura M5-S.** Diagrama de secuencia UML de confirmación idempotente de webhook de pago en **M5 — Suscripciones y Pagos**.
 
@@ -1055,7 +1055,9 @@ El escenario de referencia es un estudiante que pide una explicación o ayuda pa
 #### 8.1.2. Precisión de contratos y aspectos pendientes
 
 - La API externa ya prevé `POST /api/v1/tutor-ia/consultas` → `ResponderConsultaUseCase` y `GET /api/v1/tutor-ia/consumo/me` → `ConsultarUsoIaUseCase`. No fija sus DTO ni códigos de error específicos. Las firmas y tipos de 6.6 son **propuestas internas de diseño**, pendientes de pruebas de contrato; no amplían aquí la API externa.
+  - **Actualización CO-08 (17/11/2026).** La [API v2.1](../diseño-externo/02-diseño-de-api-y-contratos.md) ya fija en diseño los DTO (sección 4.3), el SSE y la recuperación (sección 5), el catálogo de errores (sección 7) y la idempotencia HTTP del Tutor: `Idempotency-Key` obligatoria y `operationKey = tutor:{actorId}:{Idempotency-Key}` ([orquestador, sección 10.6](../diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md)). El pendiente de contrato queda resuelto en diseño. La implementación y sus pruebas siguen pendientes, y el código de referencia de 8.5 sigue siendo ilustrativo, no construido. Al implementar, las firmas de 6.6 se alinean con esos DTO y con el [contrato de coordinación](../contrato-coordinacion-datos-seguridad-infraestructura.md).
 - Para Tutor IA, M5 solo publica `consultarDerechoTutorIA` en 2.8. No existe todavía un contrato público de reserva, confirmación o liberación de esa cuota. No se extrapolan los créditos Live/Studio. El control concurrente de operaciones y la conciliación descritos en el código de referencia de M6 son obligaciones propuestas para la medición local M6, con límites recibidos de M5; su persistencia y coordinación deben verificarse antes de implementación.
+  - **Actualización CO-08/CO-03.** No se crea un contrato de reserva de cuota Tutor en M5. M5 es dueño de la política y del derecho (`consultarDerechoTutorIA`). M6 admite, reserva, mide y concilia en su propio esquema SQL, con bloqueo de presupuesto global y por proveedor ([persistencia, sección 7.6](../diseño-externo/01-diseño-de-persistencia-y-datos.md)). La ejecución se separa del SSE mediante cola y *lease* (CO-04). Verificación pendiente: PR-INF-04 y pruebas API-04, API-16 y API-17.
 - Los inventarios M1/M2 y la tabla 2.8 usan nombres alternativos para gestión de cuentas y control de acceso; 6.6 toma como referencia la tabla 2.8. Asimismo, `SemanticSearchPort`/`answer-with-rag` en principios de diseño corresponden conceptualmente a `retrieval.port.ts`/`responder-consulta.use-case.ts`. Son diferencias documentales existentes, no APIs ya implementadas ni motivo para renombrar otros documentos.
 - El README y el documento C4 de nivel 4 describen todavía el detalle UML/TypeScript de M5. Se deja constancia de que no recogen esta ampliación educativa; permanecen sin cambios por estar fuera del alcance.
 
@@ -1081,7 +1083,7 @@ La regla es que **el código de negocio no dependa de detalles externos**. El m�
 
 Se detalla `ResponderConsultaUseCase` del inventario de M6. Los nombres y las firmas internas se concretan como propuesta en el apartado de código de referencia de M6. Los puertos pertenecen a M6; los adaptadores M1/M2/M5 traducen únicamente sus API públicas. Ninguna flecha desde la aplicación apunta a un SDK o repositorio concreto.
 
-![Diagrama de clases de M6 — ResponderConsultaUseCase](../../img/m6-diagrama-clases.png)
+![Diagrama de clases de M6 — ResponderConsultaUseCase](../../img/m6-clases.png)
 
 **Figura M6-C.** Diagrama de clases UML de la consulta educativa de **M6 — Tutor IA y RAG**. 
 
@@ -1093,7 +1095,7 @@ Se detalla `ResponderConsultaUseCase` del inventario de M6. Los nombres y las fi
 
 El flujo corresponde a `POST /api/v1/tutor-ia/consultas`. Los participantes M1/M2/M5 son API públicas internas invocadas por adaptadores; pgvector consulta el índice de M6. Las comprobaciones de dominio siguen vigentes aunque el middleware haya autenticado la entrada.
 
-![Diagrama de secuencia de M6 — Consulta educativa autorizada](../../img/m6-diagrama-secuencia-consulta.png)
+![Diagrama de secuencia de M6 — Consulta educativa autorizada](../../img/m6-secuencia.png)
 
 **Figura M6-S.** Diagrama de secuencia UML del caso educativo principal de **M6 — Tutor IA y RAG**. El orden de registro se ajusta para no declarar éxito antes de persistir la medición necesaria; no existe una transacción ACID global entre PostgreSQL y el proveedor IA.
 
@@ -1110,7 +1112,7 @@ La figura muestra el recorrido normal y las alternativas principales. Cualquier 
 
 ### 8.5. Código de referencia
 
-El ejemplo recorre una **consulta sobre un recurso educativo autorizado**; no implementa todo el Tutor ni reemplaza el ejemplo transaccional de M5. Los archivos y firmas siguientes son **propuestas de diseño interno**, no componentes funcionando. `POST /api/v1/tutor-ia/consultas` y `ResponderConsultaUseCase` ya están previstos en el contrato externo; el cuerpo, los DTO, los estados internos y la normalización de las respuestas de M1/M2/M5 todavía requieren acordarse. Se toman los nombres públicos de §2.8, sin añadir operaciones públicas de reserva o descuento de cuota Tutor IA en M5.
+El ejemplo recorre una **consulta sobre un recurso educativo autorizado**; no implementa todo el Tutor ni reemplaza el ejemplo transaccional de M5. Los archivos y firmas siguientes son **propuestas de diseño interno**, no componentes funcionando. `POST /api/v1/tutor-ia/consultas` y `ResponderConsultaUseCase` ya están previstos en el contrato externo; el cuerpo, los DTO, los estados internos y la normalización de las respuestas de M1/M2/M5 todavía requieren acordarse. Se toman los nombres públicos de la sección 2.8, sin añadir operaciones públicas de reserva o descuento de cuota Tutor IA en M5.
 
 #### 8.5.1. Dominio: consulta, fuentes, respuesta y puertos
 
@@ -1316,7 +1318,7 @@ El contexto educativo procede de la versión autorizada de M2; la pregunta del a
 
 #### 8.5.3. Infraestructura: fronteras de módulos y proveedores
 
-Los tipos `M1Publica`, `M2Publica` y `M5Publica` expresan la **forma esperada para el ejemplo**, usando los nombres de §2.8. La implementación futura importará exclusivamente las APIs públicas de esos módulos y adaptará sus DTO definitivos; no podrá leer sus repositorios o tablas privadas.
+Los tipos `M1Publica`, `M2Publica` y `M5Publica` expresan la **forma esperada para el ejemplo**, usando los nombres de la sección 2.8. La implementación futura importará exclusivamente las APIs públicas de esos módulos y adaptará sus DTO definitivos; no podrá leer sus repositorios o tablas privadas.
 
 ```ts
 // infraestructura/m1-authorization.adapter.ts
@@ -1464,6 +1466,8 @@ La composición recibe el adaptador durable de uso y conecta implementaciones; e
 
 El formato `{ok,data/error,meta}` conserva la convención externa, pero **estos campos de entrada, códigos y traducciones HTTP son propuestas**, no un contrato publicado. `operationKey` se genera en el servidor y permanece estable en la operación interna; la API actual no define idempotencia HTTP del Tutor ni recuperación de su respuesta. Por ello no se afirma que repetir una petición HTTP sea gratuito o seguro: antes de implementar reintentos del cliente deben acordarse su clave, vínculo con actor/cuerpo y política de recuperación, sin modificar aquí el contrato externo.
 
+> **Actualización CO-08.** Ese acuerdo ya existe en diseño: la API v2.1 (secciones 4.3, 5.3 y 7) y el orquestador (sección 10.6) definen la clave obligatoria, su vínculo con el actor y el hash del cuerpo, la recuperación por `GET /api/v1/tutor-ia/consultas/{operationKey}` y la cancelación explícita (ADR-068). El código de esta sección no se ha actualizado y sigue siendo ilustrativo. La `operationKey` normativa es la de la API, no una generada solo por el servidor.
+
 **Verificaciones requeridas para implementar:** denegación antes de costos; revocación con índice atrasado; cita ajena rechazada; ausencia de contexto sin inferencia; admisión concurrente sin superar presupuesto; operación duplicada sin nueva invocación; fallos de RAG/LLM con consumo desconocido conciliable; fallo al registrar uso sin `200 OK`; mantenimiento de disponibilidad del contenido ordinario cuando falla el Tutor. Son criterios de aceptación del diseño, no resultados de pruebas de un backend existente.
 
 ---
@@ -1539,7 +1543,7 @@ La regla es que **el código de negocio no dependa de detalles externos**. El m�
 
 ### 9.3. Diagrama de clases
 
-![Diagrama de clases de M7 — Publicidad y Patrocinios](../../img/m7-diagrama-clases.png)
+![Diagrama de clases de M7 — Publicidad y Patrocinios](../../img/m7-clases.png)
 
 La imagen de clases corresponde exclusivamente a **M7 — Publicidad y Patrocinios**. Sus clases e interfaces deben contrastarse con el inventario definido en 9.1; aquí no se inventan diagramas ni relaciones adicionales que no aparezcan en los archivos de origen.
 
@@ -1554,7 +1558,7 @@ La imagen de clases corresponde exclusivamente a **M7 — Publicidad y Patrocini
 
 ### 9.4. Flujo de ejecución y diagrama de secuencia
 
-![Diagrama de secuencia de M7 — Validación de campaña](../../img/m7-diagrama-secuencia.png)
+![Diagrama de secuencia de M7 — Validación de campaña](../../img/m7-secuencia.png)
 
 **Flujo de referencia:** validación de campaña. El detalle de mensajes y alternativas debe leerse en la imagen independiente de M7; el Markdown original no describe una tabla de pasos para este módulo.
 
@@ -1601,6 +1605,10 @@ Las colaboraciones siguientes son **llamadas internas TypeScript** dentro del mo
 | M4 → evento de prestación | **M5** | `ClasePrestadaValidada` con referencia verificable y deduplicación | M5 registra evidencia sin importar implementaciones M4 |
 | M2 → cola de trabajos | **M6** | Evento `StudioGenerationRequested` con ID, versión y derecho verificado | M6 procesa asíncronamente; M2 no importa implementación M6 |
 | M4 | **M1** | `registrarHabilitacionAprobada` tras verificar el expediente | M1 no lee expedientes privados de M4 |
+| M6 | **M2** | `listarRecursosConsultables`, `obtenerFuenteParaIndexar` (API sección 2.8, nuevos) | El conjunto consultable lo decide M2; el cliente no envía IDs autorizados |
+| M6 | **M3** | `consultarProgresoAutorizado`, `consultarRestriccionesTutor` (nuevo) | El Tutor se bloquea durante evaluaciones; M6 no lee notas privadas |
+| M6 | **M4** | `buscarOfertasTutoria` (nuevo, solo lectura) | Sin publicidad ni reserva desde M6 |
+| M2 | **M5** | `cotizarOperacionStudio` (nuevo), `reembolsarOperacionStudio` (nuevo, idempotente por `refund:{operationKey}`) | Cotización de 10 min consumida una sola vez; un reintegro nunca existe sin débito previo |
 
 **Sin ciclos de importación:** M4 llama la API pública de M1 y M5; M6 consulta M2 y M5. El regreso funcional desde M4 a M5 (asistencia validada) y desde M6 a M2 (resultado Studio) se integra por **eventos de negocio**, no por referencias TypeScript circulares. El grafo de importaciones deberá pasar una comprobación automática de ciclos antes de programar; los contratos de puertos se inyectan en las raíces de composición.
 

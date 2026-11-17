@@ -5,6 +5,8 @@
 
 > **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
 
+> **Revisión de datos, seguridad e infraestructura:** 2.2 — 17/11/2026. Integra resolución razonada de ADR-056–072 y refinamientos de la sección 9. Diseño seleccionado no equivale a integración probada; SDD consolidado fuera de alcance.
+
 ## 1. Criterios de decisión y estados
 
 **Adoptar** significa elegir el diseño objetivo, **NO** que esté desarrollado o desplegado; **Candidato** significa que la elección final requiere pruebas de conectividad, costos, contratos, funciones o seguridad. Se preservan **ADR-001 a ADR-010 y ADR-012 a ADR-044**; **ADR-011 queda reservado**. Se incorporan **ADR-045 a ADR-055**.
@@ -25,7 +27,7 @@ Criterios: trazabilidad RF/AC/RC/DA, seguridad/menores, disponibilidad y recuper
 | ADR-008 | **Cola de tareas gestionada para trabajo asíncrono** | DA-07, DA-09, DA-12 | Los fallos de correo o tareas lentas no deben detener las operaciones principales | Cloudflare Queues + consumidores Workers, reintentos, dead-letter queue, tareas programadas | Adoptar si se usa Workers |
 | ADR-009 | **Almacenamiento de objetos y streaming separado de SQL/NoSQL** | DA-01, DA-02, DA-19 | Archivos y videos binarios no pertenecen a las bases de datos operacionales | Cloudflare R2 para PDF, imágenes y adjuntos; Bunny Stream para videos; PostgreSQL mantiene permisos/metadatos y MongoDB la estructura pedagógica si aplica | Adoptar |
 | ADR-010 | **Cuentas independientes de convenios** | DA-08 | Mantener cuenta, historial y permisos aun cuando venza un convenio | Gestión de cuentas de usuario separada de Convenios y Beneficios | Adoptar |
-| ADR-012 | **Redis adoptado para caché y controles efímeros** | DA-01, DA-02, DA-06 | Evitar lecturas repetidas sin introducir inconsistencia de datos sensibles | CDN/caché HTTP para público; Redis compatible en local y servicio administrado compatible en producción para caché y rate limiting | Adoptada para Redis; proveedor pendiente |
+| ADR-012 | **Redis adoptado para caché y controles efímeros** | DA-01, DA-02, DA-06 | Evitar lecturas repetidas sin introducir inconsistencia de datos sensibles | CDN/caché HTTP para público; Redis local y Upstash REST como adaptador de producción, sin sesiones/cuotas autoritativas | Adoptada; Upstash seleccionado como diseño, contrato y pruebas pendientes (sección 9) |
 | ADR-013 | **Despliegue serverless-first con bajo trabajo de operación** | DA-01, DA-02, DA-07, DA-09; DA-13, DA-19 | Evitar administración permanente de máquinas y pagar conforme al consumo | Cloudflare Workers/Pages, Queues, R2, Neon PostgreSQL y MongoDB Atlas; validar la conectividad segura con ambos motores y sus costos | Adoptar con pruebas de conectividad/carga |
 | ADR-014 | **Videos grabados mediante plataforma de streaming** | DA-01, DA-02; DA-14 | Transcodificación y CDN son más económicos y sencillos si están gestionados | **Bunny Stream** (primera opción, región/tier sujeto a piloto), carga directa autenticada, HLS y enlaces firmados | Condicionada a pruebas en Perú |
 | ADR-015 | **Separar clases masivas de tutorías interactivas** | DA-01, DA-02, DA-07; DA-14 | El patrón uno-a-muchos y la interacción bidireccional tienen exigencias/costos distintos | Aulas iniciales **hasta 35 alumnos + docente** por **WebRTC SFU moderado**; transmisiones de mayor audiencia o broadcast serán alternativa futura y requieren ADR específica y prueba de costos. Este refinamiento sustituye el supuesto anterior de clase magistral masiva como modalidad base. | Adoptar topología; proveedor condicionado |
@@ -53,7 +55,7 @@ Se reescriben en un único formato para eliminar anexos contradictorios. Los det
 |---|---|---|
 | ADR-031 | PostgreSQL en local; Neon para producción; migraciones repetibles | Adoptada como objetivo | DA-24, RC-23. Mismas restricciones e índices en local y remoto. |
 | ADR-032 | Despliegue parcialmente híbrido: Workers/Hono y servicios externos | Adoptada como objetivo | DA-23/24. Pages export estática condicionada a necesidades SSR; Cloud Run solo trabajo pesado. |
-| ADR-033 | Biblioteca de autenticación integrada y autorización propia | Better Auth candidato | DA-21. Validar sesión, cookies, correo, MFA y revocación sobre Workers/Neon. |
+| ADR-033 | Biblioteca de autenticación integrada y autorización propia | Better Auth seleccionado como diseño | DA-21. Sesión SQL, sin cookieCache/secondaryStorage de sesión; cookies, correo, MFA y revocación sobre Workers/Neon pendientes de prueba (sección 9). |
 | ADR-034 | **Solo Estudiante y Docente en el registro público**; separar modalidad docente, permisos de Studio, habilitación para tutorías, acreditación y suscripción | Adoptada; modelo de cuentas definido | DA-21/DA-22; RF-01/RF-53/RF-56; RC-20/RC-21. Estudiante no cambia de tipo por crear contenidos o ser tutor adulto autorizado; Docente no presume título; Superadministrador es interno. |
 | ADR-035 | Studio versionado: MongoDB; derechos y saldos: PostgreSQL; archivos R2 | Adoptada, validación pendiente | DA-19/22. No hay transacción global entre bases. |
 | ADR-036 | Disponibilidad mediante detección, degradación, backups y pruebas | Adoptada, pruebas pendientes | DA-23. HA de DB no se presupone gratis. |
@@ -64,7 +66,7 @@ Se reescriben en un único formato para eliminar anexos contradictorios. Los det
 | ADR-041 | Neon PostgreSQL + MongoDB Atlas en producción | Proveedores elegidos, sin contrato | DA-19. PostgreSQL/MongoDB locales; conectividad/región/HA por validar. |
 | ADR-042 | Cloudflare Queues/DLQ para procesamiento de documentos | Adoptada | DA-23. Entrega at-least-once; payload de referencias; consumidor idempotente. |
 | ADR-043 | ACID + UNIQUE + webhook + outbox + reconciliación para pagos | Adoptada | DA-06/29. Redis/Queues NO ledger financiero. |
-| ADR-044 | Better Auth como biblioteca de Hono; permisos propios | Candidato técnico | DA-03/21. No crear criptografía propia; sí código de experiencia y autorización. |
+| ADR-044 | Better Auth como biblioteca de Hono; permisos propios | Seleccionado como diseño; integración pendiente | DA-03/21. Avisos oficiales revisados; versión estable exacta se fija al construir, cota de parches revisados ≥1.7.16. No criptografía propia (sección 9). |
 
 ## 4. Nuevas decisiones comerciales, de aulas y Studio (ADR-045 a ADR-055)
 
@@ -116,3 +118,43 @@ El **estilo** seleccionado es monolito modular en capas con despliegue parcialme
 - Acordar pasarela, comisiones aplicables, suscripción/reembolso, pago a docentes y tratamiento fiscal.
 - Medir consumos IA reales por función y validar 300/900 créditos Studio.
 - Ensayar restauraciones SQL/NoSQL, colas, fallos de proveedor y reconexión.
+
+## 8. Revisión de propuestas especializadas ADR-056 a ADR-072
+
+Origen: [registro de Claude, sección 2](../03-diseño-de-software/diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md). Resolución del 17/11/2026 bajo responsabilidad de Codex: evaluar integración y condiciones sin atribuir pruebas al diseño. Las alternativas originales se conservan allí; esta tabla registra motivo y resultado, no aprobación automática.
+
+| ID | Resolución y decisión vigente | Justificación / alternativa / condición y trazabilidad |
+|---|---|---|
+| ADR-056 | **Adoptar con modificación:** alias/rutas versionadas, Workers AI alojado y Gateway para externos; reemplazar Pro-0813 por V4.1 Flash como objetivo de razonamiento profundo | Acoplar ID retirado rompe servicio. Reemplazo recomendado por Cloudflare verificado en infraestructura sección 5; BP-01 y PEND-05 pendientes. ADR-019/053, EQ-10/30 |
+| ADR-057 | **Adoptar controles, activación condicionada:** D0–D3, D3 prohibido, API directa DeepSeek solo D0; menores SOLO_ZDR como mínimo | ZDR no equivale a autorización legal ni contrato. Datos reales de menores bloqueados hasta PEND-02; matriz de privacidad también para embeddings/ingesta y fallback. Seguridad secciones 5–6; RC-18/19 |
+| ADR-058 | **Diferida a producto:** modo GENERAL no habilitado | Amplía comportamiento de RF-42; no aprobar unilateralmente por conveniencia de fallback. Ante falta de autorización/contexto, SIN_CONTEXTO o indisponibilidad. Alternativa actual: solo FUNDAMENTADA |
+| ADR-059 | **Adoptar diseño por fases, condicionar runtime:** parser restringido/math.js; SymPy Python Worker en fase 2 | Se rechaza eval/código libre. Runtime/arranque/costo no medidos; Cloud Run alternativa si no cumple. INF-02, AC-04/11 |
+| ADR-060 | **Adoptar:** verificar afirmaciones matemáticas y etiquetar límites antes de presentarlas | Una salida estructurada no prueba corrección. Conjunto de pruebas especializado y verificador pendiente; sin transferir notas de M3 a M6. AC-11, ADR-018 |
+| ADR-061 | **Adoptar separación declarativa/resuelta como diseño; motor pendiente de prototipo** | Geometría/cálculos reproducibles; no afirmar ausencia de costos/licencias de todas las dependencias. Excalidraw queda alternativa del lápiz, no sustitución del contrato. PEND-VIS-01/02, AC-05/11 |
+| ADR-062 | **Adoptar:** esquemas inmutables/versionados y lectores compatibles | Controla evolución entre cliente/servidor/almacenes. Validar JSON Schema y semántica por prototipo; no aprobar ejemplos solo por JSON sintáctico. SC-05, ADR-035 |
+| ADR-063 | **Adoptar distinción, proveedores condicionados:** simulación verificable vs objeto ilustrativo adulto en Studio | No equiparar malla generada a exactitud científica. Stability/Meshy requieren licencia, contrato, costo y BP; no se contratan. AC-11, PEND-04 |
+| ADR-064 | **Adoptar modelo objetivo gemini-embedding-2/1536 con restricciones** | Verificación oficial de dimensión en persistencia sección 7.6; texto pequeño 1536 en alternativa no comparte espacio. Menores/datos no elegibles: modo léxico también en ingesta. SC-15 diferida a BP-07; no alterar vector silenciosamente |
+| ADR-065 | **Adoptar con modificación:** híbrido autorizado, RRF/MMR y generaciones; ≤60 s para proyección de revocación | Revalidación de autoridad protege aun con índice atrasado; no autorización vía caché. EXPLAIN/Recall y pgvector instalado pendientes; consultas de ejemplo no garantizan HNSW. SC-01/02, INF-06, EQ-11 |
+| ADR-066 | **Adoptar con modificación:** PDF Browser Rendering; PPTX PptxGenJS/Cloud Run de respaldo | Hash incluye audiencia/formato y ámbito; excluir notas/soluciones físicamente de entrega estudiante. Compatibilidad y calidad exportadas pendientes PEND-MAT-01/PEND-05; INF-03/04, SC-06 |
+| ADR-067 | **Adoptar con modificación:** UTI y admisión SQL M6 más reservas global/proveedor | Candado solo por usuario no protege presupuesto común. Límite duro bloquea toda admisión; costo incierto retenido. Pesos/cuotas no aprobados. SC-03/08/10/11, EQ-10/27/30 |
+| ADR-068 | **Adoptar con modificación técnica:** clave obligatoria, GET recuperable, cancelación explícita | Ejecución duradera separada de SSE; no confiar en vida del request. CO-04, pruebas desconexión/duplicados/lease pendientes; no reintentar inferencia incierta |
+| ADR-069 | **Diferida la política legal; adoptado mecanismo de minimización** | 30/14 días y otras retenciones propuestas requieren PEND-02. TTL asíncrono, revocación inmediata y purga verificable; historial real desactivado hasta resolución. SC-04/12, SEG-04 |
+| ADR-070 | **Adoptar:** tres procesos separados bajo habilitación | SC-09 integra estados y evidencia en M4; evento a M1 no convierte credencial en habilitación. RF-18/58/59, ADR-034; pruebas por perfil pendientes |
+| ADR-071 | **Condicionada, no activada:** imágenes ilustrativas estándar/premium propuestas por Claude | Preservar selección especializada y fuentes del 17/11; faltan BP-06, contrato y límites; no para menores ni gráficos científicos. No se aprueba por tener tarifa publicada |
+| ADR-072 | **Condicionada, no activada:** rutas de explicación propuestas por Claude | Reutilizar evidencia vigente de su sección 19 sin repetir investigación; BP-03 y acuerdos de tratamiento/ZDR condicionan cada ruta. Ningún fallback amplía datos permitidos |
+
+Se aprueban invariantes de integración bajo responsabilidad de Codex; condiciones de producto/legal y benchmarks permanecen explícitas. La [matriz SC/SEG/INF y contrato de coordinación](../03-diseño-de-software/contrato-coordinacion-datos-seguridad-infraestructura.md) define los ajustes a sincronizar con el diseño especializado.
+
+## 9. Consolidación de decisiones propias y evidencia
+
+| ADR existentes refinadas | Cierre de diseño del 17/11/2026 | Alternativa / riesgo / aceptación |
+|---|---|---|
+| ADR-006/023/031/035/041 | PostgreSQL 17/Neon + Mongo/Atlas mantenidos; SQL para autoridad, Mongo versiones; JSONB para ai_policy; pgvector 1536 ligado al modelo | JSONB para documentos completos es viable y se compara en persistencia sección 6.3, pero no se sustituye Atlas sin ADR y medición. Sin transacción ACID entre motores |
+| ADR-007/043/048/052 | Outbox/inbox por dueño, saga durable M4/M5 y M2/M5/M6, créditos/quotes/presupuestos con locks/UNIQUE | Rechazar saldo Redis, retry ciego y publicación antes de persistencia; pruebas EQ-06/24/31 pendientes |
+| ADR-004/033/044 | Better Auth seleccionado, sesiones SQL revocables, MFA admin y autorización propia; documentos M4 aislados | Auth.js/IdP evaluados; versiones/parches y compatibilidad detallados en seguridad secciones 1–3. Selección no es instalación |
+| ADR-003/013/032/037 | Frontend estático Pages y API Workers; SSR requiere decisión por prototipo, no Pages implícito; sin balanceador dedicado | Guía oficial actualiza opciones dinámicas; no migrar a vinext automáticamente. Orígenes redundantes inexistentes no aportan failover |
+| ADR-012/020/038 | Upstash REST seleccionado como caché efímera, límites/TTL y observabilidad sin PII | Contrato/región pendientes; falla Redis no autoriza sesiones ni saldo |
+| ADR-008/021/042/054 | Colas/DLQ, límites, ejecución Tutor duradera y relay por operación; CI/CD con promoción revisada | Costos DO/cola y continuidad SSE deben probarse; no despliegue automático. Kafka/Kubernetes descartados al inicio |
+| ADR-022/036/054 | RPO/RTO diferenciados, backups independientes, restauración ensayada y conciliación externa | Metas no medidas ni SLA; tiers/costos pendientes. Redis se reconstruye; originales no se presumen regenerables |
+
+Fuentes, fecha y precondiciones en [seguridad](../02-arquitectura-software/seguridad-y-autenticacion.md), [infraestructura](../02-arquitectura-software/infraestructura-escalabilidad-y-recuperacion.md) y [persistencia](../03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md). Las tareas y verificaciones ejecutadas constan en el [registro de avance](../avance-cierre-arquitectonico-sprint-02.md). No se alteran HU/RF/AC/RC/DA/EQ ni se redacta el SDD consolidado.

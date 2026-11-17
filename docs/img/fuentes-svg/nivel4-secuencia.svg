@@ -1,0 +1,359 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3085 4906" width="3085" height="4906" xmlns:c2pa="http://c2pa.org/manifest">
+<defs>
+<marker id="a4A5568" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,0 L10,4 L0,8 z" fill="#4A5568"/></marker>
+<marker id="o4A5568" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L12,6 L1,11" fill="none" stroke="#4A5568" stroke-width="1.8"/></marker>
+<marker id="h4A5568" markerWidth="18" markerHeight="14" refX="16" refY="7" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L16,7 L1,13 z" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.8"/></marker>
+<marker id="d4A5568" markerWidth="20" markerHeight="14" refX="18" refY="7" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,7 L9.5,1.5 L18,7 L9.5,12.5 z" fill="#4A5568" stroke="#4A5568" stroke-width="1.2"/></marker>
+<marker id="a8A94A6" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,0 L10,4 L0,8 z" fill="#8A94A6"/></marker>
+<marker id="o8A94A6" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L12,6 L1,11" fill="none" stroke="#8A94A6" stroke-width="1.8"/></marker>
+<marker id="h8A94A6" markerWidth="18" markerHeight="14" refX="16" refY="7" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L16,7 L1,13 z" fill="#FFFFFF" stroke="#8A94A6" stroke-width="1.8"/></marker>
+<marker id="d8A94A6" markerWidth="20" markerHeight="14" refX="18" refY="7" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,7 L9.5,1.5 L18,7 L9.5,12.5 z" fill="#8A94A6" stroke="#8A94A6" stroke-width="1.2"/></marker>
+<marker id="aC9A93B" markerWidth="10" markerHeight="8" refX="10" refY="4" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,0 L10,4 L0,8 z" fill="#C9A93B"/></marker>
+<marker id="oC9A93B" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L12,6 L1,11" fill="none" stroke="#C9A93B" stroke-width="1.8"/></marker>
+<marker id="hC9A93B" markerWidth="18" markerHeight="14" refX="16" refY="7" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,1 L16,7 L1,13 z" fill="#FFFFFF" stroke="#C9A93B" stroke-width="1.8"/></marker>
+<marker id="dC9A93B" markerWidth="20" markerHeight="14" refX="18" refY="7" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1,7 L9.5,1.5 L18,7 L9.5,12.5 z" fill="#C9A93B" stroke="#C9A93B" stroke-width="1.2"/></marker>
+</defs>
+<rect width="3085" height="4906" fill="#ffffff"/>
+<text x="36" y="52" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="36" font-weight="700" font-style="normal" fill="#1B2A41">[Diagrama de secuencia] Resolver actividad y recibir explicación personalizada</text>
+<text x="36" y="90" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="22" font-weight="400" font-style="normal" fill="#5B6B80">Modelo C4 · Vista dinámica complementaria al Nivel 4 · M3 Evaluaciones y Aprendizaje / M6 Tutor IA y RAG</text>
+<text x="3045" y="52" text-anchor="end" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="20" font-weight="400" font-style="normal" fill="#777777">Diseño propuesto · no implementado</text>
+<rect x="17.5" y="104" width="500.0" height="169" rx="6" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="9 5"/>
+<text x="267.5" y="128" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#5B6B80">Cliente</text>
+<rect x="527.5" y="104" width="1010.0" height="169" rx="6" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="9 5"/>
+<text x="1032.5" y="128" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#5B6B80">M3 — Evaluaciones y Aprendizaje</text>
+<rect x="1547.5" y="104" width="500.0" height="169" rx="6" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="9 5"/>
+<text x="1797.5" y="128" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#5B6B80">M6 — Tutor IA y RAG</text>
+<rect x="2057.5" y="104" width="245.0" height="169" rx="6" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="9 5"/>
+<text x="2180.0" y="128" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#5B6B80">M5</text>
+<rect x="2312.5" y="104" width="245.0" height="169" rx="6" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="9 5"/>
+<text x="2435.0" y="128" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#5B6B80">M2</text>
+<rect x="2567.5" y="104" width="500.0" height="169" rx="6" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="9 5"/>
+<text x="2817.5" y="128" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#5B6B80">M6 — infraestructura</text>
+<rect x="27.5" y="175" width="225" height="84" rx="6" fill="#EEF1F6" stroke="#6B7A90" stroke-width="2.4"/>
+<text x="140.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:Estudiante</text>
+<text x="140.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">actor</text>
+<rect x="282.5" y="175" width="225" height="84" rx="6" fill="#EEF1F6" stroke="#6B7A90" stroke-width="2.4"/>
+<text x="395.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:AplicacionWeb</text>
+<text x="395.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">Web / PWA</text>
+<rect x="537.5" y="175" width="225" height="84" rx="6" fill="#F5F8FD" stroke="#2A5DAA" stroke-width="2.4"/>
+<text x="650.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:EvaluacionController</text>
+<text x="650.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M3 · Presentación</text>
+<rect x="792.5" y="175" width="225" height="84" rx="6" fill="#F1FAF5" stroke="#1E7B4C" stroke-width="2.4"/>
+<text x="905.0" y="212.1" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="15.5" font-weight="700" font-style="normal" fill="#1B2A41">:ResolverActividadUseCase</text>
+<text x="905.0" y="230.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M3 · Aplicación</text>
+<rect x="1047.5" y="175" width="225" height="84" rx="6" fill="#FFFAF3" stroke="#B5761B" stroke-width="2.4"/>
+<text x="1160.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:EvaluadorDeterminista</text>
+<text x="1160.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M3 · Dominio</text>
+<rect x="1302.5" y="175" width="225" height="84" rx="6" fill="#F8F5FD" stroke="#7B3FA8" stroke-width="2.4"/>
+<text x="1415.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:IntentoRepository</text>
+<text x="1415.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M3 · adaptador PostgreSQL</text>
+<rect x="1557.5" y="175" width="225" height="84" rx="6" fill="#F5F8FD" stroke="#2A5DAA" stroke-width="2.4"/>
+<text x="1670.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:TutorIAController</text>
+<text x="1670.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M6 · Presentación</text>
+<rect x="1812.5" y="175" width="225" height="84" rx="6" fill="#F1FAF5" stroke="#1E7B4C" stroke-width="2.4"/>
+<text x="1925.0" y="212.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="16.0" font-weight="700" font-style="normal" fill="#1B2A41">:ExplicarDificultadUseCase</text>
+<text x="1925.0" y="230.5" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M6 · Aplicación</text>
+<rect x="2067.5" y="175" width="225" height="84" rx="6" fill="#F1FAF5" stroke="#1E7B4C" stroke-width="2.4"/>
+<text x="2180.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:DerechoUsoIAPort</text>
+<text x="2180.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">contrato público de M5</text>
+<rect x="2322.5" y="175" width="225" height="84" rx="6" fill="#F1FAF5" stroke="#1E7B4C" stroke-width="2.4"/>
+<text x="2435.0" y="212.5" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="16.5" font-weight="700" font-style="normal" fill="#1B2A41">:ContenidoAutorizadoPort</text>
+<text x="2435.0" y="230.8" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">contrato público de M2</text>
+<rect x="2577.5" y="175" width="225" height="84" rx="6" fill="#F8F5FD" stroke="#7B3FA8" stroke-width="2.4"/>
+<text x="2690.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:BusquedaVectorialPort</text>
+<text x="2690.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M6 · adaptador pgvector</text>
+<rect x="2832.5" y="175" width="225" height="84" rx="6" fill="#F8F5FD" stroke="#7B3FA8" stroke-width="2.4"/>
+<text x="2945.0" y="212.9" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17.5" font-weight="700" font-style="normal" fill="#1B2A41">:ModeloGenerativoPort</text>
+<text x="2945.0" y="231.3" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="14.5" font-weight="400" font-style="normal" fill="#5B6B80">M6 · adaptador proveedor IA</text>
+<rect x="24" y="295" width="3037" height="34" rx="0" fill="#EDF0F5" stroke="#C3CAD6" stroke-width="1.2"/>
+<text x="40" y="319" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#3A4658">ETAPA 1 — Resolver la actividad y registrar el resultado (M3)</text>
+<rect x="24" y="1768" width="3037" height="34" rx="0" fill="#EDF0F5" stroke="#C3CAD6" stroke-width="1.2"/>
+<text x="40" y="1792" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#3A4658">ETAPA 2 — Explicación personalizada del Tutor IA (opcional)</text>
+<rect x="30" y="1050" width="3025" height="618" rx="0" fill="none" stroke="#4A5568" stroke-width="1.8"/>
+<rect x="30" y="1820" width="3025" height="2767" rx="0" fill="none" stroke="#4A5568" stroke-width="1.8"/>
+<rect x="44" y="2176" width="2997" height="2389" rx="0" fill="none" stroke="#4A5568" stroke-width="1.8"/>
+<rect x="58" y="3031" width="2969" height="1512" rx="0" fill="none" stroke="#4A5568" stroke-width="1.8"/>
+<rect x="72" y="3634" width="2941" height="887" rx="0" fill="none" stroke="#4A5568" stroke-width="1.8"/>
+<polyline points="140,259 140,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="395,259 395,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="650,259 650,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="905,259 905,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1160,259 1160,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1415,259 1415,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1670,259 1670,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="1925,259 1925,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2180,259 2180,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2435,259 2435,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2690,259 2690,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<polyline points="2945,259 2945,4611" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
+<rect x="385" y="366" width="20" height="1276" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="130" y="366" width="20" height="1276" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="640" y="444" width="20" height="1141" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="895" y="501" width="20" height="1027" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2425" y="640" width="20" height="73" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1150" y="754" width="20" height="73" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1405" y="950" width="20" height="521" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="385" y="1885" width="20" height="2610" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="130" y="1885" width="20" height="2610" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1660" y="1942" width="20" height="2496" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1915" y="1999" width="20" height="2382" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2170" y="2138" width="20" height="397" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2425" y="2698" width="20" height="73" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2680" y="2812" width="20" height="135" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2170" y="3096" width="20" height="73" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2935" y="3452" width="20" height="758" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2170" y="3756" width="20" height="73" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2170" y="4251" width="20" height="73" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1405" y="992" width="20" height="46" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="895" y="1157" width="20" height="46" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1915" y="2621" width="20" height="46" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2680" y="2854" width="20" height="46" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="1915" y="2973" width="20" height="46" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="2935" y="3494" width="20" height="46" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<rect x="30" y="1050" width="64" height="30" rx="0" fill="#F3F5F9" stroke="#4A5568" stroke-width="1.8"/>
+<text x="62" y="1071" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#1B2A41">alt</text>
+<rect x="102" y="1053" width="209.0" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="110" y="1072" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[guardado confirmado]</text>
+<polyline points="30,1390 3055,1390" fill="none" stroke="#4A5568" stroke-width="1.6" stroke-dasharray="7 5"/>
+<rect x="38" y="1395" width="206.075" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="46" y="1414" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[error de persistencia]</text>
+<rect x="30" y="1820" width="64" height="30" rx="0" fill="#F3F5F9" stroke="#4A5568" stroke-width="1.8"/>
+<text x="62" y="1841" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#1B2A41">opt</text>
+<rect x="102" y="1823" width="298.0640625" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="110" y="1842" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[estudiante solicita ayuda con IA]</text>
+<rect x="44" y="2176" width="64" height="30" rx="0" fill="#F3F5F9" stroke="#4A5568" stroke-width="1.8"/>
+<text x="76" y="2197" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#1B2A41">alt</text>
+<rect x="116" y="2179" width="243.034375" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="124" y="2198" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[sin derecho o cuota de IA]</text>
+<polyline points="44,2454 3041,2454" fill="none" stroke="#4A5568" stroke-width="1.6" stroke-dasharray="7 5"/>
+<rect x="52" y="2459" width="244.0625" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="60" y="2478" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[derecho y cuota vigentes]</text>
+<rect x="58" y="3031" width="64" height="30" rx="0" fill="#F3F5F9" stroke="#4A5568" stroke-width="1.8"/>
+<text x="90" y="3052" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#1B2A41">alt</text>
+<rect x="130" y="3034" width="398.0828125" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="138" y="3053" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[no hay fuentes suficientemente autorizadas]</text>
+<polyline points="58,3387 3027,3387" fill="none" stroke="#4A5568" stroke-width="1.6" stroke-dasharray="7 5"/>
+<rect x="66" y="3392" width="296.0671875" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="74" y="3411" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[fuentes autorizadas suficientes]</text>
+<rect x="72" y="3634" width="64" height="30" rx="0" fill="#F3F5F9" stroke="#4A5568" stroke-width="1.8"/>
+<text x="104" y="3655" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="19" font-weight="700" font-style="normal" fill="#1B2A41">alt</text>
+<rect x="144" y="3637" width="175.365625" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="152" y="3656" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[proveedor IA falla]</text>
+<polyline points="72,4129 3013,4129" fill="none" stroke="#4A5568" stroke-width="1.6" stroke-dasharray="7 5"/>
+<rect x="80" y="4134" width="211.06875" height="26" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="88" y="4153" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">[explicación generada]</text>
+<rect x="2212.5" y="541" width="700" height="62" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="2228.5" y="569" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">La Web/PWA se comunica con la API por HTTPS y con sesión válida. Entre módulos</text>
+<text x="2228.5" y="591" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">del monolito se usan contratos internos, sin HTTP.</text>
+<polyline points="2894.5,541 2894.5,559 2912.5,559" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<rect x="2212.5" y="851" width="700" height="62" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="2228.5" y="879" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">La evaluación es determinista y verificable: se calcula con reglas y criterios explícitos,</text>
+<text x="2228.5" y="901" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">sin modelo generativo.</text>
+<polyline points="2894.5,851 2894.5,869 2912.5,869" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<rect x="2212.5" y="1688" width="700" height="62" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="2228.5" y="1716" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">Un resultado se considera confirmado solo tras una persistencia válida en PostgreSQL;</text>
+<text x="2228.5" y="1738" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">nunca se presenta un guardado falso.</text>
+<polyline points="2894.5,1688 2894.5,1706 2912.5,1706" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<rect x="682.5" y="2039" width="700" height="62" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="698.5" y="2067" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">La IA es opcional: no forma parte de la evaluación y M6 nunca asigna ni modifica</text>
+<text x="698.5" y="2089" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">calificaciones oficiales.</text>
+<polyline points="1364.5,2039 1364.5,2057 1382.5,2057" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<rect x="682.5" y="2559" width="700" height="40" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="698.5" y="2587" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">Las cuotas y los consumos de IA pertenecen a M5; M6 solo invoca su contrato público.</text>
+<polyline points="1364.5,2559 1364.5,2577 1382.5,2577" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<rect x="682.5" y="3554" width="700" height="62" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="698.5" y="3582" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">El proveedor de IA se invoca desde el adaptador en el backend, nunca desde el</text>
+<text x="698.5" y="3604" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">navegador.</text>
+<polyline points="1364.5,3554 1364.5,3572 1382.5,3572" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<rect x="682.5" y="3853" width="700" height="62" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="698.5" y="3881" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">La reversión del consumo depende de la política vigente: no todo error del proveedor</text>
+<text x="698.5" y="3903" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#3D3A2A">produce un reembolso.</text>
+<polyline points="1364.5,3853 1364.5,3871 1382.5,3871" fill="none" stroke="#C9A93B" stroke-width="1.2"/>
+<polyline points="150,374 385,374" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="90.41171875" y="346" width="354.1765625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="364" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">1. enviarRespuestas(actividadId, respuestas)</text>
+<polyline points="405,452 640,452" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="326.20234375" y="403" width="392.5953125" height="44" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="522.5" y="421" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">2. POST /api/v1/actividades/{id}/intentos [HTTPS ·</text>
+<text x="522.5" y="442" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">sesión autenticada]</text>
+<polyline points="660,509 895,509" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="694.43984375" y="481" width="166.1203125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="777.5" y="499" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">3. ejecutar(solicitud)</text>
+<polyline points="915,648 2425,648" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1397.45234375" y="620" width="545.0953125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1670.0" y="638" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">4. obtenerActividad(id) · obtenerVersion(id) «ContenidoEvaluablePort»</text>
+<polyline points="2425,705 915,705" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1550.565625" y="677" width="238.86875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1670.0" y="695" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">versión y criterios autorizados</text>
+<polyline points="915,762 1150,762" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="906.45390625" y="734" width="252.0921875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="752" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">5. evaluar(respuestas, criterios)</text>
+<polyline points="1150,819 915,819" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="860.1265625" y="791" width="344.746875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="809" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">6. ResultadoActividad (puntaje, dificultades)</text>
+<polyline points="915,958 1405,958" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1043.37890625" y="930" width="233.2421875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1160.0" y="948" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">7. guardar(intento, resultado)</text>
+<polyline points="1405,1123 915,1123" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1058.04296875" y="1095" width="203.9140625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1160.0" y="1113" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">confirmación de escritura</text>
+<polyline points="895,1242 660,1242" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="644.35234375" y="1214" width="266.2953125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="777.5" y="1232" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">resultado y progreso confirmados</text>
+<polyline points="640,1299 405,1299" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="355.778125" y="1271" width="333.44375" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="522.5" y="1289" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">9. 200 OK {puntaje, dificultades, progreso}</text>
+<polyline points="385,1356 150,1356" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="97.4921875" y="1328" width="340.015625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="1346" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">10. muestra puntuación y retroalimentación</text>
+<polyline points="1405,1463 915,1463" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1060.4" y="1435" width="199.2" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1160.0" y="1453" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">8B. error de persistencia</text>
+<polyline points="895,1520 660,1520" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="650.5125" y="1492" width="253.975" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="777.5" y="1510" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">PersistenciaNoConfirmadaError</text>
+<polyline points="640,1577 405,1577" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="394.075" y="1549" width="256.85" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="522.5" y="1567" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">9B. 503 · registro no confirmado</text>
+<polyline points="385,1634 150,1634" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="73.87187499999999" y="1606" width="387.25625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="1624" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">10B. informa que no se pudo confirmar el registro</text>
+<polyline points="150,1893 385,1893" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="136.87578125" y="1865" width="261.2484375" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="1883" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">11. solicitarExplicacion(intentoId)</text>
+<polyline points="405,1950 1660,1950" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="774.78046875" y="1922" width="515.4390625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="1940" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">12. POST /api/v1/tutor/explicaciones [HTTPS · sesión autenticada]</text>
+<polyline points="1680,2007 1915,2007" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1709.7125" y="1979" width="175.575" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1797.5" y="1997" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">13. ejecutar(solicitud)</text>
+<polyline points="1935,2146 2170,2146" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1889.1125" y="2118" width="326.775" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="2136" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">14. verificarDerechoYCuota(estudianteId)</text>
+<polyline points="2170,2249 1935,2249" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1951.46328125" y="2221" width="202.0734375" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="2239" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">14B. sin derecho o cuota</text>
+<polyline points="1915,2306 1680,2306" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1626.07734375" y="2278" width="342.8453125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1797.5" y="2296" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">RechazoPorCuota (no se invoca el modelo)</text>
+<polyline points="1660,2363 405,2363" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="915.8828125" y="2335" width="233.234375" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="2353" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">403 / 429 · restricción de uso</text>
+<polyline points="385,2420 150,2420" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="131.521875" y="2392" width="271.95625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="2410" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">informa la restricción al estudiante</text>
+<polyline points="2170,2527 1935,2527" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1918.875" y="2499" width="267.25" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="2517" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">operacionId · consumo reservado</text>
+<polyline points="1935,2706 2425,2706" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2056.32421875" y="2678" width="247.3515625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2180.0" y="2696" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">16. verificarAcceso(materiales)</text>
+<polyline points="2425,2763 1935,2763" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="2046.85234375" y="2735" width="266.2953125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2180.0" y="2753" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">materiales autorizados y vigentes</text>
+<polyline points="1935,2820 2680,2820" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2158.75859375" y="2792" width="297.4828125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2307.5" y="2810" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">17. buscar(consulta, contextoAcceso)</text>
+<polyline points="2680,2939 1935,2939" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="2170.09375" y="2911" width="274.8125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2307.5" y="2929" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">fragmentos relevantes autorizados</text>
+<polyline points="1935,3104 2170,3104" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1920.29921875" y="3076" width="264.4015625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="3094" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">17B. liberarReserva(operacionId)</text>
+<polyline points="2170,3161 1935,3161" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1984.5515625" y="3133" width="135.896875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="3151" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">reserva liberada</text>
+<polyline points="1915,3239 1680,3239" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1608.578125" y="3190" width="377.84375" height="44" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1797.5" y="3208" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">SinFuentesSuficientes (no se envía contenido al</text>
+<text x="1797.5" y="3229" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">modelo)</text>
+<polyline points="1660,3296 405,3296" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="852.57265625" y="3268" width="359.8546875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="3286" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">422 · sin material suficiente para fundamentar</text>
+<polyline points="385,3353 150,3353" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="116.86640625000001" y="3325" width="301.2671875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="3343" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">informa que no hay material suficiente</text>
+<polyline points="1935,3460 2935,3460" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2208.296875" y="3432" width="453.40625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2435.0" y="3450" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">18. generar(prompt con fragmentos y contexto autorizado)</text>
+<polyline points="2935,3707 1935,3707" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="2335.86484375" y="3679" width="198.2703125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2435.0" y="3697" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">18B. error del proveedor</text>
+<polyline points="1935,3764 2170,3764" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1847.065625" y="3736" width="410.86875" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="3754" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">aplicarPoliticaConsumo(operacionId, falloProveedor)</text>
+<polyline points="2170,3821 1935,3821" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1915.0984375" y="3793" width="274.803125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="3811" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">sin cobro o reversión si es elegible</text>
+<polyline points="1915,3981 1680,3981" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1611.92109375" y="3932" width="371.1578125" height="44" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1797.5" y="3950" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">ErrorRecuperable (calificaciones y progreso sin</text>
+<text x="1797.5" y="3971" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">cambios)</text>
+<polyline points="1660,4038 405,4038" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="927.69921875" y="4010" width="209.6015625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="4028" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">503 · reintentar más tarde</text>
+<polyline points="385,4095 150,4095" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="152.78046875" y="4067" width="229.4390625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="4085" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">informa un error recuperable</text>
+<polyline points="2935,4202 1935,4202" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="2333.48671875" y="4174" width="203.0265625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2435.0" y="4192" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">19. explicación generada</text>
+<polyline points="1935,4259 2170,4259" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1909.4375" y="4231" width="286.125" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="4249" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">20. confirmarConsumo(operacionId)</text>
+<polyline points="2170,4316 1935,4316" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1970.85078125" y="4288" width="163.2984375" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2052.5" y="4306" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">consumo registrado</text>
+<polyline points="1915,4373 1680,4373" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="1652.53671875" y="4345" width="289.9265625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1797.5" y="4363" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">explicación y referencias disponibles</text>
+<polyline points="1660,4430 405,4430" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="899.8125" y="4402" width="265.375" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1032.5" y="4420" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">200 OK {explicación, referencias}</text>
+<polyline points="385,4487 150,4487" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<rect x="111.66171875" y="4459" width="311.6765625" height="23" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="267.5" y="4477" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">21. muestra la explicación al estudiante</text>
+<polyline points="1425,996 1485,996 1485,1030 1425,1030" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="1493" y="1002" width="243.81875" height="24" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="1499" y="1020" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">transacción SQL [PostgreSQL]</text>
+<polyline points="915,1161 975,1161 975,1195 915,1195" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="983" y="1167" width="486.35" height="24" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="989" y="1185" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">8. actualizarProgreso(intentoId) «ActualizarProgresoUseCase»</text>
+<polyline points="1935,2625 1995,2625 1995,2659 1935,2659" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2003" y="2631" width="648.9328125" height="24" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2009" y="2649" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">15. obtenerProgreso(estudianteId) «ConsultaProgresoPort · contrato público de M3»</text>
+<polyline points="2680,2858 2620,2858 2620,2892 2680,2892" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2069.5921875" y="2864" width="542.4078125" height="24" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2606" y="2882" text-anchor="end" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">búsqueda por similitud con filtros de acceso y versión [SQL · pgvector]</text>
+<polyline points="1935,2977 1995,2977 1995,3011 1935,3011" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2003" y="2983" width="407.925" height="24" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2009" y="3001" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">esUtilizable(fuente, contexto) «PoliticaFuentesRAG»</text>
+<polyline points="2935,3498 2875,3498 2875,3532 2935,3532" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<rect x="2590.434375" y="3504" width="276.565625" height="24" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<text x="2861" y="3522" text-anchor="end" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">invocar API del proveedor [HTTPS]</text>
+<rect x="40" y="4651" width="3005" height="215" rx="0" fill="#FFFFFF" stroke="#777777" stroke-width="1.4"/>
+<text x="66" y="4689" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="24" font-weight="700" font-style="normal" fill="#1B2A41">Leyenda de notación UML</text>
+<polyline points="70,4741 270,4741" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<text x="70" y="4773" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">Solicitud síncrona</text>
+<polyline points="400,4741 600,4741" fill="none" stroke="#4A5568" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#o4A5568)"/>
+<text x="400" y="4773" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">Respuesta (retorno)</text>
+<polyline points="730,4727 780,4727 780,4755 730,4755" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
+<text x="730" y="4785" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">Mensaje propio</text>
+<rect x="960" y="4719" width="20" height="44" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
+<text x="1000" y="4747" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">Activación</text>
+<rect x="1180" y="4717" width="64" height="30" rx="0" fill="#F3F5F9" stroke="#4A5568" stroke-width="1.8"/>
+<text x="1212" y="4738" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">alt</text>
+<text x="1260" y="4739" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">alt / opt: fragmento con guardas</text>
+<rect x="1700" y="4715" width="150" height="52" rx="0" fill="#FFFBE6" stroke="#C9A93B" stroke-width="1.6"/>
+<text x="1870" y="4747" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="18" font-weight="700" font-style="normal" fill="#1B2A41">Nota</text>
+<rect x="66" y="4816" width="170" height="30" rx="4" fill="#EEF1F6" stroke="#6B7A90" stroke-width="2.0"/>
+<text x="250" y="4837" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">Cliente</text>
+<rect x="342.9171875" y="4816" width="170" height="30" rx="4" fill="#F5F8FD" stroke="#2A5DAA" stroke-width="2.0"/>
+<text x="526.9171875" y="4837" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">Presentación</text>
+<rect x="666.1453125" y="4816" width="170" height="30" rx="4" fill="#F1FAF5" stroke="#1E7B4C" stroke-width="2.0"/>
+<text x="850.1453125" y="4837" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">Aplicación / contratos</text>
+<rect x="1051.7296875000002" y="4816" width="170" height="30" rx="4" fill="#FFFAF3" stroke="#B5761B" stroke-width="2.0"/>
+<text x="1235.7296875000002" y="4837" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">Dominio</text>
+<rect x="1338.0843750000001" y="4816" width="170" height="30" rx="4" fill="#F8F5FD" stroke="#7B3FA8" stroke-width="2.0"/>
+<text x="1522.0843750000001" y="4837" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">Infraestructura</text>
+<metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo4NzNjYzNkZi1mOThkLTRjM2MtYmM0ZC0yMTk0MmU2NDFiNzYAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaLVQQMtJOQ+LwDsOQqU7qsoAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo0OWNkMjBhOC04YTUxLTQ4MDEtODdiNi1mNjBhOTc5OWM1ZmZscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoBKWBRCEA6IVOtloiEMchdwAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggcS/cdSkFL56wyLKhhEB44NVAfnJWzFC5Xs4lrmeVjL+kZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaD2u0crVrkca+WG3tdGZA6MAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRMAAAAAAAAAAAAAAAAZGhhc2hYIHCaVLbfugumCLQMNPqgrLQQKrThg3luEj9/U7FibwZ1ZG5hbWVuanVtYmYgbWFuaWZlc3RqZXhjbHVzaW9uc4GiZXN0YXJ0GdnUZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjg3M2NjM2RmLWY5OGQtNGMzYy1iYzRkLTIxOTQyZTY0MWI3Ni9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOmZjZTczNzA3LWIwNTgtNDE4OS05YmRkLTliMjExNWJlMmIyNHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBxL9x1KQUvnrDIsqGEQHjg1UB+clbMULleziWuZ5WMv6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggNsiFWEzbWDMqO6iW3RKZEl3QtfAHrOmw4nM43QpvJLGiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg46O2653O242jaJCH++sogg3dgJHUziDUtvOqYA0bPZF0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQA+nD8KVeS7u4jxYUDTKl4X/iCw3zKRe9VHbfNqP+k7WhwKkiUrM3ErCUFfRo5QyGWAZA6d1Kf3ZqJrOCn19FyI=</c2pa:manifest></metadata></svg>

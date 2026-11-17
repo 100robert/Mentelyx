@@ -1,7 +1,7 @@
 # Mentelyx — Plataforma educativa y arquitectura de software
 
-> **Versión:** 2.0 — documentación integral finalizada (Análisis, Arquitectura, Diseño Interno/Externo y Modelo C4).  
-> **Estado:** arquitectura y diseño de software completos y listos para iniciar la fase de desarrollo; importes comerciales, cuotas y contratos sujetos a validación en piloto. No implica software ya desplegado en producción ni servicios externos contratados.
+> **Versión:** 2.1 — Análisis, Arquitectura, Diseño Interno/Externo, Diseño especializado y Modelo C4 (cierre arquitectónico del Sprint 02, 17/11/2026).\
+> **Estado:** definición arquitectónica completa a nivel documental. Pendientes antes de construir: evaluación de atributos de calidad, SDD consolidado, pruebas experimentales (benchmarks, compatibilidad, carga, restauración y seguridad) y aprobaciones legales y de producto. Importes comerciales, cuotas y contratos sujetos a validación en piloto. No implica software implementado, desplegado en producción ni servicios externos contratados.
 
 ## 1. Propósito del proyecto
 
@@ -66,12 +66,12 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | Backend REST | Hono + TypeScript | Cloudflare Workers + Hono, monolito modular |
 | Datos SQL | **PostgreSQL local** + migraciones | **Neon PostgreSQL + pgvector** (seleccionado, no contratado) |
 | Documentos educativos | MongoDB local | **MongoDB Atlas** (seleccionado, conectividad Workers por validar) |
-| Caché | Redis local | Redis administrado compatible con Workers, proveedor por elegir |
+| Caché | Redis local | **Upstash Redis REST** (seleccionado como diseño, no contratado; ADR-012), sin sesiones ni cuotas autoritativas |
 | Binarios/video | Carpeta/objeto de prueba | R2 para archivos; Bunny Stream para video publicado |
 | Tareas y colas | Adaptador local / Worker de pruebas | Cloudflare Queues con DLQ y procesadores idempotentes |
 | Aulas | WebRTC de prueba | Cloudflare RealtimeKit/SFU **candidato inicial** sujeto a prueba de 36 participantes |
-| Autenticación | Integración Hono + biblioteca | **Better Auth candidato** para credenciales/sesiones; permisos propios RBAC/ABAC |
-| IA | Proveedor simulado o llamadas medidas | LLM externo intercambiable, presupuestos y RAG autorizado |
+| Autenticación | Integración Hono + biblioteca | **Better Auth seleccionado como diseño** (ADR-033/044), sesiones SQL revocables y permisos propios RBAC/ABAC; integración pendiente de prototipo |
+| IA | Proveedor simulado o llamadas medidas | Rutas lógicas versionadas por Workers AI y AI Gateway (ADR-056); DeepSeek V4.1 Flash como sustituto seleccionado del modelo retirado, sujeto a BP-01; presupuestos y RAG autorizado |
 | Extensión pesada | Proceso local/Docker | Cloud Run solo para tareas pesadas si Workers no basta |
 
 **Persistencia:** PostgreSQL es fuente de verdad de pagos, cupos, créditos, permisos, resultados confirmados y liquidaciones; MongoDB almacena estructuras flexibles versionadas; Redis es solo caché/contadores efímeros. Objetos y video fuera de las BD. Entre motores no existe una transacción ACID global: usar outbox, identificadores y procesos idempotentes.
@@ -86,8 +86,8 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 
 ## 7. Fases y límites
 
-1. **Documentación y diseño (Completado):** análisis de sistema (`01`), arquitectura de software (`02`), diseño interno/externo (`03`) y modelo C4 (`04`).
-2. **Construcción local (Siguiente paso):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, gestión de cuentas y control de acceso (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
+1. **Documentación y diseño (definición arquitectónica completada):** análisis de sistema (`01`), arquitectura de software (`02`), diseño interno/externo y especializado (`03`) y modelo C4 (`04`). Siguen pendientes la evaluación de atributos de calidad y el SDD consolidado; el estado de continuidad está en el [registro de avance](docs/avance-cierre-arquitectonico-sprint-02.md).
+2. **Construcción local (después de la evaluación de calidad y del SDD):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, gestión de cuentas y control de acceso (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
 3. **Piloto limitado:** medir IA real por generación, pruebas docentes, verificaciones de capacidad WebRTC (35+1), funcionamiento pasarela, conciliación, costos y restauración.
 4. **Lanzamiento comercial:** solo servicios cuyos permisos, seguridad, capacidad, costos, términos y disponibilidad hayan sido verificados; activación progresiva de planes.
 5. **Posterior:** convenios escolares, Studio Equipos, clases masivas más allá de 35, modelos IA propios, eventual Kafka y alta disponibilidad superior contratada.
@@ -103,7 +103,7 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`04-atributos-de-calidad.md`](docs/01-analisis-de-sistema/04-atributos-de-calidad.md) | AC-01–AC-11 y objetivos verificables | Completado |
 | [`05-restricciones.md`](docs/01-analisis-de-sistema/05-restricciones.md) | RC-01–RC-37 y límites comerciales, regulatorios y técnicos | Completado |
 | [`06-drivers-arquitectonicos.md`](docs/01-analisis-de-sistema/06-drivers-arquitectonicos.md) | DA-01–DA-31, relación RF/AC/RC ↔ decisiones | Completado |
-| [`07-decisiones-arquitectonicas.md`](docs/01-analisis-de-sistema/07-decisiones-arquitectonicas.md) | ADR-001–ADR-055 (ADR-011 reservado) con alternativas y estados | Completado |
+| [`07-decisiones-arquitectonicas.md`](docs/01-analisis-de-sistema/07-decisiones-arquitectonicas.md) | ADR-001–ADR-072 (ADR-011 reservado) con alternativas y estados; ADR-056–072 resueltas con condiciones (sección 8) | Completado; varias decisiones condicionadas a pruebas o aprobación |
 | [`08-escenarios-atributos-calidad.md`](docs/01-analisis-de-sistema/08-escenarios-atributos-calidad.md) | EQ-01–EQ-31 con pruebas y métricas; resultados pendientes | Completado |
 
 ### 8.2. `docs/02-arquitectura-software/` — Arquitectura de Software
@@ -113,6 +113,8 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`estilo-arquitectonico.md`](docs/02-arquitectura-software/estilo-arquitectonico.md) | Estilo monolito modular en tres capas y despliegue serverless-first | Completado |
 | [`enfoque-arquitectonico.md`](docs/02-arquitectura-software/enfoque-arquitectonico.md) | Enfoque Clean Architecture, puertos/adaptadores y dirección de dependencias | Completado |
 | [`componentes-arquitectonicos.md`](docs/02-arquitectura-software/componentes-arquitectonicos.md) | Vista de los 7 componentes principales del backend (`C01–C07`) | Completado |
+| [`seguridad-y-autenticacion.md`](docs/02-arquitectura-software/seguridad-y-autenticacion.md) | Better Auth, sesiones SQL revocables, CSRF, MFA, autorización, STRIDE/IA, menores, eliminación y secretos | Diseño seleccionado; pruebas pendientes |
+| [`infraestructura-escalabilidad-y-recuperacion.md`](docs/02-arquitectura-software/infraestructura-escalabilidad-y-recuperacion.md) | Topología y compatibilidad, DNS/CDN/TLS, caché, escalado, colas, DeepSeek, disponibilidad, recuperación y CI/CD | Diseño seleccionado; sin servicios contratados |
 
 ### 8.3. `docs/03-diseño-de-software/` — Diseño Interno y Externo
 | Subcarpeta / Archivo | Propósito | Estado |
@@ -123,6 +125,14 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`diseño-externo/01-diseño-de-persistencia-y-datos.md`](docs/03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md) | Esquema ER en PostgreSQL + `pgvector`, colecciones MongoDB, claves Redis y R2 | Completado |
 | [`diseño-externo/02-diseño-de-api-y-contratos.md`](docs/03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md) | Endpoints REST `/api/v1/*`, payloads, idempotencia, webhooks y eventos de Queues | Completado |
 | [`diseño-externo/03-diseño-de-interfaces-y-flujos.md`](docs/03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md) | Mapa de navegación Next.js Web/PWA, vistas por actor y salvaguardas de UI | Completado |
+| [`contrato-coordinacion-datos-seguridad-infraestructura.md`](docs/03-diseño-de-software/contrato-coordinacion-datos-seguridad-infraestructura.md) | Resolución SC-01–SC-17, SEG-01–SEG-04 e INF-01–INF-06; ajustes CO-01–CO-10 | Resuelto; CO-09 pendiente de mantenimiento |
+| [`diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md`](docs/03-diseño-de-software/diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md) | Proveedores, privacidad D0–D3, rutas, cuotas, costos, verificación y cancelación del Tutor IA | Diseño propuesto; benchmarks pendientes |
+| [`diseño-especializado/02-diseño-rag.md`](docs/03-diseño-de-software/diseño-especializado/02-diseño-rag.md) | Ingestión, generaciones de índice, recuperación híbrida autorizada, citas y revocación | Diseño propuesto; BP-07 pendiente |
+| [`diseño-especializado/03-motor-visual-y-pizarra.md`](docs/03-diseño-de-software/diseño-especializado/03-motor-visual-y-pizarra.md) | Primitivas, esquemas de escena, validación, reproductor y pizarra | Diseño propuesto; prototipo pendiente |
+| [`diseño-especializado/04-visualizaciones-3d.md`](docs/03-diseño-de-software/diseño-especializado/04-visualizaciones-3d.md) | Simulaciones verificables y objetos ilustrativos | Diseño propuesto; proveedores condicionados |
+| [`diseño-especializado/05-generacion-de-materiales-educativos.md`](docs/03-diseño-de-software/diseño-especializado/05-generacion-de-materiales-educativos.md) | Contenido, plantillas y renderizado PDF/PPTX por audiencia | Diseño propuesto; compatibilidad pendiente |
+| [`diseño-especializado/06-calidad-ia-criterios-y-pruebas.md`](docs/03-diseño-de-software/diseño-especializado/06-calidad-ia-criterios-y-pruebas.md) | Criterios y pruebas pedagógicas, visuales, funcionales, de costo y de latencia | Criterios propuestos; no ejecutados |
+| [`diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md`](docs/03-diseño-de-software/diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md) | Decisiones ADR-056–072, solicitudes de cambio, resolución y pendientes | Integrado |
 
 ### 8.4. `docs/04-modelo-c4/` — Modelo C4 Completo (Niveles 1 al 4)
 | Archivo | Propósito | Estado |
@@ -150,7 +160,7 @@ El registro y el inicio de sesión son posibles sin habilitación docente. La ve
 
 La descripción de **M1 — Usuarios y Administración** es «gestión de cuentas, autenticación, sesiones y control de acceso». M4 tramita los expedientes docentes y comunica a M1 las decisiones que afectan a los permisos, conforme al diseño interno.
 
-La revisión y sus pendientes se registran en el [informe de auditoría terminológica](docs/auditoria-terminologica.md).
+El informe de auditoría terminológica se retiró en `3e136b2`. Sus pendientes vigentes se registran en el [registro especializado, sección 4](docs/03-diseño-de-software/diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md) y en el [registro de avance](docs/avance-cierre-arquitectonico-sprint-02.md).
 
 - **Hono:** framework TypeScript de API HTTP; **Better Auth:** biblioteca que integraríamos en el código para credenciales/sesiones; **RBAC/ABAC:** permisos por roles y contexto.
 - **WebRTC/SFU:** comunicación audiovisual en tiempo real; **Queues/DLQ:** tareas y cola de fallidos, con posible redelivery; **Redis:** caché, no billetera ni base financiera.

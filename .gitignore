@@ -1,2 +1,14 @@
 # Project-specific ignore patterns
 mentelyx-skills.zip
+
+# Local project instructions and installation helpers
+/AGENTS.md
+/CLAUDE.md
+/AGENTS-mentelyx.example.md
+/INSTALACION.md
+/instalar-mentelyx.ps1
+
+# Local AI tool configuration
+/.agents/
+/.claude/
+/.codex/

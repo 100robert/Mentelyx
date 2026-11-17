@@ -38,17 +38,17 @@ Se presentan dos vistas de código independientes: una para el componente M3 y o
 
 ### Diagrama de clases — M3: Evaluaciones y Aprendizaje
 
-![Diagrama de clases del módulo Evaluaciones y Aprendizaje](/img/nivel4-clases-m3.png)
+![Diagrama de clases del módulo Evaluaciones y Aprendizaje](../img/nivel4-clases-m3.png)
 
-> Archivo editable: `img/fuentes/nivel4-clases-m3.drawio`
+> Archivo editable: [nivel4-clases-m3.drawio](../img/fuente_drawio/nivel4-clases-m3.drawio)
 
 **Figura 4.** Estructura de clases e interfaces del proceso de resolución de actividades y actualización del aprendizaje.
 
 ### Diagrama de clases — M6: Tutor IA y RAG
 
-![Diagrama de clases del módulo Tutor IA y RAG](/img/nivel4-clases-m6.png)
+![Diagrama de clases del módulo Tutor IA y RAG](../img/nivel4-clases-m6.png)
 
-> Archivo editable: `img/fuentes/nivel4-clases-m6.drawio`
+> Archivo editable: [nivel4-clases-m6.drawio](../img/fuente_drawio/nivel4-clases-m6.drawio)
 
 **Figura 5.** Estructura de clases e interfaces de la generación de explicaciones pedagógicas fundamentadas.
 
@@ -166,9 +166,9 @@ El diseño deberá mantener separados el proceso determinista de evaluación y e
 
 ## 3. Diagrama de secuencia: resolver una actividad y solicitar una explicación
 
-![Diagrama de secuencia del acompañamiento pedagógico de Mentelyx](/img/nivel4-secuencia.png)
+![Diagrama de secuencia del acompañamiento pedagógico de Mentelyx](../img/nivel4-secuencia.png)
 
-> Archivo editable: `img/fuentes/nivel4-secuencia.drawio`
+> Archivo editable: [nivel4-secuencia.drawio](../img/fuente_drawio/nivel4-secuencia.drawio)
 
 **Figura 6.** Interacción entre el estudiante, la aplicación web, los casos de uso de Evaluaciones y Aprendizaje, el Tutor IA y los servicios necesarios para proporcionar retroalimentación personalizada.
 
