@@ -19,8 +19,8 @@ En particular, se busca impedir que los controladores contengan reglas de negoci
 | **Backend** | Hono + TypeScript sobre Cloudflare Workers (arquitectura objetivo; compatibilidad de integraciones pendiente de prueba). |
 | **Datos** | PostgreSQL local / Neon PostgreSQL + pgvector en producción; MongoDB local / MongoDB Atlas en producción; Redis para caché y estados temporales. |
 | **Archivos y tareas** | Cloudflare R2, Cloudflare Queues y consumidores con DLQ. |
-| **Servicios integrados** | Proveedor de modelos LLM y embeddings; WebRTC/SFU administrado (RealtimeKit candidato); Bunny Stream; pasarela de pagos externa aún por seleccionar. |
-| **Autenticación y control de acceso** | Biblioteca de autenticación candidata (Better Auth); reglas propias de autorización RBAC/ABAC y acceso por recurso. |
+| **Servicios integrados** | Proveedor de modelos LLM y embeddings; WebRTC/SFU administrado (RealtimeKit seleccionado); Bunny Stream; pasarela de pagos por contratar (P-07 de ADR, sección 10). |
+| **Autenticación y control de acceso** | Biblioteca de autenticación seleccionada (Better Auth, ADR-033/044); reglas propias de autorización RBAC/ABAC y acceso por recurso. |
 | **Tipos de cuenta públicos** | Estudiante y Docente; Superadministrador como actor interno. Docente independiente o por nivel académico son modalidades del mismo actor. |
 | **Productos** | Suscripciones estudiantiles, Aulas Live y Studio; límites, precios y remuneraciones sujetos a validación. |
 
@@ -57,17 +57,22 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 
 ![Principios SOLID aplicados a M1 — Usuarios y Administración](../../img/principios-solid-m1.png)
 
-**Figura 2.** Aplicación de principios SOLID en **M1 — Usuarios y Administración**.
+**Figura 2.** Aplicación de principios SOLID en **M1 — Usuarios y Administración**. La fuente editable [`principios-solid-m1.drawio`](../../img/fuente_drawio/principios-solid-m1.drawio) ya usa `HabilitacionDocentePort` (CO-09). La exportación PNG conserva el nombre anterior `CredentialVerificationPort` hasta que se reexporte desde esa fuente.
 
 | SOLID | Aplicación concreta en M1 | Elementos de código previstos |
 |---|---|---|
-| **S** | Separar registro, edición de perfiles, solicitud de habilitación, verificación de títulos y autorización de recursos. El controlador no valida títulos ni ejecuta consultas SQL. | `register-user.use-case.ts`, `update-profile.use-case.ts`, `approve-teaching-permission.use-case.ts`, `users.controller.ts` |
-| **O** | Permitir incorporar adaptadores de consulta de verificaciones del expediente docente o de correo, sin mezclar esos resultados con la autenticación ni modificar las reglas de autorización del usuario. | `CredentialVerificationPort`, `MailPort`, `verification.adapter.ts` |
+| **S** | Separar registro, edición de perfiles, solicitud de habilitación, registro de las decisiones de habilitación recibidas de M4 y autorización de recursos. El controlador no valida títulos ni ejecuta consultas SQL. | `register-user.use-case.ts`, `update-profile.use-case.ts`, `approve-teaching-permission.use-case.ts`, `users.controller.ts` |
+| **O** | Permitir incorporar nuevos tipos de decisión de habilitación comunicados por M4 o nuevos adaptadores de correo, sin mezclar esos resultados con la autenticación ni modificar las reglas de autorización del usuario. | `HabilitacionDocentePort`, `MailPort`, `habilitar-docente.use-case.ts` |
 | **L** | Un repositorio PostgreSQL y un doble de prueba deben respetar las mismas reglas sobre usuario inexistente, identificadores y unicidad; el adaptador de autenticación debe conservar la asociación entre sesión y cuenta y los estados de autenticación; no debe inferir verificaciones documentales ni habilitaciones. | `UserRepository`, `PostgresUserRepository`, `user-repository.contract.spec.ts` |
-| **I** | Separar `UserRepository`, `SessionPort`, `CredentialVerificationPort` y `MailPort`; quien consulta permisos no debe depender del servicio de correo ni de recuperación de contraseña. | `application/ports/*.port.ts` |
+| **I** | Separar `UserRepository`, `SessionPort`, `HabilitacionDocentePort` y `MailPort`; quien consulta permisos no debe depender del servicio de correo ni de recuperación de contraseña. | `application/ports/*.port.ts` |
 | **D** | Casos de uso dependen de puertos y políticas internas; adaptadores PostgreSQL, correo y biblioteca de autenticación se conectan en composición. | `check-resource-access.use-case.ts`, `bootstrap/container.ts` |
 
-**Contrato pendiente:** `CredentialVerificationPort` y su adaptador todavía no especifican qué resultado del expediente consultan ni distinguen documentación personal, credenciales académicas y habilitación docente. El contrato debe precisarse con M4 antes de implementarse; no representa validación de contraseñas ni permite exigir títulos a docentes independientes. `SessionPort` se limita a las sesiones de autenticación.
+**Contrato resuelto (CO-09, 17/11/2026):** `HabilitacionDocentePort` sustituye a `CredentialVerificationPort`. Es el **puerto de entrada** de M1 por el que M4 comunica cada decisión: `registrarHabilitacionAprobada` ([API, sección 2.8](../diseño-externo/02-diseño-de-api-y-contratos.md)) y el evento de revocación. Lo implementa `habilitar-docente.use-case.ts`. Cada decisión trae su `decisionId` y conserva separados tres resultados:
+- verificación documental;
+- credenciales académicas validadas (solo modalidad `NIVEL_ACADEMICO`);
+- habilitación de tutoría con vigencia.
+
+M1 actualiza permisos y `authz_version`, pero no lee documentos, no valida títulos y no consulta a M4. Así se evita el ciclo M1↔M4 que prohíbe el [diseño interno, sección 10.1](diseño-interno-de-modulos.md). La revalidación antes de publicar o cobrar la hace M4 sobre su propia decisión. El puerto no representa validación de contraseñas ni permite exigir títulos a docentes independientes. `SessionPort` se limita a las sesiones de autenticación.
 
 **Reglas que deben permanecer protegidas:** una cuenta Docente puede registrar una modalidad libre o académica; declarar una licenciatura o doctorado **no equivale a una acreditación verificada**; ofrecer tutorías remuneradas exige habilitación; el Superadministrador no obtiene acceso indiscriminado a información sensible fuera de políticas auditables.
 
@@ -126,7 +131,7 @@ Los nombres de clases y rutas son **propuestas de implementación TypeScript**, 
 | SOLID | Aplicación concreta en M4 | Elementos de código previstos |
 |---|---|---|
 | **S** | Separar creación de clase, disponibilidad, reserva, validación de habilitación, acceso al aula y registro de asistencia. | `create-class.use-case.ts`, `reserve-class.use-case.ts`, `join-class.use-case.ts` |
-| **O** | Integrar otro proveedor WebRTC/SFU a través de `VideoRoomPort` cuando pueda cumplir roles, credenciales, acceso y eventos requeridos. | `VideoRoomPort`, `RealtimeKitRoomAdapter` (candidato) |
+| **O** | Integrar otro proveedor WebRTC/SFU a través de `VideoRoomPort` cuando pueda cumplir roles, credenciales, acceso y eventos requeridos. | `VideoRoomPort`, `RealtimeKitRoomAdapter` (seleccionado; contingencia LiveKit Cloud) |
 | **L** | Un adaptador audiovisual alternativo debe preservar caducidad de accesos, permisos y semántica de sesión; si carece de funciones obligatorias, **no es sustituto válido**. | `video-room.contract.spec.ts`, `VideoRoomPort` |
 | **I** | Distinguir `ClassRepository`, `VideoRoomPort`, `TeachingEligibilityPort` y `LiveEntitlementPort`. Reservar un cupo no requiere métodos de grabación ni liquidación. | `application/ports/` y contratos públicos de M1/M5 |
 | **D** | `ReservarClaseUseCase` depende de contratos públicos de Usuarios y Pagos, nunca de sus tablas privadas ni de SDK del proveedor audiovisual. | `reserve-class.use-case.ts`, `teaching-eligibility.port.ts`, `live-entitlement.port.ts` |

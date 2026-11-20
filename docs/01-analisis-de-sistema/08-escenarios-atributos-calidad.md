@@ -413,6 +413,8 @@ Redis se adopta como caché temporal y mecanismo de contadores de limitación de
 | EQ-19–EQ-23, EQ-29 | Caídas de proveedores, backups/restauraciones, desconexión Studio y Redis | Pendiente |
 | EQ-15–EQ-18 | Simulacros, preparación, derechos, UX móvil y verificación de fuentes | Pendiente |
 
+La trazabilidad de cada EQ con sus RF, DA, ADR y pruebas está en el [SDD, sección 9](../05-sdd/documento-de-diseño-de-software.md), y el plan de verificación (k6, fallos, recuperación, migración y calidad IA) en su sección 10. Las pruebas de IA citadas (API, RAG-SEC, INY, COS, BP) están en [calidad IA](../03-diseño-de-software/diseño-especializado/06-calidad-ia-criterios-y-pruebas.md). Los umbrales de este documento no cambian y todo sigue en estado Pendiente.
+
 ## 4. Política de aceptación
 
 Una medición se aprueba solo al registrar: fecha, commit, entorno, número de usuarios/aulas, datos de prueba, capturas/logs anonimizados, tasa de éxito, costo asociado y responsable. *Disponibilidad 99,5 %*, créditos y precios son metas/políticas de diseño hasta que la operación y el marco comercial los sustenten.

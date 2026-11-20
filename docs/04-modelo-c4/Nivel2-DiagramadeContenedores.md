@@ -58,7 +58,7 @@ No se representan los siete módulos del backend como contenedores independiente
 
 - **PostgreSQL y MongoDB son almacenes diferentes**, con responsabilidades diferenciadas. No debe suponerse una transacción ACID distribuida entre ambos.
 - **pgvector no es otro contenedor**: es una extensión del contenedor PostgreSQL.
-- **Better Auth es una biblioteca candidata de autenticación integrada**, no un servicio o contenedor adicional.
+- **Better Auth es la biblioteca de autenticación integrada seleccionada** (ADR-033/044; bloqueada para producción hasta superar el prototipo, [ADR, sección 10](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)), no un servicio o contenedor adicional.
 - **Redis no sustituye PostgreSQL**, especialmente para pagos, cupos, créditos y calificaciones.
 - **Cloudflare Queues no es un octavo módulo de negocio**. Es infraestructura de mensajería, atendida por uno o varios procesos consumidores.
 - **Neon, Atlas y los servicios administrados están previstos para producción**, sin que su representación implique contratación o despliegue ya realizados.
@@ -69,11 +69,13 @@ Se conservan fuera del límite de Mentelyx los sistemas identificados en el nive
 
 | Sistema externo | Responsabilidad |
 |---|---|
-| **Pasarela de pagos** | Procesamiento de cobros y comunicación de sus resultados |
-| **Servicio de videoconferencia** | Comunicación interactiva en tiempo real mediante un proveedor audiovisual |
-| **Plataforma de videos grabados** | Procesamiento y reproducción de videos educativos |
-| **Proveedor de inteligencia artificial** | Inferencia de modelos, asistencia pedagógica y capacidades generativas autorizadas |
-| **Servicio de notificaciones** | Entrega de correos u otras comunicaciones según los canales que se definan |
+| **Pasarela de pagos** | Procesamiento de cobros y comunicación de sus resultados (proveedor por contratar, P-07) |
+| **Servicio de videoconferencia** | Comunicación interactiva en tiempo real mediante un proveedor audiovisual (RealtimeKit seleccionado) |
+| **Plataforma de videos grabados** | Procesamiento y reproducción de videos educativos (Bunny Stream seleccionado) |
+| **Proveedor de inteligencia artificial** | Inferencia de modelos, asistencia pedagógica y capacidades generativas autorizadas: Workers AI y AI Gateway hacia Anthropic y Google Gemini API; Stability AI para objetos 3D; Cloudflare Browser Rendering para PDF. Seleccionados, no contratados ([ADR, sección 10](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)) |
+| **Servicio de notificaciones** | Entrega de correos transaccionales y avisos en la aplicación (proveedor de correo por contratar, P-08) |
+
+El diagrama conserva las cajas genéricas de cada sistema externo, que son el nivel de detalle propio de esta vista. Los proveedores concretos se registran en esta tabla.
 
 ---
 

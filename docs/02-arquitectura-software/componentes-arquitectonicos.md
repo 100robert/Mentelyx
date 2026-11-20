@@ -33,4 +33,4 @@ Se utiliza el **modelo C4, nivel 3 (Componentes)** para representar los componen
 
 **Regla arquitectónica:** los módulos se comunican mediante contratos internos; sus controladores no deben acceder directamente a bases de datos ni a implementaciones privadas de otros módulos. Las tecnologías externas se integran mediante adaptadores.
 
-> **Estado:** propuesta de arquitectura. Los proveedores candidatos y las capacidades previstas requieren validación durante la implementación.
+> **Estado:** propuesta de arquitectura. Los proveedores seleccionados, su contingencia y su condición de activación están en la [sección 10 de los ADR](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md); las capacidades previstas se validan durante la implementación.

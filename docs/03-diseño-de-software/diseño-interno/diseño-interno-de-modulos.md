@@ -80,7 +80,7 @@ src/modules/usuarios-admin/
 │   └── gestionar-permisos.command.ts    # Actor, destinatario y cambio solicitado
 ├── infraestructura/
 │   ├── postgres-cuentas.repository.ts # Adaptador PostgreSQL de cuentas
-│   ├── auth-library.adapter.ts          # Biblioteca de autenticación candidata (Better Auth)
+│   ├── auth-library.adapter.ts          # Biblioteca de autenticación seleccionada (Better Auth)
 │   ├── postgres-audit.adapter.ts         # Auditoría persistente
 │   └── postgres-authorization.adapter.ts # Lectura de permisos desde PostgreSQL
 ├── presentacion/
@@ -102,7 +102,7 @@ src/modules/usuarios-admin/
 | `cuenta.ts`, `rol.ts`, `politica-autorizacion.ts` | Evitar privilegios implícitos y acceso a cuentas de terceros | Dominio M1 |
 | `gestionar-permisos.use-case.ts` | Comprobar que el actor puede modificar el permiso, persistirlo y auditarlo | `authorization.port.ts`, `audit-log.repository.ts` |
 | `habilitar-docente.use-case.ts` | Recibir un evento/orden de habilitación tras validación de M4; no inferir acreditación por un formulario | Evento de M4 (sin importar su infraestructura) |
-| `session.port.ts` / `auth-library.adapter.ts` | Aislar sesiones de la biblioteca concreta | Candidato Better Auth, sujeto a prueba en Workers |
+| `session.port.ts` / `auth-library.adapter.ts` | Aislar sesiones de la biblioteca concreta | Better Auth seleccionado; bloqueado para producción hasta PR-INF-01 (ADR, sección 10) |
 | `index.ts` | Exponer `obtenerActor`, `verificarPermiso` y consulta mínima de rol por contrato | M2, M3, M4, M5, M6 |
 
 **Pruebas de salida del sprint:** registro sin correo institucional; prohibición de consultar/modificar recursos ajenos; revocación de sesión; rol Docente sin habilitación de servicio; cambios administrativos auditados. **Referencias:** ADR-004, ADR-010, ADR-034, ADR-044.
@@ -231,7 +231,7 @@ src/modules/cursos-contenidos/
 |---|---|---|
 | `licencia-contenido.ts`, `politica-publicacion.ts` | Diferenciar permiso de publicar, distribuir e indexar; respetar cada versión | PostgreSQL / M6 mediante evento |
 | `contenido.repository.ts`, `studio.repository.ts` | Leer/escribir documentos con identificador y versión; no mantener derechos financieros | MongoDB |
-| `document-storage.port.ts`, `video-stream.port.ts` | Obtener acceso firmado/temporal a binarios y reproducción | R2; Bunny Stream como candidato |
+| `document-storage.port.ts`, `video-stream.port.ts` | Obtener acceso firmado/temporal a binarios y reproducción | R2; Bunny Stream seleccionado, bloqueado para producción hasta el piloto (contingencia Cloudflare Stream) |
 | `solicitar-ia-studio.use-case.ts` | No generar ni cobrar sin derecho y presupuesto autorizado | API M5 + trabajo dirigido a M6 por cola |
 | `index.ts` | Exponer `consultarTemario`, `obtenerFuenteAutorizada`, `verificarLicencia` | M3 y M6 |
 
@@ -270,9 +270,18 @@ La imagen de clases corresponde exclusivamente a **M2 — Cursos y Contenidos**.
 
 ### 4.4. Flujo de ejecución y diagrama de secuencia
 
-![Diagrama de secuencia de M2 — Publicación de lección](../../img/m2-secuencia.png)
+![Diagrama de secuencia de M2 — Búsqueda en el catálogo publicado](../../img/fuentes-svg/m2-secuencia.svg)
 
-**Flujo de referencia:** publicación de lección. El detalle de mensajes y alternativas debe leerse en la imagen independiente de M2; el Markdown original no describe una tabla de pasos para este módulo.
+**Figura M2-S.** Diagrama de secuencia de la **búsqueda de información educativa en el catálogo publicado** de M2 (CO-09). Corresponde a `GET /api/v1/cursos` → `ConsultarCatalogoUseCase` ([API, sección 2.2](../diseño-externo/02-diseño-de-api-y-contratos.md)):
+1. El controlador normaliza el tema y valida la página.
+2. `CatalogoLecturaPort` (adaptador PostgreSQL) ejecuta una consulta parametrizada de fichas vigentes.
+
+Alternativas:
+- sin coincidencias: `200` con lista vacía;
+- filtro inválido: `400`;
+- fallo de PostgreSQL: error controlado, sin simular una lista vacía.
+
+La publicación de lecciones sigue el protocolo de [persistencia, sección 10.1](../diseño-externo/01-diseño-de-persistencia-y-datos.md). El PNG `m2-secuencia.png` conserva la ruta anterior `/api/v1/catalogo` hasta que se reexporte.
 
 ### 4.5. Código de referencia
 
@@ -463,7 +472,7 @@ src/modules/docentes-clases/
 │   ├── postgres-reservation.repository.ts # Reservas y unicidad por alumno/sesión
 │   ├── postgres-teacher.repository.ts   # Perfil y acreditación
 │   ├── postgres-reservation-uow.adapter.ts # Bloqueo/UPDATE condicional y transacción
-│   ├── sfu-room.adapter.ts             # RealtimeKit candidato; audio/video fuera de Hono
+│   ├── sfu-room.adapter.ts             # RealtimeKit seleccionado; audio/video fuera de Hono
 │   ├── m1-permissions.adapter.ts       # Consulta y actualiza permiso aprobado por API M1
 │   ├── m5-live-credits.adapter.ts      # Reserva/consume/revierte a través de API M5
 │   ├── m5-class-viability.adapter.ts   # Consulta viabilidad y política comercial M5
@@ -488,7 +497,7 @@ src/modules/docentes-clases/
 | `reservation-unit-of-work.port.ts` | Impedir reserva doble y sobreventa de cupos por transacción SQL | PostgreSQL |
 | `credits.port.ts` | Solicitar reserva/reverso idempotente a M5; no escribir su ledger | API pública M5 |
 | `confirmar-reserva.use-case.ts` | Finalizar reserva tras validar crédito; reintentar o compensar operaciones pendientes | M4/M5 sin acceso cruzado a tablas |
-| `live-room.port.ts` | Crear sala/tokens por rol; el audio/video se transporta por SFU | Proveedor SFU candidato |
+| `live-room.port.ts` | Crear sala/tokens por rol; el audio/video se transporta por SFU | RealtimeKit seleccionado, bloqueado para producción hasta la prueba 35+1 (contingencia LiveKit Cloud) |
 | `politica-grabacion.ts` | Bloquear grabación hasta permiso y consentimiento pertinentes | Política de privacidad |
 
 **Importante:** llamar dos módulos dentro del mismo backend **no hace automáticamente atómicas** dos transacciones independientes. Si no se acuerda un `Unit of Work` conjunto mediante contratos, M4 manejará reserva **provisional → confirmada** y compensaciones idempotentes de crédito en M5. Este es un contrato pendiente de prueba de integración, no una garantía inventada.
@@ -1095,7 +1104,9 @@ Se detalla `ResponderConsultaUseCase` del inventario de M6. Los nombres y las fi
 
 El flujo corresponde a `POST /api/v1/tutor-ia/consultas`. Los participantes M1/M2/M5 son API públicas internas invocadas por adaptadores; pgvector consulta el índice de M6. Las comprobaciones de dominio siguen vigentes aunque el middleware haya autenticado la entrada.
 
-![Diagrama de secuencia de M6 — Consulta educativa autorizada](../../img/m6-secuencia.png)
+![Diagrama de secuencia de M6 — Consulta educativa autorizada](../../img/fuentes-svg/m6-secuencia.svg)
+
+> Fuente editable y SVG corregidos a `POST /api/v1/tutor-ia/consultas` (CO-09). El PNG `m6-secuencia.png` conserva la ruta anterior hasta que se reexporte.
 
 **Figura M6-S.** Diagrama de secuencia UML del caso educativo principal de **M6 — Tutor IA y RAG**. El orden de registro se ajusta para no declarar éxito antes de persistir la medición necesaria; no existe una transacción ACID global entre PostgreSQL y el proveedor IA.
 
@@ -1558,9 +1569,14 @@ La imagen de clases corresponde exclusivamente a **M7 — Publicidad y Patrocini
 
 ### 9.4. Flujo de ejecución y diagrama de secuencia
 
-![Diagrama de secuencia de M7 — Validación de campaña](../../img/m7-secuencia.png)
+![Diagrama de secuencia de M7 — Selección de un anuncio](../../img/m7-secuencia.png)
 
-**Flujo de referencia:** validación de campaña. El detalle de mensajes y alternativas debe leerse en la imagen independiente de M7; el Markdown original no describe una tabla de pasos para este módulo.
+**Figura M7-S.** Diagrama de secuencia de la **selección de un anuncio** en M7 (CO-09).
+1. `PlacementPolicy` (dominio) decide si la ubicación está permitida para el contexto y la edad.
+2. Si lo está, `CampaignRepository` consulta en PostgreSQL las campañas vigentes y se elige una elegible: `200` con el anuncio.
+3. En una ubicación restringida (evaluación, Live, Studio o pagos) o sin campaña elegible: `204` sin contenido.
+
+No se usan notas ni perfil académico, y el frontend no decide la ubicación. La etiqueta `GET /api/v1/anuncios?contexto=…` del diagrama corresponde a `GET /api/v1/publicidad/espacios/:ubicacion` → `SeleccionarAnuncioUseCase` ([API, sección 2.7](../diseño-externo/02-diseño-de-api-y-contratos.md)). Esa ruta es la normativa. La etiqueta gráfica se conserva para no desplazar la maquetación y se actualizará en la próxima reexportación.
 
 ### 9.5. Código de referencia
 
@@ -1609,6 +1625,8 @@ Las colaboraciones siguientes son **llamadas internas TypeScript** dentro del mo
 | M6 | **M3** | `consultarProgresoAutorizado`, `consultarRestriccionesTutor` (nuevo) | El Tutor se bloquea durante evaluaciones; M6 no lee notas privadas |
 | M6 | **M4** | `buscarOfertasTutoria` (nuevo, solo lectura) | Sin publicidad ni reserva desde M6 |
 | M2 | **M5** | `cotizarOperacionStudio` (nuevo), `reembolsarOperacionStudio` (nuevo, idempotente por `refund:{operationKey}`) | Cotización de 10 min consumida una sola vez; un reintegro nunca existe sin débito previo |
+| M4 | **M7** | `reservarFinanciamientoAula`, `confirmarFinanciamientoAula`, `liberarFinanciamientoAula` (nuevos, RF-81) | Una clase gratuita no se publica sin una asignación RESERVADA; M7 no importa M4 |
+| M1–M7 → eventos | **M1** | `AuditoriaRegistrada`, `SupresionSolicitada`, `AvisoSolicitado` por el outbox de cada productor ([persistencia, sección 13.1](../diseño-externo/01-diseño-de-persistencia-y-datos.md)) | Nadie escribe en las tablas de M1; M1 consume con inbox |
 
 **Sin ciclos de importación:** M4 llama la API pública de M1 y M5; M6 consulta M2 y M5. El regreso funcional desde M4 a M5 (asistencia validada) y desde M6 a M2 (resultado Studio) se integra por **eventos de negocio**, no por referencias TypeScript circulares. El grafo de importaciones deberá pasar una comprobación automática de ciclos antes de programar; los contratos de puertos se inyectan en las raíces de composición.
 
@@ -1618,7 +1636,7 @@ Las colaboraciones siguientes son **llamadas internas TypeScript** dentro del mo
 |---|---|
 | Inventario | M1–M7 tienen `dominio/`, `aplicacion/`, `infraestructura/`, `presentacion/`, `*.module.ts`, `index.ts` y pruebas previstas |
 | Responsabilidad | Cada archivo del árbol explica para qué existe; funciones de otros módulos se consumen por contrato |
-| Estado de decisiones | Proveedores condicionados siguen marcados como candidatos; no se codifica precio/cuota hipotética en dominio |
+| Estado de decisiones | Los proveedores siguen la clasificación de [ADR, sección 10](../../01-analisis-de-sistema/07-decisiones-arquitectonicas.md) (decidida, bloqueada para producción o pendiente de producto); no se codifica precio ni cuota hipotética en el dominio: viven en `policy_version` |
 | Flujo crítico | Registro, publicación, evaluación, reserva, pago, RAG y anuncio tienen operación principal identificable |
 | Integridad | Transacciones SQL para notas/pagos/cupos; idempotencia para eventos, crédito e indexación |
 | Seguridad | Autenticación de entrada **y** autorización por recurso dentro del caso de uso |

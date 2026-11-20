@@ -226,14 +226,14 @@ El backend de Mentelyx **no retransmite el flujo audiovisual completo**.
 
 ### Pendientes antes de la implementación
 
-| Tema | Definición pendiente |
+| Tema | Estado al cierre del Sprint 02 (20/11/2026) |
 |---|---|
-| **Grupos privados docentes** | Precisar creación, miembros, invitaciones, acceso, administración y relación con clases y pagos. Corresponde principalmente a M4, con permisos de M1 y reglas comerciales de M5. |
-| **Contratos internos** | Formalizar las interfaces públicas de M1–M7, parámetros, respuestas y errores esperados. |
-| **Persistencia** | Definir tablas y relaciones PostgreSQL, documentos MongoDB y políticas de consistencia. |
-| **Autenticación** | Validar la biblioteca seleccionada y su integración con Hono, sesiones y PostgreSQL. |
-| **Integraciones externas** | Verificar proveedores, contratos, costos, límites y funcionamiento en Cloudflare Workers. |
-| **Pruebas** | Preparar pruebas unitarias, de integración, autorización, concurrencia e idempotencia para los flujos críticos. |
+| **Grupos privados docentes** | **Diferido:** ningún RF lo exige en v1; requiere decisión de producto (P-11, [ADR, sección 10.3](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)). |
+| **Contratos internos** | **Definidos** en la [API, sección 2.8](../03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md) y en el [diseño interno, sección 10.1](../03-diseño-de-software/diseño-interno/diseño-interno-de-modulos.md). |
+| **Persistencia** | **Definida** en [persistencia v2.1](../03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md) (modelo físico, matriz por módulo y consistencia). |
+| **Autenticación** | **Decidida, bloqueada para producción** hasta el prototipo PR-INF-01 ([seguridad](../02-arquitectura-software/seguridad-y-autenticacion.md); ADR, sección 10.1). |
+| **Integraciones externas** | **Clasificadas** con su contingencia en la ADR, sección 10.1; la verificación en Workers corresponde a PR-INF-01. |
+| **Pruebas** | **Diseñadas** en el [SDD, sección 10](../05-sdd/documento-de-diseño-de-software.md); ninguna se ha ejecutado. |
 
 ---
 

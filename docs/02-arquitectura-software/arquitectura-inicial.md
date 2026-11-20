@@ -25,7 +25,7 @@ flowchart TB
   end
 
   subgraph BACK["LÓGICA DE NEGOCIO — CLOUDFLARE WORKERS / HONO"]
-    API["API REST · Better Auth candidato · RBAC/ABAC"]
+    API["API REST · Better Auth · RBAC/ABAC"]
     subgraph MOD["MONOLITO MODULAR · 7 MÓDULOS"]
       M1["1. Usuarios y Administración"]
       M2["2. Cursos y Contenidos · Studio"]
@@ -48,7 +48,7 @@ flowchart TB
     QUEUE["Cloudflare Queues + DLQ · procesamiento"]
     PAY["Pasarela por contratar · pagos/webhooks"]
     MEDIA["Bunny Stream · videos grabados"]
-    LIVE["RealtimeKit / WebRTC SFU · aulas virtuales (candidato)"]
+    LIVE["RealtimeKit / WebRTC SFU · aulas virtuales"]
     AI["LLM externo · Tutor IA y Studio"]
     MAIL["Notificaciones/correo · proveedor por definir"]
   end
@@ -91,10 +91,10 @@ flowchart TB
 | Backend | Hono / TypeScript local | Cloudflare Workers |
 | Base relacional | PostgreSQL local | Neon PostgreSQL con `pgvector` |
 | Documentos | MongoDB local | MongoDB Atlas; probar conectividad desde Workers |
-| Caché | Redis local | Redis administrado compatible con Workers, proveedor pendiente |
+| Caché | Redis local | Upstash Redis REST, con bases `cache` y `control` (ADR-012; persistencia, sección 9.3) |
 | Archivos | Almacenamiento de prueba local | Cloudflare R2 |
 | Trabajos | Adaptador de cola de pruebas | Cloudflare Queues + DLQ |
-| Videoclase | Prototipo WebRTC / servicio de prueba | RealtimeKit como candidato; medir calidad y costos con 35+1 |
+| Videoclase | Prototipo WebRTC / servicio de prueba | RealtimeKit seleccionado, bloqueado para producción hasta la prueba 35+1; contingencia LiveKit Cloud ([ADR, sección 10](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)) |
 | Grabados | Archivos de pruebas | Bunny Stream, con permisos y grabación bajo consentimiento |
 | IA | Mock o llamadas medidas | Proveedor LLM externo por seleccionar y presupuestos de consumo |
 

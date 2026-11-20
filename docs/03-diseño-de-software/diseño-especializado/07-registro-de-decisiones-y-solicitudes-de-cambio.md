@@ -170,7 +170,7 @@ Claude Code acepta estas resoluciones sin reabrirlas. Ninguna modificación de C
 | CO-06 | Orquestador 1.1, sección 10.7; interfaces 2.1, secciones 8.4, 11 y UI-05; prueba API-14 | Aplicado |
 | CO-07 | Orquestador 1.1, secciones 5.2, 5.11, 9.1, 16, EJ-07, 18 y 19; PEND-01 de este registro | Aplicado como selección documental; no validado |
 | CO-08 | Diseño interno 3.2, secciones 8.1.2 y 8.5.5 (notas) y 10.1 (contratos nuevos de la API, sección 2.8) | Aplicado; el código de referencia no cambia |
-| CO-09 | Puerto `CredentialVerificationPort` de principios de diseño, ruta de `m6-secuencia.drawio` y pies de figura M2/M7 | **Pendiente:** mantenimiento de diagramas y de diseño interno, fuera de este cierre |
+| CO-09 | Puerto `CredentialVerificationPort` de principios de diseño, ruta de `m6-secuencia.drawio` y pies de figura M2/M7 | **Resuelto (cierre de datos, 17/11/2026):** `HabilitacionDocentePort` como puerto de entrada de M1, sin ciclo M1↔M4; fuentes draw.io y SVG de M2, M6 y SOLID M1 corregidas; pies M2-S y M7-S según el contenido real. Pendiente solo reexportar los PNG desde sus fuentes |
 | CO-10 | Orquestador 1.1, secciones 4.2 (R-PRIV-3) y 13.1; prueba API-06 | Aplicado |
 
 ### 8.3. Discrepancias encontradas y resueltas durante la sincronización
@@ -208,7 +208,7 @@ Claude Code acepta estas resoluciones sin reabrirlas. Ninguna modificación de C
 | Aprobación de producto o comercial | ADR-058 (modo `GENERAL`); calibración de UTI (incluido el peso 4 de `razonamiento.profundo`, que ahora comparte modelo), cuotas, créditos Studio y presupuestos (límite blando y tope duro); contratación de Workers Paid o créditos de AI Gateway, planes de Neon, Atlas y Upstash, correo, pasarela, Browser Rendering y Cloud Run |
 | Legal | PEND-02 (retenciones de 30/14 días, 12 meses y 90 días; transferencia internacional; contratos de tratamiento), PEND-03 (protocolo de riesgo con menores), consentimiento audiovisual, PEND-04 (términos de Stability y Meshy) |
 | Experimental | BP-01 a BP-07, PEND-05, PEND-VIS-01/02, PEND-MAT-01, PEND-RAG-01 (versión de pgvector, EXPLAIN y Recall), PR-INF-01 a 05, SEC-01 a 10, API-01 a 18 y los EQ asociados |
-| Documental | CO-09; sistemas externos de IA en C4 niveles 1 y 2 (guía, sección 5, punto 5) y enlaces de EQ en `08-escenarios-atributos-calidad.md` (punto 6), reservados para el SDD y la evaluación de calidad |
+| Documental | Reexportar los PNG `m2-secuencia`, `m6-secuencia` y `principios-solid-m1` desde sus fuentes corregidas (sin herramienta instalada); sistemas externos de IA en C4 niveles 1 y 2 (guía, sección 5, punto 5) y enlaces de EQ en `08-escenarios-atributos-calidad.md` (punto 6), reservados para el SDD y la evaluación de calidad |
 
 ### 8.6. Siguiente tarea
 

@@ -83,7 +83,7 @@ flowchart LR
 }
 ```
 
-Los parámetros de cada plantilla tienen su propio esquema (`urn:mentelyx:esquema:plantilla3d:{id}:v{n}`), con los rangos del sección 4. Los pasos reutilizan la definición 2D (acciones `mostrar`, `animar` con `tipo: recorrer | variarParametro | camara`, y `anclaChat`). Los enlaces de valores usan la forma `{{alcance:sim}}`, `{{volumen:sim|3}}`, etc.
+Los parámetros de cada plantilla tienen su propio esquema (`urn:mentelyx:esquema:plantilla3d:{id}:v{n}`), con los rangos de la sección 4. Los pasos reutilizan la definición 2D (acciones `mostrar`, `animar` con `tipo: recorrer | variarParametro | camara`, y `anclaChat`). Los enlaces de valores usan la forma `{{alcance:sim}}`, `{{volumen:sim|3}}`, etc.
 
 ## 4. Catálogo de plantillas verificables
 

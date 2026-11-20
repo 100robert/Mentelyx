@@ -1,7 +1,7 @@
 # Mentelyx — Plataforma educativa y arquitectura de software
 
-> **Versión:** 2.1 — Análisis, Arquitectura, Diseño Interno/Externo, Diseño especializado y Modelo C4 (cierre arquitectónico del Sprint 02, 17/11/2026).\
-> **Estado:** definición arquitectónica completa a nivel documental. Pendientes antes de construir: evaluación de atributos de calidad, SDD consolidado, pruebas experimentales (benchmarks, compatibilidad, carga, restauración y seguridad) y aprobaciones legales y de producto. Importes comerciales, cuotas y contratos sujetos a validación en piloto. No implica software implementado, desplegado en producción ni servicios externos contratados.
+> **Versión:** 2.2 — Análisis, Arquitectura, Diseño Interno/Externo, Diseño especializado, Modelo C4 y [SDD consolidado](docs/05-sdd/documento-de-diseño-de-software.md) (cierre del Sprint 02, 20/11/2026).\
+> **Estado:** diseño de arquitectura, evaluación de atributos de calidad (inspirada en ATAM, sin taller formal con interesados) y SDD consolidados a nivel documental. Pendientes: pruebas experimentales (benchmarks, compatibilidad, carga, restauración y seguridad), aprobaciones de producto (P-01 a P-11) y legales. Importes comerciales, cuotas y contratos sujetos a validación en piloto. No implica software implementado, desplegado en producción ni servicios externos contratados.
 
 ## 1. Propósito del proyecto
 
@@ -86,8 +86,8 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 
 ## 7. Fases y límites
 
-1. **Documentación y diseño (definición arquitectónica completada):** análisis de sistema (`01`), arquitectura de software (`02`), diseño interno/externo y especializado (`03`) y modelo C4 (`04`). Siguen pendientes la evaluación de atributos de calidad y el SDD consolidado; el estado de continuidad está en el [registro de avance](docs/avance-cierre-arquitectonico-sprint-02.md).
-2. **Construcción local (después de la evaluación de calidad y del SDD):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, gestión de cuentas y control de acceso (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
+1. **Documentación y diseño (completada):** análisis de sistema (`01`), arquitectura de software (`02`), diseño interno/externo y especializado (`03`), modelo C4 (`04`) y SDD con evaluación de calidad (`05`). El estado de continuidad está en el [registro de avance](docs/avance-cierre-arquitectonico-sprint-02.md).
+2. **Construcción local (siguiente paso, por los incrementos I-0 a I-7 del [SDD, sección 13](docs/05-sdd/documento-de-diseño-de-software.md)):** inicializar monorepo (`frontend/` y `backend/`), migraciones SQL en PostgreSQL, gestión de cuentas y control de acceso (M1), catálogo y Studio MVP (M2), evaluaciones (M3), reservas (M4), planes/créditos y pagos sandbox (M5), RAG (M6) y pruebas de contratos.
 3. **Piloto limitado:** medir IA real por generación, pruebas docentes, verificaciones de capacidad WebRTC (35+1), funcionamiento pasarela, conciliación, costos y restauración.
 4. **Lanzamiento comercial:** solo servicios cuyos permisos, seguridad, capacidad, costos, términos y disponibilidad hayan sido verificados; activación progresiva de planes.
 5. **Posterior:** convenios escolares, Studio Equipos, clases masivas más allá de 35, modelos IA propios, eventual Kafka y alta disponibilidad superior contratada.
@@ -103,7 +103,7 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`04-atributos-de-calidad.md`](docs/01-analisis-de-sistema/04-atributos-de-calidad.md) | AC-01–AC-11 y objetivos verificables | Completado |
 | [`05-restricciones.md`](docs/01-analisis-de-sistema/05-restricciones.md) | RC-01–RC-37 y límites comerciales, regulatorios y técnicos | Completado |
 | [`06-drivers-arquitectonicos.md`](docs/01-analisis-de-sistema/06-drivers-arquitectonicos.md) | DA-01–DA-31, relación RF/AC/RC ↔ decisiones | Completado |
-| [`07-decisiones-arquitectonicas.md`](docs/01-analisis-de-sistema/07-decisiones-arquitectonicas.md) | ADR-001–ADR-072 (ADR-011 reservado) con alternativas y estados; ADR-056–072 resueltas con condiciones (sección 8) | Completado; varias decisiones condicionadas a pruebas o aprobación |
+| [`07-decisiones-arquitectonicas.md`](docs/01-analisis-de-sistema/07-decisiones-arquitectonicas.md) | ADR-001–ADR-073 (ADR-011 reservado) con alternativas y estados; ADR-056–072 resueltas (sección 8); clasificación de cierre, contingencias, ADR-073 y preguntas de producto (sección 10) | Completado; decisiones bloqueadas para producción o pendientes de producto identificadas |
 | [`08-escenarios-atributos-calidad.md`](docs/01-analisis-de-sistema/08-escenarios-atributos-calidad.md) | EQ-01–EQ-31 con pruebas y métricas; resultados pendientes | Completado |
 
 ### 8.2. `docs/02-arquitectura-software/` — Arquitectura de Software
@@ -122,10 +122,10 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`diseño-interno/principios-de-diseño.md`](docs/03-diseño-de-software/diseño-interno/principios-de-diseño.md) | Aplicación de principios SOLID con diagramas por módulo (`M1–M7`) | Completado |
 | [`diseño-interno/patrones-de-diseño.md`](docs/03-diseño-de-software/diseño-interno/patrones-de-diseño.md) | Patrones GoF y de integración (Repository, Adapter, Idempotent Receiver, Outbox, Ledger) | Completado |
 | [`diseño-interno/diseño-interno-de-modulos.md`](docs/03-diseño-de-software/diseño-interno/diseño-interno-de-modulos.md) | Estructura de código de `M1–M7`, vistas de paquetes y UML/TypeScript detallado de `M5` | Completado |
-| [`diseño-externo/01-diseño-de-persistencia-y-datos.md`](docs/03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md) | Esquema ER en PostgreSQL + `pgvector`, colecciones MongoDB, claves Redis y R2 | Completado |
+| [`diseño-externo/01-diseño-de-persistencia-y-datos.md`](docs/03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md) | Modelo conceptual, lógico y físico por módulo, MongoDB, Redis, R2, diseño vectorial, matriz de asignación (sección 13) y diagramas ER por módulo (sección 15) | Completado (v2.1); migraciones no ejecutadas |
 | [`diseño-externo/02-diseño-de-api-y-contratos.md`](docs/03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md) | Endpoints REST `/api/v1/*`, payloads, idempotencia, webhooks y eventos de Queues | Completado |
 | [`diseño-externo/03-diseño-de-interfaces-y-flujos.md`](docs/03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md) | Mapa de navegación Next.js Web/PWA, vistas por actor y salvaguardas de UI | Completado |
-| [`contrato-coordinacion-datos-seguridad-infraestructura.md`](docs/03-diseño-de-software/contrato-coordinacion-datos-seguridad-infraestructura.md) | Resolución SC-01–SC-17, SEG-01–SEG-04 e INF-01–INF-06; ajustes CO-01–CO-10 | Resuelto; CO-09 pendiente de mantenimiento |
+| [`contrato-coordinacion-datos-seguridad-infraestructura.md`](docs/03-diseño-de-software/contrato-coordinacion-datos-seguridad-infraestructura.md) | Resolución SC-01–SC-17, SEG-01–SEG-04 e INF-01–INF-06; ajustes CO-01–CO-10 | Resuelto |
 | [`diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md`](docs/03-diseño-de-software/diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md) | Proveedores, privacidad D0–D3, rutas, cuotas, costos, verificación y cancelación del Tutor IA | Diseño propuesto; benchmarks pendientes |
 | [`diseño-especializado/02-diseño-rag.md`](docs/03-diseño-de-software/diseño-especializado/02-diseño-rag.md) | Ingestión, generaciones de índice, recuperación híbrida autorizada, citas y revocación | Diseño propuesto; BP-07 pendiente |
 | [`diseño-especializado/03-motor-visual-y-pizarra.md`](docs/03-diseño-de-software/diseño-especializado/03-motor-visual-y-pizarra.md) | Primitivas, esquemas de escena, validación, reproductor y pizarra | Diseño propuesto; prototipo pendiente |
@@ -141,6 +141,11 @@ Mentelyx es un **centro educativo virtual independiente**, dirigido a **Primaria
 | [`Nivel2-DiagramadeContenedores.md`](docs/04-modelo-c4/Nivel2-DiagramadeContenedores.md) | Nivel 2: Web/PWA, Edge, API Hono/Workers, Queues y bases de datos | Completado |
 | [`Nivel3-DiagramadeComponentes.md`](docs/04-modelo-c4/Nivel3-DiagramadeComponentes.md) | Nivel 3: Componentes `C01–C07` del backend, contratos y adaptadores | Completado |
 | [`Nivel4-DiagramadeCodigo.md`](docs/04-modelo-c4/Nivel4-DiagramadeCodigo.md) | Nivel 4: Paquetes `M1–M7`, SOLID y diagramas UML de clases y secuencia | Completado |
+
+### 8.5. `docs/05-sdd/` — Documento de diseño de software
+| Archivo | Propósito | Estado |
+|---|---|---|
+| [`documento-de-diseño-de-software.md`](docs/05-sdd/documento-de-diseño-de-software.md) | SDD consolidado por referencias: HLD/LLD, evaluación inspirada en ATAM, trazabilidad EQ, estrategia de pruebas y k6, recuperación, criterios docentes, backlog y definición de terminado | Consolidado v1.0; pruebas pendientes |
 
 ### Glosario breve
 

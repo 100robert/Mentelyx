@@ -4,7 +4,7 @@
 > **Framework Backend:** Hono + TypeScript sobre Cloudflare Workers · **Prefijo base:** `/api/v1`  
 > **Versión:** 2.1 — 17/11/2026 · **Estado:** especificación de contratos externos e internos para desarrollo; contratos propuestos, no implementados.
 >
-> **Cambios de la versión 2.1:** sincronización con el [contrato de coordinación](../contrato-coordinacion-datos-seguridad-infraestructura.md). CO-02: claves de render y audiencia (secciones 3.1 y 4.4). CO-04: la ejecución del Tutor queda separada del SSE (secciones 3.1 y 5.3). CO-05: modo `GENERAL` reservado (sección 4.3). INF-01: cola de mantenimiento (sección 3.1). SC-16: `202` solo tras un trabajo durable (sección 6). Las rutas públicas no cambian.
+> **Cambios de la versión 2.1:** sincronización con el [contrato de coordinación](../contrato-coordinacion-datos-seguridad-infraestructura.md). CO-02: claves de render y audiencia (secciones 3.1 y 4.4). CO-04: la ejecución del Tutor queda separada del SSE (secciones 3.1 y 5.3). CO-05: modo `GENERAL` reservado (sección 4.3). INF-01: cola de mantenimiento (sección 3.1). SC-16: `202` solo tras un trabajo durable (sección 6). Cierre de datos (persistencia v2.1): endpoints de soporte (RF-32) y de reembolsos (RF-25), contratos de financiamiento de aulas M4→M7 (RF-81), cola transversal de auditoría, supresión y avisos (sección 3.1), y el caso de uso del catálogo alineado con el diseño interno (`ConsultarCatalogoUseCase`). Las rutas públicas existentes no cambian.
 >
 > **Cambios de la versión 2.0:** se conservan los contratos de la 1.0. Se añaden las convenciones 6 a 13 de la sección 1, los endpoints nuevos de cada módulo (sección 2), los contratos internos entre módulos (sección 2.8), los eventos nuevos de cola (sección 3.1), los DTO (sección 4), el *streaming* SSE (sección 5), los trabajos asíncronos (sección 6), el catálogo de errores (sección 7), la matriz de autorización (sección 8) y las pruebas de contrato (sección 9). También se resuelven los pendientes del informe de auditoría terminológica sobre `/docentes/acreditaciones` y el método del endpoint de permisos. Las especificaciones de IA están en `../diseño-especializado/`.
 
@@ -100,12 +100,16 @@
 | `POST` | `/api/v1/usuarios/me/consentimientos-parentales` | Cuenta de menor | `SolicitarConsentimientoParentalUseCase` | Envía una invitación al adulto responsable (`parental_consents`) |
 | `POST` | `/api/v1/consentimientos-parentales/:token/decision` | Adulto responsable (con token) | `RegistrarDecisionConsentimientoUseCase` | Otorga o rechaza los consentimientos por finalidad (uso de la plataforma, audiovisual, Tutor IA) |
 | `GET` | `/api/v1/admin/auditoria` | Superadministrador (MFA) | `ConsultarAuditoriaUseCase` | Filtros por actor, operación y fechas; paginado (RF-31) |
+| `POST` | `/api/v1/soporte/incidencias` | Autenticado; `Idempotency-Key` | `RegistrarIncidenciaUseCase` | `{categoria, asunto, mensaje, referencia?}` → `201`; mensaje redactado, sin datos D3 (`support_tickets`, RF-32) |
+| `GET` | `/api/v1/soporte/incidencias/me` | Autenticado | `ListarIncidenciasPropiasUseCase` | Paginado por `(created_at, id)` |
+| `GET` | `/api/v1/admin/soporte/incidencias` | Superadministrador o permiso `atender_soporte` | `ListarIncidenciasUseCase` | Filtros por estado y prioridad |
+| `PATCH` | `/api/v1/admin/soporte/incidencias/:id` | Ídem | `AtenderIncidenciaUseCase` | Cambio de estado o respuesta; `If-Match` con la versión; evento INSERT-only |
 
 ### 2.2. Módulo 2 — Cursos, Contenidos y Mentelyx Studio (`/api/v1/cursos` y `/api/v1/studio`)
 
 | Método | Ruta | Actor / Permiso | Caso de uso conectado | Descripción |
 |---|---|---|---|---|
-| `GET` | `/api/v1/cursos` | Público / Estudiante | `ListarCatalogoUseCase` | Lista cursos por nivel (`PRIMARIA`, `SECUNDARIA`, `PREUNI`, `UNIVERSITARIO`) con soporte de caché Redis. |
+| `GET` | `/api/v1/cursos` | Público / Estudiante | `ConsultarCatalogoUseCase` | Lista cursos publicados por nivel (`PRIMARIA`, `SECUNDARIA`, `PREUNI`, `UNIVERSITARIO`) con filtros `area`, `tema` y `pagina` (RF-05) y caché Redis. Se llamaba `ListarCatalogoUseCase` en la v2.0 y se alinea con el diseño interno |
 | `POST` | `/api/v1/studio/proyectos` | Estudiante / Docente con permiso de Studio | `CrearProyectoStudioUseCase` | Crea o guarda edición manual en Studio (**0 créditos IA consumidos**). |
 | `POST` | `/api/v1/studio/proyectos/:id/archivos/url-subida` | Propietario del proyecto | `EmitirUrlSubidaR2UseCase` | Genera URL pre-firmada temporal hacia Cloudflare R2 y registra metadatos en PostgreSQL. |
 | `POST` | `/api/v1/studio/proyectos/:id/publicar` | Estudiante / Docente con autorización editorial | `PublicarVersionContenidoUseCase` | Sella una versión inmutable en MongoDB/PostgreSQL y encola indexación RAG si la licencia lo permite. |
@@ -202,6 +206,8 @@
 | `GET` | `/api/v1/planes` | Público | `ListarPlanesUseCase` | Versión comercial vigente de cada producto, con derechos y cuotas **en lenguaje claro** (consultas de Tutor, créditos Live y créditos Studio por separado) |
 | `GET` | `/api/v1/suscripciones/me/movimientos` | Autenticado | `ConsultarMovimientosUseCase` | `?pool=LIVE\|STUDIO` obligatorio; los dos historiales nunca se mezclan (RC-34) |
 | `POST` | `/api/v1/suscripciones/:id/cancelar` | Titular; `Idempotency-Key` | `CancelarSuscripcionUseCase` | Cancelación al final del periodo según la versión comercial (RF-13) |
+| `POST` | `/api/v1/pagos/ordenes/:id/reembolso` | Titular; `Idempotency-Key` | `SolicitarReembolsoUseCase` | Crea `refund_requests` en SOLICITADO si la política versionada lo admite (RF-25). Cancelar una reserva o una suscripción usa el mismo caso de uso cuando corresponde reembolsar |
+| `POST` | `/api/v1/admin/pagos/reembolsos/:id/decision` | Superadministrador (MFA) | `DecidirReembolsoUseCase` | Aprueba o rechaza; el reembolso aprobado se ejecuta por `PaymentPort` y revierte créditos por el ledger, una sola vez |
 
 ### 2.6. Módulo 6 — Tutor IA y RAG (`/api/v1/tutor-ia`)
 
@@ -283,6 +289,12 @@ consumirOperacionStudio(actorId: string, cotizacionId: string, operationKey: str
   Promise<{ movimientoId: string; saldo: number }>;                                         // M2 (existente, se precisa la firma)
 reembolsarOperacionStudio(operationKey: string, motivo: 'FALLA_IMPUTABLE_SERVICIO'):
   Promise<{ reintegrado: boolean; saldo: number }>;                                         // M2 / M6 (nuevo; idempotente por refund:{operationKey})
+
+// M7 — Publicidad y Patrocinios (RF-81)
+reservarFinanciamientoAula(cmd: { sesionId: string; montoPen: string; operationKey: string }):
+  Promise<{ asignacionId: string; estado: 'RESERVADA' | 'SIN_FONDOS' }>;                   // M4 (nuevo)
+confirmarFinanciamientoAula(asignacionId: string): Promise<void>;                          // M4 (nuevo; al validar la prestación)
+liberarFinanciamientoAula(asignacionId: string, motivo: 'CANCELADA' | 'NO_PUBLICADA'): Promise<void>; // M4 (nuevo; idempotente)
 ```
 
 **Regla:** ningún contrato expone tablas, repositorios ni DTO de base de datos. Los nuevos contratos se prueban con pruebas de contrato del módulo consumidor (sección 9).
@@ -329,6 +341,7 @@ Todos los mensajes publicados a **Cloudflare Queues** transportan únicamente id
 | `mentelyx-renders` (nueva) | `MaterialRenderRequested` | Outbox M2 | Worker de renderizado M2 | `render:{renderJobId}`. El `input_hash` incluye formato, audiencia y política de exclusión; la reutilización se limita al mismo propietario y proyecto (CO-02) | `mentelyx-renders-dlq`; el trabajo pasa a `FALLIDO` con un código |
 | `mentelyx-mantenimiento` (nueva, programada) | `PurgaConversacionesTutor`, `PurgaIndicesRevocados`, `PurgaExportacionesNoVigentes`, `PurgaDocumentosHabilitacion` | Cron Trigger cada 15 min, borrado a petición y barrido diario | Dueño M2 / M4 / M6 | `purga:{tipo}:{fecha}:{cursor}` (INF-01) | `mentelyx-mantenimiento-dlq` + alerta; la denegación de acceso no espera a la purga |
 | `mentelyx-tutor-execution` (nueva, CO-04) | `ConsultaTutorAdmitida` | Outbox M6 tras la admisión | Ejecutor M6 con *lease* SQL | `operationKey` | `mentelyx-tutor-execution-dlq`; la operación queda `INCIERTA` y se concilia, nunca se reinvoca al proveedor a ciegas |
+| `mentelyx-transversal` (nueva) | `AuditoriaRegistrada`, `SupresionSolicitada`, `AvisoSolicitado` | Outbox de M1–M7 | M1 (`audit_logs`, `deletion_requests`, `notification_deliveries`) | `eventId` del productor | `mentelyx-transversal-dlq` + alerta; un aviso fallido no revierte la operación de negocio |
 
 **Mensajes:** solo identificadores, versiones y metadatos de acceso; nunca contenido de usuarios, prompts ni archivos (se conserva la regla de la sección 3).
 

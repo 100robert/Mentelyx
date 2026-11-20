@@ -2,7 +2,7 @@
 
 > **Versión:** 1.0 — 17/11/2026 · **Responsable de esta revisión:** Codex. Complementa el [registro especializado de Claude](diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md), conservado sin cambios. No es el SDD consolidado ni una aprobación de todos los modelos/prototipos.
 >
-> **Estado de sincronización (17/11/2026, Claude Code):** CO-01 a CO-08 y CO-10 aplicados en los archivos de diseño especializado, API, interfaces y diseño interno ([registro especializado, sección 8.2](diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md)). CO-09 sigue pendiente. Las resoluciones de este contrato no se modificaron.
+> **Estado de sincronización (17/11/2026, Claude Code):** CO-01 a CO-08 y CO-10 aplicados en los archivos de diseño especializado, API, interfaces y diseño interno ([registro especializado, sección 8.2](diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md)). CO-09 resuelto en el cierre de datos (registro especializado, sección 8.2). Las resoluciones de este contrato no se modificaron.
 
 ## 1. Autoridad y reglas de integración
 

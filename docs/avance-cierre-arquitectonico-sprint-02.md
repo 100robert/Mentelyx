@@ -62,8 +62,20 @@ Resultado de Codex antes de la interrupción (recuperado por Claude Code a parti
 | Campo | Estado |
 |---|---|
 | Tareas completadas | Revisión RF-01–RF-99 frente a persistencia; persistencia v2.1: campos añadidos (secciones 7.3–7.5), entidades complementarias (sección 7.8), MongoDB (sección 8.3), Redis (sección 9.3) y R2 (sección 9.4) |
-| En curso | ADR, sección 10 (clasificación, contingencias, ADR-073 y recomendaciones de producto) |
-| Completado además | Persistencia, secciones 13 (matriz), 14 (vectorial) y 15 (siete ER por módulo y esquema documental); flujo RAG, sección 3, actualizado al modelo de generaciones |
-| Pendiente | CO-09; coherencia de API (contratos M4/M7, eventos transversales y soporte), infraestructura (cola transversal), diseño interno y README; verificaciones |
-| Bloqueantes | Ninguno |
-| Siguiente acción exacta | Redactar la sección 10 de los ADR |
+| Completado además | Persistencia, secciones 13 (matriz), 14 (vectorial) y 15 (siete ER por módulo y esquema documental). Flujo RAG, sección 3, actualizado al modelo de generaciones. ADR v2.3, sección 10: clasificación, contingencias, ADR-073, P-01 a P-10 y banderas legales. CO-09 resuelto: `HabilitacionDocentePort` sin ciclo M1↔M4; fuentes draw.io y SVG corregidas; pies M2-S y M7-S. API: soporte, reembolsos, contratos M4→M7, cola transversal y `ConsultarCatalogoUseCase`. Infraestructura: cola transversal. Textos «candidato» alineados en C4 nivel 2, arquitectura inicial, componentes, diseño interno, principios y orquestador. README actualizado |
+| Verificaciones ejecutadas | `git diff --check` sin errores; 0 enlaces relativos rotos; en persistencia, 85 entidades de la matriz definidas, 7 ER sin entidades huérfanas, vallas balanceadas y 6 bloques JSON válidos; sin identificadores fuera de rango (ADR hasta 073); P-01 a P-10 únicos; sin marcas de sección ni artefactos gramaticales de la normalización. No ejecutado: SQL, validadores BSON reales, renderizado Mermaid ni pruebas de software |
+| Git | Commit `f9b8caa` de robert (17/11/2026 17:37), hecho durante esta tarea; incluye el trabajo hasta la sección 13 de persistencia. Lo posterior queda sin commit. Claude Code no hizo commits ni pushes |
+| Pendiente | Reexportar 3 PNG desde sus fuentes corregidas (sin herramienta instalada) |
+| Bloqueantes | Ninguno técnico. Producto: P-01 a P-10. Legal: banderas de ADR, sección 10.4 |
+| Siguiente acción exacta | Evaluación de atributos de calidad (`mentelyx-calidad-sdd`) sobre EQ-01–EQ-31 y, después, SDD consolidado |
+
+## 7. Evaluación de calidad y SDD consolidado (20/11/2026, Claude Code)
+
+| Campo | Estado |
+|---|---|
+| Punto de reanudación | Sección 6 completa; sin commits nuevos desde `f9b8caa`; 21 archivos modificados sin commit |
+| Completado | C4 niveles 1–3: pendientes sustituidos por su estado y proveedores nombrados en el texto (sin redibujar); P-11 (grupos privados docentes) añadido a ADR, sección 10.3 |
+| Completado además | SDD v1.0 en `docs/05-sdd/documento-de-diseño-de-software.md`: evaluación inspirada en ATAM (no formal), trazabilidad de los 31 EQ, 33 pruebas nuevas (K6, FAL, CON, CAC, MIG, UNI, UX, PIL, ARQ, E2E), RTO/RPO, 16 criterios docentes sin puntaje, bloqueos, incrementos I-0 a I-7 y definición de terminado. ADR-073 añade k6 y reglas ESLint de arquitectura. Enlace desde `08-escenarios`, sección 3. README v2.2 |
+| Verificaciones ejecutadas | `git diff --check` sin errores; 0 enlaces rotos en 21 archivos; trazabilidad del SDD: 31 EQ sin huecos ni duplicados, 11 AC cubiertos, todos los RF, DA, ADR y pruebas citadas definidos; persistencia sin regresiones; sin identificadores fuera de rango (ADR hasta 073, P hasta 11); sin marcas de sección. Ninguna prueba de software ejecutada |
+| Pendiente | Reexportar 3 PNG; ejecutar las pruebas a partir de I-0; respuestas de producto P-01 a P-11 y legales |
+| Siguiente acción exacta | Revisión del SDD por el responsable del proyecto y decisión sobre P-01 a P-11; después, incremento I-0 con instrucción explícita de implementar |

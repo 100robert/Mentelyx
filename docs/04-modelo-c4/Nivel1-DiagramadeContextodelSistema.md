@@ -103,12 +103,12 @@ La figura representa a Mentelyx como una única unidad. Las personas y los siste
 
 | Tema | Detalle |
 |---|---|
-| Pasarela de pagos | Seleccionar proveedor y validar sus condiciones, comisiones, métodos disponibles y mecanismos de confirmación. |
-| Videoconferencia | Validar proveedor, capacidad de participantes, moderación, grabaciones autorizadas y costos. |
-| Streaming de videos | Confirmar servicio de distribución, control de acceso, costos y políticas de almacenamiento. |
-| Proveedor de inteligencia artificial | Definir modelos, cuotas, tratamiento de datos, costos y criterios de calidad pedagógica. |
-| Canal de notificaciones | Determinar si se utilizará correo electrónico u otros canales y seleccionar el servicio correspondiente. |
-| Grupos privados docentes | Completar sus reglas funcionales y de acceso para reflejarlas posteriormente en el nivel 3 y en el diseño de M4. |
+| Pasarela de pagos | **Requiere decisión de producto** (P-07, [ADR, sección 10.3](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)): Culqi o Mercado Pago por cotización formal; `PaymentPort` y adaptador simulado decididos. |
+| Videoconferencia | **Decidida, bloqueada para producción:** RealtimeKit, con la prueba 35 + 1 pendiente; contingencia LiveKit Cloud (ADR, sección 10.1). |
+| Streaming de videos | **Decidida, bloqueada para producción:** Bunny Stream, con piloto en Perú pendiente; contingencia Cloudflare Stream. |
+| Proveedor de inteligencia artificial | **Decidida por rutas:** Workers AI y AI Gateway (Anthropic, Google Gemini API); Stability AI para 3D. Activación condicionada a BP-01 a BP-07 y contratos ([orquestador](../03-diseño-de-software/diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md); ADR-056/057/072). |
+| Canal de notificaciones | **Decidido:** correo transaccional y aviso en la aplicación (`notification_deliveries`, persistencia, sección 7.8); el proveedor de correo se contrata en P-08. |
+| Grupos privados docentes | **Diferido:** ningún RF lo exige en v1 (P-11, ADR, sección 10.3). |
 
 ---
 

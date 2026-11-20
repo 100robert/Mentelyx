@@ -9,7 +9,7 @@
 </defs>
 <rect width="2210" height="1496" fill="#ffffff"/>
 <text x="36" y="52" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="36" font-weight="700" font-style="normal" fill="#1B2A41">Diagrama de secuencia · Responder una consulta con RAG (M6)</text>
-<text x="36" y="88" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="21" font-weight="400" font-style="normal" fill="#6B7A90">POST /api/v1/tutor/consultas · con cuota y cuota agotada</text>
+<text x="36" y="88" text-anchor="start" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="21" font-weight="400" font-style="normal" fill="#6B7A90">POST /api/v1/tutor-ia/consultas · con cuota y cuota agotada</text>
 <polyline points="149.0,214 149.0,1318" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
 <polyline points="419.0,214 419.0,1318" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
 <polyline points="689.0,214 689.0,1318" fill="none" stroke="#8A94A6" stroke-width="1.6" stroke-dasharray="7 5"/>
@@ -33,7 +33,7 @@
 <rect x="2029.0" y="884" width="20" height="70" rx="0" fill="#FFFFFF" stroke="#4A5568" stroke-width="1.6"/>
 <polyline points="159.0,270 409.0,270" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
 <rect x="160.51328125" y="241" width="246.9734375" height="22" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
-<text x="284.0" y="258" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">1. POST /api/v1/tutor/consultas</text>
+<text x="284.0" y="258" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">1. POST /api/v1/tutor-ia/consultas</text>
 <polyline points="429.0,328 679.0,328" fill="none" stroke="#4A5568" stroke-width="2.0" marker-end="url(#a4A5568)"/>
 <rect x="486.590625" y="299" width="134.81875" height="22" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
 <text x="554.0" y="316" text-anchor="middle" font-family="Arial, Helvetica, 'Liberation Sans', sans-serif" font-size="17" font-weight="400" font-style="normal" fill="#1B2A41">2. ejecutar(cmd)</text>

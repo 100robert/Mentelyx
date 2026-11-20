@@ -7,6 +7,8 @@
 
 > **Revisión de datos, seguridad e infraestructura:** 2.2 — 17/11/2026. Integra resolución razonada de ADR-056–072 y refinamientos de la sección 9. Diseño seleccionado no equivale a integración probada; SDD consolidado fuera de alcance.
 
+> **Cierre de decisiones:** 2.3 — 17/11/2026. La sección 10 clasifica cada ADR condicionada (decidida, diferida, bloqueada para producción o pendiente de producto), con su contingencia y su criterio de reconsideración, y añade ADR-073 (herramientas de construcción).
+
 ## 1. Criterios de decisión y estados
 
 **Adoptar** significa elegir el diseño objetivo, **NO** que esté desarrollado o desplegado; **Candidato** significa que la elección final requiere pruebas de conectividad, costos, contratos, funciones o seguridad. Se preservan **ADR-001 a ADR-010 y ADR-012 a ADR-044**; **ADR-011 queda reservado**. Se incorporan **ADR-045 a ADR-055**.
@@ -158,3 +160,95 @@ Se aprueban invariantes de integración bajo responsabilidad de Codex; condicion
 | ADR-022/036/054 | RPO/RTO diferenciados, backups independientes, restauración ensayada y conciliación externa | Metas no medidas ni SLA; tiers/costos pendientes. Redis se reconstruye; originales no se presumen regenerables |
 
 Fuentes, fecha y precondiciones en [seguridad](../02-arquitectura-software/seguridad-y-autenticacion.md), [infraestructura](../02-arquitectura-software/infraestructura-escalabilidad-y-recuperacion.md) y [persistencia](../03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md). Las tareas y verificaciones ejecutadas constan en el [registro de avance](../avance-cierre-arquitectonico-sprint-02.md). No se alteran HU/RF/AC/RC/DA/EQ ni se redacta el SDD consolidado.
+
+## 10. Cierre de decisiones condicionadas o pendientes (17/11/2026)
+
+Clasificación aplicada a toda ADR que figuraba como candidata, condicionada, recomendada o pendiente:
+
+- **DECIDIDA:** selección concreta sobre la que se construye.
+- **DIFERIDA:** excluida de la versión actual.
+- **BLOQUEADA PARA PRODUCCIÓN:** decisión definida cuya activación requiere una condición legal, contractual o experimental. Se desarrolla igual, con datos sintéticos y servicios simulados o de prueba.
+- **REQUIERE DECISIÓN DE PRODUCTO:** cifra o política que el arquitecto no puede fijar. Se presenta una recomendación (sección 10.3), no una aprobación.
+
+Quedan **DECIDIDAS sin condición pendiente**: ADR-001, 002, 004, 006, 007, 008 (Workers ya está seleccionado), 009, 010, 017, 018, 020, 021, 022, 024 (contratos en la API, sección 2.4), 026, 030 (datos en persistencia, sección 7.8), 031, 032, 034, 038, 040, 042, 043, 047, 048, 052, 055, 060, 062 y 070. Los nombres tentativos de tablas de la sección 5.3 quedan sustituidos por los de la [matriz de persistencia, sección 13](../03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md).
+
+### 10.1. Clasificación, contingencia y criterio de reconsideración
+
+| ADR | Clasificación | Decisión cerrada | Contingencia seleccionada | Criterio que obliga a reconsiderar |
+|---|---|---|---|---|
+| 003 | DECIDIDA | Next.js con exportación estática en Pages; las rutas dinámicas se resuelven en el cliente contra la API; sin SSR, ISR ni Server Actions en v1 | Next.js en Workers con el adaptador que recomiende la guía oficial de Cloudflare vigente (vinext en la consulta del 17/11/2026), mediante una ADR nueva | Un RF o EQ exige HTML generado en servidor, o la meta de rendimiento del [diseño de interfaces, sección 11](../03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md) se incumple tras optimizar |
+| 005 | DECIDIDA (interfaz) / REQUIERE DECISIÓN DE PRODUCTO (proveedor) | `PaymentPort` con webhook firmado, consulta de estado y reembolso por API | Adaptador simulado con eventos firmados de prueba durante la construcción | Pregunta P-07 |
+| 012 | BLOQUEADA PARA PRODUCCIÓN (contrato y región) | Upstash REST con dos bases, `cache` con evicción y `control` sin evicción (persistencia, sección 9.3) | Operar sin Redis: límites en SQL y caché solo en CDN (el diseño no depende de Redis para la corrección) | p95 de Upstash desde Workers > 50 ms o errores > 1 % en PR-INF-01 |
+| 013, 023, 041 | BLOQUEADA PARA PRODUCCIÓN (contrato, plan con respaldo y región) | Neon PostgreSQL 17 + pgvector ≥0.8.0 y MongoDB Atlas. Región: la común Neon/Atlas de menor RTT medido desde Lima en PR-INF-01. Plan Atlas con Cloud Backup y Neon con restauración en ventana ≥7 días | Mongo: conexión por Durable Object particionado o adaptador privado con salida controlada (infraestructura, sección 1). Si Atlas falla: documentos en JSONB de Neon (alternativa ya comparada en persistencia, sección 6.3), por ADR | Acceso documental p95 > 500 ms, imposibilidad de restringir la red o costo fijo dominante en PR-INF-01 o PR-INF-02 |
+| 014 | BLOQUEADA PARA PRODUCCIÓN (prueba en Perú y contrato) | Bunny Stream para video publicado, con URL firmadas | Cloudflare Stream detrás del mismo puerto de video | Inicio o rebuferización fuera de meta en el piloto, o URL firmadas insuficientes |
+| 015 | DECIDIDA / DIFERIDA (emisión masiva) | Aulas de 35 + 1 por SFU | — | La emisión uno a muchos requiere una ADR nueva |
+| 016, 045, 046 | BLOQUEADA PARA PRODUCCIÓN (prueba 35 + 1 y costo) | RealtimeKit como SFU administrado | LiveKit Cloud detrás del mismo puerto de sala audiovisual | Falla la prueba 35 + 1, faltan roles o grabación, o el costo por minuto-participante supera el de ADR-049 |
+| 019, 064, 065 | BLOQUEADA PARA PRODUCCIÓN (BP-07, PEND-RAG-01) | RAG híbrido con `gemini-embedding-2` a 1536 (persistencia, sección 14) | Modo léxico completo (`embedding_model = lexico`) si la ruta de embeddings no está disponible o no está permitida | Recall@8 por debajo del umbral de BP-07: SC-15 (`bge-m3`, 1024) por índice paralelo |
+| 025 | DECIDIDA / DIFERIDA (redes de terceros) | Publicidad servida por M7 con creatividades propias; sin redes publicitarias ni SDK de seguimiento | — | Una red de terceros requiere una ADR nueva y evaluación de privacidad de menores |
+| 027, 028, 029, 049, 050, 067 | DECIDIDA (mecanismo) / REQUIERE DECISIÓN DE PRODUCTO (cifras) | Ledger, versiones comerciales, UTI y créditos Studio | Valores de piloto propuestos en la sección 10.3 | Preguntas P-02 a P-05 |
+| 033, 044 | BLOQUEADA PARA PRODUCCIÓN (prototipo) | Better Auth ≥1.7.16 en Hono/Workers, adaptador Kysely, sesiones SQL, MFA administrativo y límites de tasa en base de datos | El mismo Better Auth en un runtime Node (Cloud Run) servido bajo `app.<dominio>/api/v1/auth/*` mediante un proxy del Worker, con la misma base de datos y las mismas sesiones | El prototipo falla en el hashing dentro de los límites de CPU o memoria, en las transacciones interactivas o en las pruebas de revocación |
+| 035, 036, 054 | BLOQUEADA PARA PRODUCCIÓN (PR-INF-03) | Persistencia políglota, degradación y RTO/RPO por clase | Las metas por clase se rebajan por decisión explícita si el plan no las cumple (persistencia, sección 11) | La restauración ensayada incumple RTO/RPO |
+| 037 | DECIDIDA | Sin balanceador de orígenes | — | Aparece un segundo origen independiente |
+| 039 | DIFERIDA | Convenios institucionales (RF-15 a 17) | — | Fase POSTERIOR |
+| 051 | BLOQUEADA PARA PRODUCCIÓN (consentimiento audiovisual, PEND-02) | Grabación del SFU → R2 restringido de M4 → revisión → Bunny Stream; desactivada por defecto | — | Aprobación legal del consentimiento |
+| 053 | BLOQUEADA PARA PRODUCCIÓN (COS-01) | Atribución de costos por operación y tarifa histórica | Presupuesto por operación y tope duro global | Error mediano del estimador > 20 % |
+| 056 | DECIDIDA / BLOQUEADA (ruta profunda, BP-01) | Rutas por alias versionadas; `deepseek-v4.1-flash-1017` para las dos rutas de razonamiento | La ruta profunda se resuelve como rápida con esfuerzo `high` (orquestador, sección 9.1) | BP-01 bajo el umbral: evaluar `glm-5.3` (reemplazo indicado en el changelog) por ADR |
+| 057 | BLOQUEADA PARA PRODUCCIÓN (PEND-02) | Matriz D0–D3 y `SOLO_ZDR` para menores | Solo datos sintéticos y rutas de Workers AI | Aprobación legal y contratos de tratamiento |
+| 058 | REQUIERE DECISIÓN DE PRODUCTO | Modo `GENERAL` no habilitado | `SIN_CONTEXTO` sin inferencia | Pregunta P-01 |
+| 059 | DECIDIDA (fase 1) / DIFERIDA (SymPy) | Parser restringido + math.js | SymPy en Cloud Run si el Python Worker falla (INF-02) | Fase 2 |
+| 061 | BLOQUEADA PARA PRODUCCIÓN (PEND-VIS-01/02) | Motor visual determinista propio | Excalidraw solo para el lápiz, sin sustituir el contrato de escena | El prototipo no cumple VIS-01 a VIS-06 |
+| 063, 071 | BLOQUEADA PARA PRODUCCIÓN (BP-06, PEND-04, contratos) | Simulación verificable decidida; objetos 3D e imágenes IA solo para adultos en Studio | Meshy para 3D tras contrato; biblioteca aprobada de ilustraciones | Calidad o licencia insuficientes |
+| 066 | BLOQUEADA PARA PRODUCCIÓN (PEND-05, PEND-MAT-01) | PDF con Browser Rendering; PPTX con PptxGenJS en Worker | Cloud Run Jobs para PPTX (INF-04) | PptxGenJS incompatible o fuera de límites en Workers |
+| 068 | BLOQUEADA PARA PRODUCCIÓN (PR-INF-04) | Ejecución por cola con lease y relay SSE | — | Duplicados o pérdidas en la prueba de desconexión |
+| 069 | DECIDIDA (mecanismo) / BLOQUEADA (plazos, PEND-02) | TTL, revocación inmediata y purga verificable | Historial desactivado para usuarios reales | Aprobación legal de los plazos |
+| 072 | BLOQUEADA PARA PRODUCCIÓN (BP-03, DPA/ZDR) | Rutas de explicación por clase de datos | `explicacion.zdr` en Workers AI para todos hasta aprobar las externas | BP-03 bajo el umbral o contrato no firmado |
+
+Los pendientes de la sección 7 quedan así: Better Auth, Mongo, Neon, Redis y RealtimeKit en PR-INF-01; aulas de 35 en ADR-045; pasarela y fiscalidad en P-06, P-07 y P-09; créditos Studio en P-04; restauraciones en PR-INF-03.
+
+### 10.2. ADR-073 — Herramientas de construcción del monorepo (nueva, DECIDIDA)
+
+Sin esta decisión, la primera tarea de código tendría que improvisarlas. Cada versión exacta se fija en el lockfile al iniciar la construcción, sin betas, con SBOM y revisión de avisos (seguridad, sección 2).
+
+| Elemento | Decisión | Justificación | Contingencia / criterio |
+|---|---|---|---|
+| Repositorio | pnpm workspaces: `frontend/` (Next.js), `backend/` (Worker Hono y consumidores de colas), `packages/motor-visual`, `packages/contratos` (esquemas compartidos) | Un solo stack TypeScript (ADR-003) y paquetes compartidos sin publicar | Añadir caché de tareas si la CI supera 10 min |
+| Runtime y despliegue | Wrangler; `compatibility_date` y `nodejs_compat` fijados al construir; Node.js LTS activa para herramientas, fijada en `.nvmrc` | Herramienta oficial de Workers | — |
+| Acceso SQL | Kysely (constructor de consultas tipado, sin ORM) sobre el driver serverless de Neon: HTTP para consultas sueltas y cliente WebSocket por petición para transacciones interactivas. Better Auth usa su adaptador Kysely | SQL explícito para `FOR UPDATE`, `SKIP LOCKED`, índices parciales, pgvector y CTE; una sola capa de acceso para autenticación y dominio | Drizzle (también adaptador oficial de Better Auth) si Kysely falla en PR-INF-01 |
+| Migraciones | Migraciones TypeScript versionadas con SQL explícito, ejecutadas con el `Migrator` de Kysely desde un trabajo de CI con rol de migración, nunca desde el Worker; esquema de Better Auth generado por su CLI, revisado y versionado; validadores Mongo aplicados por el mismo trabajo | Expand-contract y reversión (persistencia, sección 11) | — |
+| Mongo / Redis / R2 | Driver oficial `mongodb`; `@upstash/redis`; binding R2 nativo de Workers | Compatibilidad documentada (infraestructura, sección 1) | Las de ADR-012 y ADR-041 |
+| Validación y OpenAPI | Zod en modo `jitless` (sin `new Function`) con `@hono/zod-openapi` para los DTO HTTP y OpenAPI 3.1. Documentos `mentelyx.*/v1` con JSON Schema compilado en build por Ajv (código standalone) | Cumple la API (sección 1) y el motor visual (sin compilación en tiempo de ejecución) | Valibot si Zod falla en Workers |
+| Pruebas | Vitest con `@cloudflare/vitest-pool-workers`; PostgreSQL 17 + pgvector y MongoDB efímeros en CI con Docker Compose (ADR-021); Playwright para E2E y PWA; k6 para carga (SDD, sección 10.2) | Las pruebas corren en el mismo runtime que producción | — |
+| Reglas de arquitectura | ESLint con `import/no-cycle` y `no-restricted-imports` por módulo: solo se importa el `index.ts` de otro módulo y el dominio no importa infraestructura ni frameworks | Hace automática la comprobación de ciclos exigida en el diseño interno, sección 10.1 (prueba ARQ-01) | — |
+| Observabilidad | Logs y trazas de Workers con `correlationId` y sin PII; métricas de negocio en tablas SQL (persistencia, sección 13); alertas del proveedor y un monitor sintético externo (P-08) | ADR-020/038 sin una base de series temporales | — |
+
+### 10.3. Preguntas para el responsable de producto (recomendación, no aprobación)
+
+| ID | Pregunta | Recomendación del arquitecto | Comportamiento hasta decidir |
+|---|---|---|---|
+| P-01 | ¿Se habilita el modo `GENERAL` (ADR-058)? | Aprobarlo para Estudiantes (los menores por `explicacion.zdr`), solo en las intenciones `RESOLUCION_MATEMATICA`, `RAZONAMIENTO_TECNICO` y `EXPLICACION_CONCEPTUAL`; nunca con `recursoId` ni durante evaluaciones; etiquetado y con consumo normal de UTI | Desactivado: `SIN_CONTEXTO` |
+| P-02 | Cuotas del Tutor por plan | Gratuito: 30 UTI/mes, 5/día, rutas de peso 1, `presupuestoOperacionUSD` 0,01. Plus: 300/mes, 40/día, sin `explicacion.avanzada`, 0,01. Pro: 900/mes, 80/día, con avanzada (y profunda tras BP-01), 0,03. Costo con la tarifa verificada de la ruta más usada (EJ-07, 0,0066 USD por operación de peso 1): 0,198 / 1,98 / 5,94 USD por usuario y mes. Cota teórica (UTI × presupuesto por operación): 0,30 / 3,00 / 27,00 USD | Solo en entornos de prueba, con estos valores |
+| P-03 | Presupuesto global de IA | Límite blando mensual = presupuesto aprobado; tope duro = 120 % del blando; umbrales 70/90/100 % ya diseñados | Tope duro de prueba en *staging* |
+| P-04 | Créditos Studio | Aprobar 300/900 créditos y la tabla de operaciones (5/1/8/10/20) como valores de piloto. Revisar a los 30 días si el costo medido p95 de una operación supera el 30 % de su ingreso atribuible (S/0,0997 por crédito en Plus; S/0,0777 en Pro) | Valores de piloto |
+| P-05 | Aulas Live | Aprobar 4 créditos/mes por S/99,90 y S/8 por crédito consumido al docente. Por crédito: S/24,98 brutos y S/21,17 sin IGV (18 %), que dejan S/13,17 antes de la comisión de pasarela y el costo del SFU. Reconsiderar si el margen del piloto queda negativo | Valores de piloto |
+| P-06 | ¿Renovación automática de suscripciones? | No en v1: renovación manual con una orden nueva, sin tokenizar tarjetas; reconsiderar al contratar una pasarela con suscripción recurrente | Renovación manual |
+| P-07 | Pasarela de pagos | Elegir entre Culqi y Mercado Pago por cotización formal la de menor costo total para un ticket de S/29,90 que cumpla: webhook firmado, consulta de estado por API, reembolso por API, PEN y entorno de pruebas | Adaptador simulado |
+| P-08 | Servicios por contratar | Dominio; Workers Paid; planes de Neon y Atlas con respaldo (Atlas con Cloud Backup); Upstash; correo transaccional con DPA, DKIM/SPF/DMARC y webhooks de rebote; monitor sintético | Entornos locales y simulados |
+| P-09 | ¿Pago a docentes y comprobantes fuera de la plataforma en v1? | Sí: Mentelyx calcula y registra (`payment_reference`), sin guardar cuentas bancarias ni emitir comprobantes hasta una decisión fiscal | Registro sin datos bancarios |
+| P-10 | ¿Publicidad visible para menores? | No en el lanzamiento (`allowed_for_minors = false`) | Desactivada |
+| P-11 | ¿Se incluyen en v1 los grupos privados docentes (C4, niveles 1 y 3)? | No: ningún RF los exige. Diferirlos hasta que producto defina creación, miembros, invitaciones y acceso, con su RF y su HU | Fuera de alcance |
+
+### 10.4. Cuestiones legales: restricción de producción y comportamiento seguro
+
+Las banderas viven en la configuración versionada del despliegue, no en Redis ni en la base de datos. Cambiar una bandera de producción exige un despliegue revisado y auditado.
+
+| Bandera | Desarrollo y *staging* | Producción hasta resolver | Condición para activar |
+|---|---|---|---|
+| `tutor.historial` | Activa con datos sintéticos | Desactivada | PEND-02 (retenciones de 30/14 días) |
+| `ia.rutasExternas.menores` | Desactivada | Desactivada | PEND-02 y contratos de tratamiento |
+| `ia.rutasExternas.adultos` (Anthropic, Gemini) | Activa con datos sintéticos | Desactivada; solo Workers AI | DPA o ZDR firmado y BP-03 |
+| `rag.embeddingsExternos` | Activa | Solo contenido D0 cuya licencia lo permita; apuntes en modo léxico | Contrato de tratamiento con Google para D1 |
+| `clases.grabacion` | Desactivada | Desactivada | Consentimiento audiovisual aprobado |
+| `habilitacion.documentosReales` | Solo sintéticos | Desactivada | PEND-02 (retención de 90 días) |
+| `tutor.avisoATerceros` | Desactivada | Desactivada | PEND-03 |
+| `studio.imagenesIA` / `studio.objetos3d` | Proveedores simulados | Desactivadas | BP-06, PEND-04 y contratos |
+| `pagos.reales` | Sandbox | Desactivada | P-07 y contrato |

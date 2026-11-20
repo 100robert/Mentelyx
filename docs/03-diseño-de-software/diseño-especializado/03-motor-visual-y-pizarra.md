@@ -427,7 +427,7 @@ Los enlaces se escriben `{{propiedad:id|decimales}}`, con decimales de 0 a 6 (po
 | Etapa | Comprobaciones | Códigos de error |
 |---|---|---|
 | **1. Sintaxis** | JSON válido, ≤ 256 KB | `JSON_INVALIDO`, `ESCENA_DEMASIADO_GRANDE` |
-| **2. Esquema** | Validador precompilado del sección 6 | `ESQUEMA_INVALIDO` (con la ruta JSON Pointer) |
+| **2. Esquema** | Validador precompilado de la sección 6 | `ESQUEMA_INVALIDO` (con la ruta JSON Pointer) |
 | **3. Semántica** | `id` únicos; referencias existentes; tipos de referencia compatibles (`raiz` exige `funcion`, `interseccion` exige funciones, rectas o círculos); grafo sin ciclos; `xMin < xMax` y `yMin < yMax`; `desde < hasta`; expresiones analizables con la gramática restringida y solo con variables declaradas (`x`, `t`, `theta` o parámetros); LaTeX analizable por KaTeX con `throwOnError: true`, `trust: false`, `strict: "error"`, `maxExpand: 1000`, `maxSize: 10`; `anclaChat` existente en los segmentos de la respuesta; enlaces `{{…}}` hacia propiedades válidas | `ID_DUPLICADO`, `REFERENCIA_INEXISTENTE`, `REFERENCIA_INCOMPATIBLE`, `CICLO_DEPENDENCIA`, `RANGO_INVALIDO`, `EXPRESION_INVALIDA`, `FUNCION_NO_PERMITIDA`, `VARIABLE_NO_DECLARADA`, `LATEX_INVALIDO`, `ANCLA_INEXISTENTE`, `ENLACE_INVALIDO` |
 | **4. Consistencia matemática** | Las construcciones tienen solución (el índice k existe). Un punto con `sobre: f` cumple \|f(x) − y\| ≤ 1e-9 + 1e-7·\|y\|. En escenas del Tutor, un punto **literal** cuya etiqueta mencione `máximo`, `mínimo`, `raíz`, `corte`, `intersección` o `vértice` se rechaza: debe ser una construcción. Las etiquetas no contienen números que contradigan un valor calculado de su objeto. | `CONSTRUCCION_SIN_SOLUCION`, `PUNTO_FUERA_DE_CURVA`, `PUNTO_NOTABLE_LITERAL`, `INCONSISTENCIA_ETIQUETA` |
 | **5. Presupuesto de render y tiempo** | Puntos muestreados totales ≤ 20 000; objetos ≤ 500; duración total ≤ 120 s; al menos una acción visible por paso | `PRESUPUESTO_RENDER_EXCEDIDO`, `DURACION_EXCEDIDA`, `PASO_SIN_EFECTO` |
@@ -691,7 +691,7 @@ En el MVP, el docente comparte la pizarra por la compartición de pantalla del S
 | Fórmulas | MathML generado por KaTeX |
 | Contraste | ≥ 3:1 para elementos gráficos y ≥ 4,5:1 para texto (WCAG 2.1 AA) |
 | Diferenciación | Series con color **y** patrón de trazo |
-| Teclado | Controles del sección 11.3; foco visible; el lienzo se recorre por objetos con `Tab` y lee su descripción |
+| Teclado | Controles de la sección 11.3; foco visible; el lienzo se recorre por objetos con `Tab` y lee su descripción |
 | Objetivos táctiles | ≥ 44 × 44 px |
 | Movimiento | Respeta `prefers-reduced-motion` |
 | Rendimiento (a medir, no prometido) | Primer render ≤ 100 ms con 200 objetos en un móvil de gama media; animaciones ≥ 30 cuadros/s; SVG hasta 2000 elementos y Canvas por encima |

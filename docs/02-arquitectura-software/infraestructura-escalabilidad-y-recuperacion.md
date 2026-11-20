@@ -66,6 +66,7 @@ Estos umbrales disparan revisión, no garantizan un tamaño de cluster. **No bal
 | `mentelyx-renders` / `mentelyx-renders-dlq` | M2 → render M2 | Clave por job y hash completo con audiencia; máximo 2 consumidores iniciales |
 | `mentelyx-mantenimiento` / `mentelyx-mantenimiento-dlq` | Cron → dueño M2/M4/M6 | SC-04/09/14, borrar por lotes, checkpoints y alerta; no esperar TTL para denegar acceso |
 | `mentelyx-tutor-execution` / `mentelyx-tutor-execution-dlq` | M6 → ejecutor M6 | Extensión técnica de coordinación CO-04: ejecutar consulta fuera de vida de conexión SSE |
+| `mentelyx-transversal` / `mentelyx-transversal-dlq` | M1–M7 → M1 | Auditoría, supresión y avisos por outbox del productor (persistencia, sección 13.1); un aviso fallido no revierte la operación de negocio |
 
 INF-01 aceptada con DLQ explícita de mantenimiento y cursor de lote: `purga:{tipo}:{fecha}:{cursor}`. Una clave solo por fecha perdería lotes tras fallos. Cron cada 15 min detecta expiraciones; barrido diario verifica huérfanos y purgas. Borrado a petición se encola inmediatamente; no esperar siguiente día. Cron no usa datos sensibles en payload.
 
