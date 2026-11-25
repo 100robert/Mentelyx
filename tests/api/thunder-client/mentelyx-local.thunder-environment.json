@@ -1,0 +1,41 @@
+{
+  "clientName": "Thunder Client",
+  "environmentName": "Mentelyx local",
+  "dateExported": "2026-11-23T16:00:00.000Z",
+  "version": "1.1",
+  "folder": "",
+  "variables": [
+    {
+      "name": "base",
+      "value": "http://localhost:8787/api/v1"
+    },
+    {
+      "name": "nombre",
+      "value": "Estudiante Thunder"
+    },
+    {
+      "name": "correo",
+      "value": "estudiante.thunder@example.com"
+    },
+    {
+      "name": "correo2",
+      "value": "otra.cuenta.thunder@example.com"
+    },
+    {
+      "name": "contrasena",
+      "value": "Prueba-Local-2026"
+    },
+    {
+      "name": "espacioId",
+      "value": ""
+    },
+    {
+      "name": "contentId",
+      "value": ""
+    },
+    {
+      "name": "conversacionId",
+      "value": ""
+    }
+  ]
+}

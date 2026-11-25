@@ -1,0 +1,74 @@
+# Servicios locales de desarrollo y CI (ADR-021, ADR-073). Solo datos sintéticos; sin credenciales reales.
+# Puertos de host dedicados (55432, 57017, 56379, 5488, 8079) para no chocar con instalaciones locales de PostgreSQL o MongoDB.
+# Todos los puertos se publican SOLO en 127.0.0.1: ningún servicio queda accesible desde la red local (P0, 21/11/2026).
+# Las imágenes sin versión semántica se fijan por digest para que CI y desarrollo usen exactamente el mismo binario.
+name: mentelyx
+
+services:
+  postgres:
+    # PostgreSQL 17 con pgvector (persistencia, sección 14; INF-06).
+    image: pgvector/pgvector:0.8.1-pg17
+    environment:
+      POSTGRES_USER: mentelyx
+      POSTGRES_PASSWORD: mentelyx_local
+      POSTGRES_DB: mentelyx
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mentelyx -d mentelyx"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  neon-wsproxy:
+    # Proxy WebSocket oficial de Neon: permite usar el driver serverless de Neon contra el PostgreSQL local.
+    image: ghcr.io/neondatabase/wsproxy@sha256:7f2e2149aa6a57ba382a140102fba44f5053f3e44389ccc18adcecf896054efb
+    environment:
+      # El cliente no elige destino: el proxy solo puede abrir TCP hacia el PostgreSQL de este Compose.
+      # (Con ".*" sería un reenviador TCP abierto hacia cualquier host alcanzable desde la red de Docker.)
+      APPEND_PORT: "postgres:5432"
+      ALLOW_ADDR_REGEX: "^postgres:5432$"
+      LOG_TRAFFIC: "false"
+    ports:
+      - "127.0.0.1:5488:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:8.0
+    ports:
+      - "127.0.0.1:57017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:8.0-alpine
+    ports:
+      - "127.0.0.1:56379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis-http:
+    # Emulador local de la API REST de Upstash (ADR-012: Redis por HTTPS en producción).
+    image: hiett/serverless-redis-http@sha256:5b0bb9239fce53abf87b2018a7a0deb9ec7bd900c5360738fe5fbeeb426f9150
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: token_local_mentelyx
+      SRH_CONNECTION_STRING: "redis://redis:6379"
+    ports:
+      - "127.0.0.1:8079:80"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:

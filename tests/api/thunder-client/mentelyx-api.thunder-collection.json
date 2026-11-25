@@ -1,0 +1,1167 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Mentelyx API (local)",
+  "collectionId": "890dcd77-0555-50af-a6c4-a3159290564f",
+  "dateExported": "2026-11-23T16:00:00.000Z",
+  "version": "1.2",
+  "folders": [
+    {
+      "_id": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "1 · Cuenta y sesión",
+      "containerId": "",
+      "created": "2026-11-23T16:00:00.000Z",
+      "sortNum": 10000
+    },
+    {
+      "_id": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "2 · Espacios y fuentes",
+      "containerId": "",
+      "created": "2026-11-23T16:00:00.000Z",
+      "sortNum": 20000
+    },
+    {
+      "_id": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "3 · Tutor",
+      "containerId": "",
+      "created": "2026-11-23T16:00:00.000Z",
+      "sortNum": 30000
+    },
+    {
+      "_id": "3cd535f6-3ca7-5b7b-8250-07774ada272e",
+      "name": "4 · Plan",
+      "containerId": "",
+      "created": "2026-11-23T16:00:00.000Z",
+      "sortNum": 40000
+    },
+    {
+      "_id": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "5 · Casos de error y autorización",
+      "containerId": "",
+      "created": "2026-11-23T16:00:00.000Z",
+      "sortNum": 50000
+    },
+    {
+      "_id": "a9edc739-9085-51d1-ba4b-252e9f8047a0",
+      "name": "6 · Cierre",
+      "containerId": "",
+      "created": "2026-11-23T16:00:00.000Z",
+      "sortNum": 60000
+    }
+  ],
+  "requests": [
+    {
+      "_id": "7eb516a1-1398-561e-9194-8c447e49d08c",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "Salud de la API",
+      "url": "{{base}}/salud",
+      "method": "GET",
+      "sortNum": 10000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "8201a72f-78b4-5f4e-aa67-8dea36359942",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "Registro (201 la primera vez; 400 si el correo ya existe)",
+      "url": "{{base}}/auth/registro",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"{{nombre}}\",\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "92292662-43a3-5cfd-a38e-2624a39e9c3c",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "Sesión actual",
+      "url": "{{base}}/auth/sesion",
+      "method": "GET",
+      "sortNum": 30000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "1a11fafb-78af-59b5-85fc-d80693b61212",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "Cerrar sesión",
+      "url": "{{base}}/auth/logout",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "7754a84f-3961-5a09-abdf-278107823acb",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "Sesión tras salir (401)",
+      "url": "{{base}}/auth/sesion",
+      "method": "GET",
+      "sortNum": 50000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "NO_AUTENTICADO"
+        }
+      ]
+    },
+    {
+      "_id": "741ea8ef-33d5-5f55-969f-f1fc89d5e56c",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
+      "name": "Ingresar",
+      "url": "{{base}}/auth/login",
+      "method": "POST",
+      "sortNum": 60000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "f4dc9a14-c6c3-556a-8ea9-e5a79ff8fded",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Crear espacio",
+      "url": "{{base}}/espacios",
+      "method": "POST",
+      "sortNum": 70000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "{{espacioId}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Biología celular\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "8e1b9051-2f86-59b0-8c6b-9ef7acf5de4a",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Listar mis espacios",
+      "url": "{{base}}/espacios",
+      "method": "GET",
+      "sortNum": 80000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "04c20204-c993-534f-b12e-eae30e323460",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Agregar fuente (202, repetida: false)",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "method": "POST",
+      "sortNum": 90000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "fuente-{{espacioId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "202"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.contentId",
+          "action": "setto",
+          "value": "{{contentId}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"TXT\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "84e1deab-efcc-5d54-b2f8-abb9d01f9fe9",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Repetir la misma fuente con la misma clave (202, repetida: true)",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "method": "POST",
+      "sortNum": 100000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "fuente-{{espacioId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "202"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.data.repetida",
+          "action": "equal",
+          "value": "true"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"TXT\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "b5836327-5d8b-5d20-bddb-42cedbf86ad0",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Misma clave con otro cuerpo (diseño: 422; hoy responde 202)",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "method": "POST",
+      "sortNum": 110000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "fuente-{{espacioId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "422"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "CLAVE_IDEMPOTENCIA_REUTILIZADA"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Otro apunte\",\n  \"formato\": \"MD\",\n  \"contenido\": \"# Otro\\nTexto distinto.\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "d7431e39-9e12-5ebd-9956-1cdd6d5570df",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Ver espacio con sus fuentes y su estado",
+      "url": "{{base}}/espacios/{{espacioId}}",
+      "method": "GET",
+      "sortNum": 120000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "6b8d23a8-fa72-519e-9166-7e0cc1b853ae",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Desmarcar la fuente para el Tutor",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes/{{contentId}}",
+      "method": "PATCH",
+      "sortNum": 130000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"seleccionada\": false\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "7d28c794-a3c9-578a-ac1f-2a7aa8a720f7",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
+      "name": "Volver a marcar la fuente",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes/{{contentId}}",
+      "method": "PATCH",
+      "sortNum": 140000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"seleccionada\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "5c73a908-d865-5512-81ef-20ef229cb2ea",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Crear conversación en el espacio",
+      "url": "{{base}}/tutor-ia/conversaciones",
+      "method": "POST",
+      "sortNum": 150000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "{{conversacionId}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"contexto\": {\n    \"superficie\": \"TUTOR\",\n    \"espacioId\": \"{{espacioId}}\"\n  },\n  \"usarApuntes\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "9755b1f2-63ab-5aa6-bfdb-7033da230b6a",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Preguntar al Tutor (respuesta con citas)",
+      "url": "{{base}}/tutor-ia/consultas",
+      "method": "POST",
+      "sortNum": 160000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "consulta-{{conversacionId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"conversacionId\": \"{{conversacionId}}\",\n  \"pregunta\": \"¿Dónde ocurre la fotosíntesis?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "cd5eeb47-2e1b-5af6-9147-adaa5aa62fdc",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Repetir la consulta con la misma clave (mismo resultado, sin costo)",
+      "url": "{{base}}/tutor-ia/consultas",
+      "method": "POST",
+      "sortNum": 170000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "consulta-{{conversacionId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"conversacionId\": \"{{conversacionId}}\",\n  \"pregunta\": \"¿Dónde ocurre la fotosíntesis?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "890f1626-aa8c-5c58-83eb-e798b00ec70f",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Misma clave con otra pregunta (422)",
+      "url": "{{base}}/tutor-ia/consultas",
+      "method": "POST",
+      "sortNum": 180000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "consulta-{{conversacionId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "422"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "CLAVE_IDEMPOTENCIA_REUTILIZADA"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"conversacionId\": \"{{conversacionId}}\",\n  \"pregunta\": \"¿Qué es el ciclo de Calvin?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "54bfbd42-c9e6-5793-af52-31cf1eca8f56",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Listar conversaciones",
+      "url": "{{base}}/tutor-ia/conversaciones",
+      "method": "GET",
+      "sortNum": 190000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "abc98837-6bea-5366-8af3-edc58dd1039c",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Ver la conversación con sus mensajes y citas",
+      "url": "{{base}}/tutor-ia/conversaciones/{{conversacionId}}",
+      "method": "GET",
+      "sortNum": 200000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "fcc656f3-8510-5639-b9cb-c0e600ad66c0",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "Eliminar la conversación",
+      "url": "{{base}}/tutor-ia/conversaciones/{{conversacionId}}",
+      "method": "DELETE",
+      "sortNum": 210000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "11acb111-3e4d-56c2-be2b-b5a0c346e6fc",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
+      "name": "La conversación eliminada ya no existe (404)",
+      "url": "{{base}}/tutor-ia/conversaciones/{{conversacionId}}",
+      "method": "GET",
+      "sortNum": 220000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ]
+    },
+    {
+      "_id": "e8b5c6e9-bf7d-5b5e-8a45-3f626f94d2ce",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "3cd535f6-3ca7-5b7b-8250-07774ada272e",
+      "name": "Derechos y consumo del plan",
+      "url": "{{base}}/suscripciones/me/derechos",
+      "method": "GET",
+      "sortNum": 230000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "ad415cf1-49fb-5c64-8771-a14cb6a4daf3",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Registro con contraseña de 5 caracteres (400)",
+      "url": "{{base}}/auth/registro",
+      "method": "POST",
+      "sortNum": 240000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "ENTRADA_INVALIDA"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Prueba\",\n  \"correo\": \"corta@example.com\",\n  \"contrasena\": \"12345\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "558fe08a-7c3a-5b17-a030-9fd33fe389bb",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Registro con un campo no permitido (400)",
+      "url": "{{base}}/auth/registro",
+      "method": "POST",
+      "sortNum": 250000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "ENTRADA_INVALIDA"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Prueba\",\n  \"correo\": \"extra@example.com\",\n  \"contrasena\": \"12345678\",\n  \"rol\": \"admin\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "25be2128-4c13-549e-b8e8-2ebe86f4fa0c",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Ingresar con contraseña incorrecta (401)",
+      "url": "{{base}}/auth/login",
+      "method": "POST",
+      "sortNum": 260000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "NO_AUTENTICADO"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"no-es-la-clave\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "85276b07-04de-5cd6-b5ad-847ab04726e4",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Origen no permitido en una petición con efectos (403)",
+      "url": "{{base}}/espacios",
+      "method": "POST",
+      "sortNum": 270000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "origin",
+          "value": "https://sitio-ajeno.example"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "403"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "NO_AUTORIZADO"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"No debería crearse\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "6214e468-2ebb-5901-8769-254ac097138c",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Fuente sin Idempotency-Key (400)",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "method": "POST",
+      "sortNum": 280000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "CLAVE_IDEMPOTENCIA_REQUERIDA"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"TXT\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "be9c9215-d3fe-5a80-aa11-7665961425ef",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Fuente en un formato no admitido (400)",
+      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "method": "POST",
+      "sortNum": 290000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        },
+        {
+          "name": "idempotency-key",
+          "value": "pdf-{{espacioId}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "ENTRADA_INVALIDA"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"PDF\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "f578afc9-f87e-5e1b-bafd-8bc696afec9e",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Espacio que no existe (404)",
+      "url": "{{base}}/espacios/00000000-0000-4000-8000-000000000000",
+      "method": "GET",
+      "sortNum": 300000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "RECURSO_NO_ENCONTRADO"
+        }
+      ]
+    },
+    {
+      "_id": "4741dea3-5e46-557f-8517-9d71a0732046",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Identificador que no es UUID (400)",
+      "url": "{{base}}/espacios/abc",
+      "method": "GET",
+      "sortNum": 310000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "ENTRADA_INVALIDA"
+        }
+      ]
+    },
+    {
+      "_id": "b39a1785-f95b-5ef4-b4dc-0cf32f2ab8ef",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Registrar una segunda cuenta (201, o 400 si ya existe)",
+      "url": "{{base}}/auth/registro",
+      "method": "POST",
+      "sortNum": 320000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Otra cuenta\",\n  \"correo\": \"{{correo2}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "4ef11bec-b670-5765-a76d-d2623df79327",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Ingresar con la segunda cuenta",
+      "url": "{{base}}/auth/login",
+      "method": "POST",
+      "sortNum": 330000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"correo\": \"{{correo2}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "33dd2bab-c779-5afb-84e3-87f0c0924f9a",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "La segunda cuenta no ve el espacio ajeno (404)",
+      "url": "{{base}}/espacios/{{espacioId}}",
+      "method": "GET",
+      "sortNum": 340000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "RECURSO_NO_ENCONTRADO"
+        }
+      ]
+    },
+    {
+      "_id": "53f02d24-1356-5779-89b0-62d356d9563b",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
+      "name": "Volver a la cuenta principal",
+      "url": "{{base}}/auth/login",
+      "method": "POST",
+      "sortNum": 350000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "c21d18a0-a69d-54ca-8a9d-b76fe35ac922",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "a9edc739-9085-51d1-ba4b-252e9f8047a0",
+      "name": "Cerrar sesión",
+      "url": "{{base}}/auth/logout",
+      "method": "POST",
+      "sortNum": 360000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "bd41de2d-0238-5525-962a-f77901295794",
+      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
+      "containerId": "a9edc739-9085-51d1-ba4b-252e9f8047a0",
+      "name": "Mis espacios sin sesión (401)",
+      "url": "{{base}}/espacios",
+      "method": "GET",
+      "sortNum": 370000,
+      "created": "2026-11-23T16:00:00.000Z",
+      "modified": "2026-11-23T16:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        },
+        {
+          "type": "json-query",
+          "custom": "json.error.code",
+          "action": "equal",
+          "value": "NO_AUTENTICADO"
+        }
+      ]
+    }
+  ]
+}

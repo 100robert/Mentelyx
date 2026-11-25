@@ -1,0 +1,1 @@
+CREATE INDEX "rag_chunks_hnsw_bgem3_1024" ON "m6_ai_tutor"."rag_document_chunks" USING hnsw ("embedding" vector_cosine_ops) WITH (m=16,ef_construction=64) WHERE "m6_ai_tutor"."rag_document_chunks"."embedding_model" = 'bge-m3' and "m6_ai_tutor"."rag_document_chunks"."embedding" is not null;

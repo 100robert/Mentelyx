@@ -1,0 +1,35 @@
+{
+  "name": "mentelyx",
+  "private": true,
+  "type": "module",
+  "description": "Mentelyx — monorepo del monolito modular (I-0: fundaciones y controles)",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=24.12.0 <25"
+  },
+  "scripts": {
+    "typecheck": "tsc -p packages/contratos/tsconfig.json && tsc -p backend/tsconfig.json && tsc -p frontend/tsconfig.json",
+    "lint": "eslint --max-warnings=0 .",
+    "arq": "eslint --max-warnings=0 backend/src packages && vitest run --project arquitectura",
+    "test": "vitest run --project unitarias --project arquitectura",
+    "test:integracion": "vitest run --project integracion",
+    "test:workers": "pnpm --filter @mentelyx/backend run test:workers",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:generate": "cd backend && node node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "cd backend && node node_modules/drizzle-kit/bin.cjs migrate",
+    "db:verificar": "node backend/scripts/verificar-migraciones.mjs",
+    "build": "pnpm --filter @mentelyx/frontend run build:worker"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.0.8",
+    "eslint": "10.15.0",
+    "eslint-import-resolver-typescript": "4.4.5",
+    "eslint-plugin-import-x": "4.18.1",
+    "globals": "17.14.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "4.1.12"
+  }
+}

@@ -1,0 +1,2222 @@
+{
+  "id": "30d670ce-de7f-4298-9c7d-3f450ac938f1",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "m2_contents.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m2_contents",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m2_contents\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m2_contents.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m2_contents",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m2_contents\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m2_contents\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m2_contents\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m4_classes.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m4_classes",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m4_classes\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m4_classes.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m4_classes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m4_classes\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m4_classes\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m4_classes\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m3_evaluations.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m3_evaluations",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m3_evaluations\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m3_evaluations.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m3_evaluations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m3_evaluations\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m3_evaluations\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m3_evaluations\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m7_advertising.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m7_advertising",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m7_advertising\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m7_advertising.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m7_advertising",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m7_advertising\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m7_advertising\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m7_advertising\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m5_billing.commercial_plan_versions": {
+      "name": "commercial_plan_versions",
+      "schema": "m5_billing",
+      "columns": {
+        "product_code": {
+          "name": "product_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_version": {
+          "name": "policy_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price_pen": {
+          "name": "price_pen",
+          "type": "numeric(12, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_features": {
+          "name": "plan_features",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "valid_until": {
+          "name": "valid_until",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "commercial_plan_versions_product_code_policy_version_pk": {
+          "name": "commercial_plan_versions_product_code_policy_version_pk",
+          "columns": [
+            "product_code",
+            "policy_version"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "cpv_producto_ck": {
+          "name": "cpv_producto_ck",
+          "value": "\"m5_billing\".\"commercial_plan_versions\".\"product_code\" in ('EST_GRATUITO', 'EST_ESTANDAR', 'EST_PLUS', 'EST_PREMIUM', 'DOC_INICIAL', 'DOC_LIVE')"
+        },
+        "cpv_precio_ck": {
+          "name": "cpv_precio_ck",
+          "value": "\"m5_billing\".\"commercial_plan_versions\".\"price_pen\" >= 0"
+        },
+        "cpv_vigencia_ck": {
+          "name": "cpv_vigencia_ck",
+          "value": "\"m5_billing\".\"commercial_plan_versions\".\"valid_until\" is null or \"m5_billing\".\"commercial_plan_versions\".\"valid_until\" > \"m5_billing\".\"commercial_plan_versions\".\"valid_from\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m5_billing.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m5_billing",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m5_billing\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m5_billing.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m5_billing",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m5_billing\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m5_billing\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m5_billing\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m5_billing.plan_resource_limits": {
+      "name": "plan_resource_limits",
+      "schema": "m5_billing",
+      "columns": {
+        "product_code": {
+          "name": "product_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_version": {
+          "name": "policy_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resource_code": {
+          "name": "resource_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "monthly_quantity": {
+          "name": "monthly_quantity",
+          "type": "numeric(20, 3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "unit": {
+          "name": "unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "plan_resource_limits_product_code_policy_version_commercial_plan_versions_product_code_policy_version_fk": {
+          "name": "plan_resource_limits_product_code_policy_version_commercial_plan_versions_product_code_policy_version_fk",
+          "tableFrom": "plan_resource_limits",
+          "tableTo": "commercial_plan_versions",
+          "schemaTo": "m5_billing",
+          "columnsFrom": [
+            "product_code",
+            "policy_version"
+          ],
+          "columnsTo": [
+            "product_code",
+            "policy_version"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "plan_resource_limits_product_code_policy_version_resource_code_pk": {
+          "name": "plan_resource_limits_product_code_policy_version_resource_code_pk",
+          "columns": [
+            "product_code",
+            "policy_version",
+            "resource_code"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "prl_recurso_ck": {
+          "name": "prl_recurso_ck",
+          "value": "\"m5_billing\".\"plan_resource_limits\".\"resource_code\" in ('CONSULTA_GENERAL', 'CONSULTA_TECNICA', 'RAZONAMIENTO_PROFUNDO', 'EVALUACION_EQUIVALENTE', 'ILUSTRACION_ESTANDAR', 'DOCUMENTO_EQUIVALENTE', 'ALMACENAMIENTO_BYTES', 'ALMACENAMIENTO_DOCUMENTAL_BYTES', 'ALMACENAMIENTO_VIDEO_BYTES', 'TRANSFERENCIA_AUDIOVISUAL_BYTES')"
+        },
+        "prl_cantidad_ck": {
+          "name": "prl_cantidad_ck",
+          "value": "\"m5_billing\".\"plan_resource_limits\".\"monthly_quantity\" >= 0"
+        },
+        "prl_unidad_ck": {
+          "name": "prl_unidad_ck",
+          "value": "\"m5_billing\".\"plan_resource_limits\".\"unit\" in ('UNIDAD', 'BYTE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m5_billing.resource_balances": {
+      "name": "resource_balances",
+      "schema": "m5_billing",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period_start": {
+          "name": "period_start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period_end": {
+          "name": "period_end",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resource_code": {
+          "name": "resource_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_code": {
+          "name": "product_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "policy_version": {
+          "name": "policy_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "limit_quantity": {
+          "name": "limit_quantity",
+          "type": "numeric(20, 3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "granted_extra": {
+          "name": "granted_extra",
+          "type": "numeric(20, 3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "reserved": {
+          "name": "reserved",
+          "type": "numeric(20, 3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "consumed": {
+          "name": "consumed",
+          "type": "numeric(20, 3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "row_version": {
+          "name": "row_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "rb_usuario_vigencia_idx": {
+          "name": "rb_usuario_vigencia_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "resource_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "period_start",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "period_end",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "resource_balances_product_code_policy_version_resource_code_plan_resource_limits_product_code_policy_version_resource_code_fk": {
+          "name": "resource_balances_product_code_policy_version_resource_code_plan_resource_limits_product_code_policy_version_resource_code_fk",
+          "tableFrom": "resource_balances",
+          "tableTo": "plan_resource_limits",
+          "schemaTo": "m5_billing",
+          "columnsFrom": [
+            "product_code",
+            "policy_version",
+            "resource_code"
+          ],
+          "columnsTo": [
+            "product_code",
+            "policy_version",
+            "resource_code"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "resource_balances_user_id_period_start_resource_code_pk": {
+          "name": "resource_balances_user_id_period_start_resource_code_pk",
+          "columns": [
+            "user_id",
+            "period_start",
+            "resource_code"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "rb_no_negativos_ck": {
+          "name": "rb_no_negativos_ck",
+          "value": "\"m5_billing\".\"resource_balances\".\"limit_quantity\" >= 0 and \"m5_billing\".\"resource_balances\".\"granted_extra\" >= 0 and \"m5_billing\".\"resource_balances\".\"reserved\" >= 0 and \"m5_billing\".\"resource_balances\".\"consumed\" >= 0"
+        },
+        "rb_capacidad_ck": {
+          "name": "rb_capacidad_ck",
+          "value": "\"m5_billing\".\"resource_balances\".\"reserved\" + \"m5_billing\".\"resource_balances\".\"consumed\" <= \"m5_billing\".\"resource_balances\".\"limit_quantity\" + \"m5_billing\".\"resource_balances\".\"granted_extra\""
+        },
+        "rb_periodo_ck": {
+          "name": "rb_periodo_ck",
+          "value": "\"m5_billing\".\"resource_balances\".\"period_end\" > \"m5_billing\".\"resource_balances\".\"period_start\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m5_billing.resource_ledger_entries": {
+      "name": "resource_ledger_entries",
+      "schema": "m5_billing",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "period_start": {
+          "name": "period_start",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "resource_code": {
+          "name": "resource_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entry_type": {
+          "name": "entry_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric(20, 3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "operation_key": {
+          "name": "operation_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_module": {
+          "name": "source_module",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_ref": {
+          "name": "source_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "original_entry_id": {
+          "name": "original_entry_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "rle_saldo_idx": {
+          "name": "rle_saldo_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "period_start",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "resource_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "resource_ledger_entries_original_entry_id_resource_ledger_entries_id_fk": {
+          "name": "resource_ledger_entries_original_entry_id_resource_ledger_entries_id_fk",
+          "tableFrom": "resource_ledger_entries",
+          "tableTo": "resource_ledger_entries",
+          "schemaTo": "m5_billing",
+          "columnsFrom": [
+            "original_entry_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "resource_ledger_entries_user_id_period_start_resource_code_resource_balances_user_id_period_start_resource_code_fk": {
+          "name": "resource_ledger_entries_user_id_period_start_resource_code_resource_balances_user_id_period_start_resource_code_fk",
+          "tableFrom": "resource_ledger_entries",
+          "tableTo": "resource_balances",
+          "schemaTo": "m5_billing",
+          "columnsFrom": [
+            "user_id",
+            "period_start",
+            "resource_code"
+          ],
+          "columnsTo": [
+            "user_id",
+            "period_start",
+            "resource_code"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "rle_tipo_clave_uq": {
+          "name": "rle_tipo_clave_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "entry_type",
+            "operation_key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "rle_tipo_ck": {
+          "name": "rle_tipo_ck",
+          "value": "\"m5_billing\".\"resource_ledger_entries\".\"entry_type\" in ('RESERVA', 'CONFIRMACION', 'LIBERACION', 'CONCESION', 'REINTEGRO', 'AJUSTE')"
+        },
+        "rle_cantidad_ck": {
+          "name": "rle_cantidad_ck",
+          "value": "\"m5_billing\".\"resource_ledger_entries\".\"quantity\" > 0"
+        },
+        "rle_origen_ck": {
+          "name": "rle_origen_ck",
+          "value": "\"m5_billing\".\"resource_ledger_entries\".\"source_module\" in ('M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7')"
+        },
+        "rle_reintegro_original_ck": {
+          "name": "rle_reintegro_original_ck",
+          "value": "\"m5_billing\".\"resource_ledger_entries\".\"entry_type\" not in ('REINTEGRO', 'CONFIRMACION') or \"m5_billing\".\"resource_ledger_entries\".\"original_entry_id\" is not null"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m6_ai_tutor.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m6_ai_tutor",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m6_ai_tutor\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m6_ai_tutor.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m6_ai_tutor",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m6_ai_tutor\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m6_ai_tutor\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m6_ai_tutor\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m1_users.auth_accounts": {
+      "name": "auth_accounts",
+      "schema": "m1_users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "provider_account_id": {
+          "name": "provider_account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "auth_accounts_usuario_idx": {
+          "name": "auth_accounts_usuario_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "auth_accounts_user_id_users_id_fk": {
+          "name": "auth_accounts_user_id_users_id_fk",
+          "tableFrom": "auth_accounts",
+          "tableTo": "users",
+          "schemaTo": "m1_users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "auth_accounts_proveedor_uq": {
+          "name": "auth_accounts_proveedor_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "provider_id",
+            "provider_account_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "m1_users.auth_rate_limits": {
+      "name": "auth_rate_limits",
+      "schema": "m1_users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_request": {
+          "name": "last_request",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "auth_rate_limits_key_uq": {
+          "name": "auth_rate_limits_key_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "m1_users.auth_verifications": {
+      "name": "auth_verifications",
+      "schema": "m1_users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "auth_verifications_identificador_idx": {
+          "name": "auth_verifications_identificador_idx",
+          "columns": [
+            {
+              "expression": "identifier",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "m1_users.inbox_events": {
+      "name": "inbox_events",
+      "schema": "m1_users",
+      "columns": {
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_id": {
+          "name": "event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_hash": {
+          "name": "payload_hash",
+          "type": "char(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DONE'"
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "inbox_events_source_event_id_pk": {
+          "name": "inbox_events_source_event_id_pk",
+          "columns": [
+            "source",
+            "event_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "inbox_events_status_ck": {
+          "name": "inbox_events_status_ck",
+          "value": "\"m1_users\".\"inbox_events\".\"status\" in ('DONE')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m1_users.outbox_events": {
+      "name": "outbox_events",
+      "schema": "m1_users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_id": {
+          "name": "aggregate_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aggregate_version": {
+          "name": "aggregate_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload": {
+          "name": "payload",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "attempts": {
+          "name": "attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "next_retry_at": {
+          "name": "next_retry_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "outbox_events_pendientes_idx": {
+          "name": "outbox_events_pendientes_idx",
+          "columns": [
+            {
+              "expression": "next_retry_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"m1_users\".\"outbox_events\".\"status\" = 'PENDING'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "outbox_events_agregado_version_tipo_uq": {
+          "name": "outbox_events_agregado_version_tipo_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "aggregate_id",
+            "aggregate_version",
+            "event_type"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "outbox_events_status_ck": {
+          "name": "outbox_events_status_ck",
+          "value": "\"m1_users\".\"outbox_events\".\"status\" in ('PENDING', 'PUBLISHED', 'DEAD')"
+        },
+        "outbox_events_attempts_ck": {
+          "name": "outbox_events_attempts_ck",
+          "value": "\"m1_users\".\"outbox_events\".\"attempts\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "m1_users.user_sessions": {
+      "name": "user_sessions",
+      "schema": "m1_users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "session_token": {
+          "name": "session_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "user_sessions_usuario_expira_idx": {
+          "name": "user_sessions_usuario_expira_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "user_sessions_user_id_users_id_fk": {
+          "name": "user_sessions_user_id_users_id_fk",
+          "tableFrom": "user_sessions",
+          "tableTo": "users",
+          "schemaTo": "m1_users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_sessions_token_uq": {
+          "name": "user_sessions_token_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "session_token"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "m1_users.users": {
+      "name": "users",
+      "schema": "m1_users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVE'"
+        },
+        "authz_version": {
+          "name": "authz_version",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_uq": {
+          "name": "users_email_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "users_status_ck": {
+          "name": "users_status_ck",
+          "value": "\"m1_users\".\"users\".\"status\" in ('ACTIVE', 'SUSPENDED', 'DELETE_PENDING')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {
+    "m2_contents": "m2_contents",
+    "m4_classes": "m4_classes",
+    "m3_evaluations": "m3_evaluations",
+    "m7_advertising": "m7_advertising",
+    "m5_billing": "m5_billing",
+    "m6_ai_tutor": "m6_ai_tutor",
+    "m1_users": "m1_users"
+  },
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Mentelyx",
+  "short_name": "Mentelyx",
+  "description": "Aprendizaje con fuentes propias y un Tutor que cita lo que usa.",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0A1F44",
+  "icons": [
+    {
+      "src": "/marca/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/marca/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

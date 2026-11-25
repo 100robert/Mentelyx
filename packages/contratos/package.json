@@ -1,0 +1,16 @@
+{
+  "name": "@mentelyx/contratos",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Esquemas Zod compartidos entre frontend y backend (ADR-073). Sin dependencias de runtime fuera de Zod.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  }
+}

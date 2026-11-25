@@ -1,0 +1,2 @@
+# Copiar a backend/.dev.vars para desarrollo local. Valor sintético; generar uno propio con `openssl rand -base64 32`.
+AUTH_SECRET=cambiar-por-un-valor-local-de-al-menos-32-caracteres

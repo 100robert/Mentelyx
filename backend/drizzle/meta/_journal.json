@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795244085412,
+      "tag": "0000_esquemas_base_i0",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795244102606,
+      "tag": "0001_planes_piloto_y_libro_inmutable",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795274685401,
+      "tag": "0002_periodos_sin_solape_y_coherencia_libro",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795276230968,
+      "tag": "0003_extension_vector",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795276234367,
+      "tag": "0004_espacios_fuentes_y_tutor_mvp",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795287905811,
+      "tag": "0005_hnsw_bge_m3",
+      "breakpoints": true
+    }
+  ]
+}

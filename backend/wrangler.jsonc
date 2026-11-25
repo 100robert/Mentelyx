@@ -1,0 +1,56 @@
+{
+  // API Hono de Mentelyx (ADR-073, ADR-074). Configuración local: sin cuenta, sin credenciales reales.
+  // El despliegue usa los secretos de Workers (AUTH_SECRET, DATABASE_URL, MONGODB_URL), nunca este archivo.
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "mentelyx-api",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-11-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // Reintentos del relay del outbox de M2 (entrega al menos una vez).
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "r2_buckets": [
+    // Originales de las fuentes privadas (content_versions.r2_storage_key). En local lo emula Miniflare.
+    { "binding": "ARCHIVOS", "bucket_name": "mentelyx-archivos" }
+  ],
+  "vars": {
+    "ENTORNO": "desarrollo",
+    // Driver serverless de Neon contra el PostgreSQL local de Docker Compose a través del proxy WebSocket de Neon.
+    "DATABASE_URL": "postgres://mentelyx:mentelyx_local@127.0.0.1:55432/mentelyx",
+    "NEON_WS_PROXY": "127.0.0.1:5488",
+    "MONGODB_URL": "mongodb://127.0.0.1:57017",
+    "MONGODB_DB": "mentelyx",
+    // Origen público: el del frontend (OpenNext en local), que reenvía /api/v1 a este Worker por service binding.
+    "AUTH_URL": "http://localhost:8788",
+    "AUTH_ORIGENES": "http://localhost:3000,http://127.0.0.1:8788,http://localhost:8787,http://127.0.0.1:8787",
+    // Presupuesto técnico de IA (SC-11): valores LOCALES de prueba, no aprobados para producción.
+    "PRESUPUESTO_IA_MENSUAL_USD": "5",
+    "PRESUPUESTO_IA_TOPE_USD": "5"
+  },
+  // AUTH_SECRET se define en .dev.vars (local) o como secreto de Workers; nunca en este archivo.
+  "env": {
+    // Demostración del Sprint 03 (no producción). DATABASE_URL, MONGODB_URL, AUTH_SECRET y, si se usa Upstash,
+    // UPSTASH_REDIS_REST_TOKEN son SECRETOS de Workers. AUTH_URL lo fija el flujo de despliegue con el origen público
+    // del frontend. Sin wsproxy: Neon real por WebSocket.
+    "demostracion": {
+      "name": "mentelyx-api",
+      "triggers": { "crons": ["*/5 * * * *"] },
+      "r2_buckets": [{ "binding": "ARCHIVOS", "bucket_name": "mentelyx-archivos" }],
+      // Workers AI: Gemma 4 26B A4B (explicacion.general) y BGE-M3 (embeddings). Solo en este entorno: en local y CI
+      // el proveedor es simulado y no se necesita cuenta. El consumo cuenta contra la asignación de la cuenta.
+      "ai": { "binding": "AI" },
+      "vars": {
+        "ENTORNO": "staging",
+        "MONGODB_DB": "mentelyx",
+        "AUTH_URL": "https://mentelyx-web.invalid",
+        "AUTH_ORIGENES": "",
+        "IA_PROVEEDOR": "workers-ai",
+        // DeepSeek V4.1 Flash exige Workers Paid o créditos: «deepseek» solo con autorización del propietario.
+        "IA_RUTA_TECNICA": "respaldo-general",
+        // Presupuesto técnico mensual de IA (SC-11), tope duro de la demostración. Valor real: decisión del propietario.
+        "PRESUPUESTO_IA_MENSUAL_USD": "5",
+        "PRESUPUESTO_IA_TOPE_USD": "5"
+      }
+    }
+  }
+}

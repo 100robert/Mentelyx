@@ -1,0 +1,102 @@
+/* Tokens de Mentelyx. Paleta oficial de la marca, confirmada tal cual: azul marino #0A1F44, verde limón #84CC16, gris #969BA3,
+   blanco #FFFFFF y negro #000000 auxiliar. Contrastes comprobados en claro, oscuro y sobre azul marino (WCAG 2.2 AA). */
+:root {
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-md: 1rem; --text-lg: 1.2rem; --text-xl: 1.44rem; --text-2xl: 1.728rem; --text-3xl: 2.074rem;
+  --text-display-s: 1.44rem; --text-display: 1.728rem; --text-display-l: clamp(2.4rem, 1.6rem + 2.6vw, 3.75rem); --text-section: 1.2rem; --text-title: 1rem; --text-lead: 1.0625rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --container: 1440px; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+
+  /* Superficies claras: blanco de la marca y pozos teñidos hacia el azul marino (tono 261). */
+  --color-paper: oklch(100% 0 0);
+  --color-paper-2: oklch(97.4% 0.006 261);
+  --color-paper-3: oklch(94.5% 0.01 261);
+  --color-ink: oklch(24.7% 0.075 260.8);
+  --color-ink-2: oklch(40% 0.04 261);
+  --color-muted: oklch(50% 0.025 261);
+  --color-rule: oklch(91.5% 0.008 261);
+  --color-edge: oklch(62% 0.015 261);
+  --color-dot: oklch(84% 0.012 261);
+  --color-backdrop: oklch(24.7% 0.075 260.8 / 0.42);
+
+  /* Señal: verde limón con tinta azul marino; borde más oscuro para el contorno de 3:1 sobre blanco. */
+  --color-accent: oklch(76.8% 0.204 130.8);
+  --color-accent-hover: oklch(71% 0.2 131);
+  --color-accent-ink: oklch(24.7% 0.075 260.8);
+  --color-accent-edge: oklch(60% 0.17 131);
+  --color-accent-wash: oklch(95.5% 0.055 128);
+  --color-accent-text: oklch(42% 0.12 135);
+  --color-focus: oklch(24.7% 0.075 260.8);
+
+  /* Campo de marca: el azul marino de la barra lateral y de los paneles de identidad. */
+  --color-field: oklch(24.7% 0.075 260.8);
+  --color-field-2: oklch(30% 0.075 261);
+  --color-field-ink: oklch(97% 0.006 261);
+  --color-field-muted: oklch(68.8% 0.013 259.8);
+  --color-field-rule: oklch(34% 0.06 261);
+  --color-field-focus: oklch(76.8% 0.204 130.8);
+  /* Placa de los logotipos oficiales: blanco de la marca en ambos modos, para que el azul marino del búho no se pierda. */
+  --color-logo-fondo: oklch(100% 0 0);
+  --color-resaltado: oklch(91% 0.12 128);
+
+  /* Estados semánticos: cada uno con su lavado y su tinta. */
+  --color-error: oklch(50% 0.19 27);
+  --color-error-wash: oklch(96.5% 0.02 27);
+  --color-success: oklch(42% 0.12 135);
+  --color-warning-wash: oklch(96.5% 0.045 85);
+  --color-warning-edge: oklch(70% 0.13 75);
+  --color-info-wash: oklch(96% 0.014 261);
+
+  --font-display: var(--fuente-lexend), "Lexend", ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--fuente-lexend), "Lexend", ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: var(--fuente-serif), "Source Serif 4", ui-serif, Georgia, serif;
+  --display-weight: 600;
+
+  --radius-card: 10px; --radius-control: 8px; --radius-chip: 6px; --radius-pill: 999px; --rule-hair: 1px;
+  --shadow-card: 0 1px 2px oklch(24.7% 0.075 260.8 / 0.06);
+  --shadow-floating: 0 8px 24px oklch(24.7% 0.075 260.8 / 0.12), 0 1px 2px oklch(24.7% 0.075 260.8 / 0.08);
+  --shadow-pantalla: 0 40px 80px -30px oklch(8% 0.03 261 / 0.7);
+  /* Luz de estudio detrás del búho de la portada y su sombra de apoyo (siempre sobre el azul marino). */
+  --color-foco-figura: oklch(44% 0.085 256 / 0.85);
+  --color-sombra-piso: oklch(6% 0.02 261 / 0.65);
+  --tracking-display: -0.02em;
+
+  --ancho-barra: 16.5rem; --ancho-barra-rail: 4.5rem; --alto-barra-superior: 3.5rem;
+  --ancho-fuentes: 18.5rem; --ancho-panel: 23rem; --medida-estudio: 44rem;
+  color-scheme: light;
+}
+
+/* Modo oscuro derivado (no invertido): el papel es el azul marino profundo; la señal sigue siendo el verde limón. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: oklch(18.5% 0.04 261);
+    --color-paper-2: oklch(21.5% 0.045 261);
+    --color-paper-3: oklch(25.5% 0.05 261);
+    --color-ink: oklch(96% 0.008 261);
+    --color-ink-2: oklch(84% 0.015 261);
+    --color-muted: oklch(74% 0.015 261);
+    --color-rule: oklch(30% 0.035 261);
+    --color-edge: oklch(56% 0.02 261);
+    --color-dot: oklch(33% 0.035 261);
+    --color-backdrop: oklch(10% 0.03 261 / 0.6);
+    --color-accent-wash: oklch(30% 0.07 131);
+    --color-accent-text: oklch(85% 0.17 131);
+    --color-accent-edge: oklch(76.8% 0.204 130.8);
+    --color-focus: oklch(76.8% 0.204 130.8);
+    --color-field: oklch(14.5% 0.035 261);
+    --color-field-2: oklch(21% 0.045 261);
+    --color-field-rule: oklch(26% 0.04 261);
+    --color-error: oklch(74% 0.15 27);
+    --color-error-wash: oklch(25% 0.06 27);
+    --color-success: oklch(85% 0.17 131);
+    --color-warning-wash: oklch(27% 0.05 80);
+    --color-warning-edge: oklch(62% 0.12 75);
+    --color-info-wash: oklch(24% 0.045 261);
+    --color-resaltado: oklch(42% 0.11 131);
+    --shadow-card: 0 1px 2px oklch(5% 0.02 261 / 0.4);
+    --shadow-floating: 0 8px 24px oklch(5% 0.02 261 / 0.5), 0 0 0 1px oklch(32% 0.04 261);
+    color-scheme: dark;
+  }
+}

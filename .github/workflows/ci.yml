@@ -1,0 +1,104 @@
+# Integración continua de Mentelyx (ADR-073; estrategia de pruebas, sección 3). Sin secretos ni cuentas externas:
+# todos los servicios son locales (Docker Compose) y el proveedor de IA es simulado. Bloquea el merge si falla.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+
+jobs:
+  calidad:
+    name: Tipos, ARQ-01 y pruebas unitarias
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck (contratos, backend, frontend)
+        run: pnpm typecheck
+      - name: ARQ-01 · ESLint (0 ciclos, 0 imports prohibidos)
+        run: pnpm lint
+      - name: Unitarias y arquitectura
+        run: pnpm test
+
+  integracion:
+    name: MIG-04, integración y workerd
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Servicios locales (PostgreSQL 17 + pgvector, wsproxy de Neon, MongoDB, Redis)
+        run: pnpm db:up
+      - name: MIG-04 · reconstrucción desde una base vacía y control de deriva
+        run: pnpm db:verificar
+      - name: Migraciones (Drizzle Kit)
+        run: pnpm db:migrate
+      - name: Integración (P0 de M5, mensajería y MVP vertical)
+        run: pnpm test:integracion
+      - name: PR-INF-01 · pruebas dentro de workerd
+        run: pnpm test:workers
+      - name: Registro de servicios si algo falla
+        if: failure()
+        run: docker compose logs --tail=200
+
+  build-e2e:
+    name: OpenNext, tamaños y prueba de humo E2E
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build del frontend con OpenNext
+        working-directory: frontend
+        run: pnpm exec opennextjs-cloudflare build
+      - name: "Tamaño de los Workers (límite de Workers Free: 3 MiB comprimido)"
+        run: |
+          (cd frontend && pnpm exec wrangler deploy --dry-run --outdir "$RUNNER_TEMP/web" | grep -E 'Total Upload')
+          (cd backend && pnpm exec wrangler deploy --dry-run --outdir "$RUNNER_TEMP/api" | grep -E 'Total Upload')
+      - name: Servicios locales y migraciones
+        run: |
+          pnpm db:up
+          pnpm db:migrate
+      - name: Levantar API y frontend en workerd
+        run: |
+          SECRETO=$(openssl rand -hex 32)
+          (cd backend && nohup pnpm exec wrangler dev --port 8787 --ip 127.0.0.1 --var ENTORNO:ci --var AUTH_SECRET:"$SECRETO" \
+            --var UPSTASH_REDIS_REST_URL:http://127.0.0.1:8079 --var UPSTASH_REDIS_REST_TOKEN:token_local_mentelyx > "$RUNNER_TEMP/api.log" 2>&1 &)
+          (cd frontend && pnpm exec opennextjs-cloudflare populateCache local && nohup pnpm exec wrangler dev --port 8788 --ip 127.0.0.1 > "$RUNNER_TEMP/web.log" 2>&1 &)
+          for i in $(seq 1 60); do
+            curl -fsS -o /dev/null http://127.0.0.1:8787/api/v1/salud && curl -fsS -o /dev/null http://127.0.0.1:8788/ && exit 0
+            sleep 2
+          done
+          echo "Los Workers no arrancaron"; tail -50 "$RUNNER_TEMP/api.log" "$RUNNER_TEMP/web.log"; exit 1
+      - name: Prueba de humo E2E (a través del frontend)
+        run: node scripts/humo-e2e.mjs http://127.0.0.1:8788
+      - name: Registros si algo falla
+        if: failure()
+        run: tail -100 "$RUNNER_TEMP/api.log" "$RUNNER_TEMP/web.log" || true

@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["./worker-configuration.d.ts", "node"]
+  },
+  "include": ["src", "tests-workers", "drizzle.config.ts", "vitest.workers.config.ts", "worker-configuration.d.ts"]
+}

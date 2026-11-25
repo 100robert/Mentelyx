@@ -1,0 +1,11 @@
+packages:
+  - frontend
+  - backend
+  - packages/*
+
+# pnpm 10 bloquea los scripts de instalación por defecto; solo se permiten los binarios nativos necesarios.
+onlyBuiltDependencies:
+  - esbuild
+  - workerd
+  - sharp
+  - unrs-resolver

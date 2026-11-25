@@ -1,0 +1,78 @@
+# Despliegue MANUAL del entorno de demostración del Sprint 03 (no es producción). Solo se ejecuta a mano
+# (workflow_dispatch) y requiere que el propietario haya creado las cuentas y los secretos del repositorio:
+#   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID   → Workers, R2
+#   DATABASE_URL       → Neon (rol de la aplicación)      DATABASE_URL_MIGRACION → Neon (rol de migración)
+#   MONGODB_URL        → MongoDB Atlas                    AUTH_SECRET            → ≥ 32 caracteres aleatorios
+#   UPSTASH_REDIS_REST_TOKEN (opcional) → límite de tasa en Redis; sin él, la API usa el respaldo SQL (API-08)
+# Variables del repositorio: URL_PUBLICA (origen del frontend, p. ej. https://mentelyx-web.<subdominio>.workers.dev)
+# y UPSTASH_REDIS_REST_URL (opcional).
+# Workers AI: el entorno `demostracion` declara el binding AI (Gemma 4 + BGE-M3); la prueba de humo hace 1 consulta
+# y 1 indexación con datos sintéticos, que consumen de la asignación de Workers AI de la cuenta.
+name: Despliegue (demostración)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmar:
+        description: 'Escribe DESPLEGAR para confirmar'
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+
+jobs:
+  desplegar:
+    if: ${{ github.event.inputs.confirmar == 'DESPLEGAR' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: demostracion
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Migraciones en Neon (Drizzle Kit, rol de migración; nunca desde el Worker)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_MIGRACION }}
+        run: pnpm db:migrate
+      - name: Índices de MongoDB (tutor_conversaciones)
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+        run: node backend/scripts/preparar-mongo.mjs
+      - name: Buckets R2 (idempotente)
+        working-directory: backend
+        run: |
+          pnpm exec wrangler r2 bucket create mentelyx-archivos || true
+          pnpm exec wrangler r2 bucket create mentelyx-web-opennext-cache || true
+      - name: API · despliegue y secretos (cada secreto publica una versión nueva)
+        working-directory: backend
+        env:
+          S_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          S_MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          S_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          S_UPSTASH_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+          V_UPSTASH_URL: ${{ vars.UPSTASH_REDIS_REST_URL }}
+        run: |
+          EXTRA=()
+          if [ -n "$V_UPSTASH_URL" ] && [ -n "$S_UPSTASH_TOKEN" ]; then EXTRA=(--var "UPSTASH_REDIS_REST_URL:$V_UPSTASH_URL"); fi
+          pnpm exec wrangler deploy --env demostracion --var "AUTH_URL:${{ vars.URL_PUBLICA }}" "${EXTRA[@]}"
+          printf '%s' "$S_DATABASE_URL" | pnpm exec wrangler secret put DATABASE_URL --env demostracion
+          printf '%s' "$S_MONGODB_URL" | pnpm exec wrangler secret put MONGODB_URL --env demostracion
+          printf '%s' "$S_AUTH_SECRET" | pnpm exec wrangler secret put AUTH_SECRET --env demostracion
+          if [ ${#EXTRA[@]} -gt 0 ]; then printf '%s' "$S_UPSTASH_TOKEN" | pnpm exec wrangler secret put UPSTASH_REDIS_REST_TOKEN --env demostracion; fi
+      - name: Frontend · OpenNext y despliegue
+        working-directory: frontend
+        run: |
+          pnpm exec opennextjs-cloudflare build
+          pnpm exec opennextjs-cloudflare deploy
+      - name: Prueba de humo E2E contra la URL pública
+        run: node scripts/humo-e2e.mjs "${{ vars.URL_PUBLICA }}"
