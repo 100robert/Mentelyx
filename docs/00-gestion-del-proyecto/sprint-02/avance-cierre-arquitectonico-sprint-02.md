@@ -604,3 +604,27 @@ Limitaciones del archivo:
   - 52 capturas sin desbordes ni errores de consola;
   - ningún texto de proceso visible en 9 rutas.
 - **Incidencia:** Docker Desktop se cerró solo durante una primera ejecución del recorrido (4/22, el navegador no alcanzaba la web). Se reinició y la repetición dio 22/22.
+
+**Limpieza del frontend (25/11/2026), aprobada por el propietario (10 de 10 puntos):**
+- **Archivos y carpetas eliminados:**
+  - `public/marca/mentelyx-buho.png`: copia PNG sin uso; el logo usa la `.webp`.
+  - `frontend/.next` (110 MB) y `frontend/.open-next` (1,6 MB): builds del 21/11, hechas en Windows y ya obsoletas. Como `next-env.d.ts` importa `.next/types`, esos tipos se regeneraron con `next typegen` (29 KB).
+- **Reglas CSS sin uso eliminadas:**
+  - `.mensaje-aviso, .aviso`, `.pie-pagina` y `.panel-titulo` en `globals.css`;
+  - `.container` y `.figure` en `base.css`.
+  - Ninguna se construía de forma dinámica.
+  - Los tokens `--color-warning-wash`, `--color-warning-edge` y `--container` quedan sin uso. Se conservan como parte de las escalas del sistema de diseño, igual que `--color-success`, `--text-display-s` y `--z-base`.
+- **Fuera del repositorio versionado:**
+  - las capturas de pasadas anteriores (`.hallmark/after` a `after4` y `recorrido` a `recorrido4`, unos 30 MB);
+  - el render rechazado `marca/generado/buho-3d-higgsfield.png`.
+- **Se conservan:**
+  - `.hallmark/punto-control-2026-11-21`, `before`, `before.json`, `after5` y `recorrido5`;
+  - `tsconfig.tsbuildinfo`, `next-env.d.ts`, `cloudflare-env.d.ts` y `node_modules`.
+- **Verificación:**
+  - typecheck, lint y `pnpm test` (39/39) correctos;
+  - sloplint sin FAIL y con los elementos conservados intactos;
+  - build sin errores;
+  - `humo-e2e.mjs` 16/16;
+  - recorrido de interfaz 22/22;
+  - 52 capturas sin desbordes ni errores de consola;
+  - 9 rutas sin texto de proceso.
