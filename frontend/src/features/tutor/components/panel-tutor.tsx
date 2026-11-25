@@ -15,10 +15,10 @@ import {
   useCuaderno,
   type Herramienta,
   type SeleccionTexto,
-} from './cuaderno';
-import { FormularioFuente, SelectorFuente } from './espacios';
-import { useHidratado } from './hidratado';
-import { Icono } from './iconos';
+} from '@/features/lienzo';
+import { FormularioFuente, SelectorFuente } from '@/features/espacios';
+import { useHidratado } from '@/hooks/hidratado';
+import { Icono } from '@/components/ui/iconos';
 import { Markdown } from './markdown';
 
 export type CitaVista = { id: string; titulo: string; fragmento: string };

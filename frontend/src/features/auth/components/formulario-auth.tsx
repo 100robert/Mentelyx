@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { apiCliente, mensajeDeError } from '@/lib/api-cliente';
-import { useHidratado } from './hidratado';
-import { Icono } from './iconos';
+import { useHidratado } from '@/hooks/hidratado';
+import { Icono } from '@/components/ui/iconos';
 
 /** Registro o inicio de sesión (M1, Better Auth detrás de la API). La cookie de sesión es HttpOnly. */
 export function FormularioAuth({ modo }: { modo: 'ingresar' | 'registro' }) {

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { Icono } from '@/components/iconos';
-import { PanelTutor, type MensajeVista } from '@/components/panel-tutor';
+import { Icono } from '@/components/ui/iconos';
+import { PanelTutor, type MensajeVista } from '@/features/tutor';
 import { apiServidor, sesionActual } from '@/lib/api-servidor';
 
 export const metadata: Metadata = { title: 'Conversación' };

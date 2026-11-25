@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Icono, type NombreIcono } from '@/components/iconos';
-import { Inclinable } from '@/components/movimiento';
-import { PLANES } from '@/lib/planes';
+import { Icono, type NombreIcono } from '@/components/ui/iconos';
+import { Inclinable } from '@/components/ui/movimiento';
+import { PLANES } from '@/features/planes';
 
 /** Inicio público: SSG (se genera en el build; PR-INF-01). */
 export const dynamic = 'force-static';

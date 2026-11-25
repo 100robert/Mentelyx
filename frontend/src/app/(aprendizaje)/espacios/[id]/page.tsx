@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { PanelTutor, type FuenteVista, type MensajeVista } from '@/components/panel-tutor';
+import { PanelTutor, type FuenteVista, type MensajeVista } from '@/features/tutor';
 import { apiServidor, sesionActual } from '@/lib/api-servidor';
 
 export const metadata: Metadata = { title: 'Espacio' };

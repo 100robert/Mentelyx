@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Icono } from '@/components/iconos';
+import { Icono } from '@/components/ui/iconos';
 import { apiServidor, sesionActual } from '@/lib/api-servidor';
 
 export const metadata: Metadata = { title: 'Tutor' };

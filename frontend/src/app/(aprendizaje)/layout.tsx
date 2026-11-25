@@ -1,4 +1,4 @@
-import { MarcoApp, type EspacioMenu } from '@/components/marco-app';
+import { MarcoApp, type EspacioMenu } from '@/features/navegacion';
 import { apiServidor } from '@/lib/api-servidor';
 
 /**

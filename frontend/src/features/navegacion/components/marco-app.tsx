@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Buscador } from './buscador';
-import { EstadoSesion } from './estado-sesion';
-import { Icono, type NombreIcono } from './iconos';
-import { Marca } from './marca';
+import { EstadoSesion } from '@/features/auth';
+import { Icono, type NombreIcono } from '@/components/ui/iconos';
+import { Marca } from '@/components/ui/marca';
 
 export type EspacioMenu = { id: string; titulo: string };
 

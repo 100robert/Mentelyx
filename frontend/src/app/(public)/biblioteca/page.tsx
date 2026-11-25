@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Icono } from '@/components/iconos';
+import { Icono } from '@/components/ui/iconos';
 
 export const metadata: Metadata = { title: 'Biblioteca pública' };
 /** ISR (PR-INF-01): la página se regenera como máximo cada 5 minutos; solo contenido público entra en la caché. */

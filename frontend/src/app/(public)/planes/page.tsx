@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { Icono } from '@/components/iconos';
-import { PLANES, type Plan } from '@/lib/planes';
+import { Icono } from '@/components/ui/iconos';
+import { PLANES, type Plan } from '@/features/planes';
 
 export const metadata: Metadata = { title: 'Planes' };
 /** SSG: precios y recursos de la versión comercial vigente (IM, secciones 14 y 15). */

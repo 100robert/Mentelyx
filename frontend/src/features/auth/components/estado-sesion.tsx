@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { apiCliente } from '@/lib/api-cliente';
-import { limpiarCuadernoLocal } from './cuaderno';
-import { Icono } from './iconos';
+import { limpiarCuadernoLocal } from '@/features/lienzo';
+import { Icono } from '@/components/ui/iconos';
 
 /**
  * Muestra «Ingresar» o «Salir» según la sesión del servidor (consulta /api/v1/auth/sesion en el navegador).

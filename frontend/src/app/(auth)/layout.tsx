@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { Icono } from '@/components/iconos';
-import { LogoCompleto } from '@/components/marca';
-import { PLANES } from '@/lib/planes';
+import { Icono } from '@/components/ui/iconos';
+import { LogoCompleto } from '@/components/ui/marca';
+import { PLANES } from '@/features/planes';
 
 /** Marco de registro e ingreso: panel de marca con el búho y lo que ofrece Mentelyx; el formulario como única tarea. */
 export default function AccesoLayout({ children }: { children: React.ReactNode }) {

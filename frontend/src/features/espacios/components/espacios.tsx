@@ -3,8 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { apiCliente, mensajeDeError, nuevaClave } from '@/lib/api-cliente';
-import { useHidratado } from './hidratado';
-import { Icono } from './iconos';
+import { useHidratado } from '@/hooks/hidratado';
+import { Icono } from '@/components/ui/iconos';
 
 const LIMITE_BYTES = 200_000;
 

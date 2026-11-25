@@ -1,14 +1,42 @@
 # Project-specific ignore patterns
 mentelyx-skills.zip
 
-# Local project instructions and installation helpers
-/AGENTS.md
-/CLAUDE.md
+# Local installation helpers (shared instructions AGENTS.md, CLAUDE.md and project skills are versioned)
 /AGENTS-mentelyx.example.md
 /INSTALACION.md
 /instalar-mentelyx.ps1
 
-# Local AI tool configuration
-/.agents/
-/.claude/
+# Local AI tool configuration: only the shared project skills are versioned
+/.claude/*
+!/.claude/skills/
+/.agents/*
+!/.agents/skills/
 /.codex/
+
+# draw.io backups
+*.bkp
+
+# Dependencies, builds and local environment
+node_modules/
+.pnpm-store/
+dist/
+.next/
+.open-next/
+.wrangler/
+coverage/
+*.tsbuildinfo
+.env
+.env.*
+# Credenciales locales con extensión .env (p. ej. las que genera MongoDB Atlas): nunca se versionan
+*.env
+!.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# Copias temporales de MIG-04 (backend/scripts/verificar-migraciones.mjs)
+.mig04-*/
+
+# Generados por Next.js y TypeScript
+next-env.d.ts
+*.tsbuildinfo

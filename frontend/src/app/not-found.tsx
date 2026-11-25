@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CabeceraPublica, PiePublico } from '@/components/cabecera-publica';
+import { CabeceraPublica, PiePublico } from '@/features/navegacion';
 
 export default function NoEncontrado() {
   return (

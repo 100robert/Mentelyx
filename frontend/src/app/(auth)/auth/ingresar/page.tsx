@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { FormularioAuth } from '@/components/formulario-auth';
+import { FormularioAuth } from '@/features/auth';
 
 export const metadata: Metadata = { title: 'Ingresar' };
 

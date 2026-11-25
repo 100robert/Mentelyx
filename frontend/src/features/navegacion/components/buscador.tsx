@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Icono, type NombreIcono } from './iconos';
+import { Icono, type NombreIcono } from '@/components/ui/iconos';
 import type { EspacioMenu } from './marco-app';
 
 type Destino = { id: string; texto: string; detalle: string; href: string; icono: NombreIcono };

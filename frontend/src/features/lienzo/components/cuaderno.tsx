@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
-import { Icono, type NombreIcono } from './iconos';
+import { Icono, type NombreIcono } from '@/components/ui/iconos';
 
 /**
  * Cuaderno de estudio sobre el lienzo: resaltados, notas y selección por región o lazo.

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { CrearEspacio } from '@/components/espacios';
-import { Icono, type NombreIcono } from '@/components/iconos';
+import { CrearEspacio } from '@/features/espacios';
+import { Icono, type NombreIcono } from '@/components/ui/iconos';
 import { apiServidor, sesionActual } from '@/lib/api-servidor';
 
 export const metadata: Metadata = { title: 'Mis espacios' };

@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { EstadoSesion } from './estado-sesion';
-import { Icono } from './iconos';
-import { Marca } from './marca';
+import { EstadoSesion } from '@/features/auth';
+import { Icono } from '@/components/ui/iconos';
+import { Marca } from '@/components/ui/marca';
 
 const ENLACES = [
   { href: '/planes', texto: 'Planes' },
