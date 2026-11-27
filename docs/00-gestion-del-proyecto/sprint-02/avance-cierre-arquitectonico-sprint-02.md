@@ -1219,3 +1219,99 @@ Evidencias en `.hallmark/v1-pizarra/`.
 - EQ-45 y EQ-19 no ejecutados.
 
 **Sin commits, push, merge ni despliegue por esta tarea.** No se tocaron los archivos de la pizarra (sección 25) ni los procesos del propietario en los puertos 8787 y 8788.
+
+## 27. Respaldo seguro y unificación del flujo Git en `main` (27/11/2026, Claude Code)
+
+**Instrucción:** proteger todos los avances y dejar `main` como única rama habitual. Sin push, borrado de ramas o worktrees, rebase, squash ni reescritura del historial.
+
+**Respaldo verificable:** `E:\Mentelyx-respaldos\2026-11-27-1540\` (fuera del repositorio).
+- `mentelyx.bundle`, con `git bundle create --all`:
+  - SHA-256 `fdf94058955524690412fd583799216a8347dda38cd5a7c1cc0ca3c586e64ef1`;
+  - 31 referencias, incluidas `refs/agents/*` y `refs/codex/*`;
+  - `git bundle verify` OK;
+  - clonado en una carpeta temporal, las listas de archivos de `main` y `reorganizacion-frontend` coinciden.
+- `arbol\`: el árbol de trabajo con los cambios sin commit y los no rastreados, sin `node_modules` ni cachés.
+- `sensibles\`: credenciales locales, con acceso solo del usuario y SYSTEM (`icacls`). Nunca en Git.
+- `MANIFIESTO.txt`: HEAD, ramas, SHA-256 de cada archivo y los pasos de restauración.
+- Restaurar: `git clone <bundle> Mentelyx-restaurado`, luego `robocopy arbol\ . /E` y copiar `sensibles\` a `backend\`.
+- **Bases de datos:** Docker estaba apagado y no hay volcados. Comandos (manifiesto):
+  - `docker exec mentelyx-postgres-1 pg_dump -U mentelyx -d mentelyx -Fc > sensibles\pg-mentelyx.dump`;
+  - lo mismo para `mentelyx_carga`;
+  - `mongodump --archive --gzip` contra `127.0.0.1`.
+
+**Commits:**
+
+| Hash | Autor | Contenido |
+|---|---|---|
+| `a70582c` | Sesión de la pizarra (8830de83), 15:50, en paralelo | Pizarra, contratos `educacion`, Jest, k6, Thunder, scripts, evidencias, documentos, `.claude/skills`, `.agents/skills`, `AGENTS.md`, `CLAUDE.md` y `skills-lock.json`. Esa sesión hizo el fast-forward de `main` y **push** de `main` y `reorganizacion-frontend` |
+| `bb6961c` | Esta tarea | `chore(marca)`: logos originales. Se excluye `marca/generado/`: la app usa los derivados WebP de `frontend/public/marca` |
+| `cf1fa86` | Esta tarea | `docs`: política «Flujo Git y publicación» en `AGENTS.md` y `CLAUDE.md` |
+| commit de esta sección | Esta tarea | `docs`: registro de continuidad |
+
+**Estado de Git:**
+- `main` está en el árbol de trabajo. `reorganizacion-frontend` = `origin/main` = `origin/reorganizacion-frontend` = `a70582c`.
+- `main` va **3 commits por delante** de `origin/main`, sin publicar (push pendiente de autorización), y 0 por detrás.
+- Sin stashes. El worktree `.claude/worktrees/plugin-usage-a05ecb` está limpio en `560de05` (ancestro de `main`), sin commits propios.
+
+**Gitleaks 8.30.1** (con `--redact`):
+- Historial: 6 hallazgos, todos el mismo ejemplo `Idempotency-Key: <uuid>` del diseño de API (falso positivo).
+- Árbol de trabajo: 47 hallazgos, solo en archivos ignorados (credenciales locales y claves de vista previa de Next en `.next` y `.open-next`).
+- `a70582c`, y lo preparado para `bb6961c` y `cf1fa86`: 0 hallazgos.
+
+**Validación (27/11/2026, hacia las 16:00):**
+
+| Prueba | Resultado |
+|---|---|
+| `typecheck` y `lint` en `main` | OK; lint con 0 errores |
+| Vitest (unitarias y arquitectura) | 190/190 |
+| Jest | 7 suites, 63/63 |
+| Workers (`cd backend && corepack pnpm test:workers`) | 2/5. Las 3 que fallan necesitan PostgreSQL y Redis locales: conexión denegada (os error 10061) porque Docker estaba apagado. **No ejecutado de forma válida** |
+| Integración, registro e inicio de sesión en 8787/8788, volcados | **No ejecutados** (dependen de Docker) |
+| Build del backend (`wrangler deploy --dry-run`) | OK |
+| `next build` (en el clon) | OK |
+| OpenNext `build:worker` en Windows | Falla con `EPERM symlink` (limitación conocida de Windows). Se compila en el contenedor `mentelyx-build` |
+
+Sin `next build` en el repositorio, para no sobrescribir el `.next` del `next dev` del propietario en 8788.
+
+**Comandos para después, con Docker:**
+
+```bash
+bash scripts/levantar-local.sh
+corepack pnpm test:integracion
+(cd backend && corepack pnpm test:workers)
+node scripts/flujos-v1-e2e.mjs   # registro, sesión y flujos A/B/C contra 8787/8788
+node scripts/thunder/verificar-coleccion.mjs http://localhost:8787
+```
+
+**Clon limpio** (`E:\tmp-mentelyx-clon`, desde `main` local):
+- `pnpm install --frozen-lockfile` **falla**: `pnpm-lock.yaml` conserva `^1.16.22`, `^0.2.39`, `^30.0.0` y `^30.5.2`, mientras que `package.json` fija `@swc/core`, `@swc/jest`, `@types/jest` y `jest` exactos. El CI fallaría igual.
+- Arreglo verificado en el clon, **sin aplicar a `main`**: `corepack pnpm install --lockfile-only` cambia solo esas 4 líneas, sin cambiar versiones. Con él, la instalación congelada, `typecheck`, el build del backend y `next build` pasan.
+- **Variables** (solo nombres):
+  - `.env.example` documenta `DATABASE_URL`, `NEON_WS_PROXY`, `MONGODB_URL`, `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`;
+  - `backend/.dev.vars.example` documenta `AUTH_SECRET`;
+  - sin `.example`: `NVIDIA_API_KEY`, `NVIDIA_BASE_URL`, `NVIDIA_MODELO` y `NVIDIA_TIMEOUT_MS`;
+  - `wrangler.jsonc` define con valores locales `ENTORNO`, `MONGODB_DB`, `AUTH_URL`, `AUTH_ORIGENES`, `PRESUPUESTO_IA_*` e `IA_PROVEEDOR`;
+  - en el frontend, `NEXT_PUBLIC_SITIO_URL`.
+
+  La falta de secretos no impide el build.
+
+**Avances de otras sesiones y de Codex** (solo informe; no se integró nada):
+- No hay ramas `codex/*`.
+- `refs/codex/turn-diffs/*` (2) son árboles de diferencias de Codex, no commits. Su contenido exclusivo son nombres antiguos o movidos (`docs/avance-…`, `docs/05-sdd/…`), copias `.bkp` de draw.io, `docs/img/enfoque-arquitectonico-mentelyx.png` y `.codex/agents/*.toml` (este último existe ignorado en disco).
+- `refs/agents/*` (23) son puntos de control automáticos de sesiones anteriores (08/10 a 25/11). Lo exclusivo es lo mismo que en los de Codex, más:
+  - `analisis/*` (estructura antigua, hoy `docs/01-…`);
+  - `.hallmark/*`;
+  - `marca/generado/buho-esculpido-higgsfield.png` y `mentelyx-copilot/*`, presentes en disco y excluidos por decisión del propietario.
+- No hay trabajo de código pendiente de integrar. Habría que revisar si se eliminó a propósito `docs/img/enfoque-arquitectonico-mentelyx.png` y `docs/img/fuente_drawio/mentelyx-enfoque-arquitectonico.drawio`.
+
+**Defectos y pendientes conocidos:**
+1. Lockfile desalineado (ver arriba). Arreglo de 4 líneas pendiente de autorización.
+2. `a70582c` versionó `.claude/skills/hallmark`, `.claude/skills/cli-hub-meta-skill` y `skills-lock.json`, aunque el propietario pidió excluirlos. Ya están publicados. Quitarlos exige un commit `git rm --cached`, pendiente de autorización.
+3. Los scripts raíz `build` y `test:workers` invocan `pnpm` directamente. Fallan si pnpm solo está disponible como `corepack pnpm`.
+4. `8e2e5e2` no compila de forma aislada (importa `packages/contratos/src/educacion`, que entró en `a70582c`). Desde `a70582c` es coherente.
+5. En la raíz siguen `bject Name` y `on` (salidas accidentales de `less`), sin versionar y sin borrar.
+6. Siguen abiertos los pendientes de la sección 26: *pooling* y repetición de los EQ, CI remoto, R2, `workers.dev`, CPU de Workers Free y Atlas desde Workers.
+
+**Siguiente paso para Codex o Claude Code:**
+- con autorización, push de `main` y el arreglo del lockfile;
+- después, la regresión con Docker usando los comandos de arriba.
