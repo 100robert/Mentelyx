@@ -12,3 +12,12 @@ Trabaja sobre la carpeta raíz abierta. Fase actual: Sprint 02 (diseño de arqui
 - No alterar código, migraciones, presupuestos, secretos, configuraciones externas ni instalar herramientas por defecto. Sin commits/pushes/despliegues automáticos. No usar datos reales de estudiantes.
 - Trabajar una tarea acotada por turno. No delegar a subagentes sin petición expresa; no releer todo el repositorio para cada tarea. Antes de editar, comprobar git status si existe Git; no eliminar cambios ajenos.
 - Cada entrega: archivos modificados, decisiones cerradas, cuestiones bloqueantes, trazabilidad, verificaciones realmente ejecutadas y siguiente tarea. Documentar resultados y cambios de forma concisa.
+
+## Flujo Git y publicación (política acordada el 27/11/2026)
+
+- `main` es la única rama habitual de desarrollo. No crear ramas ni worktrees sin autorización del propietario.
+- Ningún commit sin autorización expresa; ningún push sin autorización expresa (autorizar un commit no autoriza el push). Preparar los archivos por rutas explícitas, nunca `git add .` ni `git add -A`.
+- Sin operaciones destructivas: nada de `reset --hard`, `checkout --`, `clean`, `stash drop`, rebase, squash, `--force`, `--no-verify` ni reescritura del historial.
+- Preservar los avances de otras sesiones de Claude Code y de Codex: antes de editar o hacer commit, revisar `git status`, `git log`, ramas, worktrees y stashes; no sobrescribir ni revertir lo ajeno.
+- Antes de publicar: ejecutar la regresión (typecheck, lint, build, Vitest y Jest; integración y Workers cuando haya Docker) y auditar credenciales con Gitleaks sobre lo preparado (`gitleaks git --staged --redact`) y sobre los commits que se van a publicar.
+- Mantener la documentación y el código sincronizados: todo cambio de comportamiento actualiza su documento y el registro de continuidad.
