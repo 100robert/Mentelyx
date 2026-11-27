@@ -1,0 +1,52 @@
+{
+  "base": "mentelyx_carga",
+  "fecha": "2026-11-27T15:03:52.681Z",
+  "conteos": {
+    "conversaciones": 20,
+    "bancos": 20
+  },
+  "planes": {
+    "GET /tutor-ia/conversaciones": {
+      "ejecucion_ms": 113,
+      "documentosExaminados": 1,
+      "clavesExaminadas": 1,
+      "devueltos": 1,
+      "etapas": [
+        "LIMIT",
+        "FETCH",
+        "IXSCAN (propietario_actividad)"
+      ]
+    },
+    "GET /tutor-ia/conversaciones/{id}": {
+      "ejecucion_ms": 25,
+      "documentosExaminados": 1,
+      "clavesExaminadas": 1,
+      "devueltos": 1,
+      "etapas": [
+        "FETCH",
+        "IXSCAN (conversacion_uq)"
+      ]
+    },
+    "GET /preparaciones/{id}/preguntas": {
+      "ejecucion_ms": 16,
+      "documentosExaminados": 1,
+      "clavesExaminadas": 1,
+      "devueltos": 1,
+      "etapas": [
+        "LIMIT",
+        "FETCH",
+        "IXSCAN (banco_version_uq)"
+      ]
+    },
+    "acceso de otro estudiante (0 docs)": {
+      "ejecucion_ms": 0,
+      "documentosExaminados": 1,
+      "clavesExaminadas": 1,
+      "devueltos": 0,
+      "etapas": [
+        "FETCH",
+        "IXSCAN (conversacion_uq)"
+      ]
+    }
+  }
+}

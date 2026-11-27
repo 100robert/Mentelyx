@@ -42,7 +42,7 @@ const FRAMEWORKS = ['hono', 'hono/*', '@hono/*', 'drizzle-orm', 'drizzle-orm/*',
 
 export default tseslint.config(
   {
-    ignores: ['**/node_modules/**', '.claude/**', '**/.next/**', '**/.open-next/**', '**/.wrangler/**', '**/dist/**', '**/coverage/**', 'backend/drizzle/**', '**/worker-configuration.d.ts', '**/cloudflare-env.d.ts', '**/next-env.d.ts', 'docs/**'],
+    ignores: ['**/node_modules/**', '.claude/**', '**/.next/**', '**/.open-next/**', '**/.wrangler/**', '**/dist/**', '**/coverage/**', 'backend/drizzle/**', 'frontend/public/pdfjs/**', '**/worker-configuration.d.ts', '**/cloudflare-env.d.ts', '**/next-env.d.ts', 'docs/**'],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -80,5 +80,15 @@ export default tseslint.config(
         { patterns: [{ group: FRAMEWORKS.filter((f) => !f.startsWith('hono') && !f.startsWith('@hono')).concat(['hono', 'hono/*', '@hono/*']), message: 'La aplicación usa puertos, no frameworks ni drivers.' }] },
       ],
     },
+  },
+  {
+    // Configuración CommonJS de Jest (Sprint 2).
+    files: ['jest.config.cjs'],
+    languageOptions: { sourceType: 'commonjs', globals: { ...globals.node } },
+  },
+  {
+    // Scripts de Grafana k6: se ejecutan en el runtime de k6, con sus globales.
+    files: ['scripts/carga/*-k6.js'],
+    languageOptions: { globals: { __ENV: 'readonly', __VU: 'readonly', __ITER: 'readonly', open: 'readonly' } },
   },
 );

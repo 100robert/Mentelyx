@@ -1,0 +1,464 @@
+{
+  "base": "http://127.0.0.1:8792",
+  "fecha": "2026-11-27T15:08:27.009Z",
+  "total": 57,
+  "fallas": 0,
+  "filas": [
+    {
+      "solicitud": "01 · Salud y módulos montados",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 3215,
+      "codigo": ""
+    },
+    {
+      "solicitud": "02 · Contrato OpenAPI 3.1",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 3910,
+      "codigo": ""
+    },
+    {
+      "solicitud": "03 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 1376,
+      "codigo": ""
+    },
+    {
+      "solicitud": "04 · Registro sin token CSRF (negativo)",
+      "esperado": 403,
+      "obtenido": 403,
+      "resultado": "OK",
+      "ms": 189,
+      "codigo": "NO_AUTORIZADO"
+    },
+    {
+      "solicitud": "05 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 85,
+      "codigo": ""
+    },
+    {
+      "solicitud": "06 · Registro de cuenta ficticia",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 6772,
+      "codigo": ""
+    },
+    {
+      "solicitud": "07 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 179,
+      "codigo": ""
+    },
+    {
+      "solicitud": "08 · Registro duplicado (negativo)",
+      "esperado": 400,
+      "obtenido": 400,
+      "resultado": "OK",
+      "ms": 817,
+      "codigo": "ENTRADA_INVALIDA"
+    },
+    {
+      "solicitud": "09 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 86,
+      "codigo": ""
+    },
+    {
+      "solicitud": "10 · Inicio de sesión con contraseña incorrecta (negativo)",
+      "esperado": 401,
+      "obtenido": 401,
+      "resultado": "OK",
+      "ms": 1282,
+      "codigo": "NO_AUTENTICADO"
+    },
+    {
+      "solicitud": "11 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 96,
+      "codigo": ""
+    },
+    {
+      "solicitud": "12 · Inicio de sesión",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 1088,
+      "codigo": ""
+    },
+    {
+      "solicitud": "13 · Sesión vigente (nombre y correo)",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 2000,
+      "codigo": ""
+    },
+    {
+      "solicitud": "14 · Perfil de la cuenta",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 668,
+      "codigo": ""
+    },
+    {
+      "solicitud": "15 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 731,
+      "codigo": ""
+    },
+    {
+      "solicitud": "16 · Cambiar el nombre",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 646,
+      "codigo": ""
+    },
+    {
+      "solicitud": "17 · Guardar preferencias",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 439,
+      "codigo": ""
+    },
+    {
+      "solicitud": "18 · Preferencias inválidas (negativo)",
+      "esperado": 400,
+      "obtenido": 400,
+      "resultado": "OK",
+      "ms": 174,
+      "codigo": "ENTRADA_INVALIDA"
+    },
+    {
+      "solicitud": "19 · Sesiones abiertas (sin tokens)",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 524,
+      "codigo": ""
+    },
+    {
+      "solicitud": "20 · Crear carpeta de Aprendizaje",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 744,
+      "codigo": ""
+    },
+    {
+      "solicitud": "21 · Crear carpeta de Exámenes",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 472,
+      "codigo": ""
+    },
+    {
+      "solicitud": "22 · Listar carpetas de Aprendizaje",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 470,
+      "codigo": ""
+    },
+    {
+      "solicitud": "23 · Crear un tema (espacio privado)",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 659,
+      "codigo": ""
+    },
+    {
+      "solicitud": "24 · Registrar una fuente MD",
+      "esperado": 202,
+      "obtenido": 202,
+      "resultado": "OK",
+      "ms": 2097,
+      "codigo": ""
+    },
+    {
+      "solicitud": "25 · Guardar el tema en la carpeta",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 664,
+      "codigo": ""
+    },
+    {
+      "solicitud": "26 · Tema en carpeta de Exámenes (negativo)",
+      "esperado": 400,
+      "obtenido": 400,
+      "resultado": "OK",
+      "ms": 478,
+      "codigo": "ENTRADA_INVALIDA"
+    },
+    {
+      "solicitud": "27 · Crear preparación con nombre y temario",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 951,
+      "codigo": ""
+    },
+    {
+      "solicitud": "28 · Crear preparación sin Idempotency-Key (negativo)",
+      "esperado": 400,
+      "obtenido": 400,
+      "resultado": "OK",
+      "ms": 59,
+      "codigo": "CLAVE_IDEMPOTENCIA_REQUERIDA"
+    },
+    {
+      "solicitud": "29 · Listar preparaciones (varias por cuenta)",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 2326,
+      "codigo": ""
+    },
+    {
+      "solicitud": "30 · Plan determinista",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 831,
+      "codigo": ""
+    },
+    {
+      "solicitud": "31 · Editar temario (versión nueva del plan)",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 887,
+      "codigo": ""
+    },
+    {
+      "solicitud": "32 · Agregar preguntas al banco",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 1128,
+      "codigo": ""
+    },
+    {
+      "solicitud": "33 · Pregunta inválida (negativo)",
+      "esperado": 400,
+      "obtenido": 400,
+      "resultado": "OK",
+      "ms": 748,
+      "codigo": "ENTRADA_INVALIDA"
+    },
+    {
+      "solicitud": "34 · Banco sin soluciones (proyección)",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 1268,
+      "codigo": ""
+    },
+    {
+      "solicitud": "35 · Iniciar simulacro (hora del servidor)",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 1746,
+      "codigo": ""
+    },
+    {
+      "solicitud": "36 · Guardar una respuesta",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 1040,
+      "codigo": ""
+    },
+    {
+      "solicitud": "37 · Entregar y calificar en el servidor",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 853,
+      "codigo": ""
+    },
+    {
+      "solicitud": "38 · Responder tras la entrega (negativo)",
+      "esperado": 409,
+      "obtenido": 409,
+      "resultado": "OK",
+      "ms": 505,
+      "codigo": "INTENTO_CERRADO"
+    },
+    {
+      "solicitud": "39 · Historial de intentos",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 525,
+      "codigo": ""
+    },
+    {
+      "solicitud": "40 · Rendimiento por tema",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 539,
+      "codigo": ""
+    },
+    {
+      "solicitud": "41 · Crear tarjeta",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 481,
+      "codigo": ""
+    },
+    {
+      "solicitud": "42 · Repasar tarjeta (SM-2 en el servidor)",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 818,
+      "codigo": ""
+    },
+    {
+      "solicitud": "43 · Recursos del plan del mes",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 767,
+      "codigo": ""
+    },
+    {
+      "solicitud": "44 · Crear conversación con el tema",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 1396,
+      "codigo": ""
+    },
+    {
+      "solicitud": "45 · Consulta al Tutor con fuentes",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 1755,
+      "codigo": ""
+    },
+    {
+      "solicitud": "46 · Estado de la sesión",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 777,
+      "codigo": ""
+    },
+    {
+      "solicitud": "47 · Guardar estado (If-Match \"0\")",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 645,
+      "codigo": ""
+    },
+    {
+      "solicitud": "48 · Versión desactualizada (negativo)",
+      "esperado": 412,
+      "obtenido": 412,
+      "resultado": "OK",
+      "ms": 1229,
+      "codigo": "CONFLICTO_VERSION"
+    },
+    {
+      "solicitud": "49 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 59,
+      "codigo": ""
+    },
+    {
+      "solicitud": "50 · Cerrar sesión",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 729,
+      "codigo": ""
+    },
+    {
+      "solicitud": "51 · Preparaciones sin sesión (negativo)",
+      "esperado": 401,
+      "obtenido": 401,
+      "resultado": "OK",
+      "ms": 50,
+      "codigo": "NO_AUTENTICADO"
+    },
+    {
+      "solicitud": "52 · Obtener token CSRF",
+      "esperado": 200,
+      "obtenido": 200,
+      "resultado": "OK",
+      "ms": 34,
+      "codigo": ""
+    },
+    {
+      "solicitud": "53 · Registrar una segunda cuenta",
+      "esperado": 201,
+      "obtenido": 201,
+      "resultado": "OK",
+      "ms": 1029,
+      "codigo": ""
+    },
+    {
+      "solicitud": "54 · Preparación de otra cuenta (negativo)",
+      "esperado": 404,
+      "obtenido": 404,
+      "resultado": "OK",
+      "ms": 408,
+      "codigo": "RECURSO_NO_ENCONTRADO"
+    },
+    {
+      "solicitud": "55 · Intento de otra cuenta (negativo)",
+      "esperado": 404,
+      "obtenido": 404,
+      "resultado": "OK",
+      "ms": 547,
+      "codigo": "RECURSO_NO_ENCONTRADO"
+    },
+    {
+      "solicitud": "56 · Carpeta de otra cuenta (negativo)",
+      "esperado": 404,
+      "obtenido": 404,
+      "resultado": "OK",
+      "ms": 443,
+      "codigo": "RECURSO_NO_ENCONTRADO"
+    },
+    {
+      "solicitud": "57 · Conversación de otra cuenta (negativo)",
+      "esperado": 404,
+      "obtenido": 404,
+      "resultado": "OK",
+      "ms": 757,
+      "codigo": "RECURSO_NO_ENCONTRADO"
+    }
+  ]
+}

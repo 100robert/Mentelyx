@@ -24,9 +24,17 @@ const exigir = (cond, msg) => {
 const pedir = (ruta, init = {}) =>
   fetch(BASE + ruta, { redirect: 'manual', ...init, headers: { origin: ORIGEN, ...(cookie ? { cookie } : {}), ...init.headers } });
 const api = async (ruta, { metodo = 'GET', cuerpo, clave } = {}) => {
+  const proteccion = {};
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(metodo)) {
+    const csrf = await pedir('/api/v1/auth/csrf');
+    const token = await csrf.json();
+    const previa = csrf.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+    if (previa) proteccion.cookie = [cookie, previa].filter(Boolean).join('; ');
+    proteccion['x-csrf-token'] = token.data.token;
+  }
   const r = await pedir(`/api/v1${ruta}`, {
     method: metodo,
-    headers: { 'content-type': 'application/json', ...(clave ? { 'idempotency-key': clave } : {}) },
+    headers: { 'content-type': 'application/json', ...proteccion, ...(clave ? { 'idempotency-key': clave } : {}) },
     ...(cuerpo ? { body: JSON.stringify(cuerpo) } : {}),
   });
   const json = await r.json().catch(() => null);
@@ -43,13 +51,14 @@ let conversacionId;
 
 await paso('SSG · / (inicio estático)', async () => {
   const { r, texto } = await html('/');
-  exigir(r.status === 200 && texto.includes('Aprende con tus propias fuentes'), `estado ${r.status}`);
+  exigir(r.status === 200 && texto.includes('Todo empieza con una pregunta'), `estado ${r.status}`);
   return `200 · x-nextjs-cache=${r.headers.get('x-nextjs-cache') ?? '—'} · cache-control=${r.headers.get('cache-control')}`;
 });
 await paso('SSG · /planes (precios IM 15)', async () => {
   const { r, texto } = await html('/planes');
-  exigir(r.status === 200 && texto.includes('S/ 39,90') && texto.includes('S/ 89,90') && texto.includes('S/ 100'), 'faltan precios');
-  return '200 · Estándar S/ 39,90 · Premium S/ 89,90 · Docente Live S/ 100';
+  // ADR-093: Mentelyx V1 solo muestra los planes de aprendizaje; los docentes están pospuestos.
+  exigir(r.status === 200 && texto.includes('S/ 39,90') && texto.includes('S/ 89,90') && !texto.includes('Docente Live'), 'precios de V1 incorrectos');
+  return '200 · Estándar S/ 39,90 · Premium S/ 89,90 · sin planes docentes';
 });
 await paso('ISR · /biblioteca (revalidate 300 s)', async () => {
   const a = await html('/biblioteca');
@@ -99,7 +108,7 @@ await paso('Registro (Better Auth vía service binding)', async () => {
 });
 await paso('SSR autenticado · /espacios (sin caché compartida)', async () => {
   const { r, texto } = await html('/espacios');
-  exigir(r.status === 200 && texto.includes('Mis espacios') && texto.includes('Recursos de este mes'), `estado ${r.status}`);
+  exigir(r.status === 200 && texto.includes('Temas') && texto.includes('Recursos de este mes'), `estado ${r.status}`);
   const cc = r.headers.get('cache-control') ?? '';
   exigir(/private|no-store|no-cache/.test(cc), `cache-control ${cc}`);
   return `200 · plan Gratuito visible · cache-control=${cc}`;

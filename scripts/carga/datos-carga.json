@@ -1,0 +1,85 @@
+{
+  "base": "http://127.0.0.1:8792",
+  "cuentas": [
+    {
+      "correo": "carga-01@ejemplo.test",
+      "preparacionId": "fde5053e-e3a5-441b-8174-822f3a24454a"
+    },
+    {
+      "correo": "carga-02@ejemplo.test",
+      "preparacionId": "1edd3b2b-3f24-486d-bfa6-25395da1a15c"
+    },
+    {
+      "correo": "carga-03@ejemplo.test",
+      "preparacionId": "98552844-38d6-4d3c-8fa4-081a4c539658"
+    },
+    {
+      "correo": "carga-04@ejemplo.test",
+      "preparacionId": "ef89ab0b-2a8e-4b81-8bc4-fc9e322dc0da"
+    },
+    {
+      "correo": "carga-05@ejemplo.test",
+      "preparacionId": "e72acf31-6cf4-4f14-bcf6-5d413d48bd28"
+    },
+    {
+      "correo": "carga-06@ejemplo.test",
+      "preparacionId": "9881d000-7560-4089-be01-33800c208622"
+    },
+    {
+      "correo": "carga-07@ejemplo.test",
+      "preparacionId": "08138a4e-51d3-4ab0-a45c-456fe0bab7b4"
+    },
+    {
+      "correo": "carga-08@ejemplo.test",
+      "preparacionId": "835edfef-6a36-4a3d-9d5e-de1db2761684"
+    },
+    {
+      "correo": "carga-09@ejemplo.test",
+      "preparacionId": "33a48097-220c-48e7-bcac-a90e6503d15a"
+    },
+    {
+      "correo": "carga-10@ejemplo.test",
+      "preparacionId": "b982cbb6-1992-4d1e-aa2e-55f2d79e9607"
+    },
+    {
+      "correo": "carga-11@ejemplo.test",
+      "preparacionId": "e929494f-8ff7-4d99-9756-187adbe1b205"
+    },
+    {
+      "correo": "carga-12@ejemplo.test",
+      "preparacionId": "d6c2e030-351f-4829-b8c7-87bda2cad129"
+    },
+    {
+      "correo": "carga-13@ejemplo.test",
+      "preparacionId": "dc151e9a-b357-4d35-bcf7-35d6f1825aa2"
+    },
+    {
+      "correo": "carga-14@ejemplo.test",
+      "preparacionId": "ce45ba47-d65f-408d-bf73-f70cf34b9ef6"
+    },
+    {
+      "correo": "carga-15@ejemplo.test",
+      "preparacionId": "f31e1698-4216-4b6d-8468-91ee95f282ac"
+    },
+    {
+      "correo": "carga-16@ejemplo.test",
+      "preparacionId": "ef3040fc-6b36-401f-b678-436373af8e31"
+    },
+    {
+      "correo": "carga-17@ejemplo.test",
+      "preparacionId": "5f2baa31-b3d3-4626-8f50-988cd61051c2"
+    },
+    {
+      "correo": "carga-18@ejemplo.test",
+      "preparacionId": "575d9df8-86d8-400d-8bf3-934d592c81de"
+    },
+    {
+      "correo": "carga-19@ejemplo.test",
+      "preparacionId": "7b4bc7a9-8b2f-4b22-87dd-55eebfd450e5"
+    },
+    {
+      "correo": "carga-20@ejemplo.test",
+      "preparacionId": "f5b6200b-2976-4da8-b133-110996064bc3"
+    }
+  ]
+}

@@ -197,7 +197,7 @@ describe('pizarra: contexto para el Tutor', () => {
       pantalla: 'Me preparo para el examen.',
     });
     expect(c.modo).toBe('PISTA');
-    expect(c.visible).toBe('Revisión de mi intento: Revisa mi intento sobre Ecuaciones lineales');
+    expect(c.visible).toBe('Revisión de mi intento: Ecuaciones lineales');
     expect(c.pregunta).toContain('L1: 2x = 7 - 3\nL2: x = 5');
     expect(c.pregunta).toContain('[B1] Actividad');
     expect(c.pregunta).toContain('2 trazos o formas a mano que Mentelyx no interpreta');
@@ -224,6 +224,8 @@ describe('pizarra: acciones pedagógicas', () => {
     expect(modosPara(tipo)).not.toContain('siguiente');
     expect(tipoActividad([historia.bloque], true)).toBe('resolucion');
     expect(accionesPara('resolucion')).toEqual(expect.arrayContaining(['pista', 'empezar', 'siguiente', 'revisar']));
+    const propio = bloqueEjercicio('Resuelve 2x + 3 = 7', 0);
+    expect(propio.ok && tipoActividad([propio.bloque], false)).toBe('resolucion');
   });
   it('el papel de una respuesta se recupera del rótulo de su pregunta', () => {
     expect(rolDeTitulo('Pista: Dame una pista sobre derivadas')).toBe('Pista');

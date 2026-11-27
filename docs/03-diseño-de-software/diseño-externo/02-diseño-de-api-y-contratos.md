@@ -1161,3 +1161,38 @@ Para cada dependencia pendiente: quién la consume, qué servicio del frontend l
 - **Recursos de plan sin función:** razonamiento profundo, evaluaciones de 15 preguntas e ilustraciones no tienen consumidor en ningún módulo.
   - La interfaz los muestra con su límite aprobado y la marca «aún no disponible»: `RECURSOS_AUN_NO_DISPONIBLES` en `frontend/src/features/planes/planes.ts`, usado en `frontend/src/app/(public)/planes/page.tsx` y `frontend/src/app/(aprendizaje)/configuracion/page.tsx`.
   - Al integrar cada función (M3 para evaluaciones, M6 para razonamiento e ilustraciones), se quita de esa lista; la prueba `frontend/src/features/planes/tests/planes.unit.test.ts` protege precios y límites.
+
+### 12.12. Pizarra educativa: lo que usa y el contrato que falta (27/11/2026)
+
+**Qué usa la pizarra hoy, sin rutas nuevas:**
+
+| Necesidad | Contrato vigente |
+|---|---|
+| Respuestas del Tutor como bloques | `POST /tutor-ia/consultas` (12.4), con `modo: PISTA` para pista, siguiente paso, resolver juntos y revisar el intento; `AUTO` para el resto |
+| Papel de cada respuesta (pista, revisión, resolución completa…) | Rótulo al inicio de la pregunta guardada («Pista: …»); se recupera al reconstruir la sesión desde los mensajes |
+| Ejercicio, ecuación, gráfico, tabla, modelo 3D y documento propios | `bloquesPropios` (≤ 20) del `PUT /tutor-ia/conversaciones/{id}/estado` (12.5), validados con `mentelyx.bloque/v1` |
+| Interacción con los bloques | `interaccion` del mismo `PUT …/estado` |
+| Cancelar la espera | El cliente aborta la petición y conserva la `Idempotency-Key`: si el servidor terminó, reenviar la misma pregunta devuelve esa respuesta sin otro descuento |
+
+**Contrato que falta: capa de trabajo.** Los trazos a mano, las formas, los textos y expresiones escritos sobre la pizarra y las imágenes locales **no se guardan**. `Anotacion` (12.5) solo admite resaltados y notas rectangulares ancladas a un bloque. La interfaz lo dice: «Trazos: solo en esta pantalla». Esa capa se conserva en la memoria de la pestaña (nunca en `localStorage`) hasta recargar o cerrar sesión.
+
+**Propuesta para M6** (aditiva y compatible):
+- campo opcional `trabajo` en `GuardarEstadoSesionRequest`, hasta 1 000 elementos:
+  ```ts
+  Elemento =
+    | { id, tipo: 'trazo', pincel: 'lapiz'|'plumon'|'resaltador', puntos: number[] /* x,y,presión·100 enteros */, estilo, ancla? }
+    | { id, tipo: 'linea'|'flecha'|'rectangulo'|'circulo', desde: [x,y], hasta: [x,y], estilo, ancla? }
+    | { id, tipo: 'texto', en: [x,y], texto (≤ 400), expresion: boolean, tamano, etiqueta: /^L\d{1,3}$/, estilo, ancla? }
+  estilo = { color: token de la paleta funcional, grosor 1–40, opacidad 0,1–1 }
+  ancla = id de bloque
+  ```
+  Con `ancla`, las coordenadas son relativas al bloque.
+- **Tamaño:**
+  - el límite de 64 KB no alcanza para una sesión con escritura a mano, que ocupa entre 0,5 y 2 KB por trazo después de simplificarlo;
+  - se propone 512 KB solo para `trabajo`, o una ruta propia `PUT /tutor-ia/conversaciones/{id}/trabajo` con el mismo `If-Match`.
+- **Imágenes:** necesitan almacenamiento en R2, con dueño, límite y retención propios. Quedan fuera de V1.
+- **Prueba de aceptación:** dibujar, recargar y recuperar los mismos elementos; otra cuenta recibe 404; un estado mayor que el límite responde 400.
+
+**Riesgos:**
+- El Tutor no lee la escritura a mano. Solo recibe el texto escrito con el teclado (L1, L2…) y el número de trazos, y la interfaz lo dice.
+- Las marcas «El Tutor comentó L2» se basan en las menciones de la respuesta. No juzgan si la línea está bien o mal, y no se guardan.

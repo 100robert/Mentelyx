@@ -266,3 +266,23 @@ El fijo publicado para ventas Online es USD 0,20; se mantiene separado del porce
 - La caché pública (estáticos, SSG e ISR) está implementada y protege los datos privados con `private, no-store`.
 - La caché de datos con Redis sigue **diseñada, no implementada**: el hallazgo de carga (sección 26 del SDD) no se resuelve con ella, sino con *pooling* de conexiones.
 - No se incorporó Redis como caché sin una medición que lo justifique.
+
+**Resultados medidos (paquete OpenNext local, puerto 8793):**
+- SSG `/` y `/planes`: `HIT` desde la primera petición (66 y 44 ms; mediana 49 y 38 ms), `s-maxage=31536000`.
+- ISR `/biblioteca`: `HIT`, `s-maxage=229, stale-while-revalidate=2592000`.
+- Privadas: el SSR sin sesión redirige (307) y la API responde 401; ninguna respuesta con datos de la cuenta es cacheable.
+- **Hallazgo:** en local, los JS de `/_next/static` se sirven con `public, max-age=0, must-revalidate`, no con `immutable` como prevé la sección 2. En producción no está verificado; si se repite, hay que añadir la regla de cabeceras de *assets*.
+
+### 9.8. Límite de CPU de Workers y hash de contraseñas (Sprint 2, 27/11/2026)
+
+**Medición** (Node 24, `better-auth/crypto`, mismo algoritmo y coste que en producción):
+- crear el hash: 109–173 ms de CPU;
+- verificarlo: 93–140 ms de CPU.
+
+Es CPU real, no espera de red. El plan **Workers Free** limita cada petición a **10 ms de CPU**, así que el registro y el inicio de sesión no cabrían en él.
+
+**Decisión:** no se reduce el coste del hash para encajar en el plan gratuito. Las alternativas, sin contratar nada ahora:
+- Workers Paid (límite de CPU configurable), con autorización del propietario;
+- o delegar el hash a un servicio con más CPU, lo que añade una dependencia.
+
+Se deja como **bloqueo de despliegue** junto con R2 sin habilitar, el subdominio `workers.dev` sin crear y el *pooling* de conexiones (sección 9.7 y SDD, sección 26).

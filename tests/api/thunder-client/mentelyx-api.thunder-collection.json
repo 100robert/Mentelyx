@@ -1,66 +1,72 @@
 {
   "clientName": "Thunder Client",
-  "collectionName": "Mentelyx API (local)",
-  "collectionId": "890dcd77-0555-50af-a6c4-a3159290564f",
-  "dateExported": "2026-11-23T16:00:00.000Z",
+  "collectionName": "Mentelyx V1 · API",
+  "collectionId": "00000000-0000-4000-8000-000000000001",
+  "dateExported": "2026-11-27T00:00:00.000Z",
   "version": "1.2",
   "folders": [
     {
-      "_id": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "1 · Cuenta y sesión",
+      "_id": "00000000-0000-4000-8000-000000000100",
+      "name": "Plataforma",
       "containerId": "",
-      "created": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
       "sortNum": 10000
     },
     {
-      "_id": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "2 · Espacios y fuentes",
+      "_id": "00000000-0000-4000-8000-000000000101",
+      "name": "M1 · Usuarios y cuenta",
       "containerId": "",
-      "created": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
       "sortNum": 20000
     },
     {
-      "_id": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "3 · Tutor",
+      "_id": "00000000-0000-4000-8000-000000000102",
+      "name": "M2 · Contenidos y carpetas",
       "containerId": "",
-      "created": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
       "sortNum": 30000
     },
     {
-      "_id": "3cd535f6-3ca7-5b7b-8250-07774ada272e",
-      "name": "4 · Plan",
+      "_id": "00000000-0000-4000-8000-000000000103",
+      "name": "M3 · Preparación y evaluaciones",
       "containerId": "",
-      "created": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
       "sortNum": 40000
     },
     {
-      "_id": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "5 · Casos de error y autorización",
+      "_id": "00000000-0000-4000-8000-000000000104",
+      "name": "M5 · Derechos",
       "containerId": "",
-      "created": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
       "sortNum": 50000
     },
     {
-      "_id": "a9edc739-9085-51d1-ba4b-252e9f8047a0",
-      "name": "6 · Cierre",
+      "_id": "00000000-0000-4000-8000-000000000105",
+      "name": "M6 · Tutor IA",
       "containerId": "",
-      "created": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
       "sortNum": 60000
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000000106",
+      "name": "Seguridad · acceso indebido",
+      "containerId": "",
+      "created": "2026-11-27T00:00:00.000Z",
+      "sortNum": 70000
     }
   ],
   "requests": [
     {
-      "_id": "7eb516a1-1398-561e-9194-8c447e49d08c",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "Salud de la API",
-      "url": "{{base}}/salud",
+      "_id": "00000000-0000-4000-8000-000000001000",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000100",
+      "name": "01 · Salud y módulos montados",
+      "url": "{{baseUrl}}/salud",
       "method": "GET",
       "sortNum": 10000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [],
-      "params": [],
       "tests": [
         {
           "type": "res-code",
@@ -68,25 +74,148 @@
           "action": "equal",
           "value": "200"
         }
-      ]
+      ],
+      "docs": "Precondición: API local en ejecución. Esperado: HTTP 200. — · EQ-19"
     },
     {
-      "_id": "8201a72f-78b4-5f4e-aa67-8dea36359942",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "Registro (201 la primera vez; 400 si el correo ya existe)",
-      "url": "{{base}}/auth/registro",
-      "method": "POST",
+      "_id": "00000000-0000-4000-8000-000000001001",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000100",
+      "name": "02 · Contrato OpenAPI 3.1",
+      "url": "{{baseUrl}}/openapi.json",
+      "method": "GET",
       "sortNum": 20000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
         {
-          "name": "content-type",
-          "value": "application/json"
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
         }
       ],
-      "params": [],
+      "docs": "Precondición: —. Esperado: HTTP 200. — · EQ-08"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001002",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000100",
+      "name": "03 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 30000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
+        }
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001003",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "04 · Registro sin token CSRF (negativo)",
+      "url": "{{baseUrl}}/auth/registro",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Prueba Thunder\",\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "403"
+        }
+      ],
+      "docs": "Precondición: Sin X-CSRF-Token. Esperado: HTTP 403. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001004",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "05 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 50000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
+        }
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001005",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "06 · Registro de cuenta ficticia",
+      "url": "{{baseUrl}}/auth/registro",
+      "method": "POST",
+      "sortNum": 60000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Prueba Thunder\",\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
@@ -95,98 +224,196 @@
           "value": "201"
         }
       ],
+      "docs": "Precondición: Correo nuevo en el entorno. Esperado: HTTP 201. RF-01 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001006",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "07 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 70000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
+        }
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001007",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "08 · Registro duplicado (negativo)",
+      "url": "{{baseUrl}}/auth/registro",
+      "method": "POST",
+      "sortNum": 80000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"nombre\": \"{{nombre}}\",\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "raw": "{\n  \"nombre\": \"Prueba Thunder\",\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
         "form": []
-      }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "docs": "Precondición: Cuenta ya creada. Esperado: HTTP 400. RF-01 · —"
     },
     {
-      "_id": "92292662-43a3-5cfd-a38e-2624a39e9c3c",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "Sesión actual",
-      "url": "{{base}}/auth/sesion",
+      "_id": "00000000-0000-4000-8000-000000001008",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "09 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
       "method": "GET",
-      "sortNum": 30000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "sortNum": 90000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [],
-      "params": [],
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
         }
-      ]
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
     },
     {
-      "_id": "1a11fafb-78af-59b5-85fc-d80693b61212",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "Cerrar sesión",
-      "url": "{{base}}/auth/logout",
+      "_id": "00000000-0000-4000-8000-000000001009",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "10 · Inicio de sesión con contraseña incorrecta (negativo)",
+      "url": "{{baseUrl}}/auth/login",
       "method": "POST",
-      "sortNum": 40000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
+      "sortNum": 100000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
         {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
         }
-      ]
-    },
-    {
-      "_id": "7754a84f-3961-5a09-abdf-278107823acb",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "Sesión tras salir (401)",
-      "url": "{{base}}/auth/sesion",
-      "method": "GET",
-      "sortNum": 50000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"incorrecta-123\"\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "401"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "NO_AUTENTICADO"
-        }
-      ]
-    },
-    {
-      "_id": "741ea8ef-33d5-5f55-969f-f1fc89d5e56c",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "94c5ebd3-d571-5340-bffd-6e42007a7a1e",
-      "name": "Ingresar",
-      "url": "{{base}}/auth/login",
-      "method": "POST",
-      "sortNum": 60000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
         }
       ],
-      "params": [],
+      "docs": "Precondición: Cuenta creada. Esperado: HTTP 401. RF-02 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001010",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "11 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 110000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
+        }
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001011",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "12 · Inicio de sesión",
+      "url": "{{baseUrl}}/auth/login",
+      "method": "POST",
+      "sortNum": 120000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
@@ -195,29 +422,363 @@
           "value": "200"
         }
       ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
-        "form": []
-      }
+      "docs": "Precondición: Cuenta creada; Thunder guarda la cookie de sesión. Esperado: HTTP 200. RF-02 · —"
     },
     {
-      "_id": "f4dc9a14-c6c3-556a-8ea9-e5a79ff8fded",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Crear espacio",
-      "url": "{{base}}/espacios",
-      "method": "POST",
-      "sortNum": 70000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
+      "_id": "00000000-0000-4000-8000-000000001012",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "13 · Sesión vigente (nombre y correo)",
+      "url": "{{baseUrl}}/auth/sesion",
+      "method": "GET",
+      "sortNum": 130000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
         {
-          "name": "content-type",
-          "value": "application/json"
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
         }
       ],
-      "params": [],
+      "docs": "Precondición: Sesión iniciada. Esperado: HTTP 200. RF-02 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001013",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "14 · Perfil de la cuenta",
+      "url": "{{baseUrl}}/cuenta/me",
+      "method": "GET",
+      "sortNum": 140000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Sesión iniciada. Esperado: HTTP 200. RF-04 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001014",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "15 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 150000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
+        }
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001015",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "16 · Cambiar el nombre",
+      "url": "{{baseUrl}}/cuenta/me",
+      "method": "PATCH",
+      "sortNum": 160000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Prueba Thunder Editada\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 200. RF-04 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001016",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "17 · Guardar preferencias",
+      "url": "{{baseUrl}}/cuenta/me/preferencias",
+      "method": "PUT",
+      "sortNum": 170000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"profundidad\": \"intermedio\",\n  \"herramientasVisuales\": [\n    \"grafico\",\n    \"pasos\"\n  ],\n  \"idioma\": \"es\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 200. RF-42 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001017",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "18 · Preferencias inválidas (negativo)",
+      "url": "{{baseUrl}}/cuenta/me/preferencias",
+      "method": "PUT",
+      "sortNum": 180000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"profundidad\": \"experto\",\n  \"herramientasVisuales\": [],\n  \"idioma\": \"en\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 400. RF-42 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001018",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000101",
+      "name": "19 · Sesiones abiertas (sin tokens)",
+      "url": "{{baseUrl}}/auth/sesiones",
+      "method": "GET",
+      "sortNum": 190000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Sesión iniciada. Esperado: HTTP 200. RF-93 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001019",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "20 · Crear carpeta de Aprendizaje",
+      "url": "{{baseUrl}}/carpetas",
+      "method": "POST",
+      "sortNum": 200000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-carpeta-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"modulo\": \"APRENDIZAJE\",\n  \"nombre\": \"Física {{#number}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "{{carpetaId}}"
+        }
+      ],
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 201. ADR-093 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001020",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "21 · Crear carpeta de Exámenes",
+      "url": "{{baseUrl}}/carpetas",
+      "method": "POST",
+      "sortNum": 210000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-carpetaex-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"modulo\": \"EXAMENES\",\n  \"nombre\": \"Ciclo {{#number}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "{{carpetaExamenesId}}"
+        }
+      ],
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 201. ADR-093 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001021",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "22 · Listar carpetas de Aprendizaje",
+      "url": "{{baseUrl}}/carpetas?modulo=APRENDIZAJE&estado=ACTIVA",
+      "method": "GET",
+      "sortNum": 220000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Carpeta creada. Esperado: HTTP 200. ADR-093 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001022",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "23 · Crear un tema (espacio privado)",
+      "url": "{{baseUrl}}/espacios",
+      "method": "POST",
+      "sortNum": 230000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Derivadas\"\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
@@ -232,194 +793,80 @@
           "value": "{{espacioId}}"
         }
       ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"titulo\": \"Biología celular\"\n}",
-        "form": []
-      }
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 201. RF-101 · —"
     },
     {
-      "_id": "8e1b9051-2f86-59b0-8c6b-9ef7acf5de4a",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Listar mis espacios",
-      "url": "{{base}}/espacios",
-      "method": "GET",
-      "sortNum": 80000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ]
-    },
-    {
-      "_id": "04c20204-c993-534f-b12e-eae30e323460",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Agregar fuente (202, repetida: false)",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "_id": "00000000-0000-4000-8000-000000001023",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "24 · Registrar una fuente MD",
+      "url": "{{baseUrl}}/espacios/{{espacioId}}/fuentes",
       "method": "POST",
-      "sortNum": 90000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "sortNum": 240000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [
         {
-          "name": "content-type",
+          "name": "Content-Type",
           "value": "application/json"
         },
         {
-          "name": "idempotency-key",
-          "value": "fuente-{{espacioId}}"
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-fuente-{{#number}}"
         }
       ],
-      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"titulo\": \"Apuntes\",\n  \"formato\": \"MD\",\n  \"contenido\": \"La derivada de x² es 2x por la regla de la potencia.\"\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "202"
+        }
+      ],
+      "docs": "Precondición: Tema creado. Esperado: HTTP 202. RF-101, RF-102 · EQ-32"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001024",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "25 · Guardar el tema en la carpeta",
+      "url": "{{baseUrl}}/carpetas/{{carpetaId}}/elementos/{{espacioId}}",
+      "method": "PUT",
+      "sortNum": 250000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
         },
         {
-          "type": "set-env-var",
-          "custom": "json.data.contentId",
-          "action": "setto",
-          "value": "{{contentId}}"
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
         }
       ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"TXT\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
+        "raw": "{\n  \"tipo\": \"TEMA\"\n}",
         "form": []
-      }
-    },
-    {
-      "_id": "84e1deab-efcc-5d54-b2f8-abb9d01f9fe9",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Repetir la misma fuente con la misma clave (202, repetida: true)",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
-      "method": "POST",
-      "sortNum": 100000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "idempotency-key",
-          "value": "fuente-{{espacioId}}"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "202"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.data.repetida",
-          "action": "equal",
-          "value": "true"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"TXT\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "b5836327-5d8b-5d20-bddb-42cedbf86ad0",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Misma clave con otro cuerpo (diseño: 422; hoy responde 202)",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
-      "method": "POST",
-      "sortNum": 110000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "idempotency-key",
-          "value": "fuente-{{espacioId}}"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "422"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "CLAVE_IDEMPOTENCIA_REUTILIZADA"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"titulo\": \"Otro apunte\",\n  \"formato\": \"MD\",\n  \"contenido\": \"# Otro\\nTexto distinto.\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "d7431e39-9e12-5ebd-9956-1cdd6d5570df",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Ver espacio con sus fuentes y su estado",
-      "url": "{{base}}/espacios/{{espacioId}}",
-      "method": "GET",
-      "sortNum": 120000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ]
-    },
-    {
-      "_id": "6b8d23a8-fa72-519e-9166-7e0cc1b853ae",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Desmarcar la fuente para el Tutor",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes/{{contentId}}",
-      "method": "PATCH",
-      "sortNum": 130000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
+      },
       "tests": [
         {
           "type": "res-code",
@@ -428,60 +875,80 @@
           "value": "200"
         }
       ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"seleccionada\": false\n}",
-        "form": []
-      }
+      "docs": "Precondición: Carpeta y tema. Esperado: HTTP 200. ADR-093 · —"
     },
     {
-      "_id": "7d28c794-a3c9-578a-ac1f-2a7aa8a720f7",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "b00bf873-3369-5334-996c-6bead40a1227",
-      "name": "Volver a marcar la fuente",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes/{{contentId}}",
-      "method": "PATCH",
-      "sortNum": 140000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "_id": "00000000-0000-4000-8000-000000001025",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000102",
+      "name": "26 · Tema en carpeta de Exámenes (negativo)",
+      "url": "{{baseUrl}}/carpetas/{{carpetaExamenesId}}/elementos/{{espacioId}}",
+      "method": "PUT",
+      "sortNum": 260000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [
         {
-          "name": "content-type",
+          "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
         }
       ],
-      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"tipo\": \"TEMA\"\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
-          "value": "200"
+          "value": "400"
+        }
+      ],
+      "docs": "Precondición: Carpeta de Exámenes y tema. Esperado: HTTP 400. ADR-093 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001026",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "27 · Crear preparación con nombre y temario",
+      "url": "{{baseUrl}}/preparaciones",
+      "method": "POST",
+      "sortNum": 270000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-prep-{{#number}}"
         }
       ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"seleccionada\": true\n}",
+        "raw": "{\n  \"nombre\": \"Parcial Thunder\",\n  \"asignatura\": \"Cálculo I\",\n  \"fuente\": \"PERSONAL\",\n  \"minutosSemanales\": 180,\n  \"temas\": [\n    {\n      \"areaCodigo\": \"CALCULO\",\n      \"temaCodigo\": \"T01\",\n      \"titulo\": \"Derivadas\"\n    },\n    {\n      \"areaCodigo\": \"CALCULO\",\n      \"temaCodigo\": \"T02\",\n      \"titulo\": \"Límites\"\n    }\n  ]\n}",
         "form": []
-      }
-    },
-    {
-      "_id": "5c73a908-d865-5512-81ef-20ef229cb2ea",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Crear conversación en el espacio",
-      "url": "{{base}}/tutor-ia/conversaciones",
-      "method": "POST",
-      "sortNum": 150000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
+      },
       "tests": [
         {
           "type": "res-code",
@@ -493,640 +960,316 @@
           "type": "set-env-var",
           "custom": "json.data.id",
           "action": "setto",
-          "value": "{{conversacionId}}"
+          "value": "{{prepId}}"
         }
       ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"contexto\": {\n    \"superficie\": \"TUTOR\",\n    \"espacioId\": \"{{espacioId}}\"\n  },\n  \"usarApuntes\": true\n}",
-        "form": []
-      }
+      "docs": "Precondición: Sesión y token CSRF. Esperado: HTTP 201. RF-103 · EQ-16"
     },
     {
-      "_id": "9755b1f2-63ab-5aa6-bfdb-7033da230b6a",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Preguntar al Tutor (respuesta con citas)",
-      "url": "{{base}}/tutor-ia/consultas",
-      "method": "POST",
-      "sortNum": 160000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "idempotency-key",
-          "value": "consulta-{{conversacionId}}"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"conversacionId\": \"{{conversacionId}}\",\n  \"pregunta\": \"¿Dónde ocurre la fotosíntesis?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "cd5eeb47-2e1b-5af6-9147-adaa5aa62fdc",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Repetir la consulta con la misma clave (mismo resultado, sin costo)",
-      "url": "{{base}}/tutor-ia/consultas",
-      "method": "POST",
-      "sortNum": 170000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "idempotency-key",
-          "value": "consulta-{{conversacionId}}"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"conversacionId\": \"{{conversacionId}}\",\n  \"pregunta\": \"¿Dónde ocurre la fotosíntesis?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "890f1626-aa8c-5c58-83eb-e798b00ec70f",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Misma clave con otra pregunta (422)",
-      "url": "{{base}}/tutor-ia/consultas",
-      "method": "POST",
-      "sortNum": 180000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "idempotency-key",
-          "value": "consulta-{{conversacionId}}"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "422"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "CLAVE_IDEMPOTENCIA_REUTILIZADA"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"conversacionId\": \"{{conversacionId}}\",\n  \"pregunta\": \"¿Qué es el ciclo de Calvin?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "54bfbd42-c9e6-5793-af52-31cf1eca8f56",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Listar conversaciones",
-      "url": "{{base}}/tutor-ia/conversaciones",
-      "method": "GET",
-      "sortNum": 190000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ]
-    },
-    {
-      "_id": "abc98837-6bea-5366-8af3-edc58dd1039c",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Ver la conversación con sus mensajes y citas",
-      "url": "{{base}}/tutor-ia/conversaciones/{{conversacionId}}",
-      "method": "GET",
-      "sortNum": 200000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ]
-    },
-    {
-      "_id": "fcc656f3-8510-5639-b9cb-c0e600ad66c0",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "Eliminar la conversación",
-      "url": "{{base}}/tutor-ia/conversaciones/{{conversacionId}}",
-      "method": "DELETE",
-      "sortNum": 210000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ]
-    },
-    {
-      "_id": "11acb111-3e4d-56c2-be2b-b5a0c346e6fc",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "f0724d98-d0df-5b5f-a94a-62dd4ff5d7d5",
-      "name": "La conversación eliminada ya no existe (404)",
-      "url": "{{base}}/tutor-ia/conversaciones/{{conversacionId}}",
-      "method": "GET",
-      "sortNum": 220000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "404"
-        }
-      ]
-    },
-    {
-      "_id": "e8b5c6e9-bf7d-5b5e-8a45-3f626f94d2ce",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "3cd535f6-3ca7-5b7b-8250-07774ada272e",
-      "name": "Derechos y consumo del plan",
-      "url": "{{base}}/suscripciones/me/derechos",
-      "method": "GET",
-      "sortNum": 230000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ]
-    },
-    {
-      "_id": "ad415cf1-49fb-5c64-8771-a14cb6a4daf3",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Registro con contraseña de 5 caracteres (400)",
-      "url": "{{base}}/auth/registro",
-      "method": "POST",
-      "sortNum": 240000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "400"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "ENTRADA_INVALIDA"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"nombre\": \"Prueba\",\n  \"correo\": \"corta@example.com\",\n  \"contrasena\": \"12345\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "558fe08a-7c3a-5b17-a030-9fd33fe389bb",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Registro con un campo no permitido (400)",
-      "url": "{{base}}/auth/registro",
-      "method": "POST",
-      "sortNum": 250000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "400"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "ENTRADA_INVALIDA"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"nombre\": \"Prueba\",\n  \"correo\": \"extra@example.com\",\n  \"contrasena\": \"12345678\",\n  \"rol\": \"admin\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "25be2128-4c13-549e-b8e8-2ebe86f4fa0c",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Ingresar con contraseña incorrecta (401)",
-      "url": "{{base}}/auth/login",
-      "method": "POST",
-      "sortNum": 260000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "401"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "NO_AUTENTICADO"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"no-es-la-clave\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "85276b07-04de-5cd6-b5ad-847ab04726e4",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Origen no permitido en una petición con efectos (403)",
-      "url": "{{base}}/espacios",
-      "method": "POST",
-      "sortNum": 270000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "origin",
-          "value": "https://sitio-ajeno.example"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "403"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "NO_AUTORIZADO"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"titulo\": \"No debería crearse\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "6214e468-2ebb-5901-8769-254ac097138c",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Fuente sin Idempotency-Key (400)",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
+      "_id": "00000000-0000-4000-8000-000000001027",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "28 · Crear preparación sin Idempotency-Key (negativo)",
+      "url": "{{baseUrl}}/preparaciones",
       "method": "POST",
       "sortNum": 280000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [
         {
-          "name": "content-type",
+          "name": "Content-Type",
           "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
         }
       ],
-      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"X\",\n  \"asignatura\": \"X\",\n  \"fuente\": \"PERSONAL\",\n  \"minutosSemanales\": 180,\n  \"temas\": [\n    {\n      \"areaCodigo\": \"X\",\n      \"temaCodigo\": \"T01\",\n      \"titulo\": \"X\"\n    }\n  ]\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "400"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "CLAVE_IDEMPOTENCIA_REQUERIDA"
         }
       ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"TXT\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
-        "form": []
-      }
+      "docs": "Precondición: —. Esperado: HTTP 400. RF-92 · —"
     },
     {
-      "_id": "be9c9215-d3fe-5a80-aa11-7665961425ef",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Fuente en un formato no admitido (400)",
-      "url": "{{base}}/espacios/{{espacioId}}/fuentes",
-      "method": "POST",
+      "_id": "00000000-0000-4000-8000-000000001028",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "29 · Listar preparaciones (varias por cuenta)",
+      "url": "{{baseUrl}}/preparaciones",
+      "method": "GET",
       "sortNum": 290000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        },
-        {
-          "name": "idempotency-key",
-          "value": "pdf-{{espacioId}}"
-        }
-      ],
-      "params": [],
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
-          "value": "400"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "ENTRADA_INVALIDA"
+          "value": "200"
         }
       ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"titulo\": \"Apuntes de fotosíntesis\",\n  \"formato\": \"PDF\",\n  \"contenido\": \"La fotosíntesis ocurre en los cloroplastos de las células vegetales. La clorofila absorbe la luz y la convierte en energía química. En el estroma se fija el dióxido de carbono para formar glucosa (ciclo de Calvin).\"\n}",
-        "form": []
-      }
+      "docs": "Precondición: Preparación creada. Esperado: HTTP 200. RF-11 · —"
     },
     {
-      "_id": "f578afc9-f87e-5e1b-bafd-8bc696afec9e",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Espacio que no existe (404)",
-      "url": "{{base}}/espacios/00000000-0000-4000-8000-000000000000",
+      "_id": "00000000-0000-4000-8000-000000001029",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "30 · Plan determinista",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/plan",
       "method": "GET",
       "sortNum": 300000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [],
-      "params": [],
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
-          "value": "404"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "RECURSO_NO_ENCONTRADO"
+          "value": "200"
         }
-      ]
+      ],
+      "docs": "Precondición: Preparación creada. Esperado: HTTP 200. RF-08 · EQ-16"
     },
     {
-      "_id": "4741dea3-5e46-557f-8517-9d71a0732046",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Identificador que no es UUID (400)",
-      "url": "{{base}}/espacios/abc",
-      "method": "GET",
+      "_id": "00000000-0000-4000-8000-000000001030",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "31 · Editar temario (versión nueva del plan)",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/temario",
+      "method": "PUT",
       "sortNum": 310000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"temas\": [\n    {\n      \"id\": \"T01\",\n      \"titulo\": \"Derivadas\"\n    },\n    {\n      \"titulo\": \"Integrales\"\n    }\n  ]\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Preparación creada. Esperado: HTTP 200. RF-08 · EQ-16"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001031",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "32 · Agregar preguntas al banco",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/preguntas",
+      "method": "POST",
+      "sortNum": 320000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-banco-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"preguntas\": [\n    {\n      \"id\": \"q1\",\n      \"version\": 1,\n      \"tipo\": \"opcion-unica\",\n      \"tema\": \"Derivadas\",\n      \"dificultad\": \"basica\",\n      \"enunciado\": \"¿Derivada de x²?\",\n      \"origen\": \"persona\",\n      \"opciones\": [\n        {\n          \"id\": \"a\",\n          \"texto\": \"2x\"\n        },\n        {\n          \"id\": \"b\",\n          \"texto\": \"x\"\n        }\n      ],\n      \"correcta\": \"a\"\n    },\n    {\n      \"id\": \"q2\",\n      \"version\": 1,\n      \"tipo\": \"verdadero-falso\",\n      \"tema\": \"Límites\",\n      \"dificultad\": \"basica\",\n      \"enunciado\": \"lím x→∞ de 1/x es 0\",\n      \"origen\": \"persona\",\n      \"correcta\": true\n    }\n  ]\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        }
+      ],
+      "docs": "Precondición: Preparación creada. Esperado: HTTP 201. RF-105 · EQ-37"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001032",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "33 · Pregunta inválida (negativo)",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/preguntas",
+      "method": "POST",
+      "sortNum": 330000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-banco-malo-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"preguntas\": [\n    {\n      \"id\": \"q9\",\n      \"version\": 1,\n      \"tipo\": \"opcion-unica\",\n      \"tema\": \"X\",\n      \"dificultad\": \"basica\",\n      \"enunciado\": \"¿?\",\n      \"origen\": \"persona\",\n      \"opciones\": [\n        {\n          \"id\": \"a\",\n          \"texto\": \"a\"\n        },\n        {\n          \"id\": \"b\",\n          \"texto\": \"b\"\n        }\n      ],\n      \"correcta\": \"z\"\n    }\n  ]\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "400"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "ENTRADA_INVALIDA"
-        }
-      ]
-    },
-    {
-      "_id": "b39a1785-f95b-5ef4-b4dc-0cf32f2ab8ef",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Registrar una segunda cuenta (201, o 400 si ya existe)",
-      "url": "{{base}}/auth/registro",
-      "method": "POST",
-      "sortNum": 320000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
         }
       ],
-      "params": [],
-      "tests": [],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"nombre\": \"Otra cuenta\",\n  \"correo\": \"{{correo2}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
-        "form": []
-      }
+      "docs": "Precondición: Preparación creada. Esperado: HTTP 400. RF-105 · —"
     },
     {
-      "_id": "4ef11bec-b670-5765-a76d-d2623df79327",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Ingresar con la segunda cuenta",
-      "url": "{{base}}/auth/login",
-      "method": "POST",
-      "sortNum": 330000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "200"
-        }
-      ],
-      "body": {
-        "type": "json",
-        "raw": "{\n  \"correo\": \"{{correo2}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
-        "form": []
-      }
-    },
-    {
-      "_id": "33dd2bab-c779-5afb-84e3-87f0c0924f9a",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "La segunda cuenta no ve el espacio ajeno (404)",
-      "url": "{{base}}/espacios/{{espacioId}}",
+      "_id": "00000000-0000-4000-8000-000000001033",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "34 · Banco sin soluciones (proyección)",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/preguntas",
       "method": "GET",
       "sortNum": 340000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [],
-      "params": [],
-      "tests": [
-        {
-          "type": "res-code",
-          "custom": "",
-          "action": "equal",
-          "value": "404"
-        },
-        {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "RECURSO_NO_ENCONTRADO"
-        }
-      ]
-    },
-    {
-      "_id": "53f02d24-1356-5779-89b0-62d356d9563b",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "7dca89dc-a915-5aa5-a86f-571a3173e83d",
-      "name": "Volver a la cuenta principal",
-      "url": "{{base}}/auth/login",
-      "method": "POST",
-      "sortNum": 350000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [
-        {
-          "name": "content-type",
-          "value": "application/json"
-        }
-      ],
-      "params": [],
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "200"
+        }
+      ],
+      "docs": "Precondición: Banco con preguntas. Esperado: HTTP 200. RF-105 · EQ-37"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001034",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "35 · Iniciar simulacro (hora del servidor)",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/intentos",
+      "method": "POST",
+      "sortNum": 350000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-intento-{{#number}}"
         }
       ],
       "body": {
         "type": "json",
-        "raw": "{\n  \"correo\": \"{{correo}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "raw": "{\n  \"modo\": \"SIMULACRO\",\n  \"preguntaIds\": [\n    \"q1\",\n    \"q2\"\n  ],\n  \"minutos\": 20\n}",
         "form": []
-      }
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.intento.id",
+          "action": "setto",
+          "value": "{{intentoId}}"
+        }
+      ],
+      "docs": "Precondición: Banco con preguntas. Esperado: HTTP 201. RF-10 · EQ-15"
     },
     {
-      "_id": "c21d18a0-a69d-54ca-8a9d-b76fe35ac922",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "a9edc739-9085-51d1-ba4b-252e9f8047a0",
-      "name": "Cerrar sesión",
-      "url": "{{base}}/auth/logout",
-      "method": "POST",
+      "_id": "00000000-0000-4000-8000-000000001035",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "36 · Guardar una respuesta",
+      "url": "{{baseUrl}}/intentos/{{intentoId}}/respuestas/q1",
+      "method": "PUT",
       "sortNum": 360000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
-      "headers": [],
-      "params": [],
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"respuesta\": {\n    \"tipo\": \"opcion\",\n    \"id\": \"a\"\n  }\n}",
+        "form": []
+      },
       "tests": [
         {
           "type": "res-code",
@@ -1134,34 +1277,659 @@
           "action": "equal",
           "value": "200"
         }
-      ]
+      ],
+      "docs": "Precondición: Intento en curso. Esperado: HTTP 200. RF-09, RF-96 · EQ-15"
     },
     {
-      "_id": "bd41de2d-0238-5525-962a-f77901295794",
-      "colId": "890dcd77-0555-50af-a6c4-a3159290564f",
-      "containerId": "a9edc739-9085-51d1-ba4b-252e9f8047a0",
-      "name": "Mis espacios sin sesión (401)",
-      "url": "{{base}}/espacios",
-      "method": "GET",
+      "_id": "00000000-0000-4000-8000-000000001036",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "37 · Entregar y calificar en el servidor",
+      "url": "{{baseUrl}}/intentos/{{intentoId}}/entrega",
+      "method": "POST",
       "sortNum": 370000,
-      "created": "2026-11-23T16:00:00.000Z",
-      "modified": "2026-11-23T16:00:00.000Z",
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-entrega-{{#number}}"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Intento en curso. Esperado: HTTP 200. RF-10, RF-96 · EQ-15, EQ-37"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001037",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "38 · Responder tras la entrega (negativo)",
+      "url": "{{baseUrl}}/intentos/{{intentoId}}/respuestas/q2",
+      "method": "PUT",
+      "sortNum": 380000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"respuesta\": {\n    \"tipo\": \"booleano\",\n    \"valor\": true\n  }\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "409"
+        }
+      ],
+      "docs": "Precondición: Intento entregado. Esperado: HTTP 409. RF-96 · EQ-15"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001038",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "39 · Historial de intentos",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/intentos",
+      "method": "GET",
+      "sortNum": 390000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
       "headers": [],
-      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Intento entregado. Esperado: HTTP 200. RF-11 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001039",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "40 · Rendimiento por tema",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/resultados",
+      "method": "GET",
+      "sortNum": 400000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Intento entregado. Esperado: HTTP 200. RF-11 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001040",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "41 · Crear tarjeta",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}/tarjetas",
+      "method": "POST",
+      "sortNum": 410000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-tarjeta-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"tema\": \"Derivadas\",\n  \"anverso\": \"d/dx sen x\",\n  \"reverso\": \"cos x\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.tarjeta.id",
+          "action": "setto",
+          "value": "{{tarjetaId}}"
+        }
+      ],
+      "docs": "Precondición: Preparación creada. Esperado: HTTP 201. RF-09 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001041",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000103",
+      "name": "42 · Repasar tarjeta (SM-2 en el servidor)",
+      "url": "{{baseUrl}}/tarjetas/{{tarjetaId}}/revisiones",
+      "method": "POST",
+      "sortNum": 420000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-repaso-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"calificacion\": \"BIEN\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Tarjeta creada. Esperado: HTTP 200. RF-09 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001042",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000104",
+      "name": "43 · Recursos del plan del mes",
+      "url": "{{baseUrl}}/suscripciones/me/derechos",
+      "method": "GET",
+      "sortNum": 430000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Sesión iniciada. Esperado: HTTP 200. RF-14, RF-43 · EQ-30"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001043",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000105",
+      "name": "44 · Crear conversación con el tema",
+      "url": "{{baseUrl}}/tutor-ia/conversaciones",
+      "method": "POST",
+      "sortNum": 440000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"contexto\": {\n    \"superficie\": \"TUTOR\",\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.id",
+          "action": "setto",
+          "value": "{{convId}}"
+        }
+      ],
+      "docs": "Precondición: Tema con fuente. Esperado: HTTP 201. RF-42 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001044",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000105",
+      "name": "45 · Consulta al Tutor con fuentes",
+      "url": "{{baseUrl}}/tutor-ia/consultas",
+      "method": "POST",
+      "sortNum": 450000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "Idempotency-Key",
+          "value": "thunder-consulta-{{#number}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"conversacionId\": \"{{convId}}\",\n  \"pregunta\": \"¿Cuál es la derivada de x²?\",\n  \"fuentes\": {\n    \"espacioId\": \"{{espacioId}}\"\n  }\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Conversación creada. En local responde el proveedor SIMULADO (rotulado); en el perfil externo, NVIDIA. Esperado: HTTP 200. RF-42 · EQ-11, EQ-33"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001045",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000105",
+      "name": "46 · Estado de la sesión",
+      "url": "{{baseUrl}}/tutor-ia/conversaciones/{{convId}}/estado",
+      "method": "GET",
+      "sortNum": 460000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Conversación creada. Esperado: HTTP 200. RF-112 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001046",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000105",
+      "name": "47 · Guardar estado (If-Match \"0\")",
+      "url": "{{baseUrl}}/tutor-ia/conversaciones/{{convId}}/estado",
+      "method": "PUT",
+      "sortNum": 470000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "If-Match",
+          "value": "\"0\""
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"interaccion\": {},\n  \"anotaciones\": []\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Estado sin guardar. Esperado: HTTP 200. RF-112 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001047",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000105",
+      "name": "48 · Versión desactualizada (negativo)",
+      "url": "{{baseUrl}}/tutor-ia/conversaciones/{{convId}}/estado",
+      "method": "PUT",
+      "sortNum": 480000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        },
+        {
+          "name": "If-Match",
+          "value": "\"0\""
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"interaccion\": {},\n  \"anotaciones\": []\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "412"
+        }
+      ],
+      "docs": "Precondición: Estado ya guardado en versión 1. Esperado: HTTP 412. RF-112 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001048",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "49 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 490000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
+        }
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001049",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "50 · Cerrar sesión",
+      "url": "{{baseUrl}}/auth/logout",
+      "method": "POST",
+      "sortNum": 500000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "docs": "Precondición: Sesión iniciada. Esperado: HTTP 200. RF-02 · —"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001050",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "51 · Preparaciones sin sesión (negativo)",
+      "url": "{{baseUrl}}/preparaciones",
+      "method": "GET",
+      "sortNum": 510000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
       "tests": [
         {
           "type": "res-code",
           "custom": "",
           "action": "equal",
           "value": "401"
+        }
+      ],
+      "docs": "Precondición: Sesión cerrada. Esperado: HTTP 401. RF-04 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001051",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "52 · Obtener token CSRF",
+      "url": "{{baseUrl}}/auth/csrf",
+      "method": "GET",
+      "sortNum": 520000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
         },
         {
-          "type": "json-query",
-          "custom": "json.error.code",
-          "action": "equal",
-          "value": "NO_AUTENTICADO"
+          "type": "set-env-var",
+          "custom": "json.data.token",
+          "action": "setto",
+          "value": "{{csrf}}"
         }
-      ]
+      ],
+      "docs": "Precondición: Ninguna (antes de cada mutación tras iniciar o cerrar sesión). Esperado: HTTP 200. RF-93 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001052",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "53 · Registrar una segunda cuenta",
+      "url": "{{baseUrl}}/auth/registro",
+      "method": "POST",
+      "sortNum": 530000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Origin",
+          "value": "{{origin}}"
+        },
+        {
+          "name": "X-CSRF-Token",
+          "value": "{{csrf}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"nombre\": \"Otra Cuenta\",\n  \"correo\": \"{{correo2}}\",\n  \"contrasena\": \"{{contrasena}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        }
+      ],
+      "docs": "Precondición: Correo2 nuevo. Esperado: HTTP 201. RF-01 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001053",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "54 · Preparación de otra cuenta (negativo)",
+      "url": "{{baseUrl}}/preparaciones/{{prepId}}",
+      "method": "GET",
+      "sortNum": 540000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ],
+      "docs": "Precondición: Sesión de la segunda cuenta. Esperado: HTTP 404. RF-04 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001054",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "55 · Intento de otra cuenta (negativo)",
+      "url": "{{baseUrl}}/intentos/{{intentoId}}",
+      "method": "GET",
+      "sortNum": 550000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ],
+      "docs": "Precondición: Sesión de la segunda cuenta. Esperado: HTTP 404. RF-04, RF-11 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001055",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "56 · Carpeta de otra cuenta (negativo)",
+      "url": "{{baseUrl}}/carpetas/{{carpetaId}}/elementos",
+      "method": "GET",
+      "sortNum": 560000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ],
+      "docs": "Precondición: Sesión de la segunda cuenta. Esperado: HTTP 404. RF-04 · EQ-04"
+    },
+    {
+      "_id": "00000000-0000-4000-8000-000000001056",
+      "colId": "00000000-0000-4000-8000-000000000001",
+      "containerId": "00000000-0000-4000-8000-000000000106",
+      "name": "57 · Conversación de otra cuenta (negativo)",
+      "url": "{{baseUrl}}/tutor-ia/conversaciones/{{convId}}",
+      "method": "GET",
+      "sortNum": 570000,
+      "created": "2026-11-27T00:00:00.000Z",
+      "modified": "2026-11-27T00:00:00.000Z",
+      "headers": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ],
+      "docs": "Precondición: Sesión de la segunda cuenta. Esperado: HTTP 404. RF-04, RF-112 · EQ-04, EQ-32"
     }
   ]
 }

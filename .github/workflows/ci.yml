@@ -37,6 +37,27 @@ jobs:
       - name: Unitarias y arquitectura
         run: pnpm test
 
+  jest:
+    name: Jest · reglas de negocio y cobertura
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Jest con cobertura (statements, branches, functions, lines)
+        run: pnpm test:jest:cobertura
+      - name: Reporte de cobertura (HTML, JSON y resumen)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura-jest
+          path: docs/05-evaluacion-arquitectonica/evidencias/jest/cobertura
+
   integracion:
     name: MIG-04, integración y workerd
     runs-on: ubuntu-24.04
@@ -99,6 +120,30 @@ jobs:
           echo "Los Workers no arrancaron"; tail -50 "$RUNNER_TEMP/api.log" "$RUNNER_TEMP/web.log"; exit 1
       - name: Prueba de humo E2E (a través del frontend)
         run: node scripts/humo-e2e.mjs http://127.0.0.1:8788
+      - name: Índices y validador de MongoDB
+        run: node backend/scripts/preparar-mongo.mjs
+      - name: Flujos V1 (datos ficticios) a través del frontend
+        run: |
+          node scripts/sembrar-demo.mjs http://127.0.0.1:8787
+          node scripts/flujos-v1-e2e.mjs http://127.0.0.1:8788
+      - name: Contrato de la colección Thunder Client
+        run: node scripts/thunder/verificar-coleccion.mjs http://127.0.0.1:8787
+      - name: Exportar OpenAPI
+        run: curl -fsS http://127.0.0.1:8787/api/v1/openapi.json -o "$RUNNER_TEMP/openapi.json"
+      - uses: grafana/setup-k6-action@v1
+      - name: k6 · prueba de humo (2 VU, 30 s; proveedor de IA simulado)
+        run: |
+          node scripts/carga/preparar-datos-carga.mjs http://127.0.0.1:8787 4
+          k6 run -e ESCENARIO=humo -e BASE_URL=http://127.0.0.1:8787 -e SALIDA="$RUNNER_TEMP" scripts/carga/mentelyx-k6.js
+      - name: Evidencias (OpenAPI, Thunder y k6)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-e2e
+          path: |
+            ${{ runner.temp }}/openapi.json
+            ${{ runner.temp }}/humo-resumen.json
+            docs/05-evaluacion-arquitectonica/evidencias/thunder-client/verificacion-contrato.json
       - name: Registros si algo falla
         if: failure()
         run: tail -100 "$RUNNER_TEMP/api.log" "$RUNNER_TEMP/web.log" || true

@@ -9,6 +9,8 @@ import { ESTILO_INICIAL, nuevoId, siguienteEtiqueta, type Elemento, type Vec } f
  * guardan con la sesión (`bloquesPropios`, API 12.5, hasta 20). Todo pasa por `validarBloque`: si algo no valida, no se crea.
  */
 export const MAX_PROPIOS = 20;
+/** Título del ejercicio escrito por la persona: la pizarra lo trata como una resolución (pista, siguiente paso…). */
+export const TITULO_EJERCICIO = 'Tu ejercicio';
 export const VARIABLES = ['x', 'y', 'z', 't', 'a', 'b', 'c', 'n', 'k', 'm'] as const;
 
 export const idPropio = () => `p${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -101,7 +103,7 @@ export function bloqueDocumento(src: (typeof DOCUMENTOS_INSERTABLES)[number]['sr
 export function bloqueEjercicio(enunciado: string, orden: number): ResultadoInsercion {
   const t = enunciado.trim();
   if (t.length < 3) return { ok: false, mensaje: 'Escribe el enunciado del ejercicio.' };
-  return validar({ ...base('texto', 'Tu ejercicio', `Ejercicio propuesto por ti: ${t}`, orden), contenido: { markdown: t.slice(0, 20_000) } });
+  return validar({ ...base('texto', TITULO_EJERCICIO, `Ejercicio propuesto por ti: ${t}`, orden), contenido: { markdown: t.slice(0, 20_000) } });
 }
 
 /** Diagrama inicial editable (tres cajas unidas por flechas, con su texto) en la capa de trabajo, desde `en`. */

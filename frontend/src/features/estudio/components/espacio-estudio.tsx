@@ -174,7 +174,8 @@ export function EspacioEstudio(props: {
   const elegidas = fuentes?.filter((f) => f.seleccionada && f.estadoLectura === 'LISTA') ?? [];
   const delTutor = bloques.filter((b) => b.origen === 'tutor');
   const refDe = useCallback((bid: string) => `B${bloques.findIndex((b) => b.id === bid) + 1}`, [bloques]);
-  const lineas = useMemo(() => lineasDeTrabajo(p.elementos, new Map()), [p.elementos]);
+  // Orden de lectura del trabajo: por bloque (en el orden de la pizarra) y, dentro de cada uno, de arriba abajo.
+  const lineas = useMemo(() => lineasDeTrabajo(p.elementos, new Map(bloques.map((b, k) => [b.id, [0, (k + 1) * 1e6] as const]))), [p.elementos, bloques]);
   const citas = useMemo(() => bloques.flatMap((b) => (b.referencias ?? []).flatMap((r) => (r.tipo === 'cita' ? [{ bloque: b, r }] : []))), [bloques]);
 
   // Memoria de la pestaña (no localStorage): la capa de trabajo, los bloques propios y las marcas de revisión.
@@ -244,7 +245,11 @@ export function EspacioEstudio(props: {
   /* -------------------------------------------------- contexto */
   const enFoco = useMemo(() => {
     if (p.seleccion.bloques.length) return bloques.filter((b) => p.seleccion.bloques.includes(b.id));
-    return activo && !sinFoco ? [activo] : [];
+    if (sinFoco) return [];
+    // Sin elección explícita: el bloque activo, salvo que sea una respuesta del Tutor; entonces, lo último que no es del Tutor
+    // (el ejercicio o el contenido con que se está trabajando).
+    const implicito = activo && activo.origen !== 'tutor' ? activo : bloques.findLast((b) => b.origen !== 'tutor');
+    return implicito ? [implicito] : [];
   }, [p.seleccion.bloques, bloques, activo, sinFoco]);
   const lineasElegidas = p.seleccion.elementos.length ? lineas.filter((l) => p.seleccion.elementos.includes(l.id)) : sinTrabajo ? [] : lineas;
   const sinTexto = useMemo(() => {
@@ -254,10 +259,11 @@ export function EspacioEstudio(props: {
   }, [p.elementos, p.seleccion.elementos, sinTrabajo]);
   const actividad = tipoActividad(enFoco.length ? enFoco : bloques.slice(-3), lineas.some((l) => l.expresion));
   const modosDisponibles = modosPara(actividad, asistencia);
-  const [modo, setModo] = useState<ModoPedagogico>(() => recuerdo?.modo ?? modoInicial(tipoActividad(estado.bloques.slice(-3), false), asistencia));
-  useEffect(() => {
-    if (!modosDisponibles.includes(modo)) setModo(modosDisponibles[0] ?? 'aprender');
-  }, [modosDisponibles, modo]);
+  const [modoElegido, setModoElegido] = useState<ModoPedagogico | null>(recuerdo?.modo ?? null);
+  // Mientras la persona no elija, el modo sigue a la actividad (un ejercicio pasa a «Resolver juntos»).
+  const modoBase = modoElegido ?? modoInicial(actividad, asistencia);
+  const modo = modosDisponibles.includes(modoBase) ? modoBase : (modosDisponibles[0] ?? 'aprender');
+  const setModo = (m: ModoPedagogico) => setModoElegido(m);
 
   const contexto = (): ContextoConsulta => ({
     bloques: enFoco.map((b) => ({ ref: refDe(b.id), resumen: resumenBloque(b, estado.interaccion[b.id] ?? interaccionInicial(b)) })).filter((x) => x.resumen),

@@ -6,6 +6,7 @@ import { expresionALatex } from '../insercion';
 import {
   ajustarA,
   aMundo,
+  cajaDe,
   cajaEnMundo,
   caminoForma,
   caminoSuave,
@@ -136,6 +137,13 @@ export function SuperficiePizarra({
     const m = mundo.current;
     const s = superficie.current;
     if (!m || !s) return;
+    // Una vista nueva es absoluta: un desplazamiento nativo pendiente (scrollIntoView, foco) ya no cuenta.
+    for (const el of [s, s.parentElement]) {
+      if (el && (el.scrollTop || el.scrollLeft)) {
+        el.scrollTop = 0;
+        el.scrollLeft = 0;
+      }
+    }
     m.style.transition = animar && !reducido() ? 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)' : '';
     m.style.transform = `translate3d(${v.x}px, ${v.y}px, 0) scale(${v.escala})`;
     s.style.setProperty('--fondo-x', `${v.x}px`);
@@ -203,6 +211,24 @@ export function SuperficiePizarra({
   useLayoutEffect(() => {
     for (const el of mundo.current?.querySelectorAll<HTMLElement>('.pizarra-texto[data-el]') ?? []) medidas.current.set(el.dataset.el!, { w: el.offsetWidth, h: el.offsetHeight });
   }, [p.elementos, origenes]);
+  // Espacio reservado debajo de cada bloque para el trabajo anclado a él (como en un cuaderno).
+  useLayoutEffect(() => {
+    const c = columna.current;
+    if (!c) return;
+    const extension = new Map<string, number>();
+    for (const e of p.elementos) {
+      if (!e.ancla) continue;
+      const k = cajaDe(e, medidas.current);
+      extension.set(e.ancla, Math.max(extension.get(e.ancla) ?? 0, k.y + k.h));
+    }
+    for (const el of c.querySelectorAll<HTMLElement>('[data-bloque-pz]')) {
+      const fondo = extension.get(el.dataset.bloquePz!) ?? 0;
+      const extra = Math.max(0, Math.ceil(fondo - el.offsetHeight + 16));
+      const actual = el.style.marginBlockEnd;
+      const nuevo = extra ? `${extra}px` : '';
+      if (actual !== nuevo) el.style.marginBlockEnd = nuevo;
+    }
+  }, [p.elementos, origenes, claveContenido]);
 
   /* ---------------------------------------------------- controles */
   const centroMundo = useCallback((): Vec => {
@@ -275,6 +301,39 @@ export function SuperficiePizarra({
     };
   }, [p.controles, aplicarVista, enfocarCaja, centroMundo]);
 
+  // El navegador puede desplazar la superficie al enfocar o mostrar un elemento (Tab, buscar en la página): ese
+  // desplazamiento nativo se convierte en un desplazamiento de la vista, así las dos capas siguen alineadas.
+  useEffect(() => {
+    const s = superficie.current;
+    const area = s?.parentElement;
+    if (!s) return;
+    const absorber = (el: HTMLElement) => () => {
+      const dx = el.scrollLeft;
+      const dy = el.scrollTop;
+      if (!dx && !dy) return;
+      el.scrollLeft = 0;
+      el.scrollTop = 0;
+      tocada.current = true;
+      aplicarVista(desplazarVista(vista.current, -dx, -dy));
+    };
+    const enSuperficie = absorber(s);
+    // El área contiene también la barra y el zoom: su desplazamiento nativo solo se anula, no mueve la vista.
+    const enArea = area
+      ? () => {
+          if (area.scrollTop || area.scrollLeft) {
+            area.scrollTop = 0;
+            area.scrollLeft = 0;
+          }
+        }
+      : null;
+    s.addEventListener('scroll', enSuperficie);
+    if (area && enArea) area.addEventListener('scroll', enArea);
+    return () => {
+      s.removeEventListener('scroll', enSuperficie);
+      if (area && enArea) area.removeEventListener('scroll', enArea);
+    };
+  }, [aplicarVista]);
+
   /* --------------------------------------------- rueda y teclado */
   useEffect(() => {
     const s = superficie.current;
@@ -344,6 +403,16 @@ export function SuperficiePizarra({
 
   /* ------------------------------------------------- punteros */
   const bloqueBajo = (t: EventTarget | null) => ((t as Element | null)?.closest?.('[data-bloque-pz]') as HTMLElement | null)?.dataset.bloquePz ?? null;
+  const anclaPara = (pm: Vec): string | null => {
+    const col = columna.current;
+    if (!col) return null;
+    const x0 = col.offsetLeft;
+    if (pm[0] < x0 - 48 || pm[0] > x0 + col.offsetWidth + 48) return null;
+    let mejor: string | null = null;
+    let arriba = -Infinity;
+    for (const [id, c] of cajasBloques.current) if (c.y <= pm[1] && c.y > arriba) [mejor, arriba] = [id, c.y];
+    return mejor;
+  };
   const origenDe = (ancla: string | undefined): Vec => (ancla ? (origenesRef.current.get(ancla) ?? [0, 0]) : [0, 0]);
   const radio = () => 6 / vista.current.escala;
   const nodosDe = (ids: Iterable<string>) => {
@@ -393,7 +462,10 @@ export function SuperficiePizarra({
       }
     }
     const pm = enMundo(e.clientX, e.clientY);
-    const bloque = bloqueBajo(e.target);
+    const bloqueDirecto = bloqueBajo(e.target);
+    // Lo que se escribe sobre un bloque o debajo de él (en el ancho de la columna) le pertenece: se mueve con él y la
+    // pizarra le reserva espacio, así una respuesta nueva nunca cae encima del trabajo.
+    const bloque = bloqueDirecto ?? anclaPara(pm);
     const interactivo = !!(e.target as Element).closest(INTERACTIVO);
     let h: Herramienta = p.soloLectura ? 'seleccion' : p.herramienta;
     if (e.button === 1 || h === 'mano' || (e.pointerType === 'touch' && lapizVisto.current && h !== 'seleccion')) h = 'mano';
@@ -403,7 +475,8 @@ export function SuperficiePizarra({
       e.preventDefault();
       e.stopPropagation();
       s.setPointerCapture(e.pointerId);
-      s.focus({ preventScroll: true });
+      // El foco va a la pizarra (atajos y flechas) sin el anillo de foco del teclado.
+      s.focus({ preventScroll: true, focusVisible: false } as FocusOptions);
     };
 
     if (h === 'mano') {
@@ -422,10 +495,10 @@ export function SuperficiePizarra({
         return;
       }
       if (interactivo) return; // botones, deslizadores, el visor 3D… siguen funcionando
-      if (bloque) {
+      if (bloqueDirecto) {
         // Toque o clic sobre un bloque: lo elige al soltar sin moverse. Con el dedo, arrastrar desplaza la pizarra;
         // con el ratón, arrastrar selecciona texto como siempre.
-        gesto.current = { tipo: 'toque', x: e.clientX, y: e.clientY, bloque, id: e.pointerId, suma: e.shiftKey, pan: e.pointerType === 'touch', vista: vista.current };
+        gesto.current = { tipo: 'toque', x: e.clientX, y: e.clientY, bloque: bloqueDirecto, id: e.pointerId, suma: e.shiftKey, pan: e.pointerType === 'touch', vista: vista.current };
         if (e.pointerType === 'touch') s.setPointerCapture(e.pointerId);
         return;
       }

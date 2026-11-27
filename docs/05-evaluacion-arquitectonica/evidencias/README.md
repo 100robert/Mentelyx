@@ -11,11 +11,11 @@ Manual de ejecución y de las evidencias reales generadas el 27/11/2026 en el eq
 |---|---|---|
 | Código organizado por arquitectura | `backend/src/modules/<M1–M7>/{dominio,aplicacion,infraestructura,presentacion}`; correspondencia en el [SDD, sección 26.1](../../06-SDD/documento-de-diseño-de-software.md) | Verificado por ARQ-01 |
 | OpenAPI exportable | [openapi/openapi.json](openapi/openapi.json): 43 rutas, 56 operaciones, agrupadas por módulo | Generado desde los esquemas reales; la prueba de contrato lo compara con las rutas |
-| Swagger UI | http://localhost:8787/api/v1/docs (API) o http://localhost:8788/api/v1/docs (a través del frontend) | Funcional en local |
-| Jest y cobertura | `corepack pnpm test:jest:cobertura` → [jest/cobertura/index.html](jest/cobertura/index.html), `coverage-summary.json` y el resumen en la terminal | 6 suites, 58 pruebas |
+| Swagger UI | http://localhost:8787/api/v1/docs (API) o http://localhost:8788/api/v1/docs (a través del frontend) | Verificado (200) en la API de carga, http://127.0.0.1:8792/api/v1/docs |
+| Jest y cobertura | `corepack pnpm test:jest:cobertura` → [jest/cobertura/index.html](jest/cobertura/index.html), `coverage-summary.json` y el resumen en la terminal | 7 suites, 63/63 pruebas; cobertura: sentencias 61,61 %, ramas 50,56 %, funciones 59,23 %, líneas 70 % |
 | Pruebas Vitest existentes | `pnpm test` (unitarias), `pnpm test:integracion` (PostgreSQL y MongoDB reales) y `pnpm test:workers` | Se conservan |
-| Thunder Client | [tests/api/thunder-client](../../../tests/api/thunder-client/README.md): colección de 57 solicitudes, entorno y guía; contrato verificado en [thunder-client/verificacion-contrato.json](thunder-client/verificacion-contrato.json) | La ejecución gráfica la realiza el propietario |
-| k6 | `scripts/carga/` (script, datos, monitor, ejecutor y gráficas) → [k6/](k6/) | Ver la matriz de validación |
+| Thunder Client | [tests/api/thunder-client](../../../tests/api/thunder-client/README.md): colección de 57 solicitudes, entorno y guía; contrato verificado en [thunder-client/verificacion-contrato.json](thunder-client/verificacion-contrato.json) | 57/57 correctas contra la API local; la ejecución gráfica en VS Code la realiza el propietario |
+| k6 | `scripts/carga/` (script, datos, monitor, ejecutor y gráficas) → [k6/](k6/) | Máximo alcanzado: 869 VU (estrés); estable sin errores hasta 100 VU; saturación entre 100 y 250 VU. Ver la matriz de validación |
 | PostgreSQL (DBeaver) | [sql/consultas-dbeaver.sql](sql/consultas-dbeaver.sql) y [sql/explain-postgres.json](sql/explain-postgres.json) | Planes reales sobre la base de carga |
 | MongoDB (Compass) | [mongodb/procedimientos-compass.md](mongodb/procedimientos-compass.md) y [mongodb/explain-mongodb.json](mongodb/explain-mongodb.json) | Planes reales |
 | Caché | [cache/medicion-cache-local.json](cache/medicion-cache-local.json) y el análisis en infraestructura, sección 9.7 | Solo local |
@@ -43,7 +43,7 @@ bash scripts/carga/ejecutar-carga.sh "eq01 eq03 eq15 estres"
 node scripts/carga/graficar.mjs eq01 eq03 eq15 estres
 # 6. Planes de ejecución y caché
 node scripts/analisis/explicar-bases.mjs mentelyx_carga mentelyx_carga
-node scripts/analisis/medir-cache.mjs http://127.0.0.1:8788
+node scripts/analisis/medir-cache.mjs http://127.0.0.1:8793   # paquete OpenNext compilado; no usar `next dev`, que no aplica la caché
 ```
 
 **Distinciones:**

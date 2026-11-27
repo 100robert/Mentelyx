@@ -1,40 +1,60 @@
 {
   "clientName": "Thunder Client",
   "environmentName": "Mentelyx local",
-  "dateExported": "2026-11-23T16:00:00.000Z",
+  "dateExported": "2026-11-27T00:00:00.000Z",
   "version": "1.1",
   "folder": "",
   "variables": [
     {
-      "name": "base",
+      "name": "baseUrl",
       "value": "http://localhost:8787/api/v1"
     },
     {
-      "name": "nombre",
-      "value": "Estudiante Thunder"
+      "name": "origin",
+      "value": "http://localhost:8787"
     },
     {
       "name": "correo",
-      "value": "estudiante.thunder@example.com"
+      "value": "thunder-01@ejemplo.test"
     },
     {
       "name": "correo2",
-      "value": "otra.cuenta.thunder@example.com"
+      "value": "thunder-02@ejemplo.test"
     },
     {
       "name": "contrasena",
-      "value": "Prueba-Local-2026"
+      "value": "Thunder-Ficticia-2026"
+    },
+    {
+      "name": "csrf",
+      "value": ""
+    },
+    {
+      "name": "carpetaId",
+      "value": ""
+    },
+    {
+      "name": "carpetaExamenesId",
+      "value": ""
     },
     {
       "name": "espacioId",
       "value": ""
     },
     {
-      "name": "contentId",
+      "name": "prepId",
       "value": ""
     },
     {
-      "name": "conversacionId",
+      "name": "intentoId",
+      "value": ""
+    },
+    {
+      "name": "tarjetaId",
+      "value": ""
+    },
+    {
+      "name": "convId",
       "value": ""
     }
   ]

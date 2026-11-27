@@ -426,3 +426,5 @@
   .pz-info .solo-escritorio { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .pizarra-bloque-acciones { transition: none; } }
+/* Visores dentro de la pizarra: el estado activo es neutro (el verde queda para la herramienta activa y la selección). */
+.pz-espacio .visor-3d [aria-pressed="true"], .pz-espacio .visor-pdf [aria-pressed="true"] { border-color: var(--pz-texto); background: var(--pz-fondo); box-shadow: inset 0 -2px 0 var(--pz-accion); color: var(--pz-texto); }

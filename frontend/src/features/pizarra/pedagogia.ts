@@ -63,7 +63,8 @@ const PARA_RESOLVER: ReadonlySet<Bloque['tipo']> = new Set(['ejercicio', 'pasos'
 
 /** Resolución (hay un ejercicio, un procedimiento o una expresión) o explicación (historia, lectura, conceptos). */
 export function tipoActividad(enFoco: readonly Bloque[], hayExpresiones: boolean): Actividad {
-  return hayExpresiones || enFoco.some((b) => PARA_RESOLVER.has(b.tipo)) ? 'resolucion' : 'explicacion';
+  const ejercicioPropio = (b: Bloque) => b.origen === 'persona' && b.tipo === 'texto' && b.titulo === 'Tu ejercicio';
+  return hayExpresiones || enFoco.some((b) => PARA_RESOLVER.has(b.tipo) || ejercicioPropio(b)) ? 'resolucion' : 'explicacion';
 }
 
 /** Acciones rápidas que tienen sentido en la actividad: «Siguiente paso» o «Dame una pista» no aparecen en una lectura de historia. */
@@ -163,7 +164,7 @@ export function componerConsulta(o: {
   const modo = MODOS[accion?.modo ?? o.modo];
   const rotulo = accion?.rotulo ?? modo.rotulo;
   const escrito = o.texto.trim();
-  const tema = escrito || (accion ? `${accion.texto} sobre ${o.foco}` : o.foco);
+  const tema = escrito || o.foco;
   const visible = corte(rotulo ? `${rotulo}: ${tema}` : tema, 300);
   const instrucciones = [accion?.instruccion ?? modo.instruccion, sinSolucion ? 'Estoy preparando un examen: no me des la respuesta final, solo guíame.' : null].filter(Boolean).join(' ');
 

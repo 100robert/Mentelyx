@@ -27,15 +27,22 @@ if ! responde http://127.0.0.1:8788/; then
   for _ in $(seq 1 60); do responde http://127.0.0.1:8788/ && break; sleep 3; done
 fi
 
-if responde http://127.0.0.1:8788/ && responde http://127.0.0.1:8787/api/v1/salud; then
+# El frontend puede responder antes de enlazar el service binding con la API: se espera a /api/v1 por la web y se
+# precalientan las páginas principales (la primera compilación de wrangler dev tarda varios segundos).
+for _ in $(seq 1 40); do responde http://127.0.0.1:8788/api/v1/salud && break; sleep 3; done
+for ruta in / /auth/ingresar /planes; do curl -s -o /dev/null "http://127.0.0.1:8788$ruta"; done
+
+if responde http://127.0.0.1:8788/ && responde http://127.0.0.1:8787/api/v1/salud && responde http://127.0.0.1:8788/api/v1/salud; then
   cat <<'RUTAS'
 
 Mentelyx está listo:
   Inicio (landing) ........ http://localhost:8788/
   Crear cuenta ............ http://localhost:8788/auth/registro    (alias /registro)
   Ingresar ................ http://localhost:8788/auth/ingresar    (alias /login)
-  Dashboard ............... http://localhost:8788/espacios         (alias /dashboard; requiere sesión)
-  Conversaciones .......... http://localhost:8788/tutor
+  Inicio personal ......... http://localhost:8788/inicio           (alias /dashboard; requiere sesión)
+  Temas ................... http://localhost:8788/espacios
+  Experiencias ............ http://localhost:8788/aprendizaje/experiencias
+  Sesiones ................ http://localhost:8788/tutor
   Planes .................. http://localhost:8788/planes
   Biblioteca pública ...... http://localhost:8788/biblioteca
 RUTAS

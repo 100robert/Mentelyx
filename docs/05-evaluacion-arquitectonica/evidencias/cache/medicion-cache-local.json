@@ -1,0 +1,70 @@
+{
+  "base": "http://127.0.0.1:8793",
+  "fecha": "2026-11-27T15:11:17.426Z",
+  "nota": "Entorno local (workerd); no incluye la CDN de Cloudflare.",
+  "filas": [
+    {
+      "recurso": "SSG · landing /",
+      "estado": 200,
+      "primera_ms": 66,
+      "mediana_siguientes_ms": 49,
+      "cache_primera": "HIT",
+      "cache_siguientes": "HIT",
+      "cache_control": "s-maxage=31536000"
+    },
+    {
+      "recurso": "SSG · /planes",
+      "estado": 200,
+      "primera_ms": 44,
+      "mediana_siguientes_ms": 38,
+      "cache_primera": "HIT",
+      "cache_siguientes": "HIT",
+      "cache_control": "s-maxage=31536000"
+    },
+    {
+      "recurso": "ISR · /biblioteca (revalidate 300 s)",
+      "estado": 200,
+      "primera_ms": 50,
+      "mediana_siguientes_ms": 40,
+      "cache_primera": "HIT",
+      "cache_siguientes": "HIT",
+      "cache_control": "s-maxage=229, stale-while-revalidate=2592000"
+    },
+    {
+      "recurso": "Estático · bundle JS de Next",
+      "estado": 200,
+      "primera_ms": 33,
+      "mediana_siguientes_ms": 16,
+      "cache_primera": "HIT",
+      "cache_siguientes": "HIT",
+      "cache_control": "public, max-age=0, must-revalidate"
+    },
+    {
+      "recurso": "SSR privado · /examenes",
+      "estado": 307,
+      "primera_ms": 106,
+      "mediana_siguientes_ms": 21,
+      "cache_primera": "—",
+      "cache_siguientes": "—",
+      "cache_control": "—"
+    },
+    {
+      "recurso": "API pública · /api/v1/salud",
+      "estado": 200,
+      "primera_ms": 82,
+      "mediana_siguientes_ms": 70,
+      "cache_primera": "—",
+      "cache_siguientes": "—",
+      "cache_control": "—"
+    },
+    {
+      "recurso": "API privada · /api/v1/preparaciones",
+      "estado": 401,
+      "primera_ms": 147,
+      "mediana_siguientes_ms": 56,
+      "cache_primera": "—",
+      "cache_siguientes": "—",
+      "cache_control": "—"
+    }
+  ]
+}

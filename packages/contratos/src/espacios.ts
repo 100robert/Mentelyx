@@ -6,7 +6,12 @@ import { z } from './zod';
 export const LIMITE_FUENTE_TEXTO_BYTES = 200_000;
 
 export const EstadoEspacio = z.enum(['ACTIVO', 'ARCHIVADO']);
-export const FormatoFuenteTexto = z.enum(['TXT', 'MD']);
+/**
+ * PDF (V1, 27/11/2026; API 12.6): el navegador extrae el texto con PDF.js, página por página, y lo envía con marcadores
+ * «[Página N]». El servidor lo indexa igual que un TXT (mismo RAG y mismos permisos); el original no se sube y las
+ * páginas sin texto (escaneadas) quedan sin indexar porque no hay OCR.
+ */
+export const FormatoFuenteTexto = z.enum(['TXT', 'MD', 'PDF']);
 export const EstadoLectura = z.enum(['PENDIENTE', 'INDEXANDO', 'LISTA', 'FALLIDA']);
 
 export const CrearEspacioRequest = z.strictObject({ titulo: z.string().trim().min(1).max(200) });

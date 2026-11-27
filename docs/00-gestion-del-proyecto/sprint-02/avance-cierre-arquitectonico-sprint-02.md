@@ -1090,3 +1090,132 @@ V1 sigue sin estar completa.
 4. El hash de contraseñas (scrypt, unos 83 ms) supera la CPU de Workers Free.
 
 **Siguiente acción exacta:** que el propietario habilite R2 y registre el subdominio workers.dev, y decida la estrategia de Atlas para Workers. Después, `wrangler secret bulk` y `wrangler deploy --env demostracion`, con autorización explícita.
+
+## 25. Corrección del entorno educativo: pizarra interactiva (27/11/2026, Claude Code)
+
+**Instrucción:** el espacio educativo deja de ser un chat de tres columnas y pasa a ser una pizarra donde la persona escribe y resuelve con el Tutor. No se modificó la landing ni el backend, no hubo commits y no se usaron credenciales.
+
+**Revisión previa:**
+- La tarea Full Stack (secciones 23–24) terminó a las 00:53, sin actividad después.
+- Se conservaron sus contratos: estado de sesión con `If-Match`, `bloquesPropios`, `modo: PISTA`, `crearConversacion` con examen y `packages/contratos/src/educacion`.
+
+**Implementado (frontend):**
+- **`frontend/src/features/pizarra/`** (nueva):
+  - `modelo.ts`: geometría, selección, borrador, historial, vista y anclas;
+  - `pedagogia.ts`: 6 modos, 7 acciones rápidas según la actividad, contexto sin soluciones y rótulos;
+  - `insercion.ts`: bloques propios validados y diagrama;
+  - `persistencia.ts` y `memoria.ts`: memoria de la pestaña, nunca `localStorage`;
+  - componentes: superficie con Pointer Events y presión, barra de herramientas, zoom, entrada del Tutor con botón + y fichas, paneles y diálogo de inserción.
+- **`features/estudio`:**
+  - `espacio-estudio.tsx` reescrito con la nueva composición;
+  - `use-estado-sesion.ts` guarda y restaura `bloquesPropios`;
+  - `tutor-api.ts` envía `modo` y permite cancelar.
+- **`lib/api-cliente.ts`:** `senal` (AbortSignal) y el error `CANCELADA`.
+- **Iconos:** 26 nuevos.
+- **Apariencia:** claro por defecto en la pizarra si no hay una preferencia guardada (marca `data-apariencia`).
+- **Experiencia nueva `turquia`** (historia, caso de aceptación): solo fechas ampliamente establecidas y sin citas inventadas.
+- **Exámenes:** reutilizan la misma pizarra (estudio por tema), con la prop `asistencia` (`sin-solucion` o `ninguna`). El simulacro sigue sin Tutor.
+
+**Contrato faltante (diseño de API, 12.12):**
+- La capa de trabajo (trazos, formas, textos e imágenes) no se guarda, y la interfaz lo dice.
+- Se propone el campo `trabajo` o una ruta propia para M6.
+
+**Documentación:**
+- diseño de API 12.12;
+- interfaces v2.8, sección 14.
+
+**Pruebas:**
+- `pnpm test`: 190/190 (incluye 30 nuevas de la pizarra y 2 de la experiencia de historia);
+- `tsc` del frontend y ESLint de lo cambiado: OK;
+- `pnpm lint` global: 15 errores, todos en archivos nuevos de la otra tarea (`jest.config.cjs`, `scripts/carga/*`, `tests/jest/*`), sin tocar.
+
+**Recorrido en Chrome por CDP** (local; API y web en el contenedor; proveedor simulado y rotulado):
+- 56 de 57 comprobaciones correctas;
+- el único fallo fue `net::ERR_NO_BUFFER_SPACE`, un error de red de Windows durante una precarga de Next.js, no de la aplicación.
+
+**Qué cubre:**
+- pizarra vacía, ejercicio propio guardado y la sesión en la URL;
+- trabajo L1–L3, trazo, forma, deshacer y rehacer, y borrador;
+- zoom común a las dos capas y rueda;
+- pista y revisión, sin que la respuesta caiga encima del trabajo;
+- menú + y modelo 3D, conversación bajo demanda, y recarga con bloques propios y respuestas;
+- historia anotada y encuadre con «Ampliar»;
+- oscuro guardado, claro para quien llega con el sistema en oscuro;
+- tableta (desplazar y dibujar con el dedo) y móvil sin desborde;
+- teclado y nombres accesibles;
+- axe sin violaciones en la pizarra vacía, en la historia (claro y oscuro) y en móvil.
+
+Evidencias en `.hallmark/v1-pizarra/`.
+
+**Corregido durante la validación:**
+- trabajo anclado al bloque, con espacio reservado debajo;
+- desplazamiento nativo del navegador absorbido por la vista;
+- un ejercicio propio cuenta como resolución;
+- el modo sigue a la actividad.
+
+**Pendiente:**
+- contrato `trabajo` en M6;
+- imágenes en R2;
+- pruebas con lectores de pantalla y con lápiz real en tableta.
+
+## 26. Cierre del Sprint 2 de Arquitectura de Software: implementación y validación (27/11/2026, Claude Code)
+
+**Instrucción:** cumplir las actividades y entregables de la docente sin ampliar el alcance. Datos ficticios; base de carga aislada `mentelyx_carga`; sin carga contra NVIDIA, Neon ni Atlas; sin push ni despliegue.
+
+**Entregables (índice y manual en `docs/05-evaluacion-arquitectonica/evidencias/README.md`):**
+- **OpenAPI 3.1:**
+  - generado desde los esquemas Zod reales y agrupado por módulo, con los esquemas de seguridad (cookie de sesión y CSRF);
+  - Swagger UI en `/api/v1/docs` (`backend/src/shared/openapi.ts`);
+  - exportado a `evidencias/openapi/openapi.json`: 43 rutas, 56 operaciones;
+  - la prueba de contrato sigue en verde.
+- **Jest 30** (nuevo; antes solo había Vitest):
+  - `jest.config.cjs` y `tests/jest/` (7 suites);
+  - cobertura real sobre el alcance declarado (dominio y aplicación de los módulos, contratos educativos, seguridad transversal y adaptadores de IA) en `evidencias/jest/cobertura/`.
+  - Jest encontró y corrigió un defecto real: la `procedencia` descartada se guardaba como `null`.
+- **Thunder Client:**
+  - colección consolidada en `tests/api/thunder-client/` (57 solicitudes; sustituye la del 23/11, que no enviaba CSRF y queda en Git);
+  - verificada como contrato con `scripts/thunder/verificar-coleccion.mjs`.
+- **k6** (`scripts/carga/`):
+  - escenarios EQ-01, EQ-03 y EQ-15, estrés progresivo y diagnóstico de saturación;
+  - series CSV, monitor de recursos, gráficas SVG y tablas por etapa en `evidencias/k6/`.
+- **Bases de datos:**
+  - consultas de DBeaver y procedimientos de Compass;
+  - planes reales (`explain-postgres.json`, `explain-mongodb.json`);
+  - análisis en el diseño de persistencia, sección 16.
+- **Caché:** medición local de caché fría y caliente; análisis en infraestructura, sección 9.7.
+- **SOLID y patrones** con evidencia en el código: principios, sección 12 bis; patrones, sección final.
+- **SDD**, sección 26: correspondencia entre arquitectura y código y 10 especificaciones (SDD-V1-01 a 10).
+- **Matriz AC/EQ** con resultados reales: evaluación de atributos de calidad, sección 6.
+- **CI:** nuevo job de Jest con cobertura; E2E con flujos V1, Thunder, k6 de humo y OpenAPI. Configurado y **pendiente de ejecución remota**.
+
+**Hallazgos de la validación:**
+1. **Rendimiento (EQ-01, EQ-03 y EQ-15 no cumplen en local).**
+   - Las operaciones con bases saturan en unas 4–6 solicitudes/s, ya con 50 VU.
+   - El diagnóstico atribuye el límite a la apertura de conexiones a PostgreSQL y MongoDB en cada petición: `/salud` sin bases atiende 152 solicitudes/s.
+   - La táctica, sin implementar, es *pooling* (Hyperdrive o Neon pooled; reutilizar la conexión de Mongo).
+2. **EQ-20.** Los fallos de conexión respondían 500. Se corrigió a 503 `SERVICIO_NO_DISPONIBLE` con `Retry-After` y prueba Jest, pero la carga no se repitió para medirlo.
+3. **Integridad bajo carga (EQ-15):** 0 respuestas perdidas y 0 intentos de otro estudiante, con 200 intentos calificados.
+
+**Advertencia metodológica:** `wrangler dev` recargó el Worker al editarse el código durante EQ-01 (00:28) y EQ-03 (00:39 y 00:41). EQ-15 y el estrés corrieron sin recargas. Docker se reinició durante una pausa entre turnos (cerca de las 05:37), y los datos persistieron: 393 intentos en la base de carga y los bancos en Mongo.
+
+**Resultados reales (regresión final, 27/11/2026):**
+- `typecheck` OK; `lint` 0 errores (se corrigieron los 15 que señala la sección 25, todos de esta tarea: globals de k6 y Jest, BOM y variables sin uso).
+- Vitest: unitarias 190/190 (incluye las de la pizarra), integración 62/62, Workers 5/5.
+- Jest: 7 suites, 63/63. Cobertura: sentencias 61,61 % (1 220/1 980), ramas 50,56 %, funciones 59,23 %, líneas 70 %.
+- Thunder (verificador de contrato): 57/57 contra la API local.
+- k6:
+  - humo, 2 VU: 100 % de checks;
+  - EQ-01, EQ-03 y EQ-15: no cumplen el rendimiento; EQ-15 cumple la integridad;
+  - estrés: estable sin errores hasta 100 VU, saturación entre 100 y 250 VU, parada automática con 869 VU (2 000 no se alcanzaron).
+- EXPLAIN: todas las consultas frecuentes usan índices (PostgreSQL 10–23 ms; Mongo `IXSCAN`).
+- Caché (OpenNext local, 8793): SSG e ISR en `HIT`; privadas, nunca cacheables. Hallazgo: estáticos con `max-age=0` en local (infraestructura, 9.7).
+- Hash de contraseñas: 109–173 ms de CPU, frente a los 10 ms del plan Workers Free (infraestructura, 9.8). No se redujo su coste.
+
+**Pendiente (no realizado):**
+- *Pooling* de conexiones y repetición de EQ-01, EQ-03, EQ-15 y EQ-20 bajo carga;
+- ejecución remota del CI (requiere push autorizado);
+- ejecución gráfica de Thunder Client por el propietario;
+- bloqueos de despliegue: R2 sin habilitar, sin subdominio `workers.dev`, CPU de Workers Free, Atlas desde Workers con usuario de mínimo privilegio y rotación de credenciales;
+- EQ-45 y EQ-19 no ejecutados.
+
+**Sin commits, push, merge ni despliegue por esta tarea.** No se tocaron los archivos de la pizarra (sección 25) ni los procesos del propietario en los puertos 8787 y 8788.

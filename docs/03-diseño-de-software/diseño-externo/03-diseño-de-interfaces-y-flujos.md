@@ -2,7 +2,7 @@
 
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md`  
 > **Tecnología Cliente:** Next.js + React + TypeScript · **Enfoque:** *Mobile-First* e instalable como PWA  
-> **Versión:** 2.7 — 26/11/2026 · **Estado:** diseño externo de vistas, navegación y salvaguardas de interfaz. Implementado en parte: landing de Mentelyx V1, rutas públicas, acceso, espacio personal, temas con el espacio educativo, experiencias y Tutor (sección 4).
+> **Versión:** 2.8 — 27/11/2026 (espacio educativo como pizarra, sección 14) · **Estado:** diseño externo de vistas, navegación y salvaguardas de interfaz. Implementado en parte: landing de Mentelyx V1, rutas públicas, acceso, espacio personal, temas con el espacio educativo, experiencias y Tutor (sección 4).
 >
 > **Cambios de la versión 2.7:** auditoría y refinamiento (fase 10B). `/tutor/[id]` usa el mismo espacio educativo que los temas. Las migas de la barra superior nombran el módulo y no duplican las migas de cada página. La barra lateral se contrae en todas las pantallas del espacio educativo. La landing describe solo lo que el producto hace hoy. La corrección de expresiones se presenta como «equivalencia aproximada». Matriz de integración en el diseño de API, sección 12.11.
 >
@@ -865,3 +865,47 @@ Se conservan como referencia; no son decisiones vigentes. Fuente de la sustituci
 - Sección 9 (v2.1): distintivo «Manual · 0 créditos IA»; saldo Studio y oferta de planes Studio.
 - Sección 10 (v2.1): `SIN_CONTEXTO` como única salida sin fuentes y aviso de explicación general solo para materiales del curso.
 - Sección 12 (v2.1): UI-02 «créditos Live y Studio nunca en el mismo contador»; UI-03 «edición manual con 0 créditos»; UI-05 sin los 90 días; UI-07 sin imágenes ni 3D para menores.
+
+## 14. Espacio educativo como pizarra (27/11/2026)
+
+El espacio educativo de temas, sesiones, experiencias y estudio por tema de examen es una pizarra donde la persona escribe y resuelve con el Tutor. Sustituye la composición de tres columnas.
+
+**Composición:**
+- **Encabezado compacto:** ruta, título, guardado real y paneles. Los paneles (Sesiones, Conversación, Referencias, Tema) se abren bajo demanda.
+- **Opciones:** fondo (cuadrícula, puntos o limpio), recorrido guiado, sesión nueva y pantalla completa.
+- **Pizarra a pantalla completa:** zoom, desplazamiento y selección comunes a dos capas:
+  - el **contenido**: los 14 tipos de bloque, accesibles e interactivos;
+  - el **trabajo**: SVG con Pointer Events para ratón, dedo y lápiz con presión.
+- **Herramientas** a la izquierda; en móvil, en una tira inferior.
+- **Zoom** en una esquina.
+- **Entrada del Tutor** abajo: botón +, fichas que se pueden quitar, modo pedagógico, acciones rápidas según la actividad, enviar, cancelar y procesamiento visible.
+- **En móvil:** una sola columna, la entrada siempre visible y los paneles como hoja inferior.
+
+**Color:**
+- La paleta propia del entorno está en `frontend/src/features/pizarra/components/pizarra.css`.
+- El verde marca solo la acción principal, la herramienta activa, la selección y los indicadores.
+- Sin una preferencia guardada, la pizarra es clara.
+- Con una preferencia guardada (oscuro, o sistema con el sistema en oscuro), es oscura: #0B1424, #101C2E y #0A1F44.
+
+**Herramientas:**
+- selección, mano, lápiz, plumón, resaltador (fusión que deja leer lo de abajo), borrador (todo o solo trazos; nunca el contenido del Tutor);
+- texto y expresión (analizador seguro y KaTeX), línea, flecha, rectángulo y círculo;
+- color, grosor y opacidad;
+- deshacer y rehacer agrupados por gesto; duplicar y eliminar;
+- zoom, 100 %, ajustar, enfocar la selección y pantalla completa;
+- inserción educativa: ecuación, gráfico, diagrama, tabla, ejercicio, modelo 3D, documento e imagen local (esta, sin guardar);
+- atajos de teclado en el panel Tema; Enter inserta el texto o la forma en el centro.
+
+**Resolución guiada:**
+1. La persona incorpora un ejercicio (bloque propio, guardado).
+2. Escribe su intento como texto, con las líneas L1, L2…
+3. Pide una pista o el siguiente paso (modo `PISTA`).
+4. Pide que el Tutor revise el intento: se envían las líneas con su identificador.
+5. Las líneas que la respuesta nombra se marcan «El Tutor comentó Ln», sin juzgar si están bien o mal.
+6. Si quiere, pide la resolución completa (no se ofrece en un examen «sin solución»).
+
+El intento no cambia y queda en la pregunta guardada. Mentelyx no interpreta la escritura a mano.
+
+**Trabajo anclado:** lo que se escribe sobre un bloque o debajo de él, dentro del ancho de la columna, se ancla a ese bloque. Se mueve con él, sigue alineado con el zoom, y la pizarra le reserva espacio debajo, como en un cuaderno, para que una respuesta nueva del Tutor nunca caiga encima del intento. Lo que se escribe fuera de la columna es trabajo libre.
+
+**Guardado:** el contrato y lo que no se guarda están en el diseño de API, 12.12.

@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
 
 /**
@@ -19,9 +20,11 @@ export default defineConfig({
   test: {
     projects: [
       {
+        // Alias del frontend («@/…» = frontend/src) para probar módulos puros que importan otras funcionalidades.
+        resolve: { alias: [{ find: /^@\//, replacement: fileURLToPath(new URL('./frontend/src/', import.meta.url)) }] },
         test: {
           name: 'unitarias',
-          include: ['packages/*/tests/**/*.test.ts', 'backend/src/**/tests/**/*.unit.test.ts'],
+          include: ['packages/*/tests/**/*.test.ts', 'backend/src/**/tests/**/*.unit.test.ts', 'frontend/src/**/tests/**/*.unit.test.ts'],
           environment: 'node',
         },
       },

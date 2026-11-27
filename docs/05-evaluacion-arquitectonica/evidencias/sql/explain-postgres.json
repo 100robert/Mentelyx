@@ -1,0 +1,126 @@
+{
+  "base": "mentelyx_carga",
+  "fecha": "2026-11-27T15:03:52.570Z",
+  "tablasMasPobladas": [
+    {
+      "tabla": "attempt_answers",
+      "filas": "1304"
+    },
+    {
+      "tabla": "evaluation_attempts",
+      "filas": "461"
+    },
+    {
+      "tabla": "user_sessions",
+      "filas": "20"
+    },
+    {
+      "tabla": "learning_goals",
+      "filas": "0"
+    },
+    {
+      "tabla": "card_reviews",
+      "filas": "0"
+    },
+    {
+      "tabla": "folders",
+      "filas": "0"
+    },
+    {
+      "tabla": "outbox_events",
+      "filas": "0"
+    },
+    {
+      "tabla": "study_plan_items",
+      "filas": "0"
+    },
+    {
+      "tabla": "inbox_events",
+      "filas": "0"
+    },
+    {
+      "tabla": "outbox_events",
+      "filas": "0"
+    },
+    {
+      "tabla": "content_versions",
+      "filas": "0"
+    },
+    {
+      "tabla": "resource_balances",
+      "filas": "0"
+    }
+  ],
+  "planes": {
+    "GET /preparaciones": {
+      "ejecucion_ms": 10.295,
+      "planificacion_ms": 11.547,
+      "filas": 1,
+      "nodos": [
+        "Limit",
+        "Sort",
+        "Index Scan (learning_goals_student_status_idx) en learning_goals"
+      ]
+    },
+    "avance del plan vigente": {
+      "ejecucion_ms": 23.281,
+      "planificacion_ms": 43.533,
+      "filas": 1,
+      "nodos": [
+        "Aggregate",
+        "Sort",
+        "Hash Join",
+        "Seq Scan en study_plan_items",
+        "Hash",
+        "Nested Loop",
+        "Index Scan (learning_goals_student_status_idx) en learning_goals",
+        "Index Scan (study_plans_current_goal_uq) en study_plans"
+      ]
+    },
+    "GET /preparaciones/{id}/intentos": {
+      "ejecucion_ms": 10.706,
+      "planificacion_ms": 35.14,
+      "filas": 29,
+      "nodos": [
+        "Limit",
+        "Sort",
+        "Bitmap Heap Scan en evaluation_attempts",
+        "Bitmap Index Scan (evaluation_attempts_student_goal_idx)"
+      ]
+    },
+    "respuestas de un intento (calificación)": {
+      "ejecucion_ms": 10.193,
+      "planificacion_ms": 5.797,
+      "filas": 3,
+      "nodos": [
+        "Bitmap Heap Scan en attempt_answers",
+        "Limit",
+        "Seq Scan en evaluation_attempts",
+        "Bitmap Index Scan (attempt_answers_attempt_id_question_id_pk)"
+      ]
+    },
+    "GET /carpetas": {
+      "ejecucion_ms": 11.393,
+      "planificacion_ms": 11.894,
+      "filas": 1,
+      "nodos": [
+        "Limit",
+        "Result",
+        "Sort",
+        "Index Scan (folders_hermanas_nombre_uq) en folders",
+        "Aggregate",
+        "Bitmap Heap Scan en folder_items",
+        "Bitmap Index Scan (folder_items_folder_idx)"
+      ]
+    },
+    "saldo de recursos (M5)": {
+      "ejecucion_ms": 287.506,
+      "planificacion_ms": 44.321,
+      "filas": 0,
+      "nodos": [
+        "Bitmap Heap Scan en resource_balances",
+        "Bitmap Index Scan (rb_periodos_sin_solape_ex)"
+      ]
+    }
+  }
+}
