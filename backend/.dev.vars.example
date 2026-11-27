@@ -1,2 +1,8 @@
 # Copiar a backend/.dev.vars para desarrollo local. Valor sintético; generar uno propio con `openssl rand -base64 32`.
 AUTH_SECRET=cambiar-por-un-valor-local-de-al-menos-32-caracteres
+
+# Tutor IA con NVIDIA API Catalog (opcional; IA_PROVEEDOR=nvidia). Solo marcadores: nunca escribir aquí una clave real.
+# NVIDIA_API_KEY=<clave-de-NVIDIA-API-Catalog>
+# NVIDIA_BASE_URL=https://integrate.api.nvidia.com/v1    (valor por defecto)
+# NVIDIA_MODELO=<proveedor>/<modelo>                     (por defecto moonshotai/kimi-k3.1-pro)
+# NVIDIA_TIMEOUT_MS=90000                                 (entre 5000 y 120000)
