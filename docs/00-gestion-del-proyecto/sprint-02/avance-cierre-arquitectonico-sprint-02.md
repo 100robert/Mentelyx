@@ -1315,3 +1315,36 @@ node scripts/thunder/verificar-coleccion.mjs http://localhost:8787
 **Siguiente paso para Codex o Claude Code:**
 - con autorización, push de `main` y el arreglo del lockfile;
 - después, la regresión con Docker usando los comandos de arriba.
+
+### 27.1. Cierre de la consolidación (27/11/2026, ~16:35–17:00, Claude Code)
+
+**Comprobación inicial:**
+- Otras sesiones de Claude Code (741fbb0b, 8830de83 y a2393b50): con el turno terminado, en espera.
+- Codex: sin actividad desde el 25/11.
+- Ningún archivo del repositorio cambió en los 20 minutos previos y ningún worktree está bloqueado.
+- No se tocaron los procesos del propietario en 8787 y 8788.
+
+**Commits:**
+
+| Hash | Contenido |
+|---|---|
+| `f4f2ad5` | `fix(build)`: `pnpm-lock.yaml` alineado con `package.json` (solo 4 especificadores; ninguna versión cambia). Variables documentadas con marcadores en `backend/.dev.vars.example` (`NVIDIA_*`) y en el nuevo `frontend/.env.example` (`NEXT_PUBLIC_SITIO_URL`) |
+| `2bbffb7` | `chore`: `git rm --cached` de `.claude/skills/hallmark`, `.claude/skills/cli-hub-meta-skill` y `skills-lock.json` (siguen en disco; `skills-lock.json` solo registraba cli-hub). Se añaden a `.gitignore` junto con `.hallmark/`, que nunca estuvo versionado. Se versionan solo las skills `mentelyx-*` |
+
+**Otras decisiones:**
+- **Diagrama de enfoque:** no se restauró, porque tiene sustituto equivalente. El propietario renombró `enfoque-arquitectonico-mentelyx.png` a `docs/img/enfoque-arquitectonico.png` y la fuente vigente es `fuente_drawio/enfoque-arquitectonico.drawio`, con `fuentes-svg/enfoque-arquitectonico.svg` (sección 11 de este registro, 21/11). Los originales siguen en el historial, en `227f456`.
+- **Archivos sueltos:** `bject Name` (ayuda de `less`) y `on` (avisos LF/CRLF de Git, sin ningún diff) se borraron. Hay copia en `arbol\` del respaldo.
+
+**Validación en un clon limpio de `main` (`2bbffb7`):**
+- `pnpm install --frozen-lockfile` OK (antes fallaba).
+- `typecheck` OK; `lint` OK; build del backend (`wrangler deploy --dry-run`) OK; `next build` OK.
+- Vitest (unitarias y arquitectura): 190/190. Jest: 7 suites, 63/63.
+- El clon no tenía cambios ni commits propios. **No se pudo borrar**, porque el sistema de permisos bloquea eliminar `E:\tmp-mentelyx-clon`. Queda para el propietario.
+
+**No ejecutadas (Docker apagado):** integración, Workers con PostgreSQL y Redis, registro e inicio de sesión, flujos E2E y volcados de las bases. OpenNext `build:worker` no se ejecuta en Windows (`EPERM symlink`).
+
+**Gitleaks antes de publicar:**
+- `origin/main..main` (5 commits, de `bb6961c` a `2bbffb7`): 0 hallazgos.
+- Árbol de trabajo: los mismos 47 de antes, todos en archivos ignorados. Ninguno nuevo.
+
+**Pendiente en este punto:** el push, el estado del CI y la limpieza de ramas y del worktree (ver 27.2).
