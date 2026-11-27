@@ -1,9 +1,13 @@
 # 04. Atributos de calidad — Mentelyx
 
+> **Corrección integral:** 20/11/2026. Ajusta las métricas de AC-06/07 y la degradación de IA a la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md); se conservan AC-01 a AC-11.
+
 > **Versión:** 2.0 — 09/11/2026. **Base revisada:** v1.3 (20/10/2026). **Estado:** diseño documental sincronizado con dos tipos de cuenta públicos; requisitos y políticas comerciales sujetos a pruebas y validación. No supone código implementado ni servicios contratados.
 
 
 > **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
+
+> **Revisión de alcance:** 2.2 — 25/11/2026. Los AC aplican al producto aprobado; las capacidades evaluadas en V1 se delimitan por ADR-093. Los escenarios de funciones pospuestas son objetivos de diseño futuro, no evidencia de disponibilidad ni implementación.
 
 ## 1. Catálogo vigente
 
@@ -29,10 +33,10 @@ Se conservan **AC-01 a AC-11**. Los atributos expresan propiedades del sistema, 
 |---|---|---|
 | **Crítica** | AC-02 Disponibilidad | **Meta 99,5 % mensual** para API educativa esencial (solo objetivo, no SLA), pruebas de fallos y restauración; definir RTO/RPO por servicio con presupuestos reales. |
 | **Crítica** | AC-04 Seguridad | 100 % de accesos no autorizados previstos denegados en pruebas; rechazo de tipos públicos distintos de Estudiante/Docente; secretos en backend, MFA para administración y protección para menores. |
-| **Crítica** | AC-06 Consistencia | 0 pagos dobles, 0 créditos Live/Studio gastados dos veces y 0 sobrecupos en conjunto de pruebas concurrentes; confirmaciones duraderas. |
+| **Crítica** | AC-06 Consistencia | 0 pagos dobles, 0 recursos de plan, saldos audiovisuales o recompensas aplicados dos veces, 0 devoluciones duplicadas de operaciones previamente autorizadas y 0 sobrecupos en pruebas concurrentes; confirmaciones duraderas. |
 | **Alta** | AC-01 Rendimiento | API catálogo p95 ≤ 2 s con 100 usuarios de prueba; 5xx <1 %; Studio y llamadas IA se miden aparte sin prometer tiempos del proveedor. |
 | **Alta** | AC-03 Escalabilidad | Ensayos graduados hasta 200 usuarios API; sesión audiovisual de **35 alumnos + 1 docente**, y varios grupos simultáneos bajo pruebas específicas. |
-| **Alta** | AC-07 Usabilidad | Pruebas móviles de inscripción Live y generación Studio; mostrar saldo, tipo de crédito, precio/uso, estado de guardado y errores. |
+| **Alta** | AC-07 Usabilidad | Pruebas móviles del lienzo, el Tutor, la reserva de clases y la generación Studio; mostrar recursos disponibles por categoría, precio y uso, estado de guardado y errores. |
 | **Alta** | AC-10 Operabilidad / costo | Costo por generación IA, por participante-minuto, por alumno y por plan; alertas y límite duro de uso en backend; margen calculado con utilización completa. |
 | **Alta** | AC-05/08/09 | Sustituir proveedor de IA/pagos/video mediante adaptador sin modificar núcleo de dominio; CI y pruebas de contratos. |
 | **Alta** | AC-11 Confiabilidad pedagógica | Recuperación autorizada y atribuible; sin usar IA para inventar notas o adjudicar resultados académicos. |
@@ -42,16 +46,18 @@ Se conservan **AC-01 a AC-11**. Los atributos expresan propiedades del sistema, 
 | Falla | Comportamiento seguro esperado |
 |---|---|
 | Redis | Caché deja de funcionar; consulta pública podrá ir a origen con protección de carga. Autenticación/limitación sensible mantendrá controles conservadores o denegará operación riesgosa. |
-| Proveedor IA | Mantener material ya publicado y edición manual; informar que generación no está disponible y no consumir créditos sin resultado válido. |
-| PostgreSQL/Neon | No aceptar pagos, cambios de créditos ni respuestas confirmadas sin escritura duradera; modo lectura solo si existe fuente coherente y autorizada. |
+| Proveedor IA | Mantener material ya publicado y edición manual; informar que la generación no está disponible y no consumir recursos de plan sin resultado válido. Una falla común de Workers AI no tiene redundancia independiente: se degrada a herramientas deterministas y a la biblioteca (IM, sección 6.1). |
+| PostgreSQL/Neon | No aceptar pagos, cambios de recursos o saldos ni respuestas confirmadas sin escritura duradera; modo lectura solo si existe fuente coherente y autorizada. |
 | MongoDB Atlas | Bloquear edición/publicación documental que requiera confirmación; preservar borrador local indicando estado. |
 | RealtimeKit | Intentar reconexión, preservar reserva y facilitar compensación/reprogramación; no prometer continuidad sin cortes. |
 | Pasarela | Resultado incierto permanece pendiente y se concilia; no reintentar el cargo con otra clave de idempotencia sin determinar estado. |
 | Queues | Eventos de outbox durables y reintentos; DLQ revisable; no perder notificaciones críticas de negocio. |
 
-## 4. Experiencia Studio y aulas (calidad percibida)
+## 4. Experiencia Tutor, pizarra, Studio y aulas (calidad percibida)
 
-- **Créditos transparentes:** la UI explica antes de ejecutar cuánto descuenta y muestra historial. Cambiar colores o modificar gráficos deterministas no consume IA.
+- **Lienzo principal:** la pizarra es la superficie principal; la conversación es un panel secundario; la IA nunca sobrescribe anotaciones del estudiante (IM, sección 9).
+
+- **Recursos transparentes:** la UI explica antes de ejecutar qué recurso de plan consume y muestra el historial. Cambiar colores o modificar gráficos deterministas no consume IA.
 - **Trabajo recuperable:** guardado local y servidor diferenciados; conflictos y reconexión explicados sin falsa confirmación.
 - **Calidad de enseñanza:** en sala, controlar emisores simultáneos para no saturar 36 mosaicos; audio/video separado de API.
 - **Sostenibilidad:** el plan debe soportar usuarios que realmente utilicen todas las cuotas; un bajo uso no es un atributo de calidad ni garantía de rentabilidad.

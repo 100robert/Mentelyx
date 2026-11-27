@@ -1,5 +1,6 @@
 'use client';
 
+import { migasDeRuta } from '../migas';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -10,24 +11,20 @@ import { Marca } from '@/components/ui/marca';
 
 export type EspacioMenu = { id: string; titulo: string };
 
+// Navegación de Mentelyx V1 (ADR-093): los dos módulos principales, separados, y lo que comparten.
 const ESTUDIO: Array<{ href: string; texto: string; icono: NombreIcono }> = [
-  { href: '/espacios', texto: 'Mis espacios', icono: 'espacios' },
-  { href: '/tutor', texto: 'Conversaciones', icono: 'conversaciones' },
+  { href: '/inicio', texto: 'Inicio', icono: 'inicio' },
+  { href: '/aprendizaje', texto: 'Aprendizaje', icono: 'espacios' },
+  { href: '/examenes', texto: 'Exámenes', icono: 'examen' },
+  { href: '/fuentes', texto: 'Mis fuentes', icono: 'fuente' },
 ];
-const EXPLORAR: Array<{ href: string; texto: string; icono: NombreIcono }> = [{ href: '/biblioteca', texto: 'Biblioteca pública', icono: 'biblioteca' }];
-const CUENTA: Array<{ href: string; texto: string; icono: NombreIcono }> = [{ href: '/planes', texto: 'Planes y recursos', icono: 'planes' }];
+const CUENTA: Array<{ href: string; texto: string; icono: NombreIcono }> = [{ href: '/configuracion', texto: 'Configuración', icono: 'ajustes' }];
 const VISIBLES = 8;
 
 /** Las pantallas de trabajo (un espacio o una conversación) arrancan con la barra contraída para dar el ancho al lienzo. */
-const esPantallaDeTrabajo = (ruta: string) => /^\/(espacios|tutor)\/[^/]+/.test(ruta);
+/** Pantallas del espacio educativo (tema, sesión, experiencia o estudio de un examen): la barra lateral se contrae. */
+const esPantallaDeTrabajo = (ruta: string) => /^\/(espacios|tutor)\/[^/]+|^\/aprendizaje\/experiencias\/[^/]+|^\/examenes\/[^/]+\/estudiar\//.test(ruta);
 
-function migas(ruta: string, espacios: EspacioMenu[]): Array<{ texto: string; href?: string }> {
-  const espacio = /^\/espacios\/([^/]+)$/.exec(ruta)?.[1];
-  if (espacio) return [{ texto: 'Mis espacios', href: '/espacios' }, { texto: espacios.find((e) => e.id === espacio)?.titulo ?? 'Espacio' }];
-  if (/^\/tutor\/[^/]+$/.test(ruta)) return [{ texto: 'Conversaciones', href: '/tutor' }, { texto: 'Conversación' }];
-  if (ruta.startsWith('/tutor')) return [{ texto: 'Conversaciones' }];
-  return [{ texto: 'Mis espacios' }];
-}
 
 /**
  * Marco de la aplicación autenticada: barra lateral contraíble (cajón por debajo de 64 rem) con el estudio, los espacios
@@ -66,7 +63,9 @@ export function MarcoApp({ espacios, children }: { espacios: EspacioMenu[]; chil
     return () => document.removeEventListener('keydown', alPulsar);
   }, [abierta]);
 
-  const activo = (href: string) => (href === '/espacios' ? ruta === '/espacios' : ruta === href || ruta.startsWith(`${href}/`));
+  // Los temas (/espacios) y las sesiones (/tutor) pertenecen a Aprendizaje: ese módulo queda marcado mientras se usan.
+  const activo = (href: string) =>
+    ruta === href || ruta.startsWith(`${href}/`) || (href === '/aprendizaje' && (ruta.startsWith('/espacios') || ruta.startsWith('/tutor')));
   const rail = contraida && !abierta;
   const enlaces = (lista: typeof ESTUDIO) =>
     lista.map((e) => (
@@ -77,13 +76,13 @@ export function MarcoApp({ espacios, children }: { espacios: EspacioMenu[]; chil
         </Link>
       </li>
     ));
-  const ruteo = migas(ruta, espacios);
+  const ruteo = migasDeRuta(ruta);
 
   return (
     <div className="app" data-barra={rail ? 'rail' : 'completa'}>
       <aside id="barra-lateral" ref={barra} className="barra-lateral" data-abierta={abierta || undefined} aria-label="Navegación de la aplicación">
         <div className="barra-cabeza">
-          <Marca href="/espacios" tono="campo" compacta={rail} />
+          <Marca href="/inicio" tono="campo" compacta={rail} />
           <button
             type="button"
             className="boton-icono boton-icono-campo solo-escritorio"
@@ -107,17 +106,17 @@ export function MarcoApp({ espacios, children }: { espacios: EspacioMenu[]; chil
           </button>
         </div>
 
-        <nav aria-label="Estudio" className="barra-grupo">
+        <nav aria-label="Principal" className="barra-grupo">
           <ul className="barra-lista">{enlaces(ESTUDIO)}</ul>
         </nav>
 
         {!rail && (
           <section className="barra-grupo barra-espacios" aria-labelledby="titulo-tus-espacios">
             <h2 id="titulo-tus-espacios" className="barra-titulo">
-              Espacios privados
+              Temas recientes
             </h2>
             {espacios.length === 0 ? (
-              <p className="barra-nota">Aún no tienes espacios.</p>
+              <p className="barra-nota">Aún no tienes temas.</p>
             ) : (
               <ul className="barra-lista">
                 {espacios.slice(0, VISIBLES).map((e) => (
@@ -131,21 +130,17 @@ export function MarcoApp({ espacios, children }: { espacios: EspacioMenu[]; chil
             )}
             {espacios.length > VISIBLES && (
               <Link href="/espacios" className="barra-mas">
-                Ver los {espacios.length} espacios
+                Ver los {espacios.length} temas
               </Link>
             )}
-            <Link href="/espacios#nuevo-espacio" className="barra-enlace barra-enlace-accion">
+            <Link href="/aprendizaje?empezar=1" className="barra-enlace barra-enlace-accion">
               <Icono nombre="mas" />
-              <span className="barra-texto">Nuevo espacio</span>
+              <span className="barra-texto">Empezar un tema</span>
             </Link>
           </section>
         )}
 
-        <nav aria-label="Explorar" className="barra-grupo barra-secundaria">
-          {!rail && <h2 className="barra-titulo">Explorar</h2>}
-          <ul className="barra-lista">{enlaces(EXPLORAR)}</ul>
-        </nav>
-        <nav aria-label="Cuenta" className="barra-grupo">
+        <nav aria-label="Cuenta" className="barra-grupo barra-secundaria">
           {!rail && <h2 className="barra-titulo">Cuenta</h2>}
           <ul className="barra-lista">{enlaces(CUENTA)}</ul>
         </nav>
@@ -154,7 +149,7 @@ export function MarcoApp({ espacios, children }: { espacios: EspacioMenu[]; chil
           {!rail && (
             <p className="barra-nota">
               <Icono nombre="candado" tamano={16} />
-              Tus espacios son privados.
+              Tus temas y fuentes son privados.
             </p>
           )}
           <EstadoSesion variante="barra" compacta={rail} />
@@ -177,7 +172,7 @@ export function MarcoApp({ espacios, children }: { espacios: EspacioMenu[]; chil
             <span className="visually-hidden">Abrir menú</span>
           </button>
           <span className="solo-movil barra-superior-marca">
-            <Marca href="/espacios" />
+            <Marca href="/inicio" />
           </span>
           <nav aria-label="Ruta" className="migas-app solo-escritorio">
             <ol>

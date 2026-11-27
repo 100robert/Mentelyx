@@ -1,0 +1,26 @@
+[
+  {
+    "vus": 50,
+    "ventanas": 12,
+    "rps": 4.4,
+    "p95_ms": 15704,
+    "p99_ms": 18875,
+    "errores_pct": 0.76
+  },
+  {
+    "vus": 100,
+    "ventanas": 12,
+    "rps": 5.8,
+    "p95_ms": 25451,
+    "p99_ms": 27466,
+    "errores_pct": 5.52
+  },
+  {
+    "vus": 200,
+    "ventanas": 14,
+    "rps": 3.9,
+    "p95_ms": 55875,
+    "p99_ms": 60009,
+    "errores_pct": 66.06
+  }
+]

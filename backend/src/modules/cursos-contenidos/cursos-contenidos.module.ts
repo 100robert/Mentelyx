@@ -14,6 +14,12 @@ import type { AlmacenObjetosPort, EstadoLecturaPort, RecursosPlanPort } from './
 import { PostgresEspaciosRepositorio } from './infraestructura/postgres-espacios.repository';
 import { inboxEvents, outboxEvents } from './infraestructura/schema';
 import { crearRutasEspacios } from './presentacion/espacios.controller';
+import { OpenAPIHono } from '@hono/zod-openapi';
+import type { VariablesBase } from '../../shared/http';
+import { crearCasosCarpetas } from './aplicacion/carpetas.use-cases';
+import type { ElementosPort } from './dominio/carpetas';
+import { PostgresCarpetasRepositorio, resumenTemas } from './infraestructura/postgres-carpetas.repository';
+import { crearRutasCarpetas } from './presentacion/carpetas.controller';
 
 export { MemoriaAlmacenObjetos, R2AlmacenObjetos } from './infraestructura/almacen-objetos.adapters';
 
@@ -30,12 +36,21 @@ export function crearModuloCursosContenidos(deps: {
   /** Entrega de eventos FuenteRegistrada (la conecta app.ts con el consumidor de M6). */
   entregarEventos: Entregador;
   segundoPlano: SegundoPlano;
+  /** Títulos de sesiones (M6) y preparaciones (M3) propias para los elementos de carpetas; enlace tardío en app.ts. */
+  resumenesExternos: Pick<ElementosPort, 'SESION' | 'PREPARACION'>;
+  ahora?: () => Date;
 }) {
   const repo = new PostgresEspaciosRepositorio(deps.db);
   const publicarEventos = () => publicarPendientes(deps.db, { outboxEvents, inboxEvents }, deps.entregarEventos, { modulo: 'M2' });
-  return {
-    nombre: 'M2 — Cursos y Contenidos',
-    rutas: crearRutasEspacios({
+  const carpetas = crearCasosCarpetas({
+    repo: new PostgresCarpetasRepositorio(deps.db),
+    elementos: { TEMA: (actorId, ids) => resumenTemas(deps.db, actorId, ids), SESION: deps.resumenesExternos.SESION, PREPARACION: deps.resumenesExternos.PREPARACION },
+    ahora: deps.ahora ?? (() => new Date()),
+  });
+  const rutas = new OpenAPIHono<{ Variables: VariablesBase }>();
+  rutas.route(
+    '/',
+    crearRutasEspacios({
       resolverActor: deps.resolverActor,
       casos: {
         crear: crearCrearEspacio({ repo }),
@@ -46,6 +61,13 @@ export function crearModuloCursosContenidos(deps: {
       },
       trasRegistrarFuente: () => deps.segundoPlano(publicarEventos()),
     }),
+  );
+  rutas.route('/', crearRutasCarpetas({ resolverActor: deps.resolverActor, casos: carpetas }));
+  return {
+    nombre: 'M2 — Cursos y Contenidos',
+    rutas,
+    /** API pública para M3: preparaciones dentro de carpetas de Exámenes (API 12.1 y 12.2). */
+    carpetas: carpetas.puerto,
     /** API pública para M6 (API, sección 2.8). */
     fuentesAutorizadas: crearFuentesAutorizadas({ repo }),
     leerContenidoFuente: crearLeerContenidoFuente({ repo, almacen: deps.almacen }),

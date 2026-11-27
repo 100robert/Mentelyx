@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Icono } from '@/components/ui/iconos';
 
-export const metadata: Metadata = { title: 'Biblioteca pública' };
+// Fuera del flujo público de V1 (ADR-093: la publicación por usuarios está pospuesta): la ruta se conserva sin indexarse.
+export const metadata: Metadata = { title: 'Biblioteca pública', robots: { index: false, follow: false } };
 /** ISR (PR-INF-01): la página se regenera como máximo cada 5 minutos; solo contenido público entra en la caché. */
 export const revalidate = 300;
 
@@ -25,7 +26,7 @@ export default function Biblioteca() {
           <p className="suave">Aquí aparecerán ejercicios resueltos, diagramas y plantillas. Mientras tanto, puedes estudiar con tus propias fuentes.</p>
           <p>
             <Link href="/espacios" className="boton boton-secundario">
-              Ir a mis espacios
+              Ir a mis temas
             </Link>
           </p>
         </div>

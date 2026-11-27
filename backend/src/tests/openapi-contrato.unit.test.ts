@@ -50,10 +50,13 @@ describe('Contrato OpenAPI 3.1 de la API', () => {
   });
 
   it('sin Idempotency-Key válida → 400 CLAVE_IDEMPOTENCIA_REQUERIDA (no un 400 genérico)', async () => {
+    const csrf = await app.request('http://localhost/api/v1/auth/csrf');
+    const token = (await csrf.json()) as { data: { token: string } };
+    const cookie = csrf.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
     const r = await app.fetch(
       new Request('http://localhost/api/v1/tutor-ia/consultas', {
         method: 'POST',
-        headers: { 'content-type': 'application/json', 'idempotency-key': 'corta' },
+        headers: { 'content-type': 'application/json', 'idempotency-key': 'corta', origin: 'http://localhost', cookie, 'x-csrf-token': token.data.token },
         body: JSON.stringify({ conversacionId: crypto.randomUUID(), pregunta: 'hola' }),
       }),
     );

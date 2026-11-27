@@ -40,3 +40,8 @@ coverage/
 # Generados por Next.js y TypeScript
 next-env.d.ts
 *.tsbuildinfo
+
+# Secretos locales centralizados fuera de src (Neon, NVIDIA, Atlas): nunca se versionan ni se copian a contenedores
+.secretos/
+
+/docs.zip

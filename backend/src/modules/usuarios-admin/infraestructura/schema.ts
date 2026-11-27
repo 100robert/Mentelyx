@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { bigint, boolean, check, index, integer, pgSchema, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
+import { bigint, boolean, check, index, integer, jsonb, pgSchema, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
 import { crearTablasMensajeria } from '../../../shared/bd/mensajeria';
 
 /**
@@ -88,6 +88,28 @@ export const authRateLimits = m1Users.table(
     lastRequest: bigint('last_request', { mode: 'number' }).notNull(),
   },
   (t) => [unique('auth_rate_limits_key_uq').on(t.key)],
+);
+
+/**
+ * Preferencias de aprendizaje (API, 12.10; V1, ADR-093): valores por omisión que se proponen al empezar un tema o una
+ * preparación y que la persona cambia en cada uno. `depth` nulo = «elegir cada vez» (nunca un nivel fijo impuesto).
+ */
+export const learningPreferences = m1Users.table(
+  'learning_preferences',
+  {
+    userId: uuid('user_id')
+      .primaryKey()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    depth: text('depth'),
+    visualTools: jsonb('visual_tools').notNull().default(sql`'[]'::jsonb`),
+    language: text('language').notNull().default('es'),
+    updatedAt: ahora('updated_at'),
+  },
+  (t) => [
+    check('learning_preferences_depth_ck', sql`${t.depth} is null or ${t.depth} in ('inicial', 'intermedio', 'avanzado')`),
+    check('learning_preferences_language_ck', sql`${t.language} = 'es'`),
+    check('learning_preferences_tools_ck', sql`jsonb_typeof(${t.visualTools}) = 'array' and jsonb_array_length(${t.visualTools}) <= 14`),
+  ],
 );
 
 export const { outboxEvents, inboxEvents } = crearTablasMensajeria(m1Users);

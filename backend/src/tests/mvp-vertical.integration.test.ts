@@ -53,8 +53,17 @@ async function pedir(ruta: string, init: Opciones = {}) {
   });
   const headers = new Headers(init.headers);
   headers.set('content-type', 'application/json');
+  headers.set('cf-connecting-ip', headers.get('cf-connecting-ip') ?? '198.51.100.10');
   if (init.cookie) headers.set('cookie', init.cookie);
   if (init.clave) headers.set('idempotency-key', init.clave);
+  headers.set('origin', headers.get('origin') ?? 'http://localhost');
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(init.method ?? 'GET')) {
+    const csrf = await app.request('http://localhost/api/v1/auth/csrf', { headers });
+    const token = (await csrf.json()) as { data: { token: string } };
+    const previa = csrf.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+    if (previa) headers.set('cookie', [headers.get('cookie'), previa].filter(Boolean).join('; '));
+    headers.set('x-csrf-token', token.data.token);
+  }
   const r = await app.fetch(new Request(`http://localhost/api/v1${ruta}`, { ...init, headers }));
   await Promise.all(tareas);
   const cuerpo = (await r.json()) as { ok: boolean; data: any; error?: { code: string; details?: any } }; // eslint-disable-line @typescript-eslint/no-explicit-any

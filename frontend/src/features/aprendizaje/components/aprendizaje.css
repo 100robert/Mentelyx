@@ -1,0 +1,20 @@
+/* Empezar a aprender: una sola línea en lenguaje natural. La pregunta va en la voz de quien aprende (Source Serif 4 cursiva). */
+.empezar { display: grid; gap: var(--space-sm); }
+.empezar-titulo { max-inline-size: 22ch; font-family: var(--font-outlier); font-style: italic; font-weight: 400; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: -0.02em; color: var(--color-ink); }
+.empezar-compacto .empezar-titulo { font-size: var(--fs-h3); }
+.empezar-fila { display: flex; flex-wrap: wrap; gap: var(--space-xs); max-inline-size: 46rem; }
+.empezar .empezar-campo { flex: 1 1 18rem; inline-size: auto; min-block-size: 3.25rem; padding-inline: var(--space-md); font-size: var(--fs-destacado); }
+.empezar-ayuda { max-inline-size: 60ch; font-size: var(--fs-secundario); color: var(--color-muted); }
+.empezar-ejemplos { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.ejemplo { min-block-size: 2.25rem; padding: 0 var(--space-sm); border: 1px solid var(--color-rule); border-radius: var(--radius-pill); background: var(--color-paper); color: var(--color-ink-2); font: inherit; font-size: var(--fs-secundario); cursor: pointer; transition: border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
+.ejemplo:hover { border-color: var(--color-edge); color: var(--color-ink); }
+@media (pointer: coarse) { .ejemplo { min-block-size: 2.75rem; } }
+/* Opciones para empezar un tema: preparan la primera pregunta al Tutor. */
+.empezar-opciones { font-size: var(--fs-secundario); }
+.empezar-opciones summary { cursor: pointer; color: var(--color-ink-2); font-weight: 600; inline-size: fit-content; min-block-size: 2.25rem; display: flex; align-items: center; }
+.empezar-opciones-grupos { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-xl); margin-block: var(--space-xs); }
+.empezar-opciones fieldset { display: flex; flex-wrap: wrap; gap: var(--space-2xs) var(--space-sm); margin: 0; padding: 0; border: 0; }
+.empezar-opciones legend { padding: 0; margin-block-end: var(--space-2xs); color: var(--color-muted); font-size: var(--fs-meta); }
+.empezar-opcion { display: inline-flex; gap: var(--space-2xs); align-items: center; min-block-size: 2.25rem; }
+.empezar-opcion input { accent-color: var(--color-ink); }
+.empezar-opciones > p { margin: 0; font-size: var(--fs-meta); }

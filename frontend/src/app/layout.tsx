@@ -1,17 +1,23 @@
+import { SCRIPT_APARIENCIA } from '@/features/cuenta';
 import type { Metadata, Viewport } from 'next';
 import { Lexend, Source_Serif_4 } from 'next/font/google';
 import './globals.css';
+import { URL_SITIO } from '@/lib/sitio';
 
 /**
  * Tipografías autoalojadas por next/font (se descargan en el build; el navegador no consulta a Google):
- * Lexend para la interfaz y los títulos, Source Serif 4 para el material de estudio (explicaciones y pasajes citados).
+ * Lexend para la interfaz y los títulos; Source Serif 4 (normal y cursiva) para el material de estudio y para la voz de quien
+ * aprende: las preguntas. Solo el subconjunto latino (cubre el español): con latin-ext y el eje óptico se precargaban
+ * seis archivos (~527 KB) que retrasaban el LCP en redes móviles lentas (medido el 25/11/2026).
  */
-const lexend = Lexend({ subsets: ['latin', 'latin-ext'], variable: '--fuente-lexend', display: 'swap' });
-const serif = Source_Serif_4({ subsets: ['latin', 'latin-ext'], variable: '--fuente-serif', display: 'swap' });
+const lexend = Lexend({ subsets: ['latin'], variable: '--fuente-lexend', display: 'swap' });
+// Sin precarga: en redes lentas competía con el CSS; con `swap` y el respaldo ajustado de next/font el titular se pinta igual.
+const serif = Source_Serif_4({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--fuente-serif', display: 'swap', preload: false });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(URL_SITIO),
   title: { default: 'Mentelyx', template: '%s · Mentelyx' },
-  description: 'Aprendizaje con fuentes propias y un Tutor que cita lo que usa.',
+  description: 'Mentelyx convierte la curiosidad en experiencias de aprendizaje interactivas: explicaciones visuales, modelos y un tutor que se adapta a ti.',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: [
@@ -31,7 +37,7 @@ export default function RaizLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" className={`${lexend.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         {/* Con JavaScript, los paneles móviles empiezan cerrados; sin él, todo el contenido queda visible en el flujo. */}
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script dangerouslySetInnerHTML={{ __html: `document.documentElement.classList.add('js');${SCRIPT_APARIENCIA}` }} />
       </head>
       <body>
         <a className="saltar" href="#principal">

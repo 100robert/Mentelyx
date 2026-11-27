@@ -1,5 +1,8 @@
 # Nivel 3 · Diagrama de componentes
 
+> **Actualización del 20/11/2026:** texto alineado con la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). La fuente `mentelyx-componentes-arquitectonicos.drawio` se corrigió y `nivel3-componentes.svg` se reexportó desde ella el 21/11/2026 (CulqiOnline, Workers AI, RealtimeKit seleccionado, Resend de referencia y recursos de plan).
+
+
 > **Proyecto:** Mentelyx · **Contenedor detallado:** API Backend Mentelyx  
 > **Modelo:** C4 · Nivel 3 de 4 · **Versión:** 2.0  
 > **Estado:** Diseño arquitectónico previo a la implementación
@@ -67,7 +70,7 @@ La leyenda del diagrama debe distinguir los componentes internos, los contenedor
 | **M2 — Cursos y Contenidos** | Administrar el catálogo y los recursos educativos de Mentelyx. | Niveles, áreas, cursos, asignaturas, lecciones, videos, materiales educativos, versiones, derechos de publicación y herramientas de autoría de Mentelyx Studio. | `src/modules/courses/` |
 | **M3 — Evaluaciones y Aprendizaje** | Gestionar evaluaciones, resultados y seguimiento del aprendizaje. | Diagnósticos, ejercicios, simulacros, intentos, calificaciones, progreso, rutas personalizadas y preparación para exámenes. | `src/modules/evaluations/` |
 | **M4 — Docentes y Clases** | Gestionar la oferta de enseñanza humana y las sesiones educativas. | Perfiles docentes habilitados para enseñar, disponibilidad, publicación de clases, reservas, cupos, tutorías individuales y grupales, asistencia y acceso autorizado a aulas virtuales. | `src/modules/classes/` |
-| **M5 — Suscripciones y Pagos** | Gestionar productos comerciales y operaciones económicas. | Planes, suscripciones, derechos de acceso, créditos Live y Studio, órdenes de pago, confirmaciones, reembolsos, comisiones, liquidaciones docentes y conciliación. | `src/modules/billing/` |
+| **M5 — Suscripciones y Pagos** | Gestionar productos comerciales y operaciones económicas. | Planes, suscripciones, derechos, recursos de plan, recompensas concedidas, saldo audiovisual de Docente Live, órdenes con CulqiOnline, devoluciones, comisiones, registro de pagos directos y conciliación. | `src/modules/billing/` |
 | **M6 — Tutor IA y RAG** | Proporcionar asistencia pedagógica basada en IA y recuperación de fuentes autorizadas. | Consultas educativas, recuperación documental, referencias de contenido, generación de explicaciones y control de acceso al corpus RAG. | `src/modules/ai-tutor/` |
 | **M7 — Publicidad y Patrocinios** | Administrar publicidad permitida y campañas de patrocinio. | Registro y aprobación de campañas, ubicaciones permitidas, reglas de exhibición, patrocinio y métricas agregadas. | `src/modules/advertising/` |
 
@@ -109,19 +112,19 @@ Mentelyx Studio pertenece funcionalmente a M2; no se necesita un componente deno
 | API REST | M2 — Cursos y Contenidos | Delega operaciones del catálogo, materiales y Studio. | Llamada interna TypeScript |
 | API REST | M3 — Evaluaciones y Aprendizaje | Delega solicitudes de evaluación, simulacros y progreso académico. | Llamada interna TypeScript |
 | API REST | M4 — Docentes y Clases | Delega solicitudes de horarios, clases, reservas y acceso a sesiones. | Llamada interna TypeScript |
-| API REST | M5 — Suscripciones y Pagos | Delega operaciones de planes, pagos, saldos y liquidaciones. | Llamada interna TypeScript |
+| API REST | M5 — Suscripciones y Pagos | Delega operaciones de planes, pagos, recursos, saldo audiovisual y estado de cuenta. | Llamada interna TypeScript |
 | API REST | M6 — Tutor IA y RAG | Delega consultas pedagógicas autorizadas. | Llamada interna TypeScript |
 | API REST | M7 — Publicidad y Patrocinios | Delega operaciones de campañas y consulta de anuncios autorizados. | Llamada interna TypeScript |
 | M4 — Docentes y Clases | M1 — Usuarios y Administración | Consulta la cuenta, valida la sesión autenticada y comprueba los permisos y la habilitación docente aplicables antes de ofrecer servicios o ingresar a una clase. | Contrato público interno |
 | M2 — Cursos y Contenidos | M1 — Usuarios y Administración | Valida la sesión autenticada y comprueba los permisos por recurso necesarios para operaciones de autoría y publicación. | Contrato público interno |
 | M3 — Evaluaciones y Aprendizaje | M2 — Cursos y Contenidos | Consulta preguntas, recursos, temarios y versiones de contenido requeridos para las evaluaciones. | Contrato público interno |
 | M4 — Docentes y Clases | M2 — Cursos y Contenidos | Consulta materiales publicados o autorizados para asociarlos con clases. | Contrato público interno |
-| M4 — Docentes y Clases | M5 — Suscripciones y Pagos | Solicita comprobación de derechos y reserva o consumo autorizado de créditos cuando corresponda a una inscripción. | Contrato público interno y coordinación transaccional |
+| M4 — Docentes y Clases | M5 — Suscripciones y Pagos | Reserva capacidad audiovisual antes de iniciar una clase y registra pagos directos declarados y verificados. | Contrato público interno y coordinación transaccional |
 | M5 — Suscripciones y Pagos | M1 — Usuarios y Administración | Obtiene el identificador y el estado de la cuenta para asociar suscripciones y operaciones económicas a cuentas válidas. | Contrato público interno |
 | M6 — Tutor IA y RAG | M2 — Cursos y Contenidos | Solicita materiales y versiones autorizadas para recuperar información educativa. | Contrato público interno |
 | M6 — Tutor IA y RAG | M5 — Suscripciones y Pagos | Comprueba derechos de acceso y cuotas asociadas a las funciones de IA. | Contrato público interno |
 | M7 — Publicidad y Patrocinios | M5 — Suscripciones y Pagos | Consulta los beneficios del plan necesarios para decidir la elegibilidad comercial de anuncios. | Contrato público interno |
-| M4 — Docentes y Clases | M5 — Suscripciones y Pagos | Comunica eventos válidos de asistencia o finalización que puedan originar liquidaciones. | Evento de negocio con procesamiento idempotente |
+| M4 — Docentes y Clases | M5 — Suscripciones y Pagos | Comunica uso audiovisual (participante-minutos) y eventos de asistencia; M5 calcula comisiones y devoluciones. | Evento de negocio con procesamiento idempotente |
 | Componentes de negocio | Publicación de eventos | Solicitan la ejecución de operaciones diferidas, como notificaciones y procesamiento de materiales. | Puerto interno de mensajería |
 
 ### Consideraciones sobre las relaciones
@@ -136,11 +139,11 @@ Por ejemplo, M4 podrá consultar una capacidad pública de M1 para comprobar una
 
 **3. Las operaciones económicas requieren coordinación explícita.**
 
-La validación del cupo de una clase y la reserva de créditos deben impedir sobrecupos y consumos duplicados. Al compartir PostgreSQL, los módulos pueden coordinar una unidad de trabajo transaccional a través de contratos definidos, sin escribir directamente en repositorios privados ajenos.
+La validación del cupo de una clase, la reserva de capacidad audiovisual y el registro del pago directo deben impedir sobrecupos y consumos duplicados. Al compartir PostgreSQL, los módulos pueden coordinar una unidad de trabajo transaccional a través de contratos definidos, sin escribir directamente en repositorios privados ajenos.
 
 **4. Las comunicaciones asíncronas no reemplazan las confirmaciones críticas.**
 
-Los eventos de notificación, procesamiento e indexación pueden ejecutarse posteriormente. Los pagos confirmados, movimientos de créditos y resultados académicos oficiales exigen persistencia verificable.
+Los eventos de notificación, procesamiento e indexación pueden ejecutarse posteriormente. Los pagos confirmados, movimientos de recursos y resultados académicos oficiales exigen persistencia verificable.
 
 **5. Los módulos no necesitan conocerse todos entre sí.**
 
@@ -162,8 +165,8 @@ Las relaciones representadas son las colaboraciones principales. Se evitarán de
 | **M3 — Evaluaciones y Aprendizaje** | MongoDB | Obtiene estructuras de preguntas y actividades mediante acceso controlado por el propietario funcional de los contenidos. | Contrato de M2; adaptador documental según diseño | Repository / Port |
 | **M4 — Docentes y Clases** | PostgreSQL | Conserva horarios, reservas, cupos, asistencia y estados de sesiones. | SQL mediante adaptador | Repository |
 | **M4 — Docentes y Clases** | Servicio de videoconferencia | Solicita creación de salas y credenciales temporales para participantes autorizados. | HTTPS/API del proveedor | Adapter |
-| **M5 — Suscripciones y Pagos** | PostgreSQL | Registra planes, órdenes, suscripciones, créditos, pagos y liquidaciones. | SQL y transacciones ACID | Repository / Unit of Work |
-| **M5 — Suscripciones y Pagos** | Pasarela de pagos | Procesa solicitudes de cobro y verifica notificaciones de operaciones. | HTTPS/API y webhooks | Adapter / Idempotent Receiver |
+| **M5 — Suscripciones y Pagos** | PostgreSQL | Registra planes, órdenes, suscripciones, recursos de plan, saldo audiovisual, comisiones y pagos directos. | SQL y transacciones ACID | Repository / Unit of Work |
+| **M5 — Suscripciones y Pagos** | Pasarela de pagos (CulqiOnline) | Procesa cargos, recurrencia y devoluciones; Mentelyx verifica la notificación y consulta el estado real. | HTTPS/API y webhooks | Adapter / Idempotent Receiver |
 | **M6 — Tutor IA y RAG** | PostgreSQL + pgvector | Recupera fragmentos indexados con controles de acceso y referencias de fuentes. | SQL y búsqueda vectorial | Repository / Adapter |
 | **M6 — Tutor IA y RAG** | Proveedor de inteligencia artificial | Solicita explicaciones, inferencia y procesamiento autorizado. | HTTPS/API | Adapter |
 | **M7 — Publicidad y Patrocinios** | PostgreSQL | Conserva campañas, ubicaciones, autorizaciones y métricas agregadas. | SQL mediante adaptador | Repository |
@@ -178,7 +181,7 @@ Los componentes tienen responsabilidades definidas sobre los datos que administr
 - **M2:** catálogo, materiales, versiones y licencias editoriales.
 - **M3:** evaluaciones, intentos y progreso académico.
 - **M4:** clases, reservas, cupos y asistencia.
-- **M5:** suscripciones, créditos y operaciones económicas.
+- **M5:** suscripciones, recursos de plan, saldo audiovisual y operaciones económicas.
 - **M6:** consultas pedagógicas, referencias e indexación RAG autorizada.
 - **M7:** campañas y publicidad permitida.
 
@@ -186,7 +189,7 @@ PostgreSQL es el almacenamiento transaccional compartido, pero compartir un moto
 
 MongoDB mantiene datos documentales que requieren referencias y versiones coherentes con los registros de PostgreSQL. No se supone la existencia de transacciones distribuidas automáticas entre ambos motores.
 
-Redis conserva exclusivamente datos temporales; no constituye la fuente oficial de créditos, pagos, autorizaciones ni calificaciones.
+Redis conserva exclusivamente datos temporales; no constituye la fuente oficial de recursos de plan, pagos, autorizaciones ni calificaciones.
 
 ### Comunicación audiovisual
 
@@ -215,7 +218,7 @@ El backend de Mentelyx **no retransmite el flujo audiovisual completo**.
 | 6 | **Los permisos docentes, la habilitación comercial y la acreditación académica se verifican independientemente.** | Impide que un registro o una declaración académica concedan privilegios indebidos. |
 | 7 | **Mentelyx Studio forma parte de M2 y se utiliza según permisos.** | No se necesita un tipo de cuenta independiente para crear materiales educativos. |
 | 8 | **Cada integración externa se encapsula detrás de interfaces y adaptadores.** | Permite cambiar de proveedor sin trasladar sus detalles técnicos al dominio. |
-| 9 | **PostgreSQL conserva la fuente de verdad de las operaciones críticas.** | Evita inconsistencias en pagos, créditos, reservas, autorizaciones y resultados. |
+| 9 | **PostgreSQL conserva la fuente de verdad de las operaciones críticas.** | Evita inconsistencias en pagos, recursos, reservas, autorizaciones y resultados. |
 | 10 | **Los mensajes asíncronos se procesan de manera idempotente.** | Los reintentos no deben duplicar publicaciones, abonos, consumos ni efectos económicos. |
 | 11 | **Los módulos no realizan llamadas circulares obligatorias.** | Reduce el acoplamiento y facilita las pruebas y el mantenimiento. |
 | 12 | **Toda operación sensible se valida en el backend.** | La interfaz no constituye una barrera de seguridad suficiente. |
@@ -233,12 +236,12 @@ El backend de Mentelyx **no retransmite el flujo audiovisual completo**.
 | **Persistencia** | **Definida** en [persistencia v2.1](../03-diseño-de-software/diseño-externo/01-diseño-de-persistencia-y-datos.md) (modelo físico, matriz por módulo y consistencia). |
 | **Autenticación** | **Decidida, bloqueada para producción** hasta el prototipo PR-INF-01 ([seguridad](../02-arquitectura-software/seguridad-y-autenticacion.md); ADR, sección 10.1). |
 | **Integraciones externas** | **Clasificadas** con su contingencia en la ADR, sección 10.1; la verificación en Workers corresponde a PR-INF-01. |
-| **Pruebas** | **Diseñadas** en el [SDD, sección 10](../05-sdd/documento-de-diseño-de-software.md); ninguna se ha ejecutado. |
+| **Pruebas** | **Diseñadas** en la [estrategia de pruebas](../05-evaluacion-arquitectonica/03-estrategia-de-pruebas.md); ninguna se ha ejecutado. |
 
 ---
 
 **Trazabilidad documental:** `01-actores.md`, `02-historias-del-usuario.md`, `03-requisitos-funcionales.md`, `04-atributos-de-calidad.md`, `05-restricciones.md`, `06-drivers-arquitectonicos.md` y `07-decisiones-arquitectonicas.md`.
 
-**Decisiones arquitectónicas relacionadas:** ADR-001 (monolito modular), ADR-002 (Clean Architecture), ADR-004 (gestión de cuentas, autenticación y autorización en backend), ADR-006 (PostgreSQL transaccional), ADR-007 (idempotencia), ADR-008 (tareas asíncronas), ADR-019 (Tutor IA y RAG), ADR-023 (persistencia políglota), ADR-034 (separación de permisos), ADR-043 (integridad de pagos) y ADR-048 (créditos transaccionales).
+**Decisiones arquitectónicas relacionadas:** ADR-001 (monolito modular), ADR-002 (Clean Architecture), ADR-004 (gestión de cuentas, autenticación y autorización en backend), ADR-006 (PostgreSQL transaccional), ADR-007 (idempotencia), ADR-008 (tareas asíncronas), ADR-019 (Tutor IA y RAG), ADR-023 (persistencia políglota), ADR-034 (separación de permisos), ADR-043 (integridad de pagos) ADR-048 (libro transaccional de recursos y saldo audiovisual), ADR-080 (planes y recursos en M5), ADR-081 (modelo docente) y ADR-082 (CulqiOnline).
 
 **Siguiente documento:** `Nivel4-DiagramadeCodigo.md`.

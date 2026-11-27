@@ -1,6 +1,6 @@
 # Contrato de coordinación — datos, seguridad e infraestructura
 
-> **Versión:** 1.0 — 17/11/2026 · **Responsable de esta revisión:** Codex. Complementa el [registro especializado de Claude](diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md), conservado sin cambios. No es el SDD consolidado ni una aprobación de todos los modelos/prototipos.
+> **Versión:** 1.0 — 17/11/2026 · **Responsable de esta revisión:** Codex. **Estado vigente tras la instrucción maestra: sección 7** (20/11/2026, Claude Code; el texto de Codex de las secciones 1 a 6 se conserva sin cambios como registro). Complementa el [registro especializado de Claude](diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md), conservado sin cambios. No es el SDD consolidado ni una aprobación de todos los modelos/prototipos.
 >
 > **Estado de sincronización (17/11/2026, Claude Code):** CO-01 a CO-08 y CO-10 aplicados en los archivos de diseño especializado, API, interfaces y diseño interno ([registro especializado, sección 8.2](diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md)). CO-09 resuelto en el cierre de datos (registro especializado, sección 8.2). Las resoluciones de este contrato no se modificaron.
 
@@ -88,4 +88,30 @@ Estas resoluciones son normativas para datos/seguridad/infraestructura. El respo
 - **Comercial/operación:** calibrar UTI/cuotas, límite blando/duro y costos, elegir región/tier con backups, pasarela/correo y contratos. No se modificaron importes comerciales ni presupuesto.
 - **Sincronización de propiedad:** CO-01–CO-10 quedan documentados para los archivos de sus responsables. No bloquean registrar las decisiones de Codex; sí deben incorporarse antes de implementar las rutas afectadas. PEND-01 ya no bloquea selección de modelo, pero BP-01 bloquea activación de la ruta profunda.
 
-El [registro de avance y verificaciones](../avance-cierre-arquitectonico-sprint-02.md) permite reanudar por tarea sin releer el repositorio. Siguiente tarea documental: aplicar exclusivamente los ajustes CO a las especificaciones de Claude con revisión de su responsable; después, y solo con tarea explícita, prototipo de compatibilidad con datos sintéticos. No iniciar SDD consolidado en esta entrega.
+El [registro de avance y verificaciones](../00-gestion-del-proyecto/sprint-02/avance-cierre-arquitectonico-sprint-02.md) permite reanudar por tarea sin releer el repositorio. Siguiente tarea documental: aplicar exclusivamente los ajustes CO a las especificaciones de Claude con revisión de su responsable; después, y solo con tarea explícita, prototipo de compatibilidad con datos sintéticos. No iniciar SDD consolidado en esta entrega.
+
+## 7. Estado tras la instrucción maestra (20/11/2026, Claude Code)
+
+La [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) es la fuente de autoridad. Esta sección anota, sin reescribir las secciones 1 a 6, qué resoluciones siguen vigentes y cuáles quedan sustituidas. Las resoluciones P-01 a P-11 son las de su sección 20, registradas en [ADR, sección 10.3](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md).
+
+| ID | Estado | Motivo y destino actual |
+|---|---|---|
+| SC-04 | Modificada de nuevo | Retención de conversaciones de 90 días con aviso previo (ADR-079); se retiran las propuestas de 30 y 14 días. Tombstone, TTL y purga verificable siguen vigentes |
+| SC-07, SC-16 y SC-17 | Vigentes en mecánica; cambia la unidad | Cotización de 10 min, consumo único y reintegro único se aplican a recursos de plan (`studio_ai_quotes` con `resource_code` y `quantity`; ADR-080 y ADR-088) en lugar de créditos Studio. El reintegro es un REINTEGRO de `resource_ledger_entries` con `refund:{operationKey}`; `STUDIO_AI_REFUND` y `credit_ledger_entries` quedan sustituidos ([persistencia, sección 7.5.1](diseño-externo/01-diseño-de-persistencia-y-datos.md)) |
+| SC-08 | Modificada | Las funciones habilitadas se versionan en `commercial_plan_versions.plan_features` y las cantidades en `plan_resource_limits`; `ai_policy` con cuotas queda sustituido (persistencia, secciones 7.5 y 7.5.1) |
+| SC-09 | Vigente | Los 90 días de documentos de habilitación no son la retención de conversaciones |
+| SC-11 | Vigente para el consumo técnico | Los presupuestos globales y por proveedor de M6 se mantienen; la cuota comercial pasa a M5 (ADR-080) |
+| SC-15 | **Resuelta como adoptada** | BGE-M3 con `vector(1024)` (ADR-076); BP-07 mide el Recall y no condiciona la adopción. Se sustituye «no cambiar vector(1536) por 1024» |
+| INF-05 | Vigente | Acceso pagado de Workers sin compra ni presupuesto ejecutado |
+| CO-03 | Modificado | La admisión técnica atómica de M6 sigue; la reserva comercial la hace M5 con `reservarRecursoPlan` ([API, sección 2.8](diseño-externo/02-diseño-de-api-y-contratos.md)) |
+| CO-05 | **Sustituido** | El modo GENERAL está habilitado y el orquestador decide FUNDAMENTADA, MIXTA o GENERAL; `SIN_CONTEXTO` solo con fuentes exclusivas sin fragmentos (ADR-078) |
+| CO-06 | Vigente | Revocación inmediata y purga asíncrona; las conversaciones no se guardan sin conexión ([interfaces, sección 11](diseño-externo/03-diseño-de-interfaces-y-flujos.md)) |
+| CO-07 | Vigente | DeepSeek V4.1 Flash vía Workers AI (ADR-077) |
+| CO-08 | Actualizado | API v2.2 y diseño interno 3.3: el código de referencia de M6 usa los contratos de recursos de plan |
+| CO-01, CO-02, CO-04, CO-09 y CO-10 | Vigentes | Sin cambio por la instrucción maestra |
+
+**Bloqueantes de la sección 6 actualizados:**
+
+- **Producto:** ADR-058 GENERAL y las retenciones 30/14 de ADR-069 quedan resueltas por ADR-078 y ADR-079. Siguen pendientes la validación legal del tratamiento real de menores, las transferencias y DPA, y los permisos de entrenamiento de proveedores. No se certifica cumplimiento.
+- **Comercial:** las UTI quedan sustituidas por los recursos de plan de la matriz aprobada (IM, secciones 14 y 15). La pasarela es CulqiOnline (ADR-082), sin contratación. Siguen pendientes la verificación de tarifas oficiales, la red publicitaria concreta y los contratos.
+- **Evidencia técnica:** sin cambios: PEND-05, PR-INF-01 a 05, BP-01 a 07 y las pruebas de la [estrategia de pruebas](../05-evaluacion-arquitectonica/03-estrategia-de-pruebas.md) siguen sin ejecutar.

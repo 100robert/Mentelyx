@@ -8,11 +8,13 @@ import type { EspacioMenu } from './marco-app';
 type Destino = { id: string; texto: string; detalle: string; href: string; icono: NombreIcono };
 
 const FIJOS: Destino[] = [
-  { id: 'mis-espacios', texto: 'Mis espacios', detalle: 'Panel de estudio', href: '/espacios', icono: 'espacios' },
-  { id: 'nuevo', texto: 'Nuevo espacio', detalle: 'Crear un espacio de estudio', href: '/espacios#nuevo-espacio', icono: 'mas' },
-  { id: 'conversaciones', texto: 'Conversaciones', detalle: 'Todas tus sesiones con el Tutor', href: '/tutor', icono: 'historial' },
-  { id: 'biblioteca', texto: 'Biblioteca pública', detalle: 'Recursos publicados', href: '/biblioteca', icono: 'biblioteca' },
-  { id: 'planes', texto: 'Planes', detalle: 'Recursos de cada plan', href: '/planes', icono: 'planes' },
+  { id: 'inicio', texto: 'Inicio', detalle: 'Qué aprender hoy y qué continuar', href: '/inicio', icono: 'inicio' },
+  { id: 'aprendizaje', texto: 'Aprendizaje', detalle: 'Temas, sesiones y carpetas', href: '/aprendizaje', icono: 'espacios' },
+  { id: 'empezar', texto: 'Empezar un tema', detalle: 'Aprende algo nuevo', href: '/aprendizaje?empezar=1', icono: 'mas' },
+  { id: 'examenes', texto: 'Exámenes', detalle: 'Preparaciones y carpetas por asignatura', href: '/examenes', icono: 'examen' },
+  { id: 'sesiones', texto: 'Sesiones', detalle: 'Tus conversaciones con el Tutor', href: '/tutor', icono: 'historial' },
+  { id: 'fuentes', texto: 'Mis fuentes', detalle: 'Apuntes y documentos', href: '/fuentes', icono: 'fuente' },
+  { id: 'configuracion', texto: 'Configuración', detalle: 'Sesión, plan y preferencias', href: '/configuracion', icono: 'ajustes' },
 ];
 const normalizar = (t: string) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -29,7 +31,7 @@ export function Buscador({ espacios }: { espacios: EspacioMenu[] }) {
 
   const resultados = useMemo(() => {
     const todos: Destino[] = [
-      ...espacios.map((e) => ({ id: `e-${e.id}`, texto: e.titulo, detalle: 'Espacio privado', href: `/espacios/${e.id}`, icono: 'fuente' as const })),
+      ...espacios.map((e) => ({ id: `e-${e.id}`, texto: e.titulo, detalle: 'Tema', href: `/espacios/${e.id}`, icono: 'fuente' as const })),
       ...FIJOS,
     ];
     const q = normalizar(consulta.trim());
@@ -63,6 +65,7 @@ export function Buscador({ espacios }: { espacios: EspacioMenu[] }) {
 
   return (
     <>
+      {/* En móvil el texto «Buscar» se oculta solo a la vista (no con display: none): sigue siendo el nombre del botón. */}
       <button type="button" className="boton-buscar" onClick={abrir} aria-haspopup="dialog">
         <Icono nombre="buscar" />
         <span className="boton-buscar-texto">Buscar</span>

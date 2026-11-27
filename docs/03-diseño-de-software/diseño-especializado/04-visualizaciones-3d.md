@@ -2,7 +2,8 @@
 
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-especializado/04-visualizaciones-3d.md`
 > **Componentes:** `packages/motor-visual/3d` (plantillas deterministas), three.js en la Web/PWA, M6 (orquestación y generación), M2 (recursos de Studio)
-> **Versión:** 1.0 — 17/11/2026 · **Estado:** especificación de diseño propuesta; no implementada.
+> **Versión:** 2.0 — 20/11/2026 · **Estado:** especificación de diseño propuesta; no implementada.
+> **Cambios 2.0:** aplica la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) (sección 12; ADR-091): visualizaciones 3D para **todas las cuentas** en el Tutor y en Studio (simulaciones, geometrías, modelos verificados y adaptaciones de la biblioteca); biblioteca antes de generar; la generación externa queda bloqueada hasta una integración autorizada (Stability y Meshy como extensiones futuras sin contratar); recursos de plan en lugar de créditos. Sustituciones en la sección 10.
 
 ## 1. Dos clases que nunca se confunden
 
@@ -12,9 +13,9 @@
 | Papel de la IA | Elegir la plantilla y sus parámetros; explicar | Generar la malla y las texturas |
 | Verificación | Invariantes físicas o matemáticas comprobadas en cada ejecución | Solo validación técnica del archivo y moderación; **no** hay verificación científica |
 | Etiqueta en la interfaz | «Simulación verificada · modelo: {plantilla} v{n}» | «Modelo ilustrativo generado por IA: no representa medidas ni estructuras reales verificadas» |
-| Dónde está disponible | Tutor IA, Studio, lecciones, materiales | **Solo Studio**, cuentas adultas con permiso y créditos |
+| Dónde está disponible | Tutor IA, Studio, lecciones, materiales y lienzo, para todas las cuentas | Visualizar un modelo existente de la biblioteca: todas las cuentas. **Generar** uno nuevo: solo con una integración autorizada (hoy bloqueada) y según los bloqueos de menores |
 | Uso en evaluaciones | Permitido como apoyo de un enunciado | **No** se admite como evidencia ni como enunciado de evaluación |
-| Costo para el usuario | 0 créditos (determinista) | Créditos Studio según cotización (sección 8.4) |
+| Costo para el usuario | Sin consumo de IA adicional (determinista) | Recursos de plan según cotización cuando exista la integración (sección 8.4) |
 | Formato | `mentelyx.escena3d/v1` con `clase: SIMULACION_VERIFICABLE` | `mentelyx.escena3d/v1` con `clase: OBJETO_ILUSTRATIVO` + GLB en R2 |
 
 ## 2. Arquitectura
@@ -26,8 +27,9 @@ flowchart LR
   SIM --> INV["Verificación de invariantes"]
   INV -->|"valores calculados + geometría"| ESC["Escena 3D resuelta"]
   ESC --> WEB["three.js (cliente) · controles, etiquetas, pasos"]
-  STU["Studio (adulto)"] -->|"cotización + confirmación"| GEN["Generación ilustrativa (M6, asíncrona)"]
-  GEN --> IMG["imagen.estandar"] --> O3D["objeto3d (Stability SF3D)"] --> GLB["Validación GLB"] --> R2["R2 + media_assets (M2)"]
+  BIB["Biblioteca (M2): modelos GLB/glTF verificados"] -->|"reutilizar o adaptar"| WEB
+  STU["Studio"] -.->|"solo con integración autorizada (bloqueada)"| GEN["Generación externa (extensión futura)"]
+  GEN -.-> GLB["Validación GLB"] -.-> R2["R2 + media_assets (M2)"]
 ```
 
 - Las plantillas viven en `packages/motor-visual/3d/` y se ejecutan tanto en el servidor (verificación y valores para la explicación) como en el cliente (interacción).
@@ -174,21 +176,22 @@ El orquestador solicita una reparación. Si persiste, explica el límite al usua
 
 ### 8.1. Elegibilidad
 
-- Solo en **Studio**, para cuentas adultas con permiso de autoría y un producto que habilite `objetos3dIA` (Studio Plus/Pro, hipótesis).
-- Las cuentas de menores quedan bloqueadas (`FUNCION_NO_DISPONIBLE_PARA_CUENTA`).
+- **Estado (ADR-091):** la generación externa está **bloqueada** hasta una integración autorizada; Stability y Meshy son extensiones futuras sin contratar. El flujo siguiente se conserva como diseño para cuando se autorice.
+- Primero se busca y adapta un modelo de la biblioteca (BR-02); visualizar modelos existentes está disponible para todas las cuentas.
+- La generación, cuando exista, sigue los bloqueos aplicables a menores (`FUNCION_NO_DISPONIBLE_PARA_CUENTA`).
 - El prompt no puede pedir personas reales identificables, marcas registradas ni contenido prohibido. Esto se filtra en la moderación y en la política de uso.
 
 ### 8.2. Flujo asíncrono
 
-1. `POST /api/v1/studio/cotizaciones-ia` con `{tipo: "OBJETO_3D", prompt, calidad}` → M5 calcula los créditos con la tarifa versionada. La moderación del prompt ocurre **antes** de cotizar.
-2. El usuario confirma con `Idempotency-Key`. M5 debita `STUDIO_AI_OP` una sola vez.
+1. `POST /api/v1/studio/cotizaciones-ia` con `{tipo: "OBJETO_3D", prompt, calidad}` → M5 indica el recurso de plan y la cantidad según la política versionada. La moderación del prompt ocurre **antes** de cotizar.
+2. El usuario confirma con `Idempotency-Key`. M5 reserva el recurso una sola vez.
 3. Se publica `StudioGenerationRequested` (existente) con `tipo: OBJETO_3D`.
 4. El worker de M6:
    - genera una imagen de referencia (`imagen.estandar`, fondo neutro, objeto centrado);
    - la modera;
    - la envía a `objeto3d` (Stability Stable Fast 3D);
    - recibe el GLB.
-5. **Validación del GLB (sección 8.3).** Si falla por causa del servicio, se registra `STUDIO_AI_REFUND`.
+5. **Validación del GLB (sección 8.3).** Si falla por causa del servicio, M5 reintegra el recurso una sola vez.
 6. Se guarda en R2 `studio/3d/{ownerId}/{assetId}/modelo.glb`, con las miniaturas bajo el mismo prefijo ([persistencia, sección 9.2](../diseño-externo/01-diseño-de-persistencia-y-datos.md)). La `operationKey` queda en `studio_ai_jobs` y no forma parte de la clave del objeto. M2 registra `media_assets` (`sha256`, `size_bytes`, `status = LISTO`) y crea el bloque `scene3d` (`clase: OBJETO_ILUSTRATIVO`) en un **borrador** del proyecto.
 7. La interfaz recibe `StudioGenerationCompleted` por el canal de trabajos de Studio.
 
@@ -215,7 +218,7 @@ El orquestador solicita una reparación. Si persiste, explica el límite al usua
 | Stable Fast 3D | 10 créditos de Stability ≈ USD 0,10 |
 | **Costo directo estimado** | ≈ USD 0,115 por objeto |
 
-El precio en créditos Studio se fija en la tarifa versionada de M5 (ADR-050) a partir de ese costo, los reintentos medidos y el margen objetivo. Como referencia de producto, el README estima «imagen premium = 20 créditos». El valor para objetos 3D queda **pendiente de calibración**: no se fija aquí.
+Son costos de referencia de un proveedor no contratado. La equivalencia en recursos de plan se definirá si se autoriza la integración (ADR-080); los créditos Studio de ADR-050 quedan sustituidos. Como referencia de producto, el README estima «imagen premium = 20 créditos». El valor para objetos 3D queda **pendiente de calibración**: no se fija aquí.
 
 ## 9. Criterios de aceptación específicos
 
@@ -224,8 +227,12 @@ El precio en créditos Studio se fija en la tarifa versionada de M5 (ADR-050) a 
 | 3D-01 | El 100 % de las simulaciones mostradas como verificadas pasan sus invariantes en la ejecución del servidor |
 | 3D-02 | Las cifras de la explicación coinciden con los valores enlazados (0 discrepancias en el conjunto de prueba) |
 | 3D-03 | Un parámetro fuera de rango nunca llega a la simulación |
-| 3D-04 | Un GLB inválido nunca se registra como `LISTO`; la falla imputable reintegra los créditos una sola vez |
+| 3D-04 | Un GLB inválido nunca se registra como `LISTO`; la falla imputable reintegra el recurso una sola vez |
 | 3D-05 | Los objetos de clase B muestran siempre la etiqueta ilustrativa y no pueden insertarse en evaluaciones |
 | 3D-06 | La escena de ≤ 10 MB carga en ≤ 3 s sobre 4G simulado en un móvil de gama media (a medir) |
 
-**Trazabilidad:** HU-31, HU-47, HU-48; RF-42, RF-60, RF-61, RF-83–RF-85; AC-07, AC-10, AC-11; ADR-050, ADR-053.
+**Trazabilidad:** HU-31, HU-47, HU-48; RF-42, RF-60, RF-61, RF-83–RF-85; AC-07, AC-10, AC-11; ADR-053, ADR-084, ADR-091; RF-113.
+
+## 10. Redacciones sustituidas (20/11/2026)
+
+Fuente: la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). No vigentes: 3D personalizado «solo Studio, cuentas adultas» con Studio Plus/Pro; Stability Stable Fast 3D seleccionado; precios en créditos Studio («imagen premium = 20 créditos»); reintegro de créditos.

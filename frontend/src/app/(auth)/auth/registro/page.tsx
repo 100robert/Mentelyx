@@ -1,17 +1,15 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { FormularioAuth } from '@/features/auth';
+import { FormularioAuth, IntroAcceso, IntroAccesoConIntencion } from '@/features/auth';
 
-export const metadata: Metadata = { title: 'Crear cuenta' };
+export const metadata: Metadata = { title: 'Crear cuenta', robots: { index: false } };
 
-export default function Registro() {
+/** Página estática; el formulario (CSR) lee la intención de entrada de la URL. */
+export default function Pagina() {
   return (
-    <div className="acceso-tarea">
-      <h1>Crear cuenta</h1>
-      <p className="suave">Comienza gratis y transforma tu manera de estudiar.</p>
-      <Suspense>
-        <FormularioAuth modo="registro" />
-      </Suspense>
-    </div>
+    <Suspense fallback={<IntroAcceso modo="registro" objetivo={null} />}>
+      <IntroAccesoConIntencion modo="registro" />
+      <FormularioAuth modo="registro" />
+    </Suspense>
   );
 }

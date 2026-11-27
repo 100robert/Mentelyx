@@ -14,14 +14,18 @@
   },
   "dependencies": {
     "@mentelyx/contratos": "workspace:*",
+    "katex": "0.19.1",
     "next": "16.4.6",
+    "pdfjs-dist": "6.5.438",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "three": "0.187.0"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "1.20.18",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "0.187.0",
     "wrangler": "4.166.0"
   }
 }

@@ -2,9 +2,11 @@
 
 ## 1. Descripción del enfoque
 
-Para **Mentelyx**, plataforma educativa virtual dirigida a estudiantes de **Primaria, Secundaria y Preuniversitario**, se propone aplicar **Clean Architecture (Arquitectura Limpia)** para separar las reglas académicas y comerciales de la interfaz de usuario, los frameworks y las tecnologías externas.
+Para **Mentelyx**, plataforma educativa virtual dirigida a estudiantes de **Primaria, Secundaria, Preuniversitario y Universitario**, se propone aplicar **Clean Architecture (Arquitectura Limpia)** para separar las reglas académicas y comerciales de la interfaz de usuario, los frameworks y las tecnologías externas.
 
 Este documento describe **el enfoque de organización interna y la dirección de las dependencias del código**. Complementa, pero no reemplaza, el documento `estilo-arquitectonico.md`, donde se representa el **monolito modular en tres capas** y su despliegue serverless-first.
+
+> **Alcance:** Clean Architecture se aplica al producto completo y no implica que todos los módulos se construyan en V1. ADR-093 pospone Studio, docentes, clases, tutorías humanas, gestión institucional y publicación de cursos; el ejemplo de reserva de tutoría es diseño futuro.
 
 | Elemento | Descripción aplicada a Mentelyx |
 |---|---|
@@ -14,11 +16,11 @@ Este documento describe **el enfoque de organización interna y la dirección de
 | **Capas o zonas conceptuales** | **Presentación, Aplicación, Dominio e Infraestructura**; los **puertos** son contratos internos definidos donde los necesitan los casos de uso. |
 | **Beneficios esperados** | Permite hacer pruebas unitarias con adaptadores simulados; facilita sustituir proveedores y aislar cambios técnicos; mejora la organización de los siete módulos y la mantenibilidad. |
 | **Relación con el estilo principal** | Mentelyx sigue siendo un **monolito modular**: Clean Architecture organiza las dependencias **dentro de ese backend**, no obliga a crear microservicios. |
-| **Tecnologías de referencia** | Cliente Next.js + React + TypeScript; backend Hono + TypeScript sobre Cloudflare Workers; PostgreSQL + pgvector, MongoDB, Redis y R2 mediante adaptadores. |
+| **Tecnologías de referencia** | Cliente Next.js + React + TypeScript con renderizado híbrido en Workers mediante OpenNext (ADR-074); backend Hono + TypeScript sobre Cloudflare Workers; PostgreSQL + pgvector (Drizzle ORM como autoridad de esquema y Kysely para consultas especializadas, ADR-075), MongoDB, Upstash Redis, R2, Workers AI y CulqiOnline mediante adaptadores. |
 
 ## 2. Diagrama del enfoque arquitectónico
 
-![Diagrama de Clean Architecture de Mentelyx](../img/enfoque-arquitectonico-mentelyx.png)
+![Diagrama de Clean Architecture de Mentelyx](../img/enfoque-arquitectonico.png)
 
 **Figura 1.** Enfoque Clean Architecture aplicado al backend de Mentelyx: presentación, aplicación, dominio, contratos, adaptadores y sistemas externos. **Fuente:** elaboración propia.
 
@@ -64,7 +66,7 @@ Los puertos son **interfaces** que representan capacidades requeridas por un cas
 
 ### 3.5. Infraestructura: adaptadores y frameworks
 
-Incluye las implementaciones concretas de puertos, clientes y servicios técnicos. Por ejemplo, un adaptador PostgreSQL implementa la persistencia transaccional; un adaptador MongoDB gestiona documentos de lecciones; R2 almacena archivos; Bunny Stream distribuye videos; y los adaptadores de pago o IA llaman a los proveedores externos mediante interfaces internas.
+Incluye las implementaciones concretas de puertos, clientes y servicios técnicos. Por ejemplo, un adaptador PostgreSQL implementa la persistencia transaccional; un adaptador MongoDB gestiona documentos de lecciones; R2 almacena archivos; Bunny Stream es el candidato condicionado para distribuir videos según ADR-014; y los adaptadores de pago o IA llaman a los proveedores externos mediante interfaces internas.
 
 Este diseño permite cambiar un proveedor de pagos o la biblioteca ORM **sin reescribir necesariamente las reglas del dominio**, siempre que se conserve el contrato y se satisfagan los comportamientos esperados. Las dependencias e integraciones deben validarse en Cloudflare Workers antes del despliegue real.
 

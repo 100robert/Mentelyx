@@ -1,8 +1,9 @@
 import type { Db } from 'mongodb';
 import type { BdDrizzle } from '../../shared/bd/conexion';
+import { ErrorAplicacion } from '../../shared/errores';
 import { relojSistema, type Reloj } from '../../shared/fechas';
 import type { ResolverActor } from '../../shared/sesion';
-import { crearCrearConversacion, crearEliminarConversacion, crearListarConversaciones, crearObtenerConversacion } from './aplicacion/conversaciones.use-cases';
+import { crearCrearConversacion, crearEliminarConversacion, crearGuardarEstado, crearListarConversaciones, crearObtenerConversacion, crearObtenerEstado, type PreparacionPropiaPort } from './aplicacion/conversaciones.use-cases';
 import { crearIndexarFuente } from './aplicacion/indexar-fuente.use-case';
 import { crearResponderConsulta } from './aplicacion/responder-consulta.use-case';
 import type { EmbeddingsPort, FuentesAutorizadasPort, LeerContenidoPort, LimiteTasaPort, ProveedorIaPort, RecursosPlanPort } from './dominio/tutor';
@@ -13,6 +14,7 @@ import { PostgresUsoIa, type ConfigPresupuesto } from './infraestructura/postgre
 import { ProveedorSimulado } from './infraestructura/proveedor-simulado.adapter';
 import { POLITICA_TECNICA } from './infraestructura/rutas-ia';
 import { WorkersAiEmbeddings, WorkersAiProveedor, type BindingIa } from './infraestructura/workers-ai.adapter';
+import { NvidiaProveedor, type ConfigNvidia } from './infraestructura/nvidia.adapter';
 import { crearRutasTutor } from './presentacion/tutor.controller';
 
 export { asegurarIndicesConversaciones, clienteMongoPerezoso } from './infraestructura/mongo-conversaciones.repository';
@@ -22,7 +24,11 @@ export type ConfigIa =
   /** Local y CI: sin cuenta ni costo; recuperación solo léxica salvo que una prueba inyecte embeddings. */
   | { proveedor: 'simulado' }
   /** Demostración/producción: binding `AI` de Workers (Gemma 4 + BGE-M3). DeepSeek solo con `rutaTecnica: 'deepseek'`. */
-  | { proveedor: 'workers-ai'; ai: BindingIa; rutaTecnica: 'deepseek' | 'respaldo-general' };
+  | { proveedor: 'workers-ai'; ai: BindingIa; rutaTecnica: 'deepseek' | 'respaldo-general' }
+  /** NVIDIA API Catalog (ADR-094); embeddings en Workers AI si hay binding. */
+  | { proveedor: 'nvidia'; nvidia: ConfigNvidia; embeddingsAi?: BindingIa }
+  /** Capacidad apagada de forma explícita: las consultas responden 503 sin reservar cuota ni generar contenido. */
+  | { proveedor: 'deshabilitado' };
 
 /**
  * Raíz de composición de M6 — Tutor IA y RAG: conversaciones en MongoDB, índice híbrido de fuentes privadas
@@ -35,6 +41,8 @@ export function crearModuloTutorIaRag(deps: {
   resolverActor: ResolverActor;
   fuentesAutorizadas: FuentesAutorizadasPort;
   leerContenido: LeerContenidoPort;
+  /** M3 (enlace tardío): confirma que una preparación es del actor antes de vincular una sesión. */
+  preparacionPropia: PreparacionPropiaPort;
   recursos: RecursosPlanPort;
   presupuesto: ConfigPresupuesto;
   ia: ConfigIa;
@@ -52,8 +60,12 @@ export function crearModuloTutorIaRag(deps: {
   const indice = new PostgresIndiceRag(deps.db);
   const uso = new PostgresUsoIa(deps.db, deps.presupuesto);
   const real = deps.ia.proveedor === 'workers-ai' ? deps.ia : undefined;
-  const proveedor = deps.proveedor ?? (real ? new WorkersAiProveedor(real.ai, { rutaTecnica: real.rutaTecnica }) : new ProveedorSimulado());
-  const embeddings = deps.embeddings !== undefined ? deps.embeddings : real ? new WorkersAiEmbeddings(real.ai) : null;
+  const nvidia = deps.ia.proveedor === 'nvidia' ? deps.ia : undefined;
+  // El simulado solo llega aquí si configIa lo permitió (desarrollo o CI y declarado o por omisión en esos entornos).
+  const proveedor =
+    deps.proveedor ?? (real ? new WorkersAiProveedor(real.ai, { rutaTecnica: real.rutaTecnica }) : nvidia ? new NvidiaProveedor(nvidia.nvidia) : new ProveedorSimulado());
+  const bindingEmbeddings = real?.ai ?? nvidia?.embeddingsAi;
+  const embeddings = deps.embeddings !== undefined ? deps.embeddings : bindingEmbeddings ? new WorkersAiEmbeddings(bindingEmbeddings) : null;
   const respaldoTasa = new SqlLimiteTasa(deps.db);
   const limiteTasa = deps.limiteTasa ?? (deps.redis ? new RedisLimiteTasa(deps.redis, respaldoTasa) : respaldoTasa);
 
@@ -62,11 +74,17 @@ export function crearModuloTutorIaRag(deps: {
     rutas: crearRutasTutor({
       resolverActor: deps.resolverActor,
       casos: {
-        crearConversacion: crearCrearConversacion({ conversaciones, fuentesAutorizadas: deps.fuentesAutorizadas, ahora }),
+        crearConversacion: crearCrearConversacion({ conversaciones, fuentesAutorizadas: deps.fuentesAutorizadas, preparacionPropia: deps.preparacionPropia, ahora }),
+        obtenerEstado: crearObtenerEstado({ conversaciones, ahora }),
+        guardarEstado: crearGuardarEstado({ conversaciones, ahora }),
         listarConversaciones: crearListarConversaciones({ conversaciones, ahora }),
         obtenerConversacion: crearObtenerConversacion({ conversaciones, ahora }),
         eliminarConversacion: crearEliminarConversacion({ conversaciones }),
-        responderConsulta: crearResponderConsulta({
+        responderConsulta: deps.ia.proveedor === 'deshabilitado' && !deps.proveedor
+          ? async () => {
+              throw new ErrorAplicacion('PROVEEDOR_NO_DISPONIBLE', 'El Tutor IA está deshabilitado en este entorno. Tus fuentes y sesiones siguen disponibles.', { motivo: 'DESHABILITADO' });
+            }
+          : crearResponderConsulta({
           conversaciones,
           fuentesAutorizadas: deps.fuentesAutorizadas,
           indice,
@@ -81,6 +99,9 @@ export function crearModuloTutorIaRag(deps: {
         }),
       },
     }),
+    /** API pública para M2: títulos de las sesiones propias (elementos de carpetas de Aprendizaje). */
+    resumenSesiones: async (actorId: string, ids: string[]) =>
+      (await conversaciones.resumenes(actorId, ids, ahora())).map((r) => ({ id: r.id, titulo: r.titulo, actualizadoEn: r.actualizadoEn.toISOString() })),
     /** API pública para M2: estado de lectura (indexación) de sus fuentes. */
     estadoLectura: (contentIds: string[]) => indice.estados(contentIds),
     /** Consumidor de eventos de M2 (Idempotent Receiver). */

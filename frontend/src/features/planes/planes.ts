@@ -1,8 +1,21 @@
 /**
  * Planes y recursos del piloto «piloto-2026-11-20» (IM, secciones 14, 15.1 y 15.2; migración 0001 de M5).
  * Copia de presentación para la página pública estática: la autoridad comercial es M5. MB/GB en unidades SI.
+ * Los planes docentes se conservan, pero no se muestran en Mentelyx V1 (ADR-093: funciones docentes pospuestas).
  */
 export type Plan = { codigo: string; nombre: string; precio: string; publico: 'ESTUDIANTE' | 'DOCENTE'; recursos: Array<[string, string]>; nota?: string };
+
+/**
+ * Recursos incluidos en los planes cuya función todavía no existe en la aplicación (26/11/2026): ningún módulo los consume.
+ * Se muestran con su límite aprobado, marcados como aún no disponibles; no se quitan ni cambian (decisión comercial de M5).
+ * Al integrarse la función, se quita su código o nombre de aquí. Las consultas generales y técnicas y el almacenamiento
+ * sí se consumen hoy.
+ */
+export const RECURSOS_AUN_NO_DISPONIBLES = {
+  nombres: ['Razonamiento profundo', 'Evaluaciones de 15 preguntas', 'Ilustraciones'] as readonly string[],
+  codigos: ['RAZONAMIENTO_PROFUNDO', 'EVALUACION_EQUIVALENTE', 'ILUSTRACION_ESTANDAR'] as readonly string[],
+};
+export const NOTA_AUN_NO_DISPONIBLE = 'Los recursos marcados como «aún no disponible» forman parte de cada plan, pero su función todavía no está en Mentelyx: no se pueden usar ni se descuentan.';
 
 const DOCENTE: Array<[string, string]> = [
   ['Documentos educativos', '30'],

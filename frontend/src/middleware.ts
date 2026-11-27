@@ -14,4 +14,6 @@ export function middleware(req: NextRequest) {
   return NextResponse.redirect(url);
 }
 
-export const config = { matcher: ['/espacios/:ruta*', '/tutor/:ruta*'] };
+export const config = {
+  matcher: ['/inicio/:ruta*', '/aprendizaje/:ruta*', '/examenes/:ruta*', '/fuentes/:ruta*', '/configuracion/:ruta*', '/espacios/:ruta*', '/tutor/:ruta*'],
+};

@@ -4,11 +4,17 @@
 
 > **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
 
+> **Corrección integral:** 20/11/2026. Aplica la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md): planes vigentes, nivel y edad, grupos privados, BYOK, anuncios recompensados y sistemas externos.
+
+> **Revisión documental:** 2.2 — 25/11/2026. Precisa que el catálogo cubre los actores del producto aprobado, no la disponibilidad de funciones en V1 ni su estado de implementación; distingue el rol interno de Superadministrador de la cuenta aprovisionada.
+
 ## 1. Objetivo
 
 Identificar **quién utiliza Mentelyx** sin crear un actor cada vez que aparece una modalidad de enseñanza, un grado académico, una suscripción o un permiso adicional.
 
 **Principio:** `Tipo de cuenta ≠ modalidad de perfil ≠ acreditación ≠ autorización para enseñar ≠ plan comercial`.
+
+**Límite de alcance:** este catálogo describe los actores del producto y de la arquitectura aprobados por la instrucción maestra; no afirma que todas sus capacidades estén disponibles en cada versión ni que estén implementadas. El recorte de Mentelyx V1 para el frontend se describe en el [diseño de interfaces](../03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md), sección 1.3; su armonización formal con la instrucción maestra y las ADR sigue pendiente.
 
 ## 2. Actores humanos principales
 
@@ -16,7 +22,7 @@ Identificar **quién utiliza Mentelyx** sin crear un actor cada vez que aparece 
 |---|---|---|---|
 | **ACT-01** | **Estudiante** | Persona que aprende en Primaria, Secundaria, Preuniversitario o Universitario. Su cuenta puede pertenecer a un menor, aplicando las protecciones correspondientes. | Aprender, evaluarse, usar Tutor IA según plan, reservar clases, estudiar con contenidos propios. Un universitario adulto puede **solicitar habilitación adicional para impartir tutorías**, manteniendo el tipo Estudiante. |
 | **ACT-03** | **Docente** | Persona adulta que se registra para preparar e impartir enseñanza. **En el registro elige su modalidad de perfil:** independiente/libre o por nivel académico. No son dos actores distintos. | Utilizar Studio, preparar clases, configurar materias/temas y solicitar habilitación para tutorías remuneradas. En la modalidad por nivel puede declarar formación profesional para posterior acreditación. |
-| **ACT-04** | **Superadministrador** | Cuenta interna, no disponible en el registro público. | Administrar usuarios, habilitaciones, validaciones, planes, contenidos, aulas, pagos, seguridad, costos y disponibilidad. |
+| **ACT-04** | **Superadministrador** | Rol administrativo interno, asignado a una cuenta aprovisionada internamente; no es un tipo de cuenta pública ni una opción del registro. | Administrar usuarios, habilitaciones, validaciones, planes, contenidos, aulas, pagos, seguridad, costos y disponibilidad. |
 
 **Identificadores activos:** ACT-01, ACT-03 y ACT-04. **ACT-02 queda retirado y reservado** por trazabilidad; no se reasigna ni se ofrece en el registro. La función de autoría de contenidos pasa a ser una capacidad de Estudiantes y Docentes, no un actor.
 
@@ -24,7 +30,7 @@ Identificar **quién utiliza Mentelyx** sin crear un actor cada vez que aparece 
 
 ## 3. Registro público: dos tipos principales
 
-Al registrarse, la persona elige **uno de dos tipos de cuenta**: `Estudiante` o `Docente`. El `Superadministrador` se aprovisiona internamente. La capacidad para elaborar materiales no es un tipo de cuenta y se controla mediante permisos y planes de Mentelyx Studio.
+Al registrarse, la persona elige **uno de dos tipos de cuenta**: `Estudiante` o `Docente`. El rol de `Superadministrador` se asigna a una cuenta aprovisionada internamente y no forma parte del registro público. La capacidad para elaborar materiales no es un tipo de cuenta y se controla mediante permisos y planes de Mentelyx Studio.
 
 ### 3.1 Estudiante
 
@@ -61,7 +67,8 @@ Tanto Estudiantes como Docentes pueden elaborar materiales según sus permisos. 
 | Modalidad docente | Independiente/libre; por nivel académico | No, ambas pertenecen a Docente. |
 | Autorización adicional | Tutoría para universitario adulto; habilitación comercial; autorización para trabajar con menores | No; es un permiso revisable y revocable. |
 | Credencial acreditada | Licenciatura, maestría, doctorado u otra formación verificada | No; es una propiedad acreditada del perfil docente por nivel. |
-| Plan | Gratuito, Plus, Pro, Aulas Live; Studio Free, Plus, Pro | No; únicamente habilita beneficios por suscripción. |
+| Plan | Estudiantes: Gratuito, Estándar, Plus y Premium; docentes: Inicial y Live (IM, secciones 14 y 15). Sustituye Plus/Pro, Aulas Live y Studio Free/Plus/Pro | No; solo habilita recursos y beneficios por suscripción. Pagar Docente Live no acredita ni habilita para enseñar. |
+| Nivel educativo y edad | Primaria, Secundaria, Preuniversitario, Universitario; condición de edad verificada (RF-100) | No; son datos del perfil académico de M1. |
 
 ## 5. Permisos principales
 
@@ -73,6 +80,9 @@ Tanto Estudiantes como Docentes pueden elaborar materiales según sus permisos. 
 | Publicar contenido | Según autorización editorial y derechos | Según autorización editorial y derechos | Según autorización editorial y derechos | Autorizar/revisar |
 | Impartir tutorías pagadas | **Solo universitario adulto habilitado** | **Con habilitación** | **Con habilitación** | Supervisar |
 | Mostrar títulos/credenciales como verificados | No | **No en esta modalidad** | **Solo tras verificación** | Verificar |
+| Crear y administrar grupos privados (RF-117) | No | **Con habilitación** | **Con habilitación** | Supervisar |
+| Conectar BYOK (RF-120) | Solo adulto elegible | Adulto elegible | Adulto elegible | Configurar proveedores autorizados |
+| Ver anuncios recompensados (RF-119) | Solo adulto, voluntario | Voluntario | Voluntario | Configurar |
 | Gestionar pagos ajenos, planes y permisos | No | No | No | Sí, bajo auditoría |
 
 > **Control esencial:** el frontend muestra las opciones disponibles, pero **Hono verifica en el backend** tipo de cuenta, modalidad, edad, propiedad de recursos, habilitación, suscripción y acreditaciones. Redis nunca constituye la fuente de verdad de una autorización o un pago.
@@ -84,7 +94,7 @@ Tanto Estudiantes como Docentes pueden elaborar materiales según sus permisos. 
 - Un docente libre no se describe como «docente acreditado» ni se ofrecen campos académicos propios de la modalidad por nivel; puede ofrecer reforzamiento autorizado de temas que declara dominar.
 - Las clases admiten inicialmente hasta 35 estudiantes más docente por aula y también grupos pequeños. La capacidad es objetivo de diseño, no máximo permanente del negocio.
 - Las instituciones asociadas son fase posterior. No hay obligación de correo institucional para los estudiantes.
-- Integraciones como Neon, Atlas, Redis, Cloudflare Queues, R2, pasarela y RealtimeKit son **sistemas externos**, no actores humanos.
+- Integraciones como Neon, Atlas, Upstash Redis, Cloudflare Queues, R2, Workers AI, CulqiOnline, RealtimeKit, Bunny Stream, Browser Run, Resend, las redes publicitarias externas y los proveedores BYOK son **sistemas externos**, no actores humanos. Los anunciantes de redes externas tampoco son actores: M7 se integra con la red, no con ellos (IM, secciones 16 a 19).
 
 ## 7. Trazabilidad
 

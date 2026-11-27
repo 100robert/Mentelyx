@@ -4,6 +4,12 @@
 
 > **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
 
+> **Corrección integral:** 2.2 — 20/11/2026. Aplica la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) (IM): reescribe HU-54, 55, 60, 63, 69 y 70 y la regla 6, y añade HU-71 a HU-90 (sección 10). Las redacciones anteriores quedan como **sustituidas** en la sección 11.
+
+> **Revisión documental:** 2.3 — 25/11/2026. Alinea HU-48, HU-56, HU-61, HU-62 y HU-64 con recursos de plan y pagos directos; conserva sus redacciones previas en la sección 11. Las políticas de cancelación/devolución y tratamiento de fallos permanecen pendientes de decisión.
+
+> **Revisión de alcance:** 2.4 — 25/11/2026. Este catálogo conserva las historias aprobadas para el producto completo; las capacidades incluidas en Mentelyx V1 se delimitan por ADR-093 y las funciones pospuestas no se consideran disponibles en V1. El estado de una HU no acredita implementación.
+
 ## 1. Criterio de organización
 
 - Las historias se organizan alrededor de **tres actores humanos activos**: Estudiante (ACT-01), Docente (ACT-03) y Superadministrador (ACT-04). ACT-02 queda retirado, sin renumerar identificadores.
@@ -11,7 +17,7 @@
 - Un **Estudiante universitario mayor de edad** puede solicitar permiso especial para impartir tutorías sobre temas que domina; conserva su cuenta Estudiante. No se presenta como docente titulado.
 - Las historias compartidas de Studio y clases aparecen **una sola vez**. El permiso individual, no el nombre de la sección, determina quién puede realizarlas.
 - Las acreditaciones profesionales y la habilitación comercial son procesos diferentes. Escribir un grado no equivale a verificarlo.
-- Precios y cuotas son propuestas comerciales. HU-09 y HU-22 continúan en **fase posterior**.
+- Los importes aprobados se rigen por la IM (secciones 14 y 15); los límites de recursos por plan son parámetros de piloto versionados. Las políticas aún no aprobadas se identifican como propuestas y no se asumen implementadas. HU-09 y HU-22 continúan en **fase posterior**.
 
 
 ## 2. Registro público compartido
@@ -51,12 +57,12 @@
 | HU-42 | Como estudiante, quiero subir archivos y notas propias, para estudiar o compartirlos según permisos sin cambiar automáticamente mi tipo de cuenta. | Definida para análisis |
 | HU-51 | Como estudiante, quiero que mi progreso confirmado permanezca íntegro durante interrupciones, y que los cambios pendientes se identifiquen, para continuar sin confundir guardado local con persistencia remota. | Definida para análisis |
 | HU-52 | Como estudiante universitario, quiero navegar por asignaturas, carreras o áreas y preparar evaluaciones universitarias, para estudiar contenidos propios de ese nivel. | Definida para análisis |
-| HU-54 | Como estudiante, quiero contratar Aulas Live y recibir créditos mensuales para reservar clases de distintos docentes desde cualquier región sin pagos por cada inscripción. | Política comercial propuesta |
-| HU-55 | Como estudiante, quiero conocer los créditos Live necesarios para seminarios, reforzamientos y tutorías individuales antes de confirmar mi reserva. | Política comercial propuesta |
-| HU-56 | Como estudiante, quiero que mis créditos reservados se restituyan si Mentelyx o el docente cancela la sesión según la política, para no perder prestaciones ya pagadas. | Política comercial propuesta |
+| HU-54 | Como estudiante, quiero contratar el plan Estándar, Plus o Premium y conocer sus recursos mensuales (consultas, evaluaciones, ilustraciones y almacenamiento), sabiendo que las clases humanas no están incluidas. | Aprobada (IM, sección 14) |
+| HU-55 | Como estudiante, quiero conocer antes de reservar la tarifa por hora del docente, la modalidad y el medio de pago de una clase. | Aprobada (IM, sección 15) |
+| HU-56 | Como estudiante, quiero conocer la política aplicable a una tutoría pagada directamente cuando se cancela una sesión, para saber qué devolución o efecto corresponde. | Propuesta de política; condiciones de cancelación y devolución pendientes de decisión |
 | HU-58 | Como estudiante universitario mayor de edad, quiero solicitar autorización para enseñar un tema que domino, por ejemplo de veterinaria o programación, y recibir remuneración por tutorías, sin cambiar mi cuenta Estudiante ni presentarme como docente acreditado. | Definida para análisis; pendiente de validar habilitación |
 | HU-66 | Como estudiante, quiero inscribirme en clases desde cualquier región individualmente, sin coordinación de un pago grupal, para utilizar Mentelyx con autonomía. | Definida para análisis |
-| HU-70 | Como estudiante, quiero distinguir claramente qué beneficios son créditos de clases y cuáles son créditos de IA, para no confundir planes. | Política comercial propuesta |
+| HU-70 | Como estudiante, quiero distinguir claramente los recursos de IA de mi plan del pago de clases con docentes, para no confundir planes. | Aprobada (IM, sección 14) |
 
 ## 4. Docente (ACT-03): historias comunes y modalidades
 
@@ -76,13 +82,13 @@
 | ID | Historia de usuario | Estado |
 |---|---|---|
 | HU-26 | Como autor de contenidos autorizado (Docente o Estudiante con permisos), quiero controlar licencias y permisos de publicación y RAG de mis materiales, para proteger su uso. | Definida para análisis |
-| HU-43 | Como Docente o Estudiante con acceso autorizado a Studio, quiero utilizar las herramientas manuales disponibles sin consumir créditos de IA y guardar borradores privados sin aprobación editorial previa, para diseñar materiales. | Definida para análisis |
+| HU-43 | Como Docente o Estudiante con acceso autorizado a Studio, quiero utilizar las herramientas manuales disponibles sin consumir recursos de IA de mi plan y guardar borradores privados sin aprobación editorial previa, para diseñar materiales. | Definida para análisis |
 | HU-53 | Como Docente o Estudiante con permisos de publicación, quiero gestionar publicación, licencias y accesos de cada versión, para controlar qué material puede verse, venderse, recuperarse por RAG o entrenar modelos conforme a autorizaciones distintas. | Definida para análisis |
 | HU-47 | Como usuario con acceso a Studio, quiero crear presentaciones, gráficos, pizarras y actividades interactivas, para preparar recursos educativos claros. | Definida para análisis |
-| HU-48 | Como usuario con acceso a Studio IA, quiero consultar la cuota y el costo en créditos de las herramientas, para controlar mi consumo. | Definida para análisis |
-| HU-60 | Como usuario con acceso a Studio, quiero comparar sus planes Free, Plus y Pro, para elegir las herramientas de creación apropiadas. | Política comercial propuesta |
-| HU-61 | Como usuario con acceso a Studio, quiero editar manualmente presentaciones, gráficos y pizarras sin gastar créditos de IA, para preparar materiales con libertad. | Definida para análisis |
-| HU-62 | Como usuario con acceso a Studio IA, quiero recuperar créditos de operaciones fallidas imputables a Mentelyx, para evitar pérdidas injustas de mi cuota. | Política comercial propuesta |
+| HU-48 | Como usuario con acceso a Studio IA, quiero conocer la categoría y cantidad de recursos de mi plan que consume cada generación, para controlar mi consumo. | Definida para análisis |
+| HU-60 | Como usuario con acceso a Studio, quiero saber qué recursos de mi plan consume cada generación y poder editar manualmente sin consumirlos. | Aprobada (IM, sección 13) |
+| HU-61 | Como usuario con acceso a Studio, quiero editar manualmente presentaciones, gráficos y pizarras sin consumir recursos de IA de mi plan, para preparar materiales con libertad. | Definida para análisis |
+| HU-62 | Como usuario con acceso a Studio IA, quiero conocer cómo se manejan los recursos de mi plan descontados por operaciones fallidas imputables a Mentelyx, para no perder recursos por fallos del servicio. | Propuesta de política; tratamiento de fallos pendiente de decisión |
 
 ## 6. Tutorías y aulas: usuarios habilitados para enseñar
 
@@ -100,11 +106,11 @@
 | HU-57 | Como usuario habilitado para impartir clases, quiero conocer las condiciones y el pago esperado por cada modalidad antes de publicar una sesión, para decidir si acepto la oferta. | Política comercial propuesta |
 | HU-59 | Como usuario habilitado para impartir clases, quiero enseñar también a grupos de uno a cinco estudiantes, para realizar tutorías pequeñas sin exigir un mínimo arbitrario de alumnos. | Política comercial propuesta |
 | HU-65 | Como usuario habilitado para impartir clases, quiero gestionar grabaciones autorizadas y accesos permitidos, para proteger los datos y derechos de sus participantes. | Definida para análisis |
-| HU-69 | Como usuario habilitado para impartir clases, quiero ofrecer tutorías fuera de la suscripción Aulas Live con una tarifa viable, para atender consultas puntuales. | Política comercial propuesta |
+| HU-69 | Como usuario habilitado para impartir clases, quiero ofrecer tutorías por horas con mi propia tarifa y recibir el pago directamente, para atender consultas puntuales. | Aprobada (IM, sección 15) |
 
 ## 7. Superadministrador (ACT-04)
 
-**Cuenta interna**, distinta de los dos tipos de registro público.
+**Rol administrativo interno**, asignado a una cuenta aprovisionada internamente; no es un tercer tipo de cuenta pública.
 
 | ID | Historia de usuario | Estado |
 |---|---|---|
@@ -121,8 +127,8 @@
 | HU-40 | Como superadministrador, quiero mantener temarios y configuraciones de exámenes con indicación de fuentes oficiales o referenciales, para ofrecer preparación académica verificable. | Definida para análisis |
 | HU-49 | Como superadministrador, quiero revisar independientemente solicitudes de publicación, habilitación para enseñar y acreditaciones de docentes por nivel, para aplicar controles proporcionales. | Definida para análisis |
 | HU-50 | Como superadministrador, quiero consultar disponibilidad, errores, latencia y costos de servicios externos, para detectar incidentes y controlar gastos. | Definida para análisis |
-| HU-63 | Como superadministrador, quiero consultar ingresos, consumo y margen por producto (Plus, Pro, Aulas Live y Studio), para detectar servicios deficitarios. | Operación |
-| HU-64 | Como superadministrador, quiero aplicar límites de IA, créditos, cupos y presupuestos de forma verificable, para evitar consumo no autorizado y costos imprevistos. | Operación |
+| HU-63 | Como superadministrador, quiero consultar ingresos, consumo y margen por producto (planes estudiantiles, Docente Inicial y Docente Live) y por medio de pago, para detectar servicios deficitarios. | Operación |
+| HU-64 | Como superadministrador, quiero aplicar límites de recursos de IA, cupos y presupuestos de forma verificable, para evitar consumo no autorizado y costos imprevistos. | Operación |
 | HU-67 | Como superadministrador, quiero aprobar clases gratuitas solamente cuando su financiación promocional o patrocinio esté presupuestada, para evitar sesiones con costos no cubiertos. | Política comercial propuesta |
 | HU-68 | Como superadministrador, quiero conciliar cobros, comisiones, reembolsos y liquidaciones y detectar duplicaciones, para controlar la integridad económica de Mentelyx. | Operación crítica |
 
@@ -133,7 +139,7 @@
 3. **Docente por nivel:** indica uno o varios niveles de enseñanza y materias; puede declarar grados académicos, pero solo los documentos validados autorizan insignias de acreditación.
 4. **Estudiante tutor:** solo para estudiante universitario adulto y habilitado. Conserva su cuenta y aparece con una denominación que no implique título docente oficial.
 5. **Clases pequeñas:** tutorías individuales o de pocos estudiantes están permitidas según condiciones de autorización, reserva y rentabilidad. Aula estándar objetivo: 35 estudiantes más la persona que imparte la sesión.
-6. **Planes:** Plus, Pro y Aulas Live para estudiantes; Studio Free, Plus y Pro para autoría. Ninguno constituye actor adicional. Las cuotas Live y Studio no se mezclan.
+6. **Planes:** estudiantiles Gratuito, Estándar, Plus y Premium; docentes Inicial y Live (IM, secciones 14 y 15). Ninguno constituye un actor adicional. Los recursos de IA del plan, la capacidad audiovisual docente y el pago de clases no se mezclan.
 7. **Pagos y acreditaciones:** el registro de una cuenta no equivale a un pago confirmado; asimismo, la verificación documental del solicitante no equivale a la validación de sus credenciales académicas. Deben aplicarse transacciones/idempotencia, auditoría y controles adecuados para menores.
 8. **Fase posterior:** convenios institucionales y productos no priorizados no son precondición para el lanzamiento.
 
@@ -141,3 +147,48 @@
 
 Se conservan todas las **70 HU-01 a HU-70**, sin reutilizar los códigos de actor. HU-41 registra los dos tipos públicos; **HU-43 y HU-53** pasan a la sección de autoría compartida sin perder su identificador. Se corresponden con RF-01, RF-35, RF-53, RF-54, RF-55, RF-56 y RF-60; la habilitación docente y de universitarios adultos sigue su propia trazabilidad (RF-18, RF-21, RF-58, RF-70, RF-88).
 
+Se añaden **HU-71 a HU-90** (20/11/2026) sin reutilizar identificadores.
+
+## 10. Historias incorporadas por la instrucción maestra (HU-71 a HU-90)
+
+| ID | Actor | Historia | RF |
+|---|---|---|---|
+| HU-71 | Estudiante | Como estudiante, quiero registrar mi nivel educativo y que mi condición de edad se actualice al cumplir la mayoría, sin que mi fecha de nacimiento sea pública. | RF-100 |
+| HU-72 | Estudiante | Como estudiante, quiero aprender con el Tutor IA cualquier tema educativo aunque no esté matriculado ni haya cargado fuentes. | RF-42 |
+| HU-73 | Estudiante | Como estudiante, quiero crear un espacio privado con mis PDF, sílabos, PPTX, DOCX e imágenes y que el Tutor priorice esas fuentes, cite páginas y me avise cuando complementa con conocimiento general, o use solo mis fuentes si así lo pido. | RF-42, RF-101, RF-102 |
+| HU-74 | Estudiante | Como estudiante, quiero saber que mis conversaciones se conservan 90 días, recibir aviso antes de su eliminación y guardar lo importante en mis recursos. | RF-112 |
+| HU-75 | Estudiante | Como estudiante, quiero preparar un examen personal sin ficha oficial, a partir de una conversación o de mis fuentes. | RF-49, RF-50 |
+| HU-76 | Estudiante | Como estudiante, quiero configurar una evaluación (cantidad, dificultad, temas y tipos de preguntas) o pedir una generación rápida de al menos 15 preguntas variadas. | RF-103, RF-104 |
+| HU-77 | Estudiante | Como estudiante, quiero recibir retroalimentación formativa en respuestas abiertas, conociendo sus limitaciones, y que la calificación oficial sea reproducible. | RF-105 |
+| HU-78 | Estudiante | Como estudiante, quiero trabajar en un lienzo extensible con lapiceros, resaltadores, flechas, fórmulas, imágenes y modelos 3D desde computadora, tableta o celular. | RF-106, RF-113 |
+| HU-79 | Estudiante | Como estudiante, quiero encerrar con lazo una región o seleccionar un objeto, preguntar al Tutor qué significa y recibir la explicación sobre el lienzo sin perder mis anotaciones. | RF-107 |
+| HU-80 | Estudiante | Como estudiante, quiero guardar mi lienzo y retomarlo aunque elimine la conversación, y exportar una región a PDF. | RF-108 |
+| HU-81 | Estudiante y Docente | Como usuario, quiero que el Tutor reutilice un recurso validado de la biblioteca, como un modelo 3D de turbofán, antes de generar uno nuevo, y ver valoraciones agregadas de su utilidad. | RF-109, RF-111, RF-113 |
+| HU-82 | Estudiante y Docente | Como usuario, quiero publicar voluntariamente un recurso propio y poder retirarlo, sin que se publiquen mis conversaciones ni mis dificultades. | RF-110 |
+| HU-83 | Docente | Como docente, quiero generar presentaciones y documentos profesionales editables (PPTX y PDF) con plantillas y revisión de calidad, sin incluir soluciones reservadas en el material del estudiante. | RF-114 |
+| HU-84 | Docente | Como docente, quiero contratar Docente Inicial para crear materiales sin clases, o Docente Live declarando horas, modalidad, participantes, horarios y grabación. | RF-73, RF-115 |
+| HU-85 | Docente | Como docente Live, quiero ver mi consumo audiovisual con avisos al 70, 90 y 100 %, autorizar ampliaciones y recibir la devolución del saldo no usado. | RF-78, RF-116, RF-122 |
+| HU-86 | Docente | Como docente, quiero crear grupos privados, invitar estudiantes y gestionar sus miembros, materiales y clases. | RF-117 |
+| HU-87 | Docente y Estudiante | Como docente o estudiante, quiero registrar y verificar el pago directo de una clase por Yape, tarjeta o QR, con la comisión de Mentelyx transparente. | RF-118, RF-121 |
+| HU-88 | Estudiante | Como estudiante adulto, quiero ver voluntariamente un anuncio recompensado para obtener capacidad educativa adicional. | RF-119 |
+| HU-89 | Estudiante y Docente | Como adulto elegible, quiero conectar mi propia API key de forma segura, fijar límites y revocarla cuando quiera. | RF-120 |
+| HU-90 | Estudiante | Como estudiante del plan Gratuito, quiero que la publicidad esté identificada y no interrumpa evaluaciones, clases ni explicaciones del Tutor. | RF-40 |
+
+## 11. Redacciones sustituidas (historial)
+
+No son historias vigentes.
+
+| ID | Redacción sustituida | Estado anterior |
+|---|---|---|
+| HU-54 | Como estudiante, quiero contratar Aulas Live y recibir créditos mensuales para reservar clases de distintos docentes desde cualquier región sin pagos por cada inscripción. | Política comercial propuesta |
+| HU-55 | Como estudiante, quiero conocer los créditos Live necesarios para seminarios, reforzamientos y tutorías individuales antes de confirmar mi reserva. | Política comercial propuesta |
+| HU-60 | Como usuario con acceso a Studio, quiero comparar sus planes Free, Plus y Pro, para elegir las herramientas de creación apropiadas. | Política comercial propuesta |
+| HU-63 | Como superadministrador, quiero consultar ingresos, consumo y margen por producto (Plus, Pro, Aulas Live y Studio), para detectar servicios deficitarios. | Operación |
+| HU-69 | Como usuario habilitado para impartir clases, quiero ofrecer tutorías fuera de la suscripción Aulas Live con una tarifa viable, para atender consultas puntuales. | Política comercial propuesta |
+| HU-70 | Como estudiante, quiero distinguir claramente qué beneficios son créditos de clases y cuáles son créditos de IA, para no confundir planes. | Política comercial propuesta |
+| HU-48 | Como usuario con acceso a Studio IA, quiero consultar la cuota y el costo en créditos de las herramientas, para controlar mi consumo. | Redacción sustituida por el modelo de recursos de plan de la IM |
+| HU-56 | Como estudiante, quiero que mis créditos reservados se restituyan si Mentelyx o el docente cancela la sesión según la política, para no perder prestaciones ya pagadas. | Propuesta anterior no vigente; el modelo de clases por créditos fue sustituido por pagos directos. Las condiciones de cancelación/devolución siguen pendientes |
+| HU-61 | Como usuario con acceso a Studio, quiero editar manualmente presentaciones, gráficos y pizarras sin gastar créditos de IA, para preparar materiales con libertad. | Redacción sustituida; el modelo aprobado usa recursos de plan |
+| HU-62 | Como usuario con acceso a Studio IA, quiero recuperar créditos de operaciones fallidas imputables a Mentelyx, para evitar pérdidas injustas de mi cuota. | Redacción propuesta sustituida; tratamiento de recursos ante fallos pendiente |
+| HU-64 | Como superadministrador, quiero aplicar límites de IA, créditos, cupos y presupuestos de forma verificable, para evitar consumo no autorizado y costos imprevistos. | Redacción sustituida por el modelo de recursos de plan |
+| Regla 6 | **Planes:** Plus, Pro y Aulas Live para estudiantes; Studio Free, Plus y Pro para autoría. Ninguno constituye actor adicional. Las cuotas Live y Studio no se mezclan. |  |

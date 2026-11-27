@@ -1,5 +1,8 @@
 # Nivel 1 · Diagrama de contexto del sistema
 
+> **Actualización del 20/11/2026:** texto alineado con la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). Las fuentes draw.io de este nivel se corrigieron y sus PNG/SVG se reexportaron el 21/11/2026 (CulqiOnline, Workers AI, RealtimeKit seleccionado, Resend de referencia y recursos de plan).
+
+
 > **Proyecto:** Mentelyx  
 > **Modelo:** C4 · Nivel 1 de 4 · **Versión:** 2.0  
 > **Estado:** Diseño arquitectónico previo a la implementación
@@ -59,10 +62,10 @@ La figura representa a Mentelyx como una única unidad. Las personas y los siste
 | Sistema | Tipo | Responsabilidad | Quién lo construye |
 |---|---|---|---|
 | **Mentelyx** | Sistema en alcance | Proporciona aprendizaje virtual, contenidos, evaluaciones, preparación para exámenes, clases, tutorías, asistencia pedagógica con IA y gestión administrativa. | Equipo del proyecto Mentelyx |
-| **Pasarela de pagos** | Sistema externo | Procesa cobros de suscripciones y servicios educativos, y comunica el resultado de las operaciones económicas. | Proveedor de pagos por seleccionar |
+| **Pasarela de pagos** | Sistema externo | Procesa cobros de suscripciones y planes docentes, y devoluciones; comunica el resultado de las operaciones económicas. | CulqiOnline (ADR-082), sin contratar |
 | **Servicio de videoconferencia** | Sistema externo | Facilita la comunicación audiovisual en tiempo real durante tutorías y clases virtuales. | Proveedor especializado por validar |
 | **Plataforma de videos grabados** | Sistema externo | Almacena, procesa y distribuye videos educativos grabados para su reproducción autorizada. | Proveedor de streaming por validar |
-| **Proveedor de inteligencia artificial** | Sistema externo | Proporciona capacidades de procesamiento y generación mediante modelos de IA utilizados en asistencia educativa y funciones autorizadas de Studio. | Proveedor de IA por seleccionar |
+| **Proveedor de inteligencia artificial** | Sistema externo | Proporciona capacidades de procesamiento y generación mediante modelos de IA utilizados en asistencia educativa y funciones autorizadas de Studio. | Cloudflare Workers AI (ADR-077) |
 | **Servicio de notificaciones** | Sistema externo previsto | Entrega comunicaciones a usuarios sobre cuentas, reservas, clases y operaciones relevantes mediante canales habilitados. | Proveedor por definir |
 
 **Delimitación:** el Tutor IA, Mentelyx Studio, las evaluaciones, los cursos y las suscripciones pertenecen a Mentelyx; no son sistemas externos independientes.
@@ -76,7 +79,7 @@ La figura representa a Mentelyx como una única unidad. Las personas y los siste
 | Estudiante | Mentelyx | Accede a contenidos, realiza evaluaciones, consulta su progreso y contrata servicios educativos autorizados. | — |
 | Docente | Mentelyx | Prepara materiales, gestiona clases, solicita habilitación y administra sus actividades educativas. | — |
 | Superadministrador | Mentelyx | Supervisa usuarios, contenidos, permisos, servicios y operaciones generales. | — |
-| Mentelyx | Pasarela de pagos | Solicita operaciones de cobro y recibe confirmaciones para actualizar los estados de pagos y suscripciones. | Integración externa; contrato por validar |
+| Mentelyx | Pasarela de pagos | Solicita operaciones de cobro y recibe confirmaciones para actualizar los estados de pagos y suscripciones. | Integración externa con consulta del estado real; contrato por firmar |
 | Mentelyx | Servicio de videoconferencia | Gestiona la creación de sesiones y autoriza la participación de estudiantes y docentes. | Integración externa; detalle en nivel 2 |
 | Mentelyx | Plataforma de videos grabados | Gestiona la publicación y el acceso autorizado a contenidos audiovisuales. | Integración externa; detalle en nivel 2 |
 | Mentelyx | Proveedor de inteligencia artificial | Solicita procesamiento y respuestas de IA para funciones educativas autorizadas. | Integración externa; contrato por validar |
@@ -103,10 +106,10 @@ La figura representa a Mentelyx como una única unidad. Las personas y los siste
 
 | Tema | Detalle |
 |---|---|
-| Pasarela de pagos | **Requiere decisión de producto** (P-07, [ADR, sección 10.3](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)): Culqi o Mercado Pago por cotización formal; `PaymentPort` y adaptador simulado decididos. |
+| Pasarela de pagos | **Decidida:** CulqiOnline (ADR-082; P-07 resuelta por la instrucción maestra, sección 20) con `PaymentPort` y `CulqiPaymentAdapter`; contratación pendiente. Los pagos de clases son directos al docente, sin custodia (ADR-081). |
 | Videoconferencia | **Decidida, bloqueada para producción:** RealtimeKit, con la prueba 35 + 1 pendiente; contingencia LiveKit Cloud (ADR, sección 10.1). |
 | Streaming de videos | **Decidida, bloqueada para producción:** Bunny Stream, con piloto en Perú pendiente; contingencia Cloudflare Stream. |
-| Proveedor de inteligencia artificial | **Decidida por rutas:** Workers AI y AI Gateway (Anthropic, Google Gemini API); Stability AI para 3D. Activación condicionada a BP-01 a BP-07 y contratos ([orquestador](../03-diseño-de-software/diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md); ADR-056/057/072). |
+| Proveedor de inteligencia artificial | **Decidida:** Workers AI con DeepSeek V4.1 Flash, Gemma 4 26B A4B, BGE-M3 y FLUX.2 Klein (ADR-077); Claude, Gemini, OpenAI, Stability y Meshy como extensiones futuras desactivadas; proveedores BYOK elegidos por adultos (ADR-085). Activación condicionada a BP-01 a BP-07 ([orquestador](../03-diseño-de-software/diseño-especializado/01-tutor-ia-multiproveedor-y-orquestacion.md)). |
 | Canal de notificaciones | **Decidido:** correo transaccional y aviso en la aplicación (`notification_deliveries`, persistencia, sección 7.8); el proveedor de correo se contrata en P-08. |
 | Grupos privados docentes | **Diferido:** ningún RF lo exige en v1 (P-11, ADR, sección 10.3). |
 

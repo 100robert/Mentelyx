@@ -9,7 +9,7 @@ export function Marca({ href = '/', tono = 'tinta', compacta = false }: { href?:
   return (
     <Link href={href} className={`marca marca-${tono}${compacta ? ' marca-compacta' : ''}`} aria-label="Mentelyx, inicio">
       <span className="marca-simbolo">
-        <img src="/marca/mentelyx-buho.webp" width={256} height={256} alt="" />
+        <img src="/marca/mentelyx-buho-64.webp" width={64} height={64} alt="" />
       </span>
       {!compacta && (
         <span className="marca-texto" aria-hidden="true">
@@ -24,7 +24,7 @@ export function Marca({ href = '/', tono = 'tinta', compacta = false }: { href?:
 export function LogoCompleto({ tamano = 120 }: { tamano?: number }) {
   return (
     <span className="logo-completo" style={{ inlineSize: tamano }}>
-      <img src="/marca/mentelyx-logo-completo.webp" width={640} height={640} alt="Mentelyx" />
+      <img src="/marca/mentelyx-logo-completo-256.webp" width={256} height={256} alt="Mentelyx" />
     </span>
   );
 }

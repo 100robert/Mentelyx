@@ -1,8 +1,9 @@
 # Generación de PDF, PPTX editable y materiales educativos — Mentelyx
 
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-especializado/05-generacion-de-materiales-educativos.md`
-> **Módulo propietario:** M2 — Cursos y Contenidos / Studio (M6 genera contenido con IA; M5 gestiona los créditos Studio)
+> **Módulo propietario:** M2 — Cursos y Contenidos / Studio (M6 genera contenido con IA; M5 gestiona los recursos de plan)
 > **Versión:** 1.1 — 17/11/2026 · **Estado:** especificación de diseño propuesta; no implementada.
+> **Cambios 2.0 (20/11/2026):** aplica la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) (sección 13; ADR-088): Studio es una capacidad de Mentelyx según el plan, no otro tipo de cuenta; proceso profesional de 10 pasos con controles de calidad (sección 12); tecnologías PptxGenJS, HTML/CSS, Cloudflare Browser Run, KaTeX, SVG, FLUX.2 y Three.js; recursos `DOCUMENTO_EQUIVALENTE` e `ILUSTRACION_ESTANDAR` en lugar de créditos Studio; biblioteca antes de generar; formatos PDF y PPTX (DOCX requiere una selección tecnológica autorizada). Sustituciones en la sección 13.
 > **Cambios 1.1:** sincronización CO-02 del [contrato de coordinación](../contrato-coordinacion-datos-seguridad-infraestructura.md): exclusión física de soluciones y notas en la exportación ESTUDIANTE, y `input_hash` con formato, audiencia y política de exclusión (secciones 3, 6, 7 y 8).
 
 ## 1. Separación en cinco capas
@@ -20,7 +21,7 @@
 - cambiar una plantilla no altera el contenido;
 - regenerar un archivo con la misma entrada produce el mismo resultado (determinismo verificable por `input_hash`);
 - descargar no requiere volver a ejecutar IA;
-- la exportación de contenido manual **no consume créditos** (RF-83).
+- la exportación de contenido manual **no consume recursos de IA** (RF-83).
 
 ## 2. Flujo
 
@@ -28,7 +29,7 @@
 sequenceDiagram
   participant U as Autor (Studio)
   participant API as API M2
-  participant M5 as M5 créditos
+  participant M5 as M5 recursos de plan
   participant Q as Queue mentelyx-studio-ai / mentelyx-renders
   participant M6 as Worker M6 (IA)
   participant R as Worker de renderizado (M2)
@@ -36,12 +37,12 @@ sequenceDiagram
   U->>API: (opcional) cotizar contenido con IA
   API->>M5: cotizarOperacionStudio
   U->>API: confirmar (Idempotency-Key)
-  API->>M5: consumirOperacionStudio (STUDIO_AI_OP)
+  API->>M5: consumirOperacionStudio (reserva el recurso de plan cotizado)
   API->>Q: StudioGenerationRequested
   Q->>M6: generar mentelyx.documento/v1 (validado y verificado)
   M6-->>API: StudioGenerationCompleted → nueva versión BORRADOR
   U->>API: exportar {formato: PDF|PPTX, plantilla}
-  API->>Q: MaterialRenderRequested (0 créditos)
+  API->>Q: MaterialRenderRequested (sin consumo de IA)
   Q->>R: render determinista
   R->>R2: PUT archivo + sha256
   R-->>API: render_jobs LISTO + media_assets
@@ -152,20 +153,19 @@ sequenceDiagram
 
 1. Moderación del pedido.
 2. Cotización en M5 con la tarifa versionada.
-3. Débito único.
-4. La ruta `explicacion.avanzada` genera el esquema con salida JSON estricta. Si el tema es cuantitativo, las soluciones se producen con `razonamiento.*`.
+3. Reserva única del recurso de plan en M5.
+4. La ruta `explicacion.tecnica` genera el esquema con salida JSON estricta. Si el tema es cuantitativo, las soluciones se producen con `razonamiento.*`.
 5. Validación y verificación.
 6. Una ronda de reparación ante errores.
 7. Se guarda como **borrador** de una nueva versión. Ningún material generado se publica sin acción del autor (RF-35, RC-11).
 
-| Material (hipótesis comerciales del README) | Créditos Studio |
-|---|---:|
-| Presentación de 12 diapositivas | 5 |
-| Lote de 10 ejercicios | 1 |
-| PDF educativo de 30 páginas (contenido generado) | 8 |
-| Imagen IA estándar / premium | 10 / 20 |
+| Material | Recurso de plan (M5) |
+|---|---|
+| Presentación o documento PDF/PPTX generado | `DOCUMENTO_EQUIVALENTE` (Docente Inicial y Live: 30 al mes; IM, sección 15.1) |
+| Ilustración nueva | `ILUSTRACION_ESTANDAR` |
+| Lote de ejercicios o evaluación | `EVALUACION_EQUIVALENTE` (15 preguntas por unidad) |
 
-Estos valores **no** son tarifas aprobadas. La exportación posterior es gratuita.
+Los límites de extensión y complejidad que definen un «documento equivalente» quedan **por definir y vincular al presupuesto de operación** (IM, sección 15.1); no se fijan aquí. La exportación posterior no consume recursos de IA. La tabla anterior en créditos Studio (5, 1, 8 y 10/20) queda sustituida.
 
 ## 5. Capa de plantillas
 
@@ -205,7 +205,7 @@ Estos valores **no** son tarifas aprobadas. La exportación posterior es gratuit
 4. **Escenas 3D:** una imagen fija (miniatura) más el texto «Versión interactiva disponible en Mentelyx» con un enlace al recurso autorizado.
 5. **Imágenes:** se incrustan como `data:` URI después de leerlas de R2 en el servidor. El navegador de renderizado no recibe URL privadas.
 6. **Audiencia:** en ESTUDIANTE, el constructor HTML no incluye `nota_docente` ni las soluciones con `mostrarSolucion = NUNCA` (CO-02). Lo que no está en el HTML no puede aparecer en el PDF.
-7. **Conversión:** Cloudflare Browser Rendering `/pdf` con `html`, `pdfOptions.format: "a4"`, márgenes de la plantilla y `displayHeaderFooter` con `headerTemplate`/`footerTemplate` (número y total de páginas).
+7. **Conversión:** Cloudflare Browser Run (antes Browser Rendering) `/pdf` con `html`, `pdfOptions.format: "a4"`, márgenes de la plantilla y `displayHeaderFooter` con `headerTemplate`/`footerTemplate` (número y total de páginas).
 8. **Comprobaciones posteriores:**
    - número de páginas ≤ 60;
    - tamaño ≤ 25 MB;
@@ -306,22 +306,26 @@ Estos valores **no** son tarifas aprobadas. La exportación posterior es gratuit
 
 **`render_jobs`:** el mismo `input_hash`, del mismo propietario y proyecto, devuelve el mismo `media_asset_id` en una segunda solicitud. Las exportaciones DOCENTE y ESTUDIANTE tienen `input_hash` distintos y archivos distintos.
 
-### EJ-11. Créditos Studio con falla imputable y reintegro idempotente
+### EJ-11. Recurso de plan con falla imputable y reintegro idempotente
 
-| Momento | Movimiento en `credit_ledger_entries` (pool `STUDIO`) | Saldo |
+Docente Inicial con 30 `DOCUMENTO_EQUIVALENTE` en el periodo y 0 consumidos.
+
+| Momento | Movimiento en `resource_ledger_entries` | Disponibles |
 |---|---|---:|
-| Inicial | — | 300 |
-| Confirmación de «Presentación de 12 diapositivas» (`Idempotency-Key: 7c1…`) | `operation_key = studio-ai:op_81f`, `delta = −5`, `reason = STUDIO_AI_OP` | 295 |
-| Repetición de la confirmación con la misma clave | Sin movimiento (`UNIQUE operation_key`); devuelve el mismo trabajo | 295 |
-| Falla: el JSON generado no supera la validación tras la reparación (imputable al servicio) | `operation_key = refund:studio-ai:op_81f`, `delta = +5`, `reason = STUDIO_AI_REFUND` (SC-07) | 300 |
-| Entrega duplicada del evento de falla | `UNIQUE` evita un segundo reintegro | 300 |
-| Prompt rechazado por moderación **antes** de la cotización | Sin movimiento (no hubo débito) | 300 |
+| Inicial | — | 30 |
+| Confirmación de la cotización (`Idempotency-Key: 7c1…`) | `operation_key = studio-ai:op_81f`, `RESERVA` de 1 | 29 |
+| Repetición con la misma clave | Sin movimiento (`UNIQUE operation_key`); devuelve el mismo trabajo | 29 |
+| Falla imputable al servicio tras la reparación | `LIBERACION` de la reserva (o `REINTEGRO` si ya se confirmó), una sola vez | 30 |
+| Entrega duplicada del evento de falla | `UNIQUE` evita un segundo movimiento | 30 |
+| Prompt rechazado por moderación **antes** de la cotización | Sin movimiento | 30 |
+
+La versión anterior del ejemplo (créditos Studio 300 → 295 → 300) queda sustituida.
 
 ## 10. Criterios de aceptación específicos
 
 | ID | Criterio |
 |---|---|
-| MAT-01 | Exportar contenido manual consume 0 créditos (0 movimientos en el ledger) |
+| MAT-01 | Exportar contenido manual no consume recursos (0 movimientos en `resource_ledger_entries`) |
 | MAT-02 | La misma entrada (documento, plantilla y renderer) produce el mismo `sha256` en el PPTX/PDF, salvo los metadatos de fecha. La comparación se hace normalizando esos metadatos. |
 | MAT-03 | Ningún PDF contiene delimitadores LaTeX sin renderizar |
 | MAT-04 | Todo PPTX se abre en LibreOffice sin interfaz y en PowerPoint (prueba manual del piloto). Los textos de los bloques `parrafo`, `lista` y `tabla` son editables. |
@@ -335,7 +339,30 @@ Estos valores **no** son tarifas aprobadas. La exportación posterior es gratuit
 |---|---|
 | PEND-MAT-01 | Verificar PptxGenJS en Workers; si no funciona, definir el trabajo de Cloud Run (PEND-05 del orquestador) |
 | PEND-MAT-02 | Verificar las licencias de las fuentes tipográficas de las plantillas |
-| PEND-MAT-03 | Calibrar los créditos de generación con costos medidos (ADR-050) |
+| PEND-MAT-03 | Definir los límites de extensión y complejidad del documento equivalente y vincularlos al presupuesto (IM, sección 15.1) |
 | PEND-MAT-04 | Definir la marca de agua o las condiciones de redistribución para materiales comerciales (RF-46) |
 
-**Trazabilidad:** HU-35, HU-43, HU-47, HU-48, HU-53, HU-61, HU-62; RF-35, RF-46, RF-60, RF-61, RF-82–RF-85, RF-99; AC-06, AC-07, AC-10; RC-11, RC-27, RC-31; ADR-009, ADR-035, ADR-050.
+**Trazabilidad:** HU-35, HU-43, HU-47, HU-48, HU-53, HU-61, HU-62; RF-35, RF-46, RF-60, RF-61, RF-82–RF-85, RF-99; AC-06, AC-07, AC-10; RC-11, RC-27, RC-31; ADR-009, ADR-035, ADR-080, ADR-084, ADR-088; RF-114.
+
+## 12. Proceso profesional de Studio (IM, sección 13)
+
+| Paso | Qué hace | Componente |
+|---|---|---|
+| 1 | Analizar objetivo, audiencia, nivel y formato | M6 (clasificación) |
+| 2 | Recuperar fuentes autorizadas y recursos reutilizables de la biblioteca | M6 + M2 (BR-02) |
+| 3 | Planificar el contenido pedagógico | M6 (`explicacion.tecnica`, JSON estricto) |
+| 4 | Seleccionar la dirección visual | Catálogo de plantillas de M2 |
+| 5 | Aplicar plantillas profesionales | Capa de plantillas (sección 5) |
+| 6 | Generar la estructura validada `mentelyx.documento/v1` | Validador de esquema |
+| 7 | Preparar fórmulas (KaTeX), diagramas (SVG y motor determinista), ilustraciones (FLUX.2, solo si no hay una determinista apropiada) y 3D (Three.js) | Motores deterministas + M6 |
+| 8 | Renderizar: PptxGenJS (PPTX editable) y HTML/CSS con Browser Run (PDF) | Renderizadores |
+| 9 | Revisar calidad visual y de contenido con controles automáticos | Ver la lista siguiente |
+| 10 | Permitir edición y exportación | Editor de Studio |
+
+**Controles del paso 9:** jerarquía tipográfica, composición, contraste (≥ 4,5:1 para texto), desbordamiento de cajas, legibilidad (tamaño mínimo), exactitud científica (verificador), referencias, calidad de imágenes (resolución mínima), coherencia visual con la plantilla y editabilidad (textos como texto, no imágenes). Un control fallido vuelve al paso correspondiente una vez; si persiste, el borrador se marca «Revisar antes de publicar».
+
+**Separación de materiales:** el PPTX estudiantil no incluye respuestas privadas en notas ocultas, metadatos ni diapositivas invisibles (CO-02). Las skills de documentos instaladas en herramientas de desarrollo sirven como referencia de buenas prácticas, no como funcionalidad de Mentelyx.
+
+## 13. Redacciones sustituidas (20/11/2026)
+
+Fuente: la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). No vigentes: créditos Studio de ADR-050 (tabla 5/1/8/10/20 y ejemplo 300 → 295), productos Studio Plus/Pro independientes, débito `STUDIO_AI_OP` y reintegro `STUDIO_AI_REFUND` como unidades de cobro, y «Browser Rendering» como nombre del servicio.

@@ -2,6 +2,8 @@
 
 Se adopta el estilo de **monolito modular en tres capas** con despliegue **serverless-first** y procesamiento asíncrono complementario. Este documento describe la estructura física/lógica del backend, sus tres capas horizontales, sus siete módulos verticales de negocio y su conexión con bases de datos y servicios externos, complementando el documento `enfoque-arquitectonico.md` (que detalla la inversión de dependencias interna con Clean Architecture).
 
+> **Alcance:** el estilo describe la arquitectura completa; ADR-093 delimita las capacidades construidas en V1 y las que quedan pospuestas. La selección de un estilo no acredita que el backend esté implementado.
+
 | Elemento | Descripción aplicada a Mentelyx |
 |---|---|
 | **Estilo arquitectónico** | **Monolito modular en tres capas** con capacidades asíncronas serverless-first. |
@@ -11,8 +13,8 @@ Se adopta el estilo de **monolito modular en tres capas** con despliegue **serve
 | **Capas del estilo** | **Capa 1 — Presentación / API:** middlewares Hono, rutas (`*.routes.ts`) y controladores (`*.controller.ts`). **Capa 2 — Lógica de Negocio:** casos de uso, servicios de aplicación y reglas de dominio (`*.service.ts` / casos de uso). **Capa 3 — Infraestructura / Acceso a Datos:** repositorios (`*.repository.ts`), adaptadores y clientes de servicios externos. |
 | **Módulos verticales (M1–M7)** | **M1** Usuarios y Administración · **M2** Cursos y Contenidos (Studio) · **M3** Evaluaciones y Aprendizaje · **M4** Docentes y Clases · **M5** Suscripciones y Pagos · **M6** Tutor IA y RAG · **M7** Publicidad y Patrocinios. |
 | **Persistencia y estado** | **Neon PostgreSQL + pgvector** (fuente de verdad transaccional y vectores), **MongoDB Atlas** (documentos educativos estructurados), **Redis** (caché y contadores efímeros, nunca saldos financieros) y **Cloudflare R2** (archivos binarios). |
-| **Integraciones y asincronía** | Proveedor de IA (LLM/embeddings), pasarela de pagos, WebRTC/SFU (RealtimeKit candidato), Bunny Stream, servicio de correo y **Cloudflare Queues + Worker consumidor + DLQ**. |
-| **Beneficios** | Despliegue unificado en Cloudflare Workers, latencia nula en llamadas entre módulos mediante contratos internos TypeScript, transacciones ACID locales en PostgreSQL y evolución ordenada por dominios. |
+| **Integraciones y asincronía** | Workers AI (DeepSeek, Gemma, BGE-M3, FLUX.2), CulqiOnline, WebRTC/SFU (RealtimeKit candidato, sujeto a prueba y condición de ADR-046), Bunny Stream, servicio de correo y **Cloudflare Queues + Worker consumidor + DLQ**. |
+| **Beneficios** | Despliegue unificado en Cloudflare Workers, llamadas entre módulos sin saltos de red mediante contratos internos TypeScript, transacciones ACID en PostgreSQL y evolución ordenada por dominios. |
 
 ![Estilo arquitectónico de Mentelyx](../img/estilo-arquitectonico.png)
 
@@ -24,5 +26,5 @@ Se adopta el estilo de **monolito modular en tres capas** con despliegue **serve
 2. **Estructura en tres capas horizontales** (Presentación/API, Lógica de Negocio e Infraestructura/Acceso a Datos), manteniendo las dependencias de código alineadas con Clean Architecture.
 3. **Colaboración modular por contratos públicos**: los módulos se comunican mediante interfaces públicas internas (flechas verdes discontinuas en la figura), sin consultar directamente tablas ni repositorios privados de otros módulos.
 4. **Flujo audiovisual directo al SFU**: el tráfico de audio y video en tiempo real viaja entre el cliente Web/PWA y el proveedor WebRTC/SFU (flecha magenta), sin atravesar la API REST de Hono.
-5. **Persistencia transaccional y Outbox en PostgreSQL**: los pagos, créditos, cupos y permisos residen en PostgreSQL; la publicación hacia Cloudflare Queues se realiza de forma fiable tras confirmar la transacción local, con consumidor idempotente y cola de fallidos (DLQ).
+5. **Persistencia transaccional y Outbox en PostgreSQL**: los pagos, recursos de plan, saldos, cupos y permisos residen en PostgreSQL; la publicación hacia Cloudflare Queues se realiza de forma fiable tras confirmar la transacción local, con consumidor idempotente y cola de fallidos (DLQ).
 6. **Redis como caché efímera**: Redis acelera lecturas y controles de tasa (rate limit), pero no sustituye a PostgreSQL como libro mayor ni fuente de verdad financiera.

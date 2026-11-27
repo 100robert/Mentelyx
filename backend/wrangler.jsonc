@@ -25,10 +25,54 @@
     "AUTH_ORIGENES": "http://localhost:3000,http://127.0.0.1:8788,http://localhost:8787,http://127.0.0.1:8787",
     // Presupuesto técnico de IA (SC-11): valores LOCALES de prueba, no aprobados para producción.
     "PRESUPUESTO_IA_MENSUAL_USD": "5",
-    "PRESUPUESTO_IA_TOPE_USD": "5"
+    "PRESUPUESTO_IA_TOPE_USD": "5",
+    // Proveedor simulado EXPLÍCITO y rotulado («Demostración (sin IA real)»); solo se admite en desarrollo y CI.
+    "IA_PROVEEDOR": "simulado"
   },
   // AUTH_SECRET se define en .dev.vars (local) o como secreto de Workers; nunca en este archivo.
   "env": {
+    // Local con servicios EXTERNOS (Neon pooled, MongoDB Atlas, NVIDIA API Catalog; BGE-M3 por Workers AI). Los secretos
+    // DATABASE_URL, MONGODB_URL, NVIDIA_API_KEY y AUTH_SECRET vienen de backend/.dev.vars.externo, que genera
+    // `node scripts/preparar-perfil-externo.mjs` desde backend/.secretos/ (nunca versionados). Sin wsproxy: Neon real.
+    // Uso: `pnpm --filter @mentelyx/backend exec wrangler dev --env externo --port 8790`.
+    // Sin binding `ai`: el Workers AI remoto exige un subdominio workers.dev registrado en la cuenta (pendiente del
+    // propietario, 26/11/2026). Sin él, la recuperación es solo léxica y la respuesta lo avisa.
+    "externo": {
+      "name": "mentelyx-api",
+      "r2_buckets": [{ "binding": "ARCHIVOS", "bucket_name": "mentelyx-archivos" }],
+      "vars": {
+        "ENTORNO": "desarrollo",
+        "MONGODB_DB": "mentelyx",
+        "AUTH_URL": "http://localhost:8791",
+        "AUTH_ORIGENES": "http://127.0.0.1:8791,http://localhost:8790,http://127.0.0.1:8790",
+        "PRESUPUESTO_IA_MENSUAL_USD": "5",
+        "PRESUPUESTO_IA_TOPE_USD": "5",
+        "IA_PROVEEDOR": "nvidia",
+        "NVIDIA_MODELO": "moonshotai/kimi-k3.1-pro",
+        "IA_RUTA_TECNICA": "respaldo-general"
+      }
+    },
+    // Local con el Tutor real: mismos servicios de Docker Compose, pero Gemma 4 y BGE-M3 por Workers AI. Requiere
+    // `wrangler login` (el binding AI siempre se atiende de forma remota y consume la asignación de la cuenta).
+    // Uso: `pnpm --filter @mentelyx/backend exec wrangler dev --env local-ia`.
+    "local-ia": {
+      "name": "mentelyx-api",
+      "r2_buckets": [{ "binding": "ARCHIVOS", "bucket_name": "mentelyx-archivos" }],
+      "ai": { "binding": "AI" },
+      "vars": {
+        "ENTORNO": "desarrollo",
+        "DATABASE_URL": "postgres://mentelyx:mentelyx_local@127.0.0.1:55432/mentelyx",
+        "NEON_WS_PROXY": "127.0.0.1:5488",
+        "MONGODB_URL": "mongodb://127.0.0.1:57017",
+        "MONGODB_DB": "mentelyx",
+        "AUTH_URL": "http://localhost:8788",
+        "AUTH_ORIGENES": "http://localhost:3000,http://127.0.0.1:8788,http://localhost:8787,http://127.0.0.1:8787",
+        "PRESUPUESTO_IA_MENSUAL_USD": "5",
+        "PRESUPUESTO_IA_TOPE_USD": "5",
+        "IA_PROVEEDOR": "workers-ai",
+        "IA_RUTA_TECNICA": "respaldo-general"
+      }
+    },
     // Demostración del Sprint 03 (no producción). DATABASE_URL, MONGODB_URL, AUTH_SECRET y, si se usa Upstash,
     // UPSTASH_REDIS_REST_TOKEN son SECRETOS de Workers. AUTH_URL lo fija el flujo de despliegue con el origen público
     // del frontend. Sin wsproxy: Neon real por WebSocket.

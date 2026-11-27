@@ -3,6 +3,7 @@
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-especializado/07-registro-de-decisiones-y-solicitudes-de-cambio.md`
 > **Elaborado por:** Claude Code (responsable de IA/RAG, motor visual y contratos/UI según `mentelyx-ai-setup-README.md`)
 > **Destinatario:** Codex (responsable de persistencia, seguridad e infraestructura) para integrarlo en el SDD final
+> **Estado vigente (20/11/2026):** las secciones anteriores a la última son **registro histórico**; sus pendientes y propuestas quedan resueltos o sustituidos por la sección «Resolución por la instrucción maestra» al final de este documento.
 > **Versión:** 1.1 — 17/11/2026 · **Estado:** propuestas resueltas por Codex ([ADR, sección 8](../../01-analisis-de-sistema/07-decisiones-arquitectonicas.md); [contrato de coordinación](../contrato-coordinacion-datos-seguridad-infraestructura.md)) e integradas por Claude Code (sección 8 de este registro). Ninguna decisión está implementada, contratada ni validada experimentalmente.
 > **Cambios 1.1:** las secciones 1 a 7 se conservan como registro original de la v1.0, salvo PEND-01. La sección 8 nueva consolida las resoluciones, la sincronización CO-01–CO-10, las discrepancias resueltas y los pendientes.
 
@@ -208,8 +209,27 @@ Claude Code acepta estas resoluciones sin reabrirlas. Ninguna modificación de C
 | Aprobación de producto o comercial | ADR-058 (modo `GENERAL`); calibración de UTI (incluido el peso 4 de `razonamiento.profundo`, que ahora comparte modelo), cuotas, créditos Studio y presupuestos (límite blando y tope duro); contratación de Workers Paid o créditos de AI Gateway, planes de Neon, Atlas y Upstash, correo, pasarela, Browser Rendering y Cloud Run |
 | Legal | PEND-02 (retenciones de 30/14 días, 12 meses y 90 días; transferencia internacional; contratos de tratamiento), PEND-03 (protocolo de riesgo con menores), consentimiento audiovisual, PEND-04 (términos de Stability y Meshy) |
 | Experimental | BP-01 a BP-07, PEND-05, PEND-VIS-01/02, PEND-MAT-01, PEND-RAG-01 (versión de pgvector, EXPLAIN y Recall), PR-INF-01 a 05, SEC-01 a 10, API-01 a 18 y los EQ asociados |
-| Documental | Reexportar los PNG `m2-secuencia`, `m6-secuencia` y `principios-solid-m1` desde sus fuentes corregidas (sin herramienta instalada); sistemas externos de IA en C4 niveles 1 y 2 (guía, sección 5, punto 5) y enlaces de EQ en `08-escenarios-atributos-calidad.md` (punto 6), reservados para el SDD y la evaluación de calidad |
+| Documental | **Resuelto el 21/11/2026:** reexportados los PNG `m2-secuencia`, `m6-secuencia` y `principios-solid-m1` desde sus fuentes corregidas. Pendiente original: sistemas externos de IA en C4 niveles 1 y 2 (guía, sección 5, punto 5) y enlaces de EQ en `08-escenarios-atributos-calidad.md` (punto 6), reservados para el SDD y la evaluación de calidad |
 
 ### 8.6. Siguiente tarea
 
 Evaluación de atributos de calidad (skill `mentelyx-calidad-sdd`) sobre EQ-01–EQ-31, tomando como entrada este registro, el contrato de coordinación y las pruebas de `06-calidad-ia-criterios-y-pruebas.md`. Después, el SDD consolidado. La implementación no empieza antes.
+
+## Resolución por la instrucción maestra (20/11/2026, Claude Code)
+
+La [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) resuelve los pendientes de este registro. Las entradas anteriores se conservan como historia.
+
+| Elemento del registro | Resolución vigente | Referencia |
+|---|---|---|
+| ADR-056 (modelos) y PEND-01 | DeepSeek V4.1 Flash, Gemma 4 26B A4B, BGE-M3 y FLUX.2 Klein en Workers AI; Claude, Gemini, OpenAI, Nano Banana, Stability y Meshy como extensiones futuras desactivadas | ADR-077 |
+| ADR-058 (modo GENERAL) y CO-05 | GENERAL y MIXTA habilitados; el orquestador decide la modalidad | ADR-078 |
+| ADR-064 y SC-15 (embeddings) | BGE-M3 con `vector(1024)`; BP-07 mide Recall | ADR-076 |
+| ADR-069 (retención 30/14) | 90 días con aviso previo; lienzos y recursos con ciclo propio | ADR-079 |
+| ADR-050 y ADR-067 (créditos Studio, UTI) | Recursos de plan por categoría con autoridad en M5 | ADR-080, ADR-088 |
+| ADR-063, ADR-071 y ADR-072 (3D e imágenes) | 3D para todas las cuentas; generación externa bloqueada sin integración autorizada; FLUX.2 para ilustraciones | ADR-077, ADR-091 |
+| ADR-061 (pizarra junto al chat) | Lienzo extensible como interfaz principal, lazo y capas | ADR-083 |
+| ADR-073 (migraciones con Kysely) | Drizzle Kit como única autoridad de migraciones; Kysely para consultas especializadas | ADR-075 |
+| P-01 a P-11 | Resueltas según la sección 20 de la instrucción maestra | ADR, sección 10.3 |
+| Pruebas BP-01 a BP-07 | Siguen **pendientes de ejecución**; ninguna se declara superada | Estrategia de pruebas |
+
+Solicitudes de cambio nuevas: cualquier sustitución de un modelo aprobado, de CulqiOnline o de la matriz de planes requiere autorización expresa del responsable del proyecto (IM, sección 1).

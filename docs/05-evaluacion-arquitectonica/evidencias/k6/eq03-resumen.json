@@ -1,0 +1,266 @@
+{
+  "escenario": "eq03",
+  "base": "http://127.0.0.1:8792",
+  "fecha": "2026-11-27T05-44-56-007Z",
+  "metricas": {
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 24496.960034497442,
+        "min": 25.3486,
+        "med": 17692.4683,
+        "p(90)": 54458.31296,
+        "p(95)": 60014.11436,
+        "p(99)": 60153.353504,
+        "max": 60297.1429
+      }
+    },
+    "mentelyx_errores_5xx": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.2982030111704711,
+        "passes": 614,
+        "fails": 1445
+      },
+      "thresholds": {
+        "rate<0.01": {
+          "ok": false
+        }
+      }
+    },
+    "http_req_blocked": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 2.0747339310995754,
+        "min": 0,
+        "med": 0,
+        "p(90)": 2.0704400000000005,
+        "p(95)": 5.399649999999991,
+        "p(99)": 58.172104000000246,
+        "max": 184.9973
+      }
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 172.8868,
+        "avg": 1.318190089664937,
+        "min": 0,
+        "med": 0,
+        "p(90)": 1.3139800000000006,
+        "p(95)": 3.104719999999998,
+        "p(99)": 41.78661600000127
+      }
+    },
+    "data_sent": {
+      "contains": "data",
+      "values": {
+        "count": 845714,
+        "rate": 1598.808030739724
+      },
+      "type": "counter"
+    },
+    "mentelyx_lectura_ms": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 60128.826596,
+        "max": 60297.1429,
+        "avg": 25143.53513576802,
+        "min": 433.7131,
+        "med": 18037.92145,
+        "p(90)": 54536.26930000001,
+        "p(95)": 60014.010045
+      },
+      "thresholds": {
+        "p(95)<3000": {
+          "ok": false
+        }
+      }
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 25.3486,
+        "med": 14092.1368,
+        "p(90)": 28719.14750000002,
+        "p(95)": 47827.2628,
+        "p(99)": 52650.849524000005,
+        "max": 56233.638,
+        "avg": 16651.686277674402
+      }
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(90)": 53019.080760000004,
+        "p(95)": 60013.65049,
+        "p(99)": 60153.353504,
+        "max": 60297.1429,
+        "avg": 23739.088257479983,
+        "min": 24.4061,
+        "med": 17676.7376
+      }
+    },
+    "mentelyx_guardado_respuesta_ms": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 60260.91531,
+        "max": 60286.7926,
+        "avg": 22685.044611711714,
+        "min": 4871.2726,
+        "med": 16474.1254,
+        "p(90)": 60001.1508,
+        "p(95)": 60123.7391
+      }
+    },
+    "http_reqs": {
+      "values": {
+        "count": 2119,
+        "rate": 4.005933704700969
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 275,
+        "rate": 0.5198828545506213
+      }
+    },
+    "mentelyx_intentos_calificados": {
+      "values": {
+        "count": 27,
+        "rate": 0.051043043901333726
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0,
+        "min": 0,
+        "med": 0,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0,
+        "max": 0
+      }
+    },
+    "group_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 185734.24664,
+        "p(99)": 209067.14535200002,
+        "max": 210885.5469,
+        "avg": 93389.21072342341,
+        "min": 7042.1637,
+        "med": 87652.6262,
+        "p(90)": 161778.86594
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.6985446985446986,
+        "passes": 336,
+        "fails": 145
+      }
+    },
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 286859.7067,
+        "avg": 109686.73087127265,
+        "min": 10767.9841,
+        "med": 98541.4821,
+        "p(90)": 188913.60952,
+        "p(95)": 211301.80854,
+        "p(99)": 261359.081424
+      }
+    },
+    "vus_max": {
+      "values": {
+        "min": 200,
+        "max": 200,
+        "value": 200
+      },
+      "type": "gauge",
+      "contains": "default"
+    },
+    "data_received": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 1703310,
+        "rate": 3220.07878176225
+      }
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "fails": 1505,
+        "rate": 0.2897593204341671,
+        "passes": 614
+      }
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "value": 4,
+        "min": 0,
+        "max": 200
+      }
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0,
+        "p(90)": 0.9462800000000015,
+        "p(95)": 1.4750099999999966,
+        "p(99)": 25.780638000000064,
+        "max": 161.3969,
+        "avg": 1.0166734780556868
+      }
+    },
+    "http_req_receiving": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 25554.7325,
+        "avg": 756.8551035394055,
+        "min": 0,
+        "med": 4.8191,
+        "p(90)": 381.44218,
+        "p(95)": 3325.6079399999994,
+        "p(99)": 25468.067402000004
+      }
+    }
+  },
+  "umbrales": {
+    "mentelyx_lectura_ms": [
+      "p(95)<3000"
+    ],
+    "mentelyx_errores_5xx": [
+      "rate<0.01"
+    ]
+  }
+}

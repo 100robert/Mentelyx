@@ -2,7 +2,15 @@
 
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md`  
 > **Tecnología Cliente:** Next.js + React + TypeScript · **Enfoque:** *Mobile-First* e instalable como PWA  
-> **Versión:** 2.3 — 25/11/2026 · **Estado:** diseño externo de vistas, navegación y salvaguardas de interfaz. Implementado en parte: rutas públicas, acceso, espacios y Tutor (sección 4).
+> **Versión:** 2.7 — 26/11/2026 · **Estado:** diseño externo de vistas, navegación y salvaguardas de interfaz. Implementado en parte: landing de Mentelyx V1, rutas públicas, acceso, espacio personal, temas con el espacio educativo, experiencias y Tutor (sección 4).
+>
+> **Cambios de la versión 2.7:** auditoría y refinamiento (fase 10B). `/tutor/[id]` usa el mismo espacio educativo que los temas. Las migas de la barra superior nombran el módulo y no duplican las migas de cada página. La barra lateral se contrae en todas las pantallas del espacio educativo. La landing describe solo lo que el producto hace hoy. La corrección de expresiones se presenta como «equivalencia aproximada». Matriz de integración en el diseño de API, sección 12.11.
+>
+> **Cambios de la versión 2.6:** la sección 1.3 incorpora Exámenes (fases 7 y 8: preparaciones, temario, plan, estudio por tema, tarjetas, banco de preguntas, práctica, simulacros, resultados y seguimiento) y Configuración (fase 9: perfil, sesión y seguridad, apariencia por dispositivo y preferencias). La sección 4 agrega `cuenta` y las nuevas carpetas de `examenes`.
+>
+> **Cambios de la versión 2.5:** la sección 1.3 incorpora el núcleo educativo (fases 4 a 6): espacio educativo de tres zonas, bloques `mentelyx.bloque/v1` con acciones validadas, pizarra matemática, visor 3D, visor PDF, lectura de obras y experiencias. «Mis espacios» pasa a llamarse «Temas» y «Conversaciones», «Sesiones», sin cambiar las rutas. La sección 4 agrega `bloques`, `matematicas`, `estudio`, `experiencias`, `visor-3d` y `visor-pdf`, y la dependencia `pdfjs-dist`.
+>
+> **Cambios de la versión 2.4:** nueva sección 1.3 con el alcance de producto de Mentelyx V1 para el frontend (Aprendizaje y Preparación de exámenes; Studio pospuesto) y el sistema editorial (retícula, tipografía, voz, movimiento y recursos externos), por instrucción del propietario del 25/11/2026. La sección 4 incorpora `features/marketing/` y las dependencias `three` y `katex`.
 >
 > **Cambios de la versión 2.3:** la sección 4 pasa de estructura propuesta a la estructura vigente del frontend, organizada por funcionalidades (`features/`) con aprobación del propietario. Incluye las reglas de importación, las carpetas previstas y la correspondencia con la propuesta anterior. Recoge también la dirección de interfaz (sección 1.1) y la identidad de marca (sección 1.2).
 >
@@ -77,6 +85,137 @@ Reglas:
 - Source Serif 4 para el material de estudio: explicaciones del Tutor y pasajes citados.
 - Ambas autoalojadas con `next/font`.
 - Se eligieron en el rediseño del 21/11/2026, a falta de una tipografía de marca documentada.
+
+### 1.3. Mentelyx V1: alcance del frontend y sistema editorial (25/11/2026)
+
+**Origen:** instrucciones del propietario «Mentelyx V1» (25/11/2026), formalizadas en [ADR-093](../../01-analisis-de-sistema/07-decisiones-arquitectonicas.md). Para el alcance de V1 prevalece sobre las redacciones anteriores de este documento que la contradigan; lo pospuesto (Studio, docentes, aulas, tutorías humanas) se conserva en las secciones 2 a 9 como visión posterior.
+
+**Producto.** Mentelyx transforma la curiosidad y las necesidades de aprendizaje en experiencias interactivas. No exige ser estudiante, pertenecer a una institución, tener conocimientos previos ni subir documentos. V1 se organiza en dos experiencias:
+
+| Experiencia | Contenido |
+|---|---|
+| Aprendizaje | Temas desde cero o en profundidad, preguntas libres, pizarra adaptativa, modelos 3D, gráficos, documentos, fuentes propias opcionales, recursos externos autorizados, ejercicios, Tutor IA, sesiones guardadas y carpetas |
+| Preparación de exámenes | Espacio por examen (nombre, fecha opcional, temario, conocimientos previos, fuentes opcionales), diagnóstico, plan, estudio guiado, resúmenes, tarjetas, ejercicios, bancos de preguntas, simulacros, retroalimentación fundamentada, debilidades, seguimiento y repaso adaptativo |
+
+Capacidades compartidas: Tutor IA, pizarra, visualizador 3D, visor PDF, fuentes, anotaciones, ejercicios y seguimiento. Aprendizaje y exámenes son módulos de producto separados en rutas, carpetas y navegación.
+
+**Fuera de V1:** Mentelyx Studio (pospuesto; no se promociona), marketplaces, publicación de cursos y gestión institucional. Las tutorías humanas siguen en la visión, pero no se presentan como disponibles.
+
+**Sistema editorial** (tokens en `frontend/src/app/tokens.css`; utilidades `.marco` y `.reticula` en `globals.css`):
+
+| Aspecto | Decisión |
+|---|---|
+| Retícula | 12 columnas desde 64 rem, 8 en tableta (48–64 rem) y 4 en móvil; medianil de 24 px (16 px en móvil); contenido de hasta 1360 px; márgenes `clamp(16px, 4,6vw, 72px)` |
+| Tipografía | Escala fluida de 360 a 1440 px: display 44–88 px, H1 40–72, H2 32–56, H3 24–36, H4 20–24, destacado 18–22, cuerpo 16–18, secundario 14–16 y metadatos 12–14 px |
+| Voz | Las preguntas y las palabras de quien aprende van en Source Serif 4 cursiva; la voz de Mentelyx, en Lexend. Solo el subconjunto latino de ambas fuentes |
+| Ritmo | Entre secciones 56–80 px en móvil, 72–112 en tableta y 112–160 en escritorio (`--espacio-seccion`) |
+| Color | Solo la paleta oficial (sección 1.2) y sus derivados. El verde limón es acento y acción, nunca fondo dominante ni texto sobre blanco. Las figuras científicas pueden usar colores semánticos (sangre rica o pobre en oxígeno, combustión) y las obras conservan sus colores |
+| Movimiento | Vinculado al desplazamiento, sin secuestrarlo (`useRecorrido`): láminas persistentes, transformaciones con significado y escenas 3D bajo demanda. Nada gira en bucle. Con `prefers-reduced-motion`, cada paso muestra un estado representativo |
+| Datos ilustrativos | Se rotulan «Ejemplo ilustrativo». No es un texto de avance del desarrollo (sección 1.1), sino una declaración sobre los datos. La comprensión se muestra como estimación cualitativa, nunca como nota |
+| Procedencia | Se distinguen tus fuentes, la biblioteca de Mentelyx, las fuentes externas y la explicación del Tutor (forma y texto, no solo color). Lo generado por IA nunca se presenta como cita |
+
+**Recursos externos.** Cada recurso se verifica por separado: autor, fuente, licencia, uso comercial, modificación, redistribución y atribución. El primero incorporado es «Bajo la ola en alta mar frente a Kanagawa» (Katsushika Hokusai, c. 1830–1832), The Metropolitan Museum of Art, JP1847, con `isPublicDomain: true` en la API de la colección y dentro del programa Open Access CC0, que permite el uso comercial sin permiso (verificado el 25/11/2026). Se atribuye en el pie de la figura y en el pie de la página. Los diagramas y el modelo 3D del motor son de elaboración propia. No hay secuencias de imágenes autorizadas, así que no se usan.
+
+**Navegación pública:** Aprendizaje, Cómo funciona, Preparación de exámenes, Planes, Iniciar sesión y Comenzar. El pie no enlaza políticas legales, redes ni datos de empresa mientras no existan. `/planes` muestra solo los planes de aprendizaje; los docentes se conservan en `features/planes`, pospuestos. `/biblioteca` sale del flujo público y no se indexa (la publicación por usuarios está pospuesta).
+
+**Acceso (fase 2, 25/11/2026):**
+- Dos zonas en escritorio (formulario en 5 columnas y zona azul marino en 7); en móvil, primero el formulario. Logotipo oficial y búho esculpido; sin tarjeta flotante ni degradados.
+- Intención de entrada: la landing envía `?objetivo=aprendizaje` o `?objetivo=examen`. Tras autenticarse, el destino es `?siguiente=` (solo rutas internas de una lista cerrada: `/inicio`, `/aprendizaje`, `/examenes`, `/espacios`, `/tutor`, `/fuentes`, `/configuracion`), si no `/aprendizaje?empezar=1` o `/examenes?nueva=1` según el objetivo, y si no `/inicio`. No se guarda en el usuario. Pruebas: `features/auth/tests/destino.unit.test.ts`.
+- Errores por código de la API: credenciales (401), validación de origen o CSRF (403), límite de intentos (429), servicio no disponible (503) y falta de conexión. Con una sesión iniciada, el acceso ofrece «Continuar» o «Cerrar sesión».
+- Sin soporte en el backend, no hay recuperación ni restablecimiento de contraseña ni verificación de correo: su contrato está en el [diseño de API, sección 12.3](02-diseño-de-api-y-contratos.md).
+
+**Espacio personal (fase 3, 25/11/2026):**
+
+| Ruta | Contenido | Datos |
+|---|---|---|
+| `/inicio` | «¿Qué quieres aprender hoy?», continuar la última sesión, primeros pasos (cuenta nueva) y los dos módulos por separado | Temas (espacios) y sesiones reales |
+| `/aprendizaje` | Empezar un tema con lenguaje natural, temas, sesiones y carpetas de Aprendizaje | Reales; carpetas según su contrato |
+| `/examenes` | Preparaciones y carpetas por asignatura | Según el contrato propuesto (sección 12 del diseño de API) |
+| `/fuentes` | Fuentes personales agrupadas por tema | Reales |
+| `/configuracion` | Sesión, plan y recursos del mes, apariencia y accesibilidad | Reales |
+
+- Navegación: Inicio, Aprendizaje, Exámenes, Mis fuentes y Configuración, con los temas recientes. Los temas (`/espacios`) y las sesiones (`/tutor`) pertenecen a Aprendizaje. `/dashboard` redirige a `/inicio`.
+- Carpetas independientes por módulo (`features/carpetas`): crear, renombrar, mover (sin ciclos y hasta 3 niveles), archivar, restaurar, eliminar con confirmación, buscar, ordenar, migas en la URL (`?carpeta=`), menú contextual accesible y estados de carga, error, vacío y no disponible.
+- Lo que depende de un backend inexistente (carpetas y preparaciones) detecta la ausencia del servicio (`404 RECURSO_NO_ENCONTRADO` en la colección) y lo dice: «no está disponible en este momento». Sin datos simulados ni `localStorage`.
+
+**Núcleo educativo (fases 4 a 6, 25/11/2026):**
+
+| Ruta | Contenido | Datos |
+|---|---|---|
+| `/espacios` | «Temas»: cada tema reúne sus sesiones con el Tutor y, si se quiere, fuentes | Reales |
+| `/espacios/[id]?sesion=` | Espacio educativo del tema. La sesión es una conversación real con identidad estable en la URL; `?nueva=1` empieza otra | Bloques reconstruidos desde los mensajes guardados |
+| `/tutor` y `/tutor/[id]` | «Sesiones»: todas las conversaciones; el detalle conserva el panel anterior | Reales |
+| `/aprendizaje/experiencias` y `/[clave]` | Derivadas, motor, obra (Hokusai), documento y galería entre disciplinas | Contenido preparado, rotulado «Ejemplo ilustrativo»; el Tutor es el real |
+
+- **Espacio educativo** (`features/estudio`):
+  - Barra superior: migas, título, estado de guardado real, herramientas (panel del tema, Tutor, lectura de a uno o seguida, recorrido guiado) y nueva sesión. El estado es «La sesión se guarda con tu primera pregunta», «Guardando tu pregunta…», «Sesión guardada hasta el…» o «Tu última pregunta no se guardó».
+  - Panel del tema contraíble: contenido de la sesión, actividades, sesiones del tema y fuentes reales (opcionales).
+  - Centro protagonista: pestañas de bloques (flechas, Inicio y Fin) y el bloque activo.
+  - Tutor contextual: aclarar, un ejemplo, profundizar, explicar lo seleccionado, representación visual, ejercicios y referencias. Prepara la pregunta y la persona la envía; cada respuesta real se vuelve un bloque con sus citas.
+  - Distribución: tres columnas en escritorio amplio (≥ 90rem); el tema como cajón en pantallas medianas; en móvil, una zona a la vez (Contenido, Tema y Tutor), nunca tres columnas.
+  - Se dice qué no se guarda: la interacción con los bloques, los resaltados y notas de documentos y obras, y las respuestas a actividades. Su contrato está en el [diseño de API, sección 12.5](02-diseño-de-api-y-contratos.md).
+- **Bloques** (`features/bloques`): unión discriminada versionada con `id`, `tipo`, `version`, `contenido`, `orden`, `referencias`, `capacidades`, `estado`, `accesibilidad` y `origen`.
+  - Registro de renderizadores, alternativa segura para tipos, versiones o datos no válidos y contención de errores por bloque.
+  - Acciones: crear, actualizar, enfocar, resaltar, revelar paso, seleccionar estructura, modificar parámetro, mostrar referencia y cambiar vista. Un reductor determinista las aplica: una acción inválida no cambia el estado.
+  - El Tutor, el recorrido guiado local (rotulado «preparado por Mentelyx, sin IA») y la persona usan las mismas acciones.
+- **Matemáticas** (`features/matematicas`): analizador seguro, derivada simbólica, cuadrática, tangente y muestreo con cortes en las asíntotas.
+  - El analizador admite tokenizador, precedencia, menos unario, multiplicación implícita, coma decimal y una lista cerrada de funciones; limita a 200 caracteres y 32 niveles; no usa `eval` ni `Function`.
+  - La pizarra de la derivada vincula a, b, c y x₀ con el procedimiento y la actividad mediante acciones.
+  - **MathLive** se evaluó y no se incorporó: su peso no se justifica para respuestas numéricas, que ya aceptan fracciones y coma decimal con el mismo analizador; KaTeX muestra las fórmulas.
+- **Visor 3D** (`features/visor-3d`): el motor de la landing reutilizado sin desplazamiento.
+  - Órbita, zoom, vistas, selección por toque (raycast) o desde la lista, ocultar, aislar, despiece, giro del cigüeñal, rótulos sin solaparse, pantalla completa y créditos.
+  - Carga modelos glTF/GLB del mismo origen, como el metano de elaboración propia (109,5°).
+  - Ante la pérdida del contexto WebGL ofrece recargar el modelo, y libera sus recursos al desmontarse.
+- **Visor PDF** (`features/visor-pdf`, PDF.js): páginas, miniaturas diferidas, zoom, ajustar al ancho, búsqueda sin tildes, capa de texto seleccionable, pantalla completa y referencias de página.
+  - Resaltados y notas rotulados «se pierden al salir».
+  - Aviso de página escaneada: «Mentelyx no hace OCR».
+  - Un PDF del equipo se abre solo en el navegador; no se sube.
+- **Obra:** zoom, regiones, líneas de composición, notas no guardadas y crédito obligatorio (lo exige la validación).
+- **Empezar un tema:** la profundidad, los conocimientos previos y el objetivo preparan la primera pregunta al Tutor; la persona la revisa antes de enviarla.
+
+**Exámenes y configuración (fases 7 a 9, 26/11/2026):**
+
+| Ruta | Contenido | Datos |
+|---|---|---|
+| `/examenes` | Preparaciones con búsqueda, orden y filtros (activas, próximas, completadas, archivadas), carpetas de Exámenes y dos ejemplos ilustrativos | Backend real de una preparación por cuenta; varias, según la sección 12.2 |
+| `/examenes/nueva` | Una frase en lenguaje natural propone los campos (interpretación local, sin IA). Obligatorios: asignatura y un tema; lo demás es opcional | Real |
+| `/examenes/[id]` | Resumen, temario, plan, estudiar temas, fuentes, tarjetas, práctica, simulacros y resultados | Plan, avance y seguimiento reales; lo demás, de esta visita |
+| `/examenes/[id]/estudiar/[tema]` | El espacio educativo con el contexto del examen y del tema | Tutor real |
+| `/configuracion` | Perfil y cuenta, sesión y seguridad, apariencia de este dispositivo, preferencias de aprendizaje, y plan y recursos | Reales; lo que no existe se dice sin botones |
+
+- **Preparación** (`features/examenes`):
+  - Sin documentos y sin diagnóstico obligatorio.
+  - El backend actual guarda una preparación a la vez: hay un aviso permanente y se confirma antes de reemplazar. No guarda el nombre del examen.
+  - Sin fecha no hay cuenta regresiva y el plan no tiene plazos.
+- **Temario:** agregar, editar, quitar y reordenar con botones. Las sugerencias del Tutor (llamada real) llegan marcadas para revisarlas. No se extrae temario de PDF.
+- **Plan:** lo calcula una regla determinista del servidor, no el Tutor. Completar una actividad se guarda.
+- **Estudio guiado:** reutiliza `EspacioEstudio`. En el ejemplo de cálculo, la derivada abre la pizarra interactiva.
+- **Preguntas** (`mentelyx.pregunta/v1`): 10 tipos de datos que cubren los 12 del catálogo. La interpretación de gráficos y la identificación en imágenes o en 3D reutilizan los bloques del núcleo educativo.
+  - Corrección determinista; numérica con tolerancia explícita; expresiones por equivalencia en 24 puntos del dominio, rotulada «no simbólica».
+  - Las abiertas quedan «pendientes de evaluación». La ayuda del Tutor se pide sin salir de la actividad y es orientativa.
+- **Práctica:** retroalimentación inmediata, explicación después de responder, reintento y ayuda del Tutor.
+- **Simulacro:** navegación, marcas para revisar, resumen previo, confirmación y temporizador opcional (anuncio por minuto; límite del navegador, sin garantía del servidor). Se avisa antes de salir.
+- **Resultados:** totales, calificación solo sobre las preguntas con corrección automática, resultados por tema y revisión de cada pregunta con la respuesta dada y la esperada.
+- **Seguimiento:** actividad, rendimiento observado y dominio estimado, por separado. El dominio no se calcula sin intentos guardados. Las recomendaciones de repaso salen de datos reales y la persona elige.
+- **Tarjetas:** revelación voluntaria y calificación. «Otra vez» repite dentro de la ronda; no es repetición espaciada.
+- **Configuración** (`features/cuenta`):
+  - Tema claro, oscuro o del sistema y movimiento reducido, en este dispositivo y aplicados antes de pintar (con sus tokens para el modo oscuro forzado).
+  - Nombre, correo, contraseña, sesiones y eliminación de la cuenta se presentan como no disponibles: contratos en el [diseño de API, sección 12.10](02-diseño-de-api-y-contratos.md).
+- **Lo que se hace en esta visita** (intentos, tarjetas propias y notas) no se guarda, y la interfaz lo dice en cada sección.
+
+**Consolidación (fase 10B, 26/11/2026):**
+- Una sola experiencia de sesión: `/tutor/[id]` reconstruye la sesión en el espacio educativo, con las fuentes de su tema si lo tiene. El panel anterior (`PanelTutor`) queda sin uso en las rutas.
+- **Migas:** la barra superior dice en qué módulo se está (Aprendizaje o Exámenes) y cada pantalla de trabajo muestra su ruta completa. Una ruta desconocida no se presenta como «Inicio».
+- **Landing:** el recorrido de exámenes describe el plan por temas, el estudio y los ejercicios con el Tutor y el seguimiento de actividades, que es lo que existe hoy. No anuncia diagnóstico, plan adaptativo, carpetas, biblioteca ni citas por página.
+- **Matemáticas:** se distinguen la comparación numérica con tolerancia, la equivalencia aproximada (evaluación en 24 puntos de un intervalo) y lo que no se comprueba (equivalencia simbólica, restricciones de dominio y procedimiento). No hay matrices, sistemas ni integrales.
+- **Pendiente antes del lanzamiento público:**
+  - política de privacidad;
+  - términos y condiciones;
+  - declaración de accesibilidad;
+  - página de créditos de recursos (hoy los créditos están junto a cada recurso);
+  - datos comerciales.
+
+  No se redactaron: requieren autorización.
 
 ---
 
@@ -167,7 +306,9 @@ frontend/
 │   ├── manifest.webmanifest          # PWA instalable (mobile-first)
 │   ├── favicon.ico
 │   ├── marca/                        # Logotipos oficiales, íconos de la PWA y el búho del hero
-│   ├── capturas/                     # Capturas reales del producto para la portada
+│   ├── capturas/                     # Capturas reales del producto (sin uso en la landing V1; se conserva)
+│   ├── og/                           # Imagen Open Graph (captura real del hero, 1200 × 630)
+│   ├── recursos/obras/               # Obras de dominio público verificadas (La gran ola, The Met, CC0)
 │   ├── models/                       # (prevista) Modelos 3D .glb y .gltf
 │   └── textures/                     # (prevista) Texturas, HDRI y mapas de entorno
 ├── src/
@@ -176,13 +317,26 @@ frontend/
 │   │   ├── globals.css               # Estilos de la aplicación (importa tokens.css y base.css)
 │   │   ├── tokens.css                # Paleta oficial, tipografía, espaciados y modo oscuro
 │   │   ├── (public)/                 # Landing, /planes y /biblioteca
+│   │   ├── robots.ts, sitemap.ts     # Indexación de las páginas públicas (origen en NEXT_PUBLIC_SITIO_URL)
 │   │   ├── (auth)/                   # /auth/ingresar y /auth/registro
-│   │   ├── (aprendizaje)/            # /espacios, /espacios/[id], /tutor y /tutor/[id]
+│   │   ├── (aprendizaje)/            # /inicio, /aprendizaje (y experiencias), /examenes, /espacios, /tutor, /fuentes y /configuracion
 │   │   ├── api/v1/[...ruta]/         # Reenvía /api/v1 al Worker de la API
 │   │   └── (estudiante)/, (docente)/, (studio)/, aula-virtual/, admin/   # (previstas, sección 2)
 │   ├── middleware.ts                 # Envía al ingreso a quien entra sin sesión a /espacios o /tutor
 │   ├── features/
-│   │   ├── auth/                     # M1: registro e ingreso, estado de la sesión y salida
+│   │   ├── marketing/                # Landing V1: secciones, escenas SVG, pizarra, islas y hooks/use-recorrido
+│   │   ├── auth/                     # M1: acceso en dos zonas, intención (destino.ts), useSesion y salida
+│   │   ├── inicio/                   # Inicio personal: qué aprender hoy y qué continuar
+│   │   ├── aprendizaje/              # Empezar un tema, temas, sesiones y carpetas de Aprendizaje
+│   │   ├── examenes/                 # Preparaciones, temario, plan, preguntas, práctica, simulacro, tarjetas y progreso (entrada servidor.ts para SSR)
+│   │   ├── carpetas/                 # Carpetas por módulo: contrato, árbol, explorador, menú y diálogo
+│   │   ├── estudio/                  # Espacio educativo: barra, panel del tema, bloques, Tutor contextual y recorrido guiado
+│   │   ├── bloques/                  # mentelyx.bloque/v1: esquema, validación, acciones, adaptador del Tutor y renderizadores
+│   │   ├── matematicas/              # Código puro: analizador seguro, derivada, cuadrática y muestreo
+│   │   ├── visor-3d/                 # Three.js: visor libre, modelos (motor y glTF) y escena de la landing (entrada escena.ts)
+│   │   ├── visor-pdf/                # PDF.js: visor, búsqueda y capa de texto
+│   │   ├── experiencias/             # Derivadas, motor, obra, documento y galería (contenido preparado)
+│   │   ├── cuenta/                   # Configuración: apariencia por dispositivo (tema y movimiento)
 │   │   ├── espacios/                 # M2: crear espacios, agregar y elegir fuentes
 │   │   ├── tutor/                    # M6: panel del Tutor y respuestas con citas
 │   │   ├── lienzo/                   # Motor visual: resaltados, notas, región, lazo e hilos de cita
@@ -192,7 +346,7 @@ frontend/
 │   │   ├── ui/                       # Genéricos: íconos, marca (logotipo) y movimiento
 │   │   └── 3d/                       # (prevista) Componentes 3D reutilizables
 │   ├── hooks/                        # Hooks globales (useHidratado)
-│   └── lib/                          # Clientes HTTP hacia Hono: api-cliente.ts (navegador, Idempotency-Key) y api-servidor.ts
+│   └── lib/                          # Clientes HTTP hacia Hono (api-cliente.ts, api-servidor.ts) y origen público (sitio.ts)
 ├── next.config.ts                    # Next.js híbrido (SSR, ISR y estático) y alias /dashboard, /login y /registro
 ├── open-next.config.ts               # Adaptador OpenNext para Cloudflare Workers (ADR-074)
 └── wrangler.jsonc                    # Worker del frontend
@@ -219,10 +373,27 @@ features/<nombre>/
    - `tutor` → `lienzo` y `espacios`;
    - `navegacion` → `auth`;
    - `auth` → `lienzo`, porque al cerrar la sesión borra el cuaderno local.
+   - `marketing` no depende de otras funcionalidades;
+   - `inicio` → `aprendizaje` y `examenes`; `aprendizaje` y `examenes` → `carpetas`; `carpetas` no depende de ninguna;
+   - `aprendizaje` → `experiencias` → `estudio` → `bloques`, `espacios` y `tutor`;
+   - `bloques` → `matematicas`, `visor-3d`, `visor-pdf` y `tutor` (Markdown seguro); `matematicas` no depende de ninguna;
+   - `examenes` → `estudio`, `experiencias`, `bloques`, `matematicas`, `visor-3d` y `carpetas`; `cuenta` no depende de ninguna;
+   - `marketing` → `visor-3d`, solo por su segunda entrada `@/features/visor-3d/escena`, que carga la escena de forma diferida y sin los estilos del visor.
+
+Los estilos de la aplicación autenticada están en `app/(aprendizaje)/aplicacion.css` (separados de `globals.css` el 25/11/2026 para que la landing no los cargue); los de cada funcionalidad, junto a sus componentes.
+
+**Dependencias incorporadas el 25/11/2026** (instrucción V1 del propietario; versiones exactas, licencia MIT y más de dos semanas de publicación):
+- `three` 0.187.0 y `@types/three` 0.187.0. Three.js directo, sin React Three Fiber: una escena por demostración no justifica otra capa. Se carga con `import()` solo cerca de la escena, renderiza bajo demanda y libera sus recursos al desmontarse.
+- `katex` 0.19.1, según la decisión vigente de fórmulas (MathML de KaTeX, sección 11). En la landing se renderiza en el servidor durante el build: KaTeX no llega al JavaScript del navegador.
+- No se instaló GSAP ni Motion: el desplazamiento narrativo usa un hook propio sin dependencias.
+- `pdfjs-dist` 6.5.438 (Apache-2.0, publicada el 01/11/2026) para el visor PDF. Se descarga solo al abrir un documento.
+  - El worker, las fuentes estándar, los CMaps y los decodificadores WASM se sirven desde `public/pdfjs/<versión>/` con sus licencias. Los copia `frontend/scripts/copiar-pdfjs.mjs` y una prueba comprueba que la versión coincida.
+  - No se carga el entorno de scripts de PDF.js: el JavaScript de un PDF nunca se ejecuta.
+  - Instala como opcional `@napi-rs/canvas` (MIT), que solo usa Node.
+- La validación de bloques usa el `zod` que ya exporta `@mentelyx/contratos`. KaTeX agrega `mhchem` (incluido en `katex`) solo cuando un bloque lo necesita.
 
 **Pendiente de aprobación:**
-- separar las llamadas HTTP de los componentes en `features/*/api/`;
-- incorporar Three.js o React Three Fiber para el 3D.
+- separar las llamadas HTTP de los componentes en `features/*/api/`.
 
 Las carpetas `config/`, `stores/`, `types/`, `utils/` y `assets/` de `src/` se crean cuando haga falta. Los DTO compartidos con el backend vienen del paquete `@mentelyx/contratos`.
 

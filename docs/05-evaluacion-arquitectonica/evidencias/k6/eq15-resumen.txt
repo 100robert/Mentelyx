@@ -1,0 +1,30 @@
+     █ simulacro
+
+       ✓ intento 201
+       ✗ respuesta 200
+        ↳  93% — ✓ 874 / ✗ 58
+       ✓ entrega 200
+
+     checks.................................: 95.94% ✓ 1374     ✗ 58   
+     data_received..........................: 1.5 MB 3.8 kB/s
+     data_sent..............................: 933 kB 2.3 kB/s
+     group_duration.........................: avg=2m11s    min=1m26s   med=2m12s   p(90)=2m23s    p(95)=2m24s    p(99)=2m33s   max=2m34s   
+     http_req_blocked.......................: avg=410.97µs min=0s      med=0s      p(90)=0s       p(95)=1.01ms   p(99)=14.62ms max=54.31ms 
+     http_req_connecting....................: avg=183.74µs min=0s      med=0s      p(90)=0s       p(95)=997.78µs p(99)=5.55ms  max=13.5ms  
+     http_req_duration......................: avg=21.1s    min=25.06ms med=21.55s  p(90)=30.73s   p(95)=36.95s   p(99)=39.2s   max=42.66s  
+       { expected_response:true }...........: avg=21.6s    min=25.06ms med=21.94s  p(90)=30.77s   p(95)=36.95s   p(99)=39.24s  max=42.66s  
+     http_req_failed........................: 3.88%  ✓ 58       ✗ 1434 
+     http_req_receiving.....................: avg=126.19ms min=0s      med=28.18ms p(90)=406.17ms p(95)=582.34ms p(99)=1.05s   max=2.29s   
+     http_req_sending.......................: avg=1ms      min=0s      med=0s      p(90)=1ms      p(95)=2ms      p(99)=13.69ms max=143.27ms
+     http_req_tls_handshaking...............: avg=0s       min=0s      med=0s      p(90)=0s       p(95)=0s       p(99)=0s      max=0s      
+     http_req_waiting.......................: avg=20.98s   min=23.93ms med=21.49s  p(90)=30.36s   p(95)=36.94s   p(99)=39.15s  max=42.63s  
+     http_reqs..............................: 1492   3.702918/s
+     iteration_duration.....................: avg=2m12s    min=1m27s   med=2m13s   p(90)=2m24s    p(95)=2m25s    p(99)=2m34s   max=2m35s   
+     iterations.............................: 200    0.49637/s
+   ✗ mentelyx_errores_5xx...................: 4.05%  ✓ 58       ✗ 1374 
+   ✗ mentelyx_guardado_respuesta_ms.........: avg=18.87s   min=3.16s   med=19.93s  p(90)=24.25s   p(95)=25.35s   p(99)=26.46s  max=27.57s  
+     mentelyx_intentos_calificados..........: 200    0.49637/s
+   ✓ mentelyx_intentos_de_otro_estudiante...: 0      0/s
+   ✓ mentelyx_respuestas_perdidas...........: 0      0/s
+     vus....................................: 100    min=0      max=100
+     vus_max................................: 100    min=100    max=100

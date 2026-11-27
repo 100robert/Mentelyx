@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { apiCliente, mensajeDeError, nuevaClave } from '@/lib/api-cliente';
 import { useHidratado } from '@/hooks/hidratado';
 import { Icono } from '@/components/ui/iconos';
+import { extraerTextoPdf } from '../extraer-pdf';
 
 const LIMITE_BYTES = 200_000;
 
@@ -50,12 +51,12 @@ export function CrearEspacio({ secundario = false }: { secundario?: boolean }) {
       }}
     >
       <div className="campo">
-        <label htmlFor="titulo">Nuevo espacio de estudio</label>
+        <label htmlFor="titulo">Nuevo tema</label>
         <div className="formulario-linea-fila">
           <input ref={campo} id="titulo" name="titulo" required maxLength={200} placeholder="Ej.: Biología, unidad 3" aria-describedby={error ? 'error-espacio' : undefined} />
           <button type="submit" className={`boton ${secundario ? 'boton-secundario' : 'boton-primario'}`} disabled={enviando || !hidratado}>
             <Icono nombre="mas" />
-            {enviando ? 'Creando…' : 'Crear espacio'}
+            {enviando ? 'Creando…' : 'Crear tema'}
           </button>
         </div>
       </div>
@@ -86,6 +87,23 @@ export function FormularioFuente({ espacioId }: { espacioId: string }) {
 
   async function leerArchivo(archivo: File | undefined) {
     if (!archivo) return;
+    setError(null);
+    setEstado(null);
+    if (/.pdf$/i.test(archivo.name) || archivo.type === 'application/pdf') {
+      try {
+        const r = await extraerTextoPdf(archivo);
+        if (!r.texto) throw new Error('El PDF no tiene texto que se pueda leer (¿es un escaneo?). Sin OCR no se puede indexar.');
+        if (new TextEncoder().encode(r.texto).byteLength > LIMITE_BYTES) throw new Error('El texto del PDF supera 200 KB: divide el documento en partes.');
+        if (contenidoRef.current) contenidoRef.current.value = r.texto;
+        if (tituloRef.current && !tituloRef.current.value) tituloRef.current.value = archivo.name.replace(/.pdf$/i, '');
+        if (formatoRef.current) formatoRef.current.value = 'PDF';
+        setEstado(`Texto extraído de ${r.paginas} página${r.paginas === 1 ? '' : 's'} en tu navegador; el archivo no se sube.${r.sinTexto.length ? ` Sin texto (no se indexan): ${r.sinTexto.join(', ')}.` : ''}`);
+        clave.current = nuevaClave();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'No se pudo leer el PDF.');
+      }
+      return;
+    }
     if (archivo.size > LIMITE_BYTES) {
       setError('El archivo supera 200 KB.');
       return;
@@ -130,10 +148,10 @@ export function FormularioFuente({ espacioId }: { espacioId: string }) {
       id="form-fuente"
     >
       <div className="campo">
-        <label htmlFor="archivo">Archivo .txt o .md (opcional)</label>
-        <input id="archivo" type="file" accept=".txt,.md,text/plain,text/markdown" onChange={(e) => void leerArchivo(e.target.files?.[0])} aria-describedby="ayuda-archivo" />
+        <label htmlFor="archivo">Archivo .txt, .md o .pdf (opcional)</label>
+        <input id="archivo" type="file" accept=".txt,.md,.pdf,text/plain,text/markdown,application/pdf" onChange={(e) => void leerArchivo(e.target.files?.[0])} aria-describedby="ayuda-archivo" />
         <p id="ayuda-archivo" className="campo-ayuda">
-          Hasta 200 KB. Rellena el título y el contenido; puedes revisarlos antes de guardar.
+          Hasta 200 KB de texto (un PDF de hasta 20 MB: se lee en tu navegador y solo se guarda su texto). Puedes revisarlo antes de guardar.
         </p>
       </div>
       <div className="campo">
@@ -145,6 +163,7 @@ export function FormularioFuente({ espacioId }: { espacioId: string }) {
         <select id="formato" name="formato" ref={formatoRef} defaultValue="TXT" onChange={() => (clave.current = nuevaClave())}>
           <option value="TXT">Texto (TXT)</option>
           <option value="MD">Markdown (MD)</option>
+          <option value="PDF">PDF (texto extraído)</option>
         </select>
       </div>
       <div className="campo">

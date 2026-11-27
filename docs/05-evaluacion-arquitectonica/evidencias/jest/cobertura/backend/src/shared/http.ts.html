@@ -1,0 +1,346 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for backend/src/shared/http.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">backend/src/shared</a> http.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">81.81% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>45/55</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">72.34% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>34/47</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">87.5% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>7/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">92.68% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>38/41</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { Context, ErrorHandler, MiddlewareHandler } from 'hono';
+import { z, type Hook } from '@hono/zod-openapi';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
+import { ESTADO_HTTP, RECUPERABLE, type CodigoError } from '@mentelyx/contratos';
+import { ErrorAplicacion } from './errores';
+import { registrar } from './registro';
+&nbsp;
+export type VariablesBase = { requestId: string };
+&nbsp;
+const meta = (c: Context) =&gt; ({ requestId: String(c.get('requestId') ?? 'sin-id'), timestamp: new Date().toISOString() });
+&nbsp;
+/** API, sección 4.1: respuesta de éxito con envoltorio común. */
+export const responderOk = &lt;T&gt;(c: Context, data: T, estado: ContentfulStatusCode = 200) =&gt;
+  c.json({ ok: true as const, data, meta: meta(c) }, estado);
+&nbsp;
+export const responderFallo = (c: Context, code: CodigoError, message: string, details?: Record&lt;string, unknown&gt;) =&gt;
+  c.json(
+    { ok: false as const, error: { code, message, recuperable: RECUPERABLE[code], ...(details ? <span class="branch-0 cbranch-no" title="branch not covered" >{ details } : {</span>}) }, meta: meta(c) },
+    ESTADO_HTTP[code] as ContentfulStatusCode,
+  );
+&nbsp;
+/** Traduce errores a la envoltura de la API sin filtrar trazas ni secretos (API, sección 1, punto 5). */
+export const manejarErrores: ErrorHandler = (err, c) =&gt; {
+  if (err instanceof ErrorAplicacion) {
+    // 429 LIMITE_TASA lleva `Retry-After` (orquestación, sección 10.5).
+    const reintentar = err.details?.reintentarEnSeg;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof reintentar === 'number' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >reintentar &gt; 0) <span class="cstat-no" title="statement not covered" >c</span>.header('Retry-After', String(Math.ceil(reintentar)));</span>
+    return responderFallo(c, err.code, err.message, err.details);
+  }
+  // Errores de dominio de autorización por recurso: «no encontrado» para no revelar recursos ajenos.
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (err instanceof Error &amp;&amp; err.name === 'RecursoNoEncontrado') <span class="cstat-no" title="statement not covered" >return responderFallo(c, 'RECURSO_NO_ENCONTRADO', err.message);</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (err instanceof Error &amp;&amp; err.name === 'ZodError') <span class="cstat-no" title="statement not covered" >return responderFallo(c, 'ENTRADA_INVALIDA', 'La solicitud no cumple el contrato.');</span>
+  // EQ-20 (hallazgo de la carga del 27/11/2026): una dependencia de datos inalcanzable es 503 recuperable, no 500.
+  if (esFalloDeDependencia(err)) {
+    registrar('warn', 'dependencia_no_disponible', { requestId: c.get('requestId'), tipo: err instanceof Error ? err.name : <span class="branch-1 cbranch-no" title="branch not covered" >typeof err }</span>);
+    c.header('Retry-After', '5');
+    return responderFallo(c, 'SERVICIO_NO_DISPONIBLE', 'El servicio no está disponible en este momento. Inténtalo de nuevo en unos segundos.');
+  }
+  registrar('error', 'error_no_controlado', { requestId: c.get('requestId'), tipo: err instanceof Error ? err.name : <span class="branch-1 cbranch-no" title="branch not covered" >typeof err }</span>);
+  return responderFallo(c, 'ERROR_INTERNO', 'Ocurrió un error interno.');
+};
+&nbsp;
+const DEPENDENCIA = /^Mongo(ServerSelection|Network|NetworkTimeout|NotConnected|PoolClosed)Error$/;
+const MENSAJE_CONEXION = /network connection lost|connection terminated|ECONNREFUSED|ECONNRESET|ETIMEDOUT|too many (clients|connections)|remaining connection slots/i;
+/** Fallo de conexión con PostgreSQL o MongoDB (también envuelto por Drizzle en `cause`): sin efectos confirmados. */
+export function esFalloDeDependencia(err: unknown): boolean {
+  for (let e = err as { name?: string; message?: string; code?: string; cause?: unknown } | undefined, n = 0; e &amp;&amp; n &lt; 4; e = e.cause as typeof e, n++) {
+    if (DEPENDENCIA.test(e.name ?? <span class="branch-1 cbranch-no" title="branch not covered" >'') || M</span>ENSAJE_CONEXION.test(e.message ?? <span class="branch-1 cbranch-no" title="branch not covered" >'') || e</span>.code === '53300' || e.code === '57P01') return true;
+  }
+  return false;
+}
+&nbsp;
+/** Gancho común de validación: un contrato incumplido responde con la envoltura de la API (ENTRADA_INVALIDA). */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- firma genérica de la biblioteca
+export const <span class="cstat-no" title="statement not covered" >ganchoValidacion: Hook&lt;any, any, any, any&gt; = <span class="fstat-no" title="function not covered" >(</span>r</span>esultado, c) =&gt; {
+<span class="cstat-no" title="statement not covered" >  if (resultado.success) <span class="cstat-no" title="statement not covered" >return undefined;</span></span>
+  // La única cabecera validada por contrato es Idempotency-Key (API, sección 1, punto 6).
+<span class="cstat-no" title="statement not covered" >  if (resultado.target === 'header') <span class="cstat-no" title="statement not covered" >return responderFallo(c, 'CLAVE_IDEMPOTENCIA_REQUERIDA', 'Falta una cabecera Idempotency-Key válida (8–100 caracteres [A-Za-z0-9_-]).');</span></span>
+<span class="cstat-no" title="statement not covered" >  return responderFallo(c, 'ENTRADA_INVALIDA', 'La solicitud no cumple el contrato.');</span>
+};
+&nbsp;
+/** `Idempotency-Key` obligatoria en operaciones con efectos (API, sección 1, punto 6), documentada en OpenAPI. */
+export const <span class="cstat-no" title="statement not covered" >CabeceraIdempotencia = z</span>.object({
+  'idempotency-key': z
+    .string()
+    .regex(/^[A-Za-z0-9_-]{8,100}$/)
+    .openapi({ description: 'Clave de idempotencia del cliente: un reintento con la misma clave y el mismo cuerpo devuelve el mismo resultado sin otro efecto.', example: 'consulta-2026-11-21-0001' }),
+});
+&nbsp;
+const METODOS_SEGUROS = new Set(['GET', 'HEAD', 'OPTIONS']);
+&nbsp;
+/**
+ * Defensa CSRF (seguridad, sección 3): una petición con efectos que trae `Origin` de un sitio no permitido se rechaza
+ * con 403 antes de llegar a los módulos. Better Auth aplica `trustedOrigins` solo en su propio handler, no en las
+ * llamadas `auth.api.*` que hace M1, por eso la comprobación vive aquí (hallazgo de PR-INF-01, 21/11/2026).
+ * Mutaciones sin Origin o con Fetch Metadata cross-site se rechazan; clientes HTTP deben declarar el origen permitido.
+ * El token CSRF ligado a sesión se comprueba además en csrf.ts. Las lecturas no requieren Origin.
+ */
+export const verificarOrigen =
+  (permitidos: readonly string[]): MiddlewareHandler =&gt;
+  async (c, next) =&gt; {
+    const origen = c.req.header('origin');
+    if (!METODOS_SEGUROS.has(c.req.method) &amp;&amp; (!origen || !permitidos.includes(origen) || c.req.header('sec-fetch-site') === 'cross-site')) {
+      return responderFallo(c, 'NO_AUTORIZADO', 'Origen no permitido.');
+    }
+    await next();
+  };
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-11-27T11:21:23.603Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
+</html>
+    

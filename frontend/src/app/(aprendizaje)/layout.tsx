@@ -1,3 +1,4 @@
+import './aplicacion.css';
 import { MarcoApp, type EspacioMenu } from '@/features/navegacion';
 import { apiServidor } from '@/lib/api-servidor';
 

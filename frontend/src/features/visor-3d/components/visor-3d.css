@@ -1,0 +1,40 @@
+/* Visor 3D de Aprendizaje: barra de controles, escenario (lienzo + rótulos) y panel de piezas y parámetros. */
+.visor-3d { display: grid; gap: var(--space-sm); min-inline-size: 0; }
+.visor-3d[data-completa] { padding: var(--space-md); background: var(--color-paper); overflow: auto; }
+.visor-3d-barra { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); align-items: center; }
+.visor-3d-grupo { display: flex; flex-wrap: wrap; gap: var(--space-2xs); align-items: center; }
+.visor-3d-grupo .boton-icono { font-size: 1.15rem; line-height: 1; }
+.visor-3d-barra [aria-pressed="true"] { background: var(--color-accent-wash); color: var(--color-ink); box-shadow: inset 0 0 0 1px var(--color-accent-edge); }
+.visor-3d-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem); gap: var(--space-md); align-items: start; }
+.visor-3d-escenario { position: relative; aspect-ratio: 4 / 3; min-block-size: 18rem; border-radius: var(--radius-card); overflow: hidden; background: radial-gradient(120% 90% at 50% 18%, var(--color-field-2), var(--color-campo-profundo)); }
+.visor-3d[data-completa] .visor-3d-escenario { aspect-ratio: auto; block-size: calc(100dvh - 9rem); }
+.visor-3d-escenario canvas { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; touch-action: none; cursor: grab; }
+.visor-3d-escenario canvas:active { cursor: grabbing; }
+.visor-3d-rotulos { position: absolute; inset: 0; pointer-events: none; }
+.visor-3d-rotulo { position: absolute; inset-inline-start: 0; inset-block-start: 0; translate: -50% -130%; padding: var(--space-3xs) var(--space-xs); border-radius: var(--radius-chip); background: color-mix(in oklab, var(--color-campo-profundo) 82%, transparent); color: var(--color-field-ink); font-size: var(--text-xs); font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity var(--dur-micro) var(--ease-out); }
+.visor-3d-rotulo[data-visible] { opacity: 1; }
+.visor-3d-rotulo[data-destacado] { background: var(--color-accent); color: var(--color-accent-ink); }
+.visor-3d-estado { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: var(--space-sm); padding: var(--space-lg); color: var(--color-field-ink); text-align: center; font-size: var(--fs-secundario); }
+.visor-3d-panel { display: grid; gap: var(--space-md); min-inline-size: 0; }
+.visor-3d-parametros { display: grid; gap: var(--space-xs); }
+.visor-3d-piezas { margin: 0; padding: 0; border: 0; min-inline-size: 0; }
+.visor-3d-piezas legend { padding: 0; margin-block-end: var(--space-xs); font-weight: 600; font-size: var(--fs-secundario); }
+.visor-3d-piezas ul { display: grid; gap: var(--space-3xs); margin: 0 0 var(--space-sm); padding: 0; list-style: none; }
+.visor-3d-piezas li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-xs); border-radius: var(--radius-control); }
+.visor-3d-piezas li[data-elegida] { background: var(--color-accent-wash); }
+.visor-3d-pieza { min-block-size: 2.5rem; padding: 0 var(--space-sm); border: 0; border-radius: var(--radius-control); background: none; color: var(--color-ink); font: inherit; font-size: var(--fs-secundario); text-align: start; cursor: pointer; }
+.visor-3d-pieza:hover { background: var(--color-paper-3); }
+.visor-3d-pieza[aria-pressed="true"] { font-weight: 600; }
+.visor-3d-ver { display: inline-flex; align-items: center; gap: var(--space-2xs); padding-inline-end: var(--space-xs); font-size: var(--text-xs); color: var(--color-muted); }
+.visor-3d-ver input { inline-size: 1.1rem; block-size: 1.1rem; accent-color: var(--color-ink); }
+.visor-3d-info { padding: var(--space-sm) var(--space-md); border-inline-start: 3px solid var(--color-accent); background: var(--color-paper-2); border-radius: 0 var(--radius-control) var(--radius-control) 0; }
+.visor-3d-info h4 { margin: 0 0 var(--space-2xs); font-size: var(--fs-cuerpo); }
+.visor-3d-info p { margin: 0; font-size: var(--fs-secundario); }
+.visor-3d-credito { margin: 0; color: var(--color-muted); font-size: var(--text-xs); }
+.visor-3d { container: visor3d / inline-size; }
+@container visor3d (max-width: 46rem) {
+  .visor-3d-cuerpo { grid-template-columns: minmax(0, 1fr); }
+  .visor-3d-escenario { min-block-size: 15rem; }
+  .visor-3d-panel { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); align-items: start; }
+}
+@media (prefers-reduced-motion: reduce) { .visor-3d-rotulo { transition: none; } }

@@ -5,7 +5,7 @@ import { CrearEspacio } from '@/features/espacios';
 import { Icono, type NombreIcono } from '@/components/ui/iconos';
 import { apiServidor, sesionActual } from '@/lib/api-servidor';
 
-export const metadata: Metadata = { title: 'Mis espacios' };
+export const metadata: Metadata = { title: 'Temas' };
 /** SSR autenticado sin caché compartida (PR-INF-01): cada petición consulta la API con la cookie del usuario. */
 export const dynamic = 'force-dynamic';
 
@@ -42,21 +42,21 @@ export default async function MisEspacios() {
   const fuentes = detalles.flatMap((d) => (d.datos ? d.datos.listaFuentes.map((f) => ({ ...f, espacioId: d.datos!.id, espacio: d.datos!.titulo })) : [])).slice(0, 6);
 
   const accesos: Array<{ href: string; titulo: string; texto: string; icono: NombreIcono }> = [
-    { href: '/espacios#nuevo-espacio', titulo: 'Nuevo espacio', texto: 'Para un curso o una unidad', icono: 'mas' },
+    { href: '/espacios#nuevo-espacio', titulo: 'Nuevo tema', texto: 'Para un curso, una unidad o una duda', icono: 'mas' },
     ...(espacioActivo
       ? [
           { href: `/espacios/${espacioActivo.id}?agregar=1`, titulo: 'Agregar fuente', texto: `En ${espacioActivo.titulo}`, icono: 'subir' as const },
           { href: `/espacios/${espacioActivo.id}?preguntar=1`, titulo: 'Preguntar al Tutor', texto: `Sobre ${espacioActivo.titulo}`, icono: 'conversaciones' as const },
         ]
       : []),
-    { href: '/tutor', titulo: 'Conversaciones', texto: 'Sesiones guardadas', icono: 'historial' },
+    { href: '/tutor', titulo: 'Sesiones', texto: 'Todas tus sesiones con el Tutor', icono: 'historial' },
   ];
 
   return (
     <div className="pagina pagina-tablero">
       <header className="pagina-cabecera">
-        <h1>Mis espacios</h1>
-        <p className="suave">Retoma tu estudio, organiza tus fuentes y pregunta al Tutor. Solo tú ves este contenido.</p>
+        <h1>Temas</h1>
+        <p className="suave">Cada tema reúne tus sesiones con el Tutor y, si quieres, tus apuntes. Solo tú ves este contenido.</p>
       </header>
 
       {ultima ? (
@@ -71,10 +71,10 @@ export default async function MisEspacios() {
           </div>
           <div className="acciones">
             <Link className="boton boton-primario" href={ultima.espacioId && tituloEspacio(ultima.espacioId) ? `/espacios/${ultima.espacioId}` : `/tutor/${ultima.id}`}>
-              Continuar en el Tutor
+              Continuar la sesión
             </Link>
             <Link className="boton boton-campo" href={`/tutor/${ultima.id}`}>
-              Ver la conversación
+              Ver la sesión
             </Link>
           </div>
         </section>
@@ -82,9 +82,9 @@ export default async function MisEspacios() {
         <section className="continuar continuar-inicio" aria-labelledby="titulo-empezar">
           <div className="continuar-texto">
             <h2 id="titulo-empezar" className="continuar-tema">
-              Crea tu primer espacio de estudio
+              Crea tu primer tema
             </h2>
-            <p className="continuar-meta">Ponle el nombre de un curso o una unidad. Después sube tus apuntes y pregunta al Tutor.</p>
+            <p className="continuar-meta">Ponle el nombre de un curso, una unidad o una duda. Pregunta al Tutor y, si quieres, suma tus apuntes.</p>
           </div>
         </section>
       ) : null}
@@ -112,25 +112,25 @@ export default async function MisEspacios() {
           <section aria-labelledby="titulo-espacios" className="bloque">
             <div className="bloque-cabecera">
               <h2 id="titulo-espacios" className="titulo-bloque">
-                Tus espacios <span className="contador">{lista.length}</span>
+                Tus temas <span className="contador">{lista.length}</span>
               </h2>
             </div>
             <CrearEspacio secundario={Boolean(ultima)} />
             {espacios.error && !espacios.datos ? (
               <p role="alert" className="mensaje mensaje-error">
                 <Icono nombre="aviso" />
-                <span>No pudimos cargar tus espacios. Recarga la página para intentarlo de nuevo.</span>
+                <span>No pudimos cargar tus temas. Recarga la página para intentarlo de nuevo.</span>
               </p>
             ) : lista.length === 0 ? (
               <div className="vacio">
                 <Icono nombre="espacios" tamano={24} />
                 <div>
-                  <p className="vacio-titulo">Aún no tienes espacios. Crea el primero.</p>
-                  <p className="suave">Un espacio reúne los apuntes de un tema y tus conversaciones con el Tutor sobre ellos.</p>
+                  <p className="vacio-titulo">Aún no tienes temas. Crea el primero.</p>
+                  <p className="suave">Un tema reúne tus sesiones con el Tutor y, si quieres, tus apuntes.</p>
                 </div>
               </div>
             ) : (
-              <ul className="tarjetas-espacio" aria-label="Espacios">
+              <ul className="tarjetas-espacio" aria-label="Temas">
                 {lista.map((e) => (
                   <li key={e.id}>
                     <Link href={`/espacios/${e.id}`} className="tarjeta-espacio">
@@ -179,7 +179,7 @@ export default async function MisEspacios() {
           <section aria-labelledby="titulo-recientes" className="bloque">
             <div className="bloque-cabecera">
               <h2 id="titulo-recientes" className="titulo-bloque">
-                Conversaciones recientes
+                Sesiones recientes
               </h2>
               {recientes.length > 0 && (
                 <Link href="/tutor" className="enlace-accion">
@@ -188,14 +188,14 @@ export default async function MisEspacios() {
               )}
             </div>
             {recientes.length === 0 ? (
-              <p className="suave">Aún no tienes conversaciones. Abre un espacio y pregúntale al Tutor sobre tus fuentes.</p>
+              <p className="suave">Aún no tienes sesiones. Abre un tema y pregúntale al Tutor.</p>
             ) : (
-              <ul className="filas" aria-label="Conversaciones recientes">
+              <ul className="filas" aria-label="Sesiones recientes">
                 {recientes.slice(0, 4).map((c) => (
                   <li key={c.id}>
                     <Link href={`/tutor/${c.id}`} className="fila fila-enlace fila-conversacion">
                       <span className="fila-titulo">{c.titulo}</span>
-                      <span className="fila-dato">{tituloEspacio(c.espacioId) ?? 'Sin espacio'}</span>
+                      <span className="fila-dato">{tituloEspacio(c.espacioId) ?? 'Sin tema'}</span>
                       <span className="fila-dato">{fecha(c.actualizadaEn)}</span>
                     </Link>
                   </li>

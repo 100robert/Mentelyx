@@ -34,6 +34,11 @@ export class ProveedorSimulado implements ProveedorIaPort {
       lineas.push('**Respuesta de demostración basada en tus fuentes.**', '');
       s.fragmentos.slice(0, 3).forEach((f, i) => lineas.push(`- Según «${f.titulo}» [[c${i + 1}]]: ${oracionesRelevantes(f.texto, s.pregunta)}`));
       lineas.push('', 'Revisa los pasajes citados para profundizar.');
+      // Propuesta estructurada determinista (regla 9 del prompt): ejercita la validación del servidor sin un modelo real.
+      if (/\b(paso|pasos|procedimiento|resum)/i.test(s.pregunta)) {
+        const pasos = s.fragmentos.slice(0, 3).map((f, i) => ({ titulo: `Pasaje ${i + 1}`, texto: oracionesRelevantes(f.texto, s.pregunta).slice(0, 580) }));
+        lineas.push('', '```mentelyx', JSON.stringify({ bloques: [{ tipo: 'pasos', titulo: 'Recorrido por tus fuentes (demostración)', pasos }], acciones: [{ accion: 'revelar-paso', bloque: 1, paso: '@todos' }] }), '```');
+      }
     } else {
       lineas.push('**No encontré pasajes de tus fuentes sobre esta pregunta.**', '', 'En el entorno de demostración no hay un modelo que genere una explicación general.');
     }

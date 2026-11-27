@@ -1,6 +1,8 @@
 # Seguridad, autenticación y protección de datos
 
-> **Versión:** 1.0 — 17/11/2026 · **Estado:** diseño adoptado, sin software ni pruebas de seguridad ejecutadas. Integra SEG-01–SEG-04; no certifica cumplimiento legal.
+> **Versión:** 1.1 — 20/11/2026 · **Estado:** diseño adoptado, sin software ni pruebas de seguridad ejecutadas. Integra SEG-01–SEG-04; no certifica cumplimiento legal. **Cambios 1.1:** sección 8 con los controles de la instrucción maestra (edad, BYOK, Culqi, publicidad, pizarra, biblioteca, grupos y frontend híbrido) y pruebas SEC-11 a SEC-17.
+
+> **Alcance:** los controles describen el producto completo; ADR-093 delimita V1 a aprendizaje y preparación de exámenes. Los flujos de Studio, docencia, grupos y aulas son diseño pospuesto; la revisión de cumplimiento y pruebas sigue pendiente.
 
 ## 1. Decisión y límites de confianza
 
@@ -37,7 +39,7 @@ El hashing de contraseñas usa la biblioteca (scrypt predeterminado documentado)
 
 - Topología inicial: `https://app.<dominio>` sirve UI y `/api/v1/*` mediante rutas Workers; mismo origen evita cookies de terceros. `www.<dominio>` público separado. Dominio es marcador, no DNS contratado. Staging tiene otro origen y secretos/datos propios.
 - Cookie de sesión host-only, `Secure; HttpOnly; SameSite=Lax; Path=/`, sin Domain; prefijo `__Host-` si el adaptador lo permite. No tokens en localStorage ni query string. Respuestas AuthN/datos privados con `Cache-Control: private, no-store`.
-- Mutaciones exigen Origin permitido y protección CSRF de biblioteca; para endpoints propios usar token CSRF ligado a sesión y comprobación Origin/Fetch-Metadata. GET no muta. CORS usa origen exacto y `credentials:true`, jamás `*` con credenciales. CORS/SameSite no sustituyen CSRF.
+- Mutaciones exigen Origin permitido y comprobación de Fetch Metadata. Las rutas propias usan el token firmado definido en `backend/src/shared/csrf.ts`, ligado a la cookie de sesión o a la cookie anónima previa al login; no dependen de la protección HTTP de Better Auth porque invocan `auth.api.*`. GET no muta. CORS debe restringir orígenes y nunca combinar credenciales con `*`; CORS/SameSite no sustituyen CSRF.
 - En desarrollo se permite solo origen localhost configurado; la excepción a Secure por HTTP local jamás se propaga a staging/producción. Si se adopta `api.<dominio>`, permitir únicamente `app.<dominio>`, cookie host-only del API, fetch con credenciales; probar preflight/cookies. Un sitio externo requeriría otra revisión, no `SameSite=None` por defecto.
 - Los endpoints de negocio `/registro`, `/login` y `/logout` envuelven la API de Better Auth. No asumir que montar su handler traduce esos nombres automáticamente; probar cookies y errores sin perder cabeceras Set-Cookie. Bearer del catálogo API no habilita una segunda estrategia de acceso para la PWA.
 
@@ -109,7 +111,7 @@ Secretos por entorno en gestor del proveedor, mínimo privilegio de DB/bucket/AP
 
 | Bloque | Evidencia requerida / propietario | Estado |
 |---|---|---|
-| AuthN | Prototipo Better Auth versión fijada + adaptador Neon + Workers: registro/correo/login/MFA/reset/logout, cookies, límites y revocación entre instancias | Pendiente; M1/infra |
+| AuthN | Prototipo Better Auth versión fijada + adaptador Drizzle sobre Neon + Workers: registro/correo/login/MFA/reset/logout, cookies, límites y revocación entre instancias | Pendiente; M1/infra |
 | Aislamiento | Matriz pública/Estudiante/Docente/modalidades/admin/menores; IDOR y ámbito RAG, descarga por audiencia | Pendiente; M1–M6 |
 | Concurrencia | Reservas/cupo, quote/débito/reintegro, cuota/presupuesto global, consumo de token de recuperación | Pendiente; M3–M6 |
 | Fallos | Redis caído mantiene controles o deniega operación sensible; SQL caído no autentica desde caché; proveedor incierto no se reintenta ciegamente | Pendiente; infra |
@@ -118,3 +120,81 @@ Secretos por entorno en gestor del proveedor, mínimo privilegio de DB/bucket/AP
 | Legal | Retenciones, términos de menores, transferencias, DPA, consentimiento audiovisual, protocolo de riesgo | Bloqueante para datos reales; responsable legal/producto |
 
 Trazabilidad: ADR-004/007/026/033/034/043/044/054/057/065/069/070; RF-01/02/04/53/54/58/59/93/99; AC-04/06/11; EQ-04/06/11/20/21/22/29/31. Criterios son plan de verificación; no se ejecutaron ataques, software ni escáneres de dependencias inexistentes.
+
+## 8. Controles incorporados por la instrucción maestra (20/11/2026)
+
+Fuente: [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) (IM), secciones 5.4, 9, 10 y 15 a 19. Son diseño; ninguna prueba se ha ejecutado.
+
+### 8.1. Perfil académico y edad (ADR-089, RF-100)
+
+- La fecha de nacimiento se guarda cifrada en la aplicación con el mismo esquema de sobre de la sección 8.2, junto con su fuente de verificación.
+- Solo el servicio de edad de M1 la descifra. Los demás módulos reciben la condición derivada (`MENOR`/`ADULTO`), nunca la fecha.
+- La condición se recalcula al iniciar sesión y en un trabajo diario: al cumplir 18 años cambia sin intervención manual e incrementa `authz_version`.
+- Nunca se publica la fecha ni la edad exacta, y el nivel educativo no la revela.
+- Un cambio declarado de fecha exige verificación y queda auditado.
+
+### 8.2. BYOK (ADR-085, RF-120)
+
+| Control | Diseño |
+|---|---|
+| Cifrado | Sobre: una clave de datos aleatoria por credencial cifra la API key con AES-256-GCM (Web Crypto, IV único de 96 bits y `credentialId` y `userId` como datos asociados). La clave de datos se cifra con la clave maestra del secreto del Worker, con identificador de versión para rotarla |
+| Separación | La clave maestra vive en el gestor de secretos del entorno, nunca en la base de datos, el repositorio ni los logs; los datos cifrados viven en PostgreSQL M6 |
+| Uso | Solo el adaptador del proveedor autorizado descifra en memoria durante la llamada. Ninguna API devuelve la clave: se muestran el proveedor y los últimos 4 caracteres |
+| Revocación y sustitución | Revocar borra el texto cifrado y su clave de datos (borrado criptográfico) y bloquea el uso desde el commit; sustituir crea una credencial nueva |
+| Límites | Presupuesto y límites por credencial configurados por el usuario. El usuario recibe información explícita del proveedor que recibirá sus datos |
+| Restricciones | Solo adultos elegibles; sin fallback automático a la facturación de Mentelyx; los errores del proveedor se redactan; BYOK no habilita rutas prohibidas para menores ni amplía la clase de datos permitida |
+
+### 8.3. Pagos con CulqiOnline (ADR-082, RF-121, RF-122)
+
+- La tarjeta se tokeniza en el checkout de Culqi en el navegador; el servidor de Mentelyx nunca recibe PAN ni CVV. El cargo se crea en el servidor con la llave secreta del entorno.
+- Webhooks: se verifica su autenticidad con el mecanismo que ofrezca Culqi y siempre se consulta el estado real del cargo por la API antes de conceder derechos. Las respuestas del navegador nunca conceden suscripciones ni recursos.
+- La renovación automática solo existe con autorización explícita registrada (fecha, versión de términos y medio). Puede revocarse.
+- Las devoluciones se registran como solicitadas hasta contar con la evidencia del proveedor.
+- Los logs guardan referencias de cargo, nunca datos de tarjeta.
+
+### 8.4. Publicidad externa y anuncios recompensados (ADR-086, RF-119)
+
+- Los anuncios se cargan en un `iframe` aislado (`sandbox`) servido desde un origen distinto, solo en superficies permitidas. Ningún script publicitario se ejecuta en páginas con datos privados, evaluaciones, clases, editor ni pagos. La CSP solo autoriza la red seleccionada en esas superficies.
+- A la red solo se envía el contexto de la superficie, nunca datos académicos, conversaciones, fuentes ni dificultades.
+- La recompensa se concede solo tras la verificación en servidor que ofrezca la red, con un *nonce* de un solo uso por oferta, ligado a cuenta y superficie, más límites por cuenta y periodo. Un evento del navegador por sí solo no concede nada.
+- Las cuentas de menores no reciben ofertas recompensadas.
+
+### 8.5. Pizarra, biblioteca y grupos
+
+- **Selección contextual:** al modelo solo se envían los identificadores y parámetros de los objetos seleccionados y el recorte de la región sin EXIF; nunca el lienzo completo por defecto. Las contribuciones de IA se escriben en su capa.
+- **Publicación en la biblioteca:**
+  - requiere una acción explícita del propietario y una comprobación de datos personales antes de publicar;
+  - registra la procedencia;
+  - impide usar fuentes privadas o evaluaciones reservadas (BR-12);
+  - el retiro revoca el acceso e invalida cachés y embeddings.
+- **Grupos privados:** la autorización se basa en la membresía vigente. Las invitaciones son de un solo uso con vencimiento. Un grupo con menores exige un docente habilitado con controles de menores y el consentimiento parental registrado. La expulsión surte efecto desde el commit.
+- **Pagos directos al docente:** la evidencia (comprobante) va al bucket restringido de M4 con retención propia y acceso auditado. Se registran solo el importe, la fecha, el medio y la referencia.
+
+### 8.6. Frontend híbrido (ADR-074)
+
+- ISR y SSG solo para contenido público; las páginas autenticadas usan CSR o SSR con `Cache-Control: private, no-store`, sin caché de OpenNext compartida.
+- Next.js no decide autorización: cada dato privado viene de Hono con la sesión validada en SQL.
+- **Hallazgo de PR-INF-01 (21/11/2026):** `trustedOrigins` de Better Auth solo protege su propio *handler*, no las llamadas `auth.api.*` que hace M1. Por eso la API rechaza con `403 NO_AUTORIZADO` toda petición con efectos cuyo `Origin` no sea el público ni uno de desarrollo declarado (middleware `verificarOrigen`). La prueba E2E confirma que un registro desde un origen ajeno no crea la cuenta.
+- El *middleware* de Next.js solo redirige a quien no tiene cookie de sesión; no valida la sesión ni concede acceso.
+
+### 8.7. Pruebas añadidas
+
+| ID | Prueba | Resultado esperado |
+|---|---|---|
+| SEC-11 | Inspeccionar logs, respuestas, conversaciones y trazas tras usar BYOK | 0 apariciones de la clave |
+| SEC-12 | Revocar una credencial BYOK durante una consulta | La siguiente llamada falla; sin fallback facturado |
+| SEC-13 | Webhook de pago falsificado o respuesta del navegador manipulada | No se concede ningún derecho |
+| SEC-14 | Evento de recompensa repetido o generado desde el navegador sin verificación | 0 concesiones duplicadas o no verificadas |
+| SEC-15 | Un no miembro accede a materiales o clases de un grupo privado | Denegado |
+| SEC-16 | Página SSR autenticada servida dos veces a usuarios distintos | Nunca se reutiliza la respuesta de otro usuario |
+| SEC-17 | Consultar el perfil de otro usuario o el contrato público de M1 | La fecha de nacimiento nunca aparece |
+
+
+## 9. Controles de la frontera HTTP implementados (25/11/2026)
+
+- `auth.api.*` omite el limitador y las comprobaciones HTTP de Better Auth. `trustedOrigins` y `rateLimit` en su configuración no acreditan protección de las rutas de negocio. Fuentes: [rate limit](https://better-auth.com/docs/concepts/rate-limit) y [seguridad](https://better-auth.com/docs/reference/security), consultadas 22/11/2026.
+- `verificarOrigen` rechaza toda mutación sin Origin, con Origin no permitido (incluido `null`) o Fetch Metadata `cross-site`. No se confía en CORS o SameSite como única defensa. Los clientes de pruebas también declaran el origen permitido.
+- `GET /api/v1/auth/csrf` entrega por JSON privado/no-store un token firmado mediante HMAC-SHA-256 de Web Crypto, con nonce y vigencia máxima de una hora, ligado a la cookie de sesión. Antes del login se liga a una cookie anónima host-only HttpOnly/SameSite=Strict; en HTTPS lleva `__Host-` y Secure. `X-CSRF-Token` es obligatorio en mutaciones. Al cambiar de sesión deja de servir el token anterior. No se coloca en URL, logs ni almacenamiento persistente del navegador. El cliente lo obtiene antes de cada mutación. Referencia: [OWASP CSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html), consultada 22/11/2026.
+- M1 admite como política técnica provisional hasta 30 registros/logins por correo normalizado y 120 por IP confiable en ventanas de 60 s desde el primer intento. El umbral por IP requiere validar el impacto en redes compartidas (p. ej., centros educativos) antes de exposición pública; no es una regla comercial ni legal aprobada. El UPSERT SQL es atómico entre instancias, usa reloj de BD y conserva la ventana ante rechazos. Las claves de cuenta e IP son HMAC: no se almacena el correo ni la dirección IP en claro, pero la clave de IP sigue siendo un dato seudonimizado para limitación de abuso. Se depuran hasta 100 claves inactivas de más de 24 h en cada admisión. Los rechazos devuelven `LIMITE_TASA`/429 con `Retry-After`; SQL indisponible o ausencia de una IP confiable devuelve 503 antes del trabajo de contraseñas. La limpieza es oportunista: un servicio sin tráfico requiere depuración operativa para un plazo de borrado estricto.
+- La capa propia solo consume `CF-Connecting-IP`, fijada por Cloudflare; no usa `X-Forwarded-For` aportado por el cliente. `disableIpTracking:true` de Better Auth deshabilita su seguimiento interno, pero no equivale a no procesar IP: la capa propia deriva la clave HMAC y no conserva el valor en claro. La restricción por IP no sustituye protección volumétrica del borde contra abuso distribuido; los límites de borde y la topología real deben verificarse antes de exposición pública.
+- Evidencia: `shared/tests/csrf.unit.test.ts`, `usuarios-admin/tests/autenticacion-segura.integration.test.ts` y `tests-workers/pr-inf-01.test.ts`; resultados en continuidad §16. El estado de edad, consentimiento, MFA y otros controles del documento conserva sus puertas de salida; no se declara todo implementado.

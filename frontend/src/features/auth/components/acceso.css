@@ -1,0 +1,33 @@
+/* Acceso (iniciar sesión y crear cuenta): dos zonas planas sobre la retícula editorial; el formulario manda en móvil. */
+.acceso { display: grid; grid-template-columns: minmax(0, 1fr); min-block-size: 100dvh; background: var(--color-paper); }
+.acceso-zona-formulario { display: grid; padding: var(--space-xl) var(--reticula-margen) var(--space-2xl); }
+.acceso-columna { display: grid; grid-template-rows: auto 1fr auto; gap: var(--space-2xl); inline-size: 100%; max-inline-size: 26rem; margin-inline: auto; }
+.acceso-logo { justify-self: start; display: inline-block; border-radius: var(--radius-card); }
+.acceso-tarea { display: grid; gap: var(--space-xl); align-content: start; }
+.acceso-cabecera { display: grid; gap: var(--space-xs); }
+.acceso-tarea h1 { max-inline-size: 16ch; font-size: var(--fs-h3); line-height: var(--lh-h3); letter-spacing: -0.022em; }
+.acceso-intro { max-inline-size: 36ch; color: var(--color-ink-2); font-size: var(--fs-cuerpo); line-height: var(--lh-cuerpo); }
+.acceso-formulario { gap: var(--space-md); }
+.acceso-formulario .formulario-alterno { text-align: start; color: var(--color-ink-2); }
+.acceso-formulario .formulario-alterno a { color: var(--color-ink); font-weight: 600; text-decoration-color: var(--color-accent-edge); }
+.acceso-sesion { display: grid; gap: var(--space-md); padding: var(--space-lg); border: 1px solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-2); }
+.acceso-sesion-titulo { font-weight: 600; }
+.acceso-acciones { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.acceso-pie { font-size: var(--fs-secundario); }
+.acceso-pie a { color: var(--color-ink-2); }
+.acceso-zona-visual { display: none; }
+
+@media (min-width: 64rem) {
+  .acceso { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  .acceso-zona-formulario { align-items: stretch; padding-block: var(--space-xl); }
+  .acceso-tarea { align-content: center; }
+  .acceso-zona-visual {
+    --color-focus: var(--color-field-focus);
+    position: sticky; inset-block-start: 0; display: grid; align-content: center; block-size: 100dvh; overflow: clip;
+    padding: var(--space-2xl) clamp(2rem, 1rem + 4vw, 6rem); background: var(--color-field); color: var(--color-field-ink);
+  }
+  .acceso-visual { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-lg) var(--space-xl); align-items: end; max-inline-size: 46rem; }
+  .acceso-visual-pregunta { grid-column: 1 / -1; max-inline-size: 13ch; font-family: var(--font-outlier); font-style: italic; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: -0.02em; text-wrap: balance; }
+  .acceso-visual-texto { max-inline-size: 34ch; color: var(--color-field-ink-2); font-size: var(--fs-destacado); line-height: var(--lh-destacado); }
+  .acceso-visual-buho { inline-size: clamp(9rem, 4rem + 8vw, 15rem); block-size: auto; }
+}

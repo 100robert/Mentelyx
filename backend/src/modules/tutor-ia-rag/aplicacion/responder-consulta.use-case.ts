@@ -2,6 +2,7 @@ import { ConsultaTutorRequest, RETENCION_CONVERSACION_DIAS, type Cita, type Resp
 import { hashContenido } from '../../../shared/bd/mensajeria';
 import { ErrorAplicacion } from '../../../shared/errores';
 import type { Reloj } from '../../../shared/fechas';
+import { AVISO_ESTRUCTURA, extraerEstructura, prefijoBloques } from './estructura-respuesta';
 import {
   ajustarAlPresupuesto,
   clasificarConsulta,
@@ -195,7 +196,9 @@ export const crearResponderConsulta = (deps: Deps) => async (actorId: string, id
 
     // 6. Inferencia, citas y persistencia.
     const r = await deps.proveedor.responder(plan.solicitud);
-    const { markdown, citados } = normalizarCitas(r.markdown, plan.solicitud.fragmentos.length);
+    // La sección estructurada se separa antes de normalizar citas: nunca llega al texto ni se ejecuta (API, 12.4).
+    const estructura = extraerEstructura(r.markdown, prefijoBloques());
+    const { markdown, citados } = normalizarCitas(estructura.markdown, plan.solicitud.fragmentos.length);
     const citas = citasDe(plan.solicitud.fragmentos, citados);
     const estado: EstadoRespuesta = r.finalizacion === 'length' ? 'PARCIAL' : 'RESPONDIDA';
     const avisos = [
@@ -204,6 +207,7 @@ export const crearResponderConsulta = (deps: Deps) => async (actorId: string, id
       ...(soloLexica ? [AVISO.lexico] : []),
       ...(citas.length ? [] : [plan.solicitud.fragmentos.length ? AVISO.mixta : AVISO.general]),
       ...(estado === 'PARCIAL' ? [AVISO.parcial] : []),
+      ...(estructura.descartados ? [AVISO_ESTRUCTURA] : []),
     ];
     const mensajeId = await guardar(deps, actorId, cmd.conversacionId, operationKey, cmd.pregunta, markdown, citas, {
       recurso,
@@ -213,7 +217,7 @@ export const crearResponderConsulta = (deps: Deps) => async (actorId: string, id
       etiqueta: usada.etiqueta,
       avisos,
       estado,
-    });
+    }, { bloques: estructura.bloques, acciones: estructura.acciones });
     guardada = true;
     await deps.recursos.confirmarRecursoPlan({ operationKey });
     await deps.uso.finalizar(operationKey, {
@@ -237,6 +241,8 @@ export const crearResponderConsulta = (deps: Deps) => async (actorId: string, id
       restantes: reserva.disponibles,
       ruta: { etiqueta: usada.etiqueta, proveedor: usada.proveedor, modelo: usada.modelo },
       avisos,
+      bloques: estructura.bloques,
+      acciones: estructura.acciones,
     });
   } catch (e) {
     if (!guardada) {
@@ -262,6 +268,7 @@ async function guardar(
   markdown: string,
   citas: Cita[],
   meta: NonNullable<MensajeGuardado['meta']>,
+  estructura?: { bloques: unknown[]; acciones: unknown[] },
 ): Promise<string> {
   const mensajeId = `m_${crypto.randomUUID()}`;
   const momento = deps.ahora();
@@ -270,7 +277,17 @@ async function guardar(
     conversacionId,
     [
       { id: `m_${crypto.randomUUID()}`, role: 'user', text: pregunta, operationKey, createdAt: momento },
-      { id: mensajeId, role: 'assistant', text: markdown, operationKey, citations: citas, meta, createdAt: momento },
+      {
+        id: mensajeId,
+        role: 'assistant',
+        text: markdown,
+        operationKey,
+        citations: citas,
+        meta,
+        ...(estructura?.bloques.length ? { blocks: estructura.bloques } : {}),
+        ...(estructura?.acciones.length ? { actions: estructura.acciones } : {}),
+        createdAt: momento,
+      },
     ],
     momento,
     sumarDias(momento, RETENCION_CONVERSACION_DIAS),
@@ -292,6 +309,8 @@ function respuesta(p: {
   restantes: number;
   ruta: { etiqueta: string; proveedor: string; modelo?: string };
   avisos: string[];
+  bloques?: unknown[] | undefined;
+  acciones?: unknown[] | undefined;
 }): RespuestaTutor {
   return {
     operationKey: p.operationKey,
@@ -305,6 +324,8 @@ function respuesta(p: {
     sugerencias: [],
     uso: { recurso: p.recurso, consumido: p.consumido, restantesPeriodo: p.restantes, facturacion: 'MENTELYX', ruta: p.ruta },
     avisos: p.avisos,
+    ...(p.bloques?.length ? { bloques: p.bloques as never } : {}),
+    ...(p.acciones?.length ? { acciones: p.acciones as never } : {}),
   };
 }
 
@@ -333,5 +354,7 @@ async function reconstruir(deps: Deps, actorId: string, conversacionId: string, 
     restantes,
     ruta: meta ? { etiqueta: meta.etiqueta, proveedor: meta.proveedor, modelo: meta.modelo } : { etiqueta: 'Desconocida', proveedor: 'desconocido' },
     avisos: meta?.avisos ?? [],
+    bloques: mensaje.blocks,
+    acciones: mensaje.actions,
   });
 }

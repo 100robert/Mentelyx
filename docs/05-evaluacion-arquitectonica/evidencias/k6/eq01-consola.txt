@@ -1,0 +1,81 @@
+time="2026-11-27T00:27:22-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/6bd5683a-bb04-453b-8d91-54ab2bdecfae/respuestas/c7\": request timeout"
+time="2026-11-27T00:27:22-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/a9469cf5-815f-4471-a478-2d115912d931/respuestas/c1\": request timeout"
+time="2026-11-27T00:27:25-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+time="2026-11-27T00:27:25-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/98ec7dc8-7dd9-4608-b92f-90d66929cabe/respuestas/c3\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/e214caac-9124-4e57-879e-fc0c9863e070/respuestas/c3\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/3df9118e-c023-493b-b862-e3112bd135cf/respuestas/c3\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/85bc2805-3217-4318-8096-e70098f2fce3/respuestas/c8\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:27:27-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:28:50-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/intentos/f1c15c60-b6be-471f-820f-366530173c21/entrega\": request timeout"
+time="2026-11-27T00:28:50-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/intentos/82a0b4e6-a44b-4f12-a0da-e13f285264a9/entrega\": request timeout"
+time="2026-11-27T00:28:50-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/33a48097-220c-48e7-bcac-a90e6503d15a/intentos\": request timeout"
+time="2026-11-27T00:28:53-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/intentos/e214caac-9124-4e57-879e-fc0c9863e070/entrega\": request timeout"
+time="2026-11-27T00:28:53-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/intentos/89631a63-8f0c-4a75-966e-a4bad7f248e1/entrega\": request timeout"
+time="2026-11-27T00:28:53-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/intentos/102f363d-69d8-48db-8d2c-f49d91dd941f/entrega\": request timeout"
+time="2026-11-27T00:29:21-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/f31e1698-4216-4b6d-8468-91ee95f282ac/intentos\": request timeout"
+time="2026-11-27T00:29:21-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/intentos/19f9d1e0-5d9a-4654-af68-6de57038f102/entrega\": request timeout"
+time="2026-11-27T00:29:22-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/dc151e9a-b357-4d35-bcf7-35d6f1825aa2/intentos\": request timeout"
+time="2026-11-27T00:29:26-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/b982cbb6-1992-4d1e-aa2e-55f2d79e9607/intentos\": request timeout"
+time="2026-11-27T00:33:23-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/ce45ba47-d65f-408d-bf73-f70cf34b9ef6/intentos\": request timeout"
+time="2026-11-27T00:33:46-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/835edfef-6a36-4a3d-9d5e-de1db2761684/intentos\": request timeout"
+time="2026-11-27T00:33:52-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/6dac0ee4-70fd-44cc-bc34-a0c1d6fa7fb3/respuestas/c6\": request timeout"
+time="2026-11-27T00:33:55-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/preparaciones/575d9df8-86d8-400d-8bf3-934d592c81de/seguimiento\": request timeout"
+time="2026-11-27T00:33:57-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/0d8b3f23-ffa0-4dba-bd2c-cc218777bbfa/respuestas/c7\": request timeout"
+time="2026-11-27T00:33:58-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/067d76db-4a7b-4541-836f-f56665e8e698/respuestas/c3\": request timeout"
+time="2026-11-27T00:33:58-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/aafb4db1-44d8-4334-afed-175707063fd6/respuestas/c7\": request timeout"
+time="2026-11-27T00:34:00-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/preparaciones/7b4bc7a9-8b2f-4b22-87dd-55eebfd450e5/seguimiento\": request timeout"
+time="2026-11-27T00:34:00-05:00" level=warning msg="Request Failed" error="Post \"http://127.0.0.1:8792/api/v1/preparaciones/575d9df8-86d8-400d-8bf3-934d592c81de/intentos\": request timeout"
+time="2026-11-27T00:34:00-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/preparaciones/fde5053e-e3a5-441b-8174-822f3a24454a/preguntas\": request timeout"
+time="2026-11-27T00:34:00-05:00" level=warning msg="Request Failed" error="Put \"http://127.0.0.1:8792/api/v1/intentos/04ca9a86-4f3a-4d75-ac4d-571b03bd3b24/respuestas/c8\": request timeout"
+time="2026-11-27T00:34:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:34:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:34:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:34:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:34:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:34:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/carpetas?modulo=EXAMENES&estado=ACTIVA\": request timeout"
+time="2026-11-27T00:35:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+time="2026-11-27T00:35:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+time="2026-11-27T00:35:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+time="2026-11-27T00:35:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+time="2026-11-27T00:35:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+time="2026-11-27T00:35:13-05:00" level=warning msg="Request Failed" error="Get \"http://127.0.0.1:8792/api/v1/tutor-ia/conversaciones\": request timeout"
+     █ lecturas
+
+       ✗ lecturas 200
+        ↳  52% — ✓ 223 / ✗ 199
+
+     █ simulacro
+
+       ✗ intento 201
+        ↳  70% — ✓ 45 / ✗ 19
+       ✗ respuesta 200
+        ↳  57% — ✓ 77 / ✗ 57
+       ✗ entrega 200
+        ↳  51% — ✓ 22 / ✗ 21
+
+     checks...........................: 55.35% ✓ 367      ✗ 296  
+     data_received....................: 2.1 MB 3.2 kB/s
+     data_sent........................: 996 kB 1.5 kB/s
+     group_duration...................: avg=1m44s    min=5.34s    med=1m45s   p(90)=2m35s    p(95)=2m41s    p(99)=3m3s   max=3m29s   
+     http_req_blocked.................: avg=747.57µs min=0s       med=0s      p(90)=0s       p(95)=1.01ms   p(99)=7.39ms max=393.26ms
+     http_req_connecting..............: avg=311.99µs min=0s       med=0s      p(90)=0s       p(95)=502.33µs p(99)=5.98ms max=135.11ms
+     http_req_duration................: avg=22.37s   min=20.78ms  med=19.08s  p(90)=44.62s   p(95)=49.96s   p(99)=1m0s   max=1m0s    
+       { expected_response:true }.....: avg=20.94s   min=20.78ms  med=18.69s  p(90)=36.24s   p(95)=43.24s   p(99)=53.31s max=58.18s  
+     http_req_failed..................: 21.62% ✓ 564      ✗ 2044 
+     http_req_receiving...............: avg=360.25ms min=0s       med=11.62ms p(90)=144.96ms p(95)=661.08ms p(99)=8.36s  max=9.61s   
+     http_req_sending.................: avg=353.34µs min=0s       med=0s      p(90)=910.76µs p(95)=1.16ms   p(99)=5.47ms max=111.92ms
+     http_req_tls_handshaking.........: avg=0s       min=0s       med=0s      p(90)=0s       p(95)=0s       p(99)=0s     max=0s      
+     http_req_waiting.................: avg=22.01s   min=18.57ms  med=19.08s  p(90)=42.86s   p(95)=48.62s   p(99)=1m0s   max=1m0s    
+     http_reqs........................: 2608   3.984727/s
+     iteration_duration...............: avg=2m0s     min=58.09s   med=1m51s   p(90)=3m29s    p(95)=3m58s    p(99)=4m40s  max=5m3s    
+     iterations.......................: 416    0.635601/s
+   ✗ mentelyx_errores_5xx.............: 22.13% ✓ 564      ✗ 1984 
+     mentelyx_guardado_respuesta_ms...: avg=27.24s   min=4.11s    med=23.44s  p(90)=49.19s   p(95)=1m0s     p(99)=1m0s   max=1m0s    
+     mentelyx_intentos_calificados....: 22     0.033613/s
+   ✗ mentelyx_lectura_ms..............: avg=22.07s   min=596.85ms med=18.6s   p(90)=43.28s   p(95)=49.74s   p(99)=58.87s max=1m0s    
+     vus..............................: 96     min=0      max=100
+     vus_max..........................: 100    min=100    max=100time="2026-11-27T00:35:26-05:00" level=error msg="thresholds on metrics 'mentelyx_errores_5xx, mentelyx_lectura_ms' have been crossed"

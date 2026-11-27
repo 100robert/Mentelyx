@@ -1,11 +1,13 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi';
-import { ConsultaTutorRequest, ConversacionDetalle, ConversacionResumen, CrearConversacionRequest, Fallo, RespuestaTutor, exito } from '@mentelyx/contratos';
+import { ConsultaTutorRequest, ConversacionDetalle, ConversacionResumen, CrearConversacionRequest, EstadoSesion, Fallo, GuardarEstadoSesionRequest, RespuestaTutor, exito } from '@mentelyx/contratos';
 import { CabeceraIdempotencia, ganchoValidacion, responderOk, type VariablesBase } from '../../../shared/http';
 import { exigirActor, exigirClaveIdempotencia, type ResolverActor } from '../../../shared/sesion';
 
 type CasosDeUso = {
   crearConversacion: (actorId: string, entrada: unknown) => Promise<unknown>;
-  listarConversaciones: (actorId: string) => Promise<unknown>;
+  listarConversaciones: (actorId: string, filtro?: { preparacionId?: string }) => Promise<unknown>;
+  obtenerEstado: (actorId: string, id: string) => Promise<{ version: number }>;
+  guardarEstado: (actorId: string, id: string, ifMatch: string | undefined, entrada: unknown) => Promise<{ version: number }>;
   obtenerConversacion: (actorId: string, id: string) => Promise<unknown>;
   eliminarConversacion: (actorId: string, id: string) => Promise<unknown>;
   responderConsulta: (actorId: string, clave: string, entrada: unknown) => Promise<unknown>;
@@ -18,9 +20,21 @@ const base = '/tutor-ia';
 
 const rutas = {
   crear: createRoute({ method: 'post', path: `${base}/conversaciones`, request: { body: { ...json(CrearConversacionRequest), required: true } }, responses: { 201: { description: 'Conversación creada', ...json(exito(ConversacionResumen)) }, ...errores } }),
-  listar: createRoute({ method: 'get', path: `${base}/conversaciones`, responses: { 200: { description: 'Conversaciones vigentes', ...json(exito(z.array(ConversacionResumen))) }, ...errores } }),
+  listar: createRoute({ method: 'get', path: `${base}/conversaciones`, request: { query: z.object({ preparacionId: z.uuid().optional() }) }, responses: { 200: { description: 'Conversaciones vigentes', ...json(exito(z.array(ConversacionResumen))) }, ...errores } }),
   obtener: createRoute({ method: 'get', path: `${base}/conversaciones/{id}`, request: { params: Id }, responses: { 200: { description: 'Mensajes y citas', ...json(exito(ConversacionDetalle)) }, ...errores } }),
   eliminar: createRoute({ method: 'delete', path: `${base}/conversaciones/{id}`, request: { params: Id }, responses: { 200: { description: 'Eliminada', ...json(exito(z.object({ eliminada: z.boolean() }))) }, ...errores } }),
+  obtenerEstado: createRoute({
+    method: 'get',
+    path: `${base}/conversaciones/{id}/estado`,
+    request: { params: Id },
+    responses: { 200: { description: 'Estado guardado de la sesión (versión 0 si nunca se guardó); ETag = versión', ...json(exito(EstadoSesion)) }, ...errores },
+  }),
+  guardarEstado: createRoute({
+    method: 'put',
+    path: `${base}/conversaciones/{id}/estado`,
+    request: { params: Id, body: { ...json(GuardarEstadoSesionRequest), required: true } },
+    responses: { 200: { description: 'Estado guardado (≤ 64 KB). Exige la cabecera If-Match con la versión leída (ETag); sin ella, 400', ...json(exito(EstadoSesion)) }, ...errores, 412: { description: 'CONFLICTO_VERSION: otra pestaña guardó antes', ...json(Fallo) } },
+  }),
   consulta: createRoute({
     method: 'post',
     path: `${base}/consultas`,
@@ -47,7 +61,8 @@ export function crearRutasTutor(deps: { resolverActor: ResolverActor; casos: Cas
     return responderOk(c, r, 201) as never;
   });
   app.openapi(rutas.listar, async (c) => {
-    const r = await deps.casos.listarConversaciones(await actor(c));
+    const q = c.req.valid('query');
+    const r = await deps.casos.listarConversaciones(await actor(c), q.preparacionId ? { preparacionId: q.preparacionId } : undefined);
     privado(c);
     return responderOk(c, r) as never;
   });
@@ -59,6 +74,18 @@ export function crearRutasTutor(deps: { resolverActor: ResolverActor; casos: Cas
   app.openapi(rutas.eliminar, async (c) => {
     const r = await deps.casos.eliminarConversacion(await actor(c), c.req.valid('param').id);
     privado(c);
+    return responderOk(c, r) as never;
+  });
+  app.openapi(rutas.obtenerEstado, async (c) => {
+    const r = await deps.casos.obtenerEstado(await actor(c), c.req.valid('param').id);
+    privado(c);
+    c.header('ETag', `"${r.version}"`);
+    return responderOk(c, r) as never;
+  });
+  app.openapi(rutas.guardarEstado, async (c) => {
+    const r = await deps.casos.guardarEstado(await actor(c), c.req.valid('param').id, c.req.header('if-match'), c.req.valid('json'));
+    privado(c);
+    c.header('ETag', `"${r.version}"`);
     return responderOk(c, r) as never;
   });
   app.openapi(rutas.consulta, async (c) => {

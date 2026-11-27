@@ -198,6 +198,9 @@ export type MensajeGuardado = {
   citations?: unknown[];
   /** Solo en respuestas: ruta y avisos con los que se generó (un reintento se reconstruye sin otra inferencia). */
   meta?: { recurso: RecursoConsulta; ruta: IdRuta; proveedor: string; modelo: string; etiqueta: string; avisos: string[]; estado: EstadoRespuesta };
+  /** Bloques `mentelyx.bloque/v1` y acciones ya validados en el servidor (API, 12.4); se guardan con el mensaje. */
+  blocks?: unknown[];
+  actions?: unknown[];
   createdAt: Date;
 };
 
@@ -206,6 +209,9 @@ export type ConversacionGuardada = {
   ownerUserId: string;
   titulo: string;
   espacioId: string | null;
+  /** API 12.9: sesión de estudio de un tema de una preparación de examen (M3). */
+  preparacionId?: string | null;
+  temaId?: string | null;
   messages: MensajeGuardado[];
   createdAt: Date;
   updatedAt: Date;
@@ -213,9 +219,16 @@ export type ConversacionGuardada = {
   revision: number;
 };
 
+/** Estado guardado de la sesión (API 12.5): mismo documento y misma retención que la conversación. */
+export type EstadoSesionGuardado = { version: number; interaccion: Record<string, unknown>; anotaciones: unknown[]; bloquesPropios?: unknown[]; actualizadoEn: Date };
+
 export interface ConversacionesPort {
-  crear(c: { conversationId: string; ownerUserId: string; titulo: string; espacioId: string | null; ahora: Date; expiraEn: Date }): Promise<ConversacionGuardada>;
-  listar(ownerUserId: string, ahora: Date): Promise<Array<Omit<ConversacionGuardada, 'messages'> & { mensajes: number }>>;
+  crear(c: { conversationId: string; ownerUserId: string; titulo: string; espacioId: string | null; preparacionId?: string | null; temaId?: string | null; ahora: Date; expiraEn: Date }): Promise<ConversacionGuardada>;
+  listar(ownerUserId: string, ahora: Date, filtro?: { preparacionId?: string }): Promise<Array<Omit<ConversacionGuardada, 'messages'> & { mensajes: number }>>;
+  resumenes(ownerUserId: string, ids: string[], ahora: Date): Promise<Array<{ id: string; titulo: string; actualizadoEn: Date }>>;
+  obtenerEstado(ownerUserId: string, conversationId: string, ahora: Date): Promise<EstadoSesionGuardado | null | undefined>;
+  /** CAS por versión: `CONFLICTO` si otra pestaña guardó antes; `NO_ENCONTRADA` si no es del actor o venció. */
+  guardarEstado(ownerUserId: string, conversationId: string, versionEsperada: number, estado: Omit<EstadoSesionGuardado, 'version' | 'actualizadoEn'>, ahora: Date): Promise<EstadoSesionGuardado | 'CONFLICTO' | 'NO_ENCONTRADA'>;
   obtener(ownerUserId: string, conversationId: string, ahora: Date): Promise<ConversacionGuardada | undefined>;
   /** Añade pregunta y respuesta una sola vez por operationKey (condición en el filtro); renueva la retención. */
   agregarIntercambio(ownerUserId: string, conversationId: string, mensajes: MensajeGuardado[], ahora: Date, expiraEn: Date): Promise<'AGREGADO' | 'YA_EXISTIA' | 'NO_ENCONTRADA'>;

@@ -2,14 +2,15 @@
 
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-especializado/03-motor-visual-y-pizarra.md`
 > **Componente:** biblioteca determinista `packages/motor-visual` (TypeScript puro, sin E/S), usada por la Web/PWA, M6 (Tutor IA) y M2 (Studio y materiales)
-> **Versión:** 1.0 — 17/11/2026 · **Estado:** especificación de diseño propuesta; no implementada.
+> **Versión:** 2.0 — 20/11/2026 · **Estado:** especificación de diseño propuesta; no implementada.
+> **Cambios 2.0:** aplica la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) (sección 9; ADR-083): la pizarra es un **lienzo 2D extensible** y superficie principal, con la conversación como panel secundario; selección por lazo, región y objeto; capas ORIGINAL, USUARIO e IA; coordenadas de mundo, versiones, concurrencia y operaciones recuperables; ciclo de vida independiente del chat (sección 17). Se conservan el esquema `mentelyx.escena/v1`, sus primitivas y los algoritmos. Las redacciones sustituidas se resumen en la sección 18.
 
 ## 1. Propósito y alcance
 
 El motor visual convierte **descripciones declarativas** de gráficos, construcciones geométricas, fórmulas y animaciones en escenas calculadas, verificables y reproducibles paso a paso. Lo usan:
 
 - el **Tutor IA**: el modelo describe la escena y el motor calcula la geometría;
-- la **pizarra manual de Studio**, que no consume créditos de IA (HU-43, HU-61, RF-83);
+- el **lienzo extensible** del Tutor y de Studio, cuyas herramientas manuales no consumen recursos de IA (HU-43, HU-61, RF-83, RF-106);
 - la **exportación** a PDF y PPTX.
 
 | Incluye | No incluye |
@@ -640,15 +641,19 @@ reproducir(k) ≡ animar(pasos[k]) partiendo de estadoTrasPaso(k − 1)
    - el paso activo marca su segmento con `aria-current="step"` y un borde lateral;
    - la narración del paso, o el texto del segmento si no hay narración, se anuncia en una región `aria-live="polite"`.
 5. **Recepción incompleta.** Si el *stream* se corta, los pasos recibidos siguen siendo navegables. `GET /api/v1/tutor-ia/consultas/{operationKey}` recupera la escena completa si la operación terminó.
-6. **Persistencia.** La escena del Tutor se guarda en la conversación (TTL, `01-…orquestacion.md` sección 10.7). «Llevar a Studio» copia la escena declarativa como bloque `visual_scene` de un proyecto del usuario (SC-05), con 0 créditos.
+6. **Persistencia.** La escena del Tutor se coloca como objeto de la capa IA del lienzo, que se guarda en M2 con ciclo de vida propio (sección 17); la conversación solo guarda la referencia y sigue su retención de 90 días. «Llevar a Studio» copia la escena declarativa como bloque `visual_scene` de un proyecto del usuario (SC-05), sin consumo de IA.
 
 ## 13. Pizarra interactiva manual
 
-### 13.1. Herramientas (0 créditos de IA)
+### 13.1. Herramientas (sin consumo de IA)
 
 | Herramienta | Produce | Detalle |
 |---|---|---|
 | Seleccionar / mover | — | Selección múltiple, alineación, ajuste a la cuadrícula |
+| Lazo y región | Selección | Trazo libre cerrado o rectángulo en coordenadas de mundo; prueba de pertenencia por punto en polígono (par-impar) sobre la caja de cada objeto e intersección con trazos (sección 17.3) |
+| Resaltador | `trazo_libre` semitransparente | En la capa USUARIO |
+| Conector | `flecha` anclada a objetos | Se re-dibuja al mover los objetos anclados |
+| Imagen y fragmento | Objeto imagen o cita | Importación de imágenes propias y fragmentos autorizados con su procedencia |
 | Lápiz | `trazo_libre` | Simplificación Ramer–Douglas–Peucker con ε = 0,5 px; suavizado Catmull-Rom solo al dibujar; presión opcional |
 | Borrador | — | Por objeto o por trazo completo |
 | Formas | `punto`, `segmento`, `flecha`, `poligono`, `circulo`, `arco` | Con ajuste a puntos existentes |
@@ -673,11 +678,11 @@ reproducir(k) ≡ animar(pasos[k]) partiendo de estadoTrasPaso(k − 1)
 
 El autor escribe, por ejemplo, «dibuja la parábola y = x² − 4 con sus raíces y su vértice». El sistema:
 
-1. cotiza en créditos Studio (hipótesis: 1 crédito por escena) y pide confirmación;
+1. la escena del Tutor consume la consulta correspondiente; en Studio, la generación de una escena compleja cotiza en recursos de plan y pide confirmación;
 2. genera la escena declarativa por el orquestador;
 3. la valida y la inserta como objetos **editables** en la pizarra.
 
-La edición posterior no consume créditos.
+La edición posterior no consume recursos de IA.
 
 ### 13.4. Pizarra en el Aula Live
 
@@ -695,7 +700,7 @@ En el MVP, el docente comparte la pizarra por la compartición de pantalla del S
 | Objetivos táctiles | ≥ 44 × 44 px |
 | Movimiento | Respeta `prefers-reduced-motion` |
 | Rendimiento (a medir, no prometido) | Primer render ≤ 100 ms con 200 objetos en un móvil de gama media; animaciones ≥ 30 cuadros/s; SVG hasta 2000 elementos y Canvas por encima |
-| Fuera de línea | El paquete va en la PWA; las escenas recibidas se guardan en caché local junto a la conversación |
+| Fuera de línea | El paquete va en la PWA; solo las operaciones pendientes de lienzos propios se guardan en IndexedDB (por cuenta). Las conversaciones no se guardan sin conexión (CO-06) |
 
 ## 15. Ejemplos completos
 
@@ -865,3 +870,45 @@ El orquestador envía estos errores en una ronda de reparación. Una segunda fal
 | PEND-VIS-04 | Política regional del separador decimal en materiales oficiales |
 
 **Trazabilidad:** HU-05, HU-31, HU-43, HU-47, HU-61; RF-09, RF-42, RF-56, RF-60, RF-69, RF-83; AC-07, AC-09, AC-11; ADR-018, ADR-035, ADR-050; EQ-23, EQ-27.
+
+## 17. Lienzo extensible (IM, sección 9; ADR-083)
+
+### 17.1. Modelo
+
+| Elemento | Diseño |
+|---|---|
+| Espacio | Plano 2D ilimitado en **coordenadas de mundo** (independientes del zoom); la vista es `{x, y, zoom}` |
+| Fondo | Puntos o cuadrícula discreta, dibujados por la vista |
+| Organización | Páginas, marcos o secciones como objetos opcionales que agrupan regiones; no hay hoja A4 obligatoria |
+| Capas | `ORIGINAL` (importados, biblioteca, fragmentos), `USUARIO` (trazos, resaltados, flechas, textos) e `IA` (explicaciones, escenas, conectores propuestos) |
+| Objetos | Primitivas de `mentelyx.escena/v1`, trazos, imágenes, fórmulas, ejercicios interactivos, visores 3D (`mentelyx.escena3d/v1`) y citas |
+| Persistencia | MongoDB M2: `lienzos`, `lienzo_elementos` (índice 2d sobre `center`) y `lienzo_operaciones` ([persistencia, sección 8.4](../diseño-externo/01-diseño-de-persistencia-y-datos.md)); carga por región visible |
+| Ciclo de vida | Independiente de la conversación (ADR-079): eliminar una conversación no borra el lienzo |
+
+### 17.2. Operaciones y concurrencia
+
+- Cada cambio es una operación `{opId, tipo, elementos, baseRevision, capa}` (API, sección 4.6). El servidor aplica el lote de forma idempotente por `opId` e incrementa `revision`.
+- Con `baseRevision` superada, `409 CONFLICTO_LIENZO` devuelve el estado del servidor; el cliente reaplica sus operaciones que no tocan los mismos objetos y pide al usuario elegir si dos cambian la misma propiedad.
+- Deshacer y rehacer son operaciones inversas locales que se sincronizan como operaciones normales.
+- **Regla de capas:** una operación con origen IA solo crea o modifica objetos de la capa `IA`; el servidor rechaza cualquier operación de IA sobre `USUARIO` (`PIZ-03`). Editar un objeto IA crea una copia en `USUARIO`.
+- Sin ejecución de código generado por IA: la IA solo entrega datos validados por esquema.
+
+### 17.3. Selección contextual (RF-107)
+
+1. El cliente convierte el lazo a un polígono en coordenadas de mundo y simplifica el trazo (Ramer–Douglas–Peucker, ε = 2 unidades de pantalla convertidas a mundo).
+2. Un objeto queda seleccionado si su caja envolvente interseca el polígono y al menos uno de sus puntos de control está dentro (par-impar); un trazo, si la mayoría de sus puntos simplificados está dentro.
+3. La consulta envía `seleccion {lienzoId, elementIds, region}`. M2 (`obtenerSeleccionLienzo`) devuelve a M6 los objetos estructurados con identificadores, coordenadas y parámetros y, para imágenes, un **recorte mínimo** de la región, en lugar de la imagen completa.
+4. La respuesta del Tutor puede incluir contribuciones ancladas a la selección, siempre en la capa `IA`.
+
+### 17.4. Entrada y exportación
+
+- Ratón, teclado, pantalla táctil y lápiz digital con Pointer Events: presión del lápiz, rechazo de la palma y gesto de dos dedos para desplazar y hacer zoom.
+- Exportación de una región o del contenido organizado (páginas o marcos) a PDF mediante el renderizador de materiales ([materiales](05-generacion-de-materiales-educativos.md)).
+
+### 17.5. Pruebas
+
+`PIZ-01` (lienzo y conversación plegable en móvil, EQ-34), `PIZ-02` (el lazo envía solo la selección, EQ-35) y `PIZ-03` (la IA no modifica la capa del usuario), definidas en la [estrategia de pruebas](../../05-evaluacion-arquitectonica/03-estrategia-de-pruebas.md). Ninguna se ha ejecutado.
+
+## 18. Redacciones sustituidas (20/11/2026)
+
+Fuente: la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). No vigentes: el chat como superficie principal con la pizarra sincronizada a su lado (distribución 40/60 de interfaces v2.1); la escena del Tutor guardada solo en la conversación con su TTL; la caché local de escenas junto a la conversación; las herramientas «0 créditos de IA» y la cotización «1 crédito por escena».

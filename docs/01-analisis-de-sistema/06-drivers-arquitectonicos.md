@@ -5,6 +5,10 @@
 
 > **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
 
+> **Corrección integral:** 20/11/2026. Aplica la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md): reescribe DA-26 a DA-29 y añade DA-32 a DA-35. Las redacciones anteriores quedan en la sección 6.
+
+> **Revisión de alcance:** 2.2 — 25/11/2026. Los drivers describen el producto y la arquitectura aprobados; ADR-093 delimita qué capacidades se construyen en V1. Posponer un módulo no elimina su driver ni equivale a implementación.
+
 ## 1. Definición
 
 Un **driver** es un factor de negocio, restricción o atributo que condiciona la arquitectura. **No confundirlo** con una decisión (ADR). Se conservan **DA-01 a DA-25**, y se añaden **DA-26 a DA-31**.
@@ -38,18 +42,22 @@ Un **driver** es un factor de negocio, restricción o atributo que condiciona la
 | DA-23 | Disponibilidad, recuperación y continuidad aun con proveedores externos. | AC-02, AC-06, AC-10; RF-63, RF-64, RF-66, RF-68, RF-72; RC-25 | Check de salud, DLQ, degradación selectiva, respaldos de ambas bases, restauración, medición RTO/RPO y reportes. |
 | DA-24 | Reducción de costo y desarrollo offline/local con PostgreSQL estándar. | RF-65; RC-23, RC-24; AC-05, AC-10 | Configuración por entorno, migraciones reproducibles, Cloudflare-first, independencia de proveedor DB y escalado según medición. |
 | DA-25 | Expansión del catálogo a nivel universitario y mantenimiento de planes comerciales sin convenios iniciales. | HU-52; RF-67, RF-49 a RF-52; RC-22; AC-05 | Taxonomía académica extensible, temarios verificables, convenios diferidos sin modificar la cuenta de usuario. |
-| DA-26 | Planes separados y control de economía unitaria a cuota completa | RF-73, RF-79, RF-86–RF-87; RC-28, RC-29, RC-33; AC-10 | Productos/entitlements parametrizados, rate card de proveedores, simulación de gastos/beneficios y margen real por producto. |
-| DA-27 | Aulas Live para estudiantes en distintas regiones y grupos de 1 a 35 | RF-74–RF-80, RF-89–RF-90; RC-30, RC-32; AC-02, AC-03, AC-07 | Saldo transaccional Live, SFU gestionado, reservas idempotentes, liquidación por modalidad y reprogramaciones. |
-| DA-28 | Studio Free/Plus/Pro con UX de edición libre y cuotas generativas | RF-82–RF-85, RF-97; RC-27, RC-31; AC-07, AC-10 | Diferenciar operaciones manuales baratas y generativas, medir costo por función, movimientos de créditos idempotentes y UX clara. |
-| DA-29 | Pagos, liquidaciones y conciliación con micropagos caros | RF-26–RF-29, RF-80, RF-86, RF-92; RC-05, RC-33–RC-35; AC-06 | PaymentPort, políticas versionadas y ledger SQL, outbox, webhook verificado y conciliación; no usar Redis para dinero. |
+| DA-26 | Planes estudiantiles y docentes aprobados con control de economía unitaria | RF-12–RF-14, RF-43, RF-73, RF-79, RF-86–RF-87; RC-28, RC-29, RC-31, RC-33, RC-38; AC-10 | Matriz de recursos versionada (IM, sección 14), cuotas comerciales en M5 con reserva, confirmación y liberación, presupuestos de operación por recurso (IM, sección 18.1) y margen medido por producto. |
+| DA-27 | Clases en vivo por horas para grupos de 1 a 35 con capacidad audiovisual docente medida | RF-21–RF-24, RF-74–RF-81, RF-89–RF-90, RF-115, RF-116; RC-30, RC-32, RC-46; AC-02, AC-03, AC-07 | SFU gestionado, reserva de capacidad antes de iniciar, participante-minutos medidos, avisos 70/90/100 %, devolución del saldo y reservas idempotentes. |
+| DA-28 | Studio profesional con edición libre y generación medida por recursos de plan | RF-35, RF-61, RF-82–RF-85, RF-97, RF-114; RC-27, RC-31; AC-07, AC-10 | Separar operaciones manuales y generativas, medir costo por función, consumo idempotente de recursos, controles de calidad documental y UX clara. |
+| DA-29 | Pagos Culqi, pagos directos al docente, devoluciones y conciliación con comisiones por medio | RF-13, RF-25–RF-29, RF-38, RF-80, RF-86, RF-92, RF-118, RF-121, RF-122; RC-05, RC-33–RC-35, RC-39, RC-40; AC-06 | PaymentPort y CulqiPaymentAdapter, comisiones configurables y versionadas, ledger SQL, outbox, webhook verificado con consulta de estado, devoluciones parciales con evidencia y conciliación; no usar Redis para dinero. |
 | DA-30 | Privacidad y derechos de clases y materiales digitales | RF-35, RF-41, RF-45, RF-90, RF-99; RC-11–RC-19, RC-36; AC-04, AC-11 | Versiones y permisos separados, autorización de grabación, retención y borrado, control de menores y acceso firmado. |
 | DA-31 | Operación del producto completo con resiliencia y control de gasto | RF-63–RF-66, RF-71, RF-91, RF-94–RF-96; RC-25, RC-37; AC-02, AC-06, AC-10 | Observabilidad por proveedor, backoff y DLQ, recuperación y backup comprobado, fallback Redis seguro y alertas de presupuesto. |
+| DA-32 | Aprendizaje centrado en Tutor IA con fuentes privadas, aprendizaje general y pizarra inteligente | RF-42, RF-101–RF-108, RF-112, RF-113; RC-43, RC-45, RC-47; AC-01, AC-07, AC-11 | Orquestador por intención, RAG híbrido BGE-M3/pgvector 1024 con permisos, lienzo extensible con selección contextual y capas separadas, herramientas deterministas. |
+| DA-33 | Reutilización de recursos educativos para controlar costos y calidad | RF-109–RF-111, RF-113, RF-114; RC-44; AC-05, AC-10, AC-11 | Biblioteca BR-01–BR-12: búsqueda autorizada antes de generar, plantillas paramétricas, publicación voluntaria y retiro con revocación de embeddings. |
+| DA-34 | Monetización complementaria: publicidad externa, anuncios recompensados y BYOK | RF-39, RF-40, RF-119, RF-120; RC-10, RC-15, RC-41, RC-42; AC-04, AC-06, AC-10 | M7 verifica eventos y elegibilidad, M5 concede de forma idempotente; credenciales BYOK cifradas en M6; protección de menores. |
+| DA-35 | Evaluación personalizada reproducible y protección de edad | RF-49–RF-52, RF-100, RF-103–RF-105; RC-16–RC-18; AC-04, AC-09, AC-11 | M3 autoridad de intentos y calificaciones; generación por M6 con verificación; perfil académico y edad verificable en M1. |
 
 ## 3. Drivers más influyentes para estilo/enfoque
 
 | Orden | Drivers | Por qué obliga a una decisión arquitectónica |
 |---|---|---|
-| **1 (crítico)** | DA-03, DA-06, DA-21, DA-29 | Permisos, saldos, pagos e integridad de créditos bajo concurrencia; elección de fuente de verdad y límites del dominio. |
+| **1 (crítico)** | DA-03, DA-06, DA-21, DA-29 | Permisos, recursos de plan, saldos audiovisuales y pagos bajo concurrencia; elección de fuente de verdad y límites del dominio. |
 | **2 (crítico)** | DA-07, DA-23, DA-31 | Disponibilidad real depende de varias plataformas: diseñar fallos parciales, recuperación y observabilidad. |
 | **3 (alto)** | DA-05, DA-12, DA-19, DA-22, DA-28 | Monolito modular + puertos/adaptadores y versionado de documentos; facilidad para sustituir IA/proveedores. |
 | **4 (alto)** | DA-13, DA-18, DA-26 | Sostenibilidad comercial bajo uso completo y tarifas reales; límites dinámicos y auditoría. |
@@ -63,10 +71,23 @@ Un **driver** es un factor de negocio, restricción o atributo que condiciona la
 | DA-03/DA-21 | ADR-004, ADR-033, ADR-034, ADR-044 |
 | DA-05/DA-12/DA-19 | ADR-001, ADR-002, ADR-006, ADR-023, ADR-035, ADR-041 |
 | DA-07/DA-23/DA-31 | ADR-008, ADR-020, ADR-022, ADR-036–ADR-038, ADR-042, ADR-054 |
-| DA-14/DA-27/DA-30 | ADR-015, ADR-016, ADR-024, ADR-045, ADR-046, ADR-051 |
-| DA-18/DA-26/DA-29 | ADR-005, ADR-007, ADR-027–ADR-028, ADR-043, ADR-047–ADR-052 |
-| DA-22/DA-28 | ADR-019, ADR-035, ADR-050, ADR-053 |
+| DA-14/DA-27/DA-30 | ADR-015, ADR-016, ADR-024, ADR-045, ADR-046, ADR-051, ADR-081, ADR-093 |
+| DA-18/DA-26/DA-29 | ADR-043, ADR-052, ADR-080–ADR-082 |
+| DA-22/DA-28 | ADR-019, ADR-035, ADR-053, ADR-080, ADR-088, ADR-093 |
+| DA-26/DA-28/DA-29/DA-34 | ADR-080, ADR-081, ADR-082, ADR-086 |
+| DA-15/DA-32/DA-33 | ADR-074 a ADR-079, ADR-083, ADR-084, ADR-090, ADR-091 |
+| DA-27 | ADR-045, ADR-046, ADR-081, ADR-087, ADR-093 |
+| DA-30/DA-34/DA-35 | ADR-085, ADR-089, ADR-092 |
 
 ## 5. Delimitación del diseño
 
 No necesitamos Kafka, ocho microservicios ni una base de datos adicional para las aulas. Kafka puede reevaluarse cuando haya flujos de eventos independientes, consumidores múltiples y volumen que justifique el costo; Redis es caché, Queues son tareas y PostgreSQL administra dinero/créditos. El balanceador adicional depende de redundancia real, no del requisito genérico de seguridad.
+
+## 6. Redacciones sustituidas (historial)
+
+No son drivers vigentes.
+
+- **DA-26:** DA-26 · Planes separados y control de economía unitaria a cuota completa · RF-73, RF-79, RF-86–RF-87; RC-28, RC-29, RC-33; AC-10 · Productos/entitlements parametrizados, rate card de proveedores, simulación de gastos/beneficios y margen real por producto.
+- **DA-27:** DA-27 · Aulas Live para estudiantes en distintas regiones y grupos de 1 a 35 · RF-74–RF-80, RF-89–RF-90; RC-30, RC-32; AC-02, AC-03, AC-07 · Saldo transaccional Live, SFU gestionado, reservas idempotentes, liquidación por modalidad y reprogramaciones.
+- **DA-28:** DA-28 · Studio Free/Plus/Pro con UX de edición libre y cuotas generativas · RF-82–RF-85, RF-97; RC-27, RC-31; AC-07, AC-10 · Diferenciar operaciones manuales baratas y generativas, medir costo por función, movimientos de créditos idempotentes y UX clara.
+- **DA-29:** DA-29 · Pagos, liquidaciones y conciliación con micropagos caros · RF-26–RF-29, RF-80, RF-86, RF-92; RC-05, RC-33–RC-35; AC-06 · PaymentPort, políticas versionadas y ledger SQL, outbox, webhook verificado y conciliación; no usar Redis para dinero.

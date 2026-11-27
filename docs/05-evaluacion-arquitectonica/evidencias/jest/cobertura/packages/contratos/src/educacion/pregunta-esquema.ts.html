@@ -1,0 +1,433 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for packages/contratos/src/educacion/pregunta-esquema.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">packages/contratos/src/educacion</a> pregunta-esquema.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">69.04% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>58/84</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">67.21% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>41/61</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">76.47% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>13/17</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">84.61% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>44/52</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line medium'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from '../zod';
+import { validarBloque } from './bloque-validacion';
+&nbsp;
+/**
+ * Preguntas versionadas (`mentelyx.pregunta/v1`). Una pregunta es un dato validado: nunca HTML ni código ejecutable.
+ * Las de otras disciplinas reutilizan los bloques del núcleo educativo como «apoyo» (gráfico, vectores, código, texto,
+ * fórmula, tabla) o como objeto de identificación (obra o modelo 3D), validados con el mismo `validarBloque`.
+ */
+export const <span class="cstat-no" title="statement not covered" >ESQUEMA_PREGUNTA = '</span>mentelyx.pregunta/v1';
+const Id = z.string().regex(/^[a-z][a-z0-9_-]{0,31}$/);
+const Texto = (max: number) =&gt; z.string().trim().min(1).max(max);
+const Opcion = z.strictObject({ id: Id, texto: Texto(400) });
+const Tolerancia = z.strictObject({ tipo: z.enum(['absoluta', 'relativa']), valor: z.number().min(0).max(1e6) });
+&nbsp;
+const base = {
+  id: Id,
+  version: z.literal(1),
+  tema: Texto(120),
+  dificultad: z.enum(['basica', 'media', 'avanzada']),
+  enunciado: Texto(2000),
+  explicacion: z.string().max(3000).optional(),
+  origen: z.enum(['ejemplo', 'tutor', 'persona', 'material']),
+  /** Solo si es verificable: título del material del que procede la pregunta. Nunca se atribuye al docente lo generado. */
+  procedencia: z.string().max(200).optional(),
+  apoyo: z.unknown().optional(),
+};
+&nbsp;
+const OpcionUnica = z.strictObject({ ...base, tipo: z.literal('opcion-unica'), opciones: z.array(Opcion).min(2).max(8), correcta: Id });
+const OpcionMultiple = z.strictObject({ ...base, tipo: z.literal('opcion-multiple'), opciones: z.array(Opcion).min(2).max(8), correctas: z.array(Id).min(1).max(8) });
+const VerdaderoFalso = z.strictObject({ ...base, tipo: z.literal('verdadero-falso'), correcta: z.boolean() });
+const Abierta = z.strictObject({ ...base, tipo: z.literal('abierta'), criterios: z.array(Texto(300)).min(1).max(8), respuestaModelo: z.string().max(3000).optional() });
+const Numerica = z.strictObject({ ...base, tipo: z.literal('numerica'), respuesta: z.number().finite(), tolerancia: Tolerancia, unidad: z.string().max(20).optional() });
+const Expresion = z.strictObject({
+  ...base,
+  tipo: z.literal('expresion'),
+  respuesta: Texto(200),
+  variables: z.array(z.string().regex(/^[a-z]$/)).min(1).max(3),
+  dominio: z.strictObject({ min: z.number().finite(), max: z.number().finite() }),
+  prefijo: z.string().max(40).optional(),
+});
+const Identificar = z.strictObject({ ...base, tipo: z.literal('identificar'), objeto: z.unknown(), correcta: Id });
+const Ordenamiento = z.strictObject({ ...base, tipo: z.literal('ordenamiento'), elementos: z.array(Opcion).min(2).max(8), orden: z.array(Id).min(2).max(8) });
+const Relacion = z.strictObject({ ...base, tipo: z.literal('relacion'), pares: z.array(z.strictObject({ id: Id, izquierda: Texto(200), derecha: Texto(200) })).min(2).max(8) });
+const SubPregunta = z.discriminatedUnion('tipo', [
+  z.strictObject({ id: Id, tipo: z.literal('opcion-unica'), enunciado: Texto(1000), opciones: z.array(Opcion).min(2).max(8), correcta: Id }),
+  z.strictObject({ id: Id, tipo: z.literal('numerica'), enunciado: Texto(1000), respuesta: z.number().finite(), tolerancia: Tolerancia, unidad: z.string().max(20).optional() }),
+  z.strictObject({ id: Id, tipo: z.literal('abierta'), enunciado: Texto(1000), criterios: z.array(Texto(300)).min(1).max(8), respuestaModelo: z.string().max(3000).optional() }),
+]);
+const Caso = z.strictObject({ ...base, tipo: z.literal('caso'), caso: Texto(4000), preguntas: z.array(SubPregunta).min(1).max(6) });
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >Pregunta = z</span>.discriminatedUnion('tipo', [OpcionUnica, OpcionMultiple, VerdaderoFalso, Abierta, Numerica, Expresion, Identificar, Ordenamiento, Relacion, Caso]);
+export type Pregunta = z.infer&lt;typeof Pregunta&gt;;
+export type TipoPregunta = Pregunta['tipo'];
+export type SubPregunta = z.infer&lt;typeof SubPregunta&gt;;
+export type PreguntaDe&lt;T extends TipoPregunta&gt; = Extract&lt;Pregunta, { tipo: T }&gt;;
+&nbsp;
+export type EstadoTipo = 'disponible' | 'parcial' | 'pendiente';
+/** Catálogo de tipos con su corrección. «parcial»: se responde, pero la corrección automática es limitada o no existe. */
+export const <span class="cstat-no" title="statement not covered" >CATALOGO_TIPOS: Array&lt;{ tipo: string; nombre: string; estado: EstadoTipo; correccion: string }&gt; = [</span>
+  { tipo: 'opcion-unica', nombre: 'Opción múltiple con una respuesta', estado: 'disponible', correccion: 'Determinista' },
+  { tipo: 'opcion-multiple', nombre: 'Selección múltiple', estado: 'disponible', correccion: 'Determinista con crédito parcial' },
+  { tipo: 'verdadero-falso', nombre: 'Verdadero o falso', estado: 'disponible', correccion: 'Determinista' },
+  { tipo: 'abierta', nombre: 'Respuesta abierta', estado: 'parcial', correccion: 'Pendiente de evaluación; el Tutor puede dar una orientación, que no es una nota' },
+  { tipo: 'numerica', nombre: 'Respuesta numérica', estado: 'disponible', correccion: 'Comparación numérica con tolerancia explícita' },
+  { tipo: 'expresion', nombre: 'Ejercicio matemático (expresión)', estado: 'parcial', correccion: 'Equivalencia aproximada: se evalúa en 24 puntos de un intervalo; no es simbólica ni evalúa el procedimiento. Sin matrices, sistemas ni integrales' },
+  { tipo: 'grafico', nombre: 'Interpretación de gráficos', estado: 'disponible', correccion: 'Opción o número sobre un gráfico del núcleo educativo' },
+  { tipo: 'identificar-imagen', nombre: 'Identificación en imágenes', estado: 'disponible', correccion: 'Determinista (región elegida)' },
+  { tipo: 'identificar-3d', nombre: 'Identificación de estructuras 3D', estado: 'disponible', correccion: 'Determinista (pieza elegida)' },
+  { tipo: 'ordenamiento', nombre: 'Ordenamiento', estado: 'disponible', correccion: 'Determinista con crédito parcial por posición' },
+  { tipo: 'relacion', nombre: 'Relación de conceptos', estado: 'disponible', correccion: 'Determinista con crédito parcial por par' },
+  { tipo: 'caso', nombre: 'Análisis de casos', estado: 'parcial', correccion: 'Por subpregunta: las abiertas quedan pendientes de evaluación' },
+];
+&nbsp;
+export type ErrorPregunta = { id: string; mensaje: string };
+export type ResultadoValidacion = { ok: true; pregunta: Pregunta } | { ok: false; errores: ErrorPregunta[] };
+&nbsp;
+/** Valida esquema y semántica (opciones y pares únicos, respuestas existentes, apoyo y objeto válidos). */
+export function validarPregunta(entrada: unknown): ResultadoValidacion {
+  const r = Pregunta.safeParse(entrada);
+  const id = typeof (entrada as { id?: unknown })?.id === 'string' ? String((entrada as { id: string }).id) : <span class="branch-1 cbranch-no" title="branch not covered" >'pregunta';</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!r.success) <span class="cstat-no" title="statement not covered" >return { ok: false, errores: r.error.issues.slice(0, 6).map(<span class="fstat-no" title="function not covered" >(i</span>) =&gt; (<span class="cstat-no" title="statement not covered" >{ id, mensaje: `${i.path.join('/')}: ${i.message}` })) }</span>;</span>
+  const p = r.data;
+  const errores: string[] = [];
+  const unicos = (ids: string[]) =&gt; new Set(ids).size === ids.length;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if ('opciones' in p &amp;&amp; !unicos(p.opciones.map((o) =&gt; o.id))) <span class="cstat-no" title="statement not covered" >errores.push('Opciones repetidas.');</span>
+  if (p.tipo === 'opcion-unica' &amp;&amp; !p.opciones.some((o) =&gt; o.id === p.correcta)) errores.push('La respuesta correcta no está entre las opciones.');
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (p.tipo === 'opcion-multiple' &amp;&amp; !p.correctas.every((c) =&gt; p.opciones.some((o) =&gt; o.id === c))) <span class="cstat-no" title="statement not covered" >errores.push('Alguna respuesta correcta no está entre las opciones.');</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (p.tipo === 'ordenamiento' &amp;&amp; (p.orden.length !== p.elementos.length || !p.orden.every((x) =&gt; p.elementos.some((e) =&gt; e.id === x)) || !unicos(p.orden))) <span class="cstat-no" title="statement not covered" >errores.push('El orden no corresponde a los elementos.');</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (p.tipo === 'relacion' &amp;&amp; !unicos(p.pares.map((x) =&gt; x.id))) <span class="cstat-no" title="statement not covered" >errores.push('Pares repetidos.');</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (p.tipo === 'expresion' &amp;&amp; !(p.dominio.min &lt; p.dominio.max)) <span class="cstat-no" title="statement not covered" >errores.push('El dominio no es válido.');</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (p.tipo === 'caso' &amp;&amp; !unicos(p.preguntas.map((x) =&gt; x.id))) <span class="cstat-no" title="statement not covered" >errores.push('Subpreguntas repetidas.');</span>
+  if (p.tipo === 'caso')
+    for (const s of p.preguntas) <span class="missing-if-branch" title="if path not taken" >I</span>if (s.tipo === 'opcion-unica' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!s.opciones.some(<span class="fstat-no" title="function not covered" >(o</span>) =&gt; <span class="cstat-no" title="statement not covered" >o.id === s.correcta)</span>) <span class="cstat-no" title="statement not covered" >e</span>rrores.push(`La subpregunta ${s.id} no tiene su respuesta entre las opciones.`);</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (p.apoyo !== undefined &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!validarBloque(p.apoyo).ok)</span> <span class="cstat-no" title="statement not covered" >errores.push('El apoyo no es un bloque válido.');</span>
+  if (p.tipo === 'identificar') {
+    const v = validarBloque(p.objeto);
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!v.ok || (v.bloque.tipo !== 'obra' &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >v.bloque.tipo !== 'modelo-3d')) <span class="cstat-no" title="statement not covered" >e</span>rrores.push('Solo se identifican regiones de una obra o piezas de un modelo 3D.');</span>
+    else {
+      const ids = v.bloque.tipo === 'obra' ? v.bloque.contenido.regiones.map((x) =&gt; x.id) : <span class="branch-1 cbranch-no" title="branch not covered" >(v.bloque.contenido.partes ?? []).map(<span class="fstat-no" title="function not covered" >(x</span>) =&gt; <span class="cstat-no" title="statement not covered" >x.id)</span>;</span>
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (!ids.includes(p.correcta)) <span class="cstat-no" title="statement not covered" >errores.push('La respuesta no es una región o pieza del objeto.');</span>
+    }
+  }
+  return errores.length ? { ok: false, errores: errores.map((mensaje) =&gt; ({ id, mensaje })) } : { ok: true, pregunta: p };
+}
+&nbsp;
+/** Banco validado: las preguntas inválidas se excluyen y se informan (nunca se muestran a medias). */
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >validarBanco(e</span></span>ntradas: readonly unknown[]) {
+  const preguntas: Pregunta[] = <span class="cstat-no" title="statement not covered" >[];</span>
+  const rechazadas: ErrorPregunta[] = <span class="cstat-no" title="statement not covered" >[];</span>
+<span class="cstat-no" title="statement not covered" >  for (const e of entradas) {</span>
+    const r = <span class="cstat-no" title="statement not covered" >validarPregunta(e);</span>
+<span class="cstat-no" title="statement not covered" >    if (r.ok) <span class="cstat-no" title="statement not covered" >preguntas.push(r.pregunta);</span></span>
+    else <span class="cstat-no" title="statement not covered" >rechazadas.push(...r.errores);</span>
+  }
+<span class="cstat-no" title="statement not covered" >  return { preguntas, rechazadas };</span>
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-11-27T11:21:23.603Z
+            </div>
+        <script src="../../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../../sorter.js"></script>
+        <script src="../../../../block-navigation.js"></script>
+    </body>
+</html>
+    

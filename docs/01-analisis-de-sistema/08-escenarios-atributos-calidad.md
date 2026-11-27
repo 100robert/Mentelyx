@@ -1,9 +1,13 @@
 # 08. Escenarios de atributos de calidad — Mentelyx
 
+> **Corrección integral:** 20/11/2026. Se conservan EQ-01 a EQ-31 y sus umbrales técnicos. EQ-24, 25 y 27 a 30 sustituyen sus referencias al modelo comercial anterior (créditos Live, S/8 por crédito, Studio Pro) por el modelo de la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). Se añaden EQ-32 a EQ-45. Los textos anteriores quedan en la sección 5.
+
 > **Versión:** 2.0 — 09/11/2026. **Base revisada:** v1.6 (20/10/2026). **Estado:** diseño documental sincronizado con dos tipos de cuenta públicos; requisitos y políticas comerciales sujetos a pruebas y validación. No supone código implementado ni servicios contratados.
 
 
 > **Revisión terminológica:** 2.1 — 10/11/2026. Se conservan el alcance, los identificadores y la versión funcional 2.0.
+
+> **Revisión de alcance:** 2.2 — 25/11/2026. Los EQ describen objetivos verificables del producto aprobado; su aplicación a V1 o a capacidades pospuestas sigue ADR-093. Ningún objetivo propuesto se considera resultado medido.
 
 ## 1. Cómo se interpretan las medidas
 
@@ -312,28 +316,28 @@ Cada escenario define fuente, estímulo, artefacto, ambiente, respuesta y medida
 ## Complemento transversal v0.9 — Redis
 Redis se adopta como caché temporal y mecanismo de contadores de limitación de solicitudes. No modifica los RF/HU ni sus identificadores originales: es una decisión de infraestructura trazada a rendimiento, seguridad y disponibilidad. Ante su fallo, las lecturas públicas podrán usar origen con protección de carga; las operaciones sensibles deben mantener autorización y límites seguros. Ver `14-redis-cache-y-resiliencia.md`.
 
-## 2. Nuevos escenarios (EQ-24 a EQ-31)
+## 2. Nuevos escenarios (EQ-24 a EQ-45)
 
-### EQ-24 — AC-06 y AC-10: compra Live y movimientos de créditos
+### EQ-24 — AC-06 y AC-10: compra Docente Live y movimientos de saldo audiovisual
 
 | Campo | Especificación propuesta |
 |---|---|
-| Fuente / estímulo | Dos intentos simultáneos del mismo estudiante y webhook repetido de su suscripción. |
-| Artefacto | PostgreSQL / suscripciones y reservas |
+| Fuente / estímulo | Dos intentos simultáneos del mismo docente y un webhook repetido de su pago Docente Live; dos clases concurrentes reservan capacidad. |
+| Artefacto | PostgreSQL / suscripciones docentes, saldo audiovisual y reservas |
 | Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
-| Respuesta y medida | 1 suscripción produce exactamente 4 créditos Live; se impide reserva que exceda saldo; evento duplicado no aplica dos veces; 0 sobrecupos en ensayos. |
-| Verificación | Simular 100 reintentos/dobles webhooks con transacciones y revisar ledger SQL. |
+| Respuesta y medida | 1 pago verificado produce exactamente el saldo audiovisual del periodo según la versión de parámetros; no se reserva capacidad que exceda el saldo; el evento duplicado no se aplica dos veces; 0 sobrecupos en ensayos. |
+| Verificación | Simular 100 reintentos y webhooks dobles con transacciones y revisar el registro SQL de saldo y reservas. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
-### EQ-25 — AC-06 y AC-10: liquidación contractual de docente
+### EQ-25 — AC-06 y AC-10: comisión y estado de cuenta del docente
 
 | Campo | Especificación propuesta |
 |---|---|
-| Fuente / estímulo | Clase con 3 alumnos de 2 créditos cada uno, luego cambio de tarifa contractual. |
-| Artefacto | Pago a tutores y ledger |
+| Fuente / estímulo | Clase grupal de 3 alumnos pagada directamente al docente; después cambia la versión de condiciones de comisión. |
+| Artefacto | Registro de pagos directos, comisión y estado de cuenta docente (M4/M5) |
 | Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
-| Respuesta y medida | Pago por política original versionada: si tarifa candidata S/8/crédito y 6 créditos válidos, liquidación prevista S/48; cambio posterior no altera compromiso previo. |
-| Verificación | Probar cierre de clase, ausencias, cancelación, cambio de precio e idempotencia. |
+| Respuesta y medida | La comisión se calcula con la versión de condiciones aceptada al contratar; un cambio posterior no altera la comisión ya devengada; ningún pago directo se registra dos veces; Mentelyx no figura como custodio del importe. |
+| Verificación | Probar registro y verificación del pago, ausencias, cancelación, cambio de condiciones e idempotencia. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
 ### EQ-26 — AC-01, AC-02 y AC-03: 35+1 participantes por aula
@@ -351,10 +355,10 @@ Redis se adopta como caché temporal y mecanismo de contadores de limitación de
 
 | Campo | Especificación propuesta |
 |---|---|
-| Fuente / estímulo | Docente modifica 10 gráficos manuales y luego solicita presentación IA con crédito limitado. |
-| Artefacto | Studio/API IA/ledger Studio |
+| Fuente / estímulo | Docente modifica 10 gráficos manuales y luego solicita una presentación IA con recursos de plan limitados. |
+| Artefacto | Studio, API IA y registro de recursos de plan (M5) |
 | Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
-| Respuesta y medida | 10 cambios manuales consumen 0 créditos de IA; cada generación válida usa la tarifa mostrada exactamente una vez; resultados de costos registrados sin PII. |
+| Respuesta y medida | 10 cambios manuales consumen 0 recursos IA; cada generación válida consume el recurso mostrado exactamente una vez; los costos se registran sin PII. |
 | Verificación | Automatizar prueba de saldo y UI; repetir entrega y reembolso por error elegible. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
@@ -362,21 +366,21 @@ Redis se adopta como caché temporal y mecanismo de contadores de limitación de
 
 | Campo | Especificación propuesta |
 |---|---|
-| Fuente / estímulo | Docente ofrece clase individual a S/8 con pasarela de comisión mínima y costos superiores al margen. |
+| Fuente / estímulo | Docente ofrece una clase individual de bajo importe pagada por un medio con comisión mínima y costos superiores al margen. |
 | Artefacto | Motor de reglas comerciales |
 | Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
 | Respuesta y medida | Antes de publicar: precio, tarifa docente, pasarela, audio/video, impuestos y margen visible; se bloquea oferta no viable salvo patrocinio/presupuesto explícito. |
-| Verificación | Pruebas con 1, 3, 5 y 35 inscritos, venta directa y suscripción; escenarios costo multiplicado. |
+| Verificación | Pruebas con 1, 3, 5 y 35 inscritos, por medio de pago y con costos multiplicados. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
 ### EQ-29 — AC-02 y AC-06: fallo de Redis
 
 | Campo | Especificación propuesta |
 |---|---|
-| Fuente / estímulo | Redis no responde al consultar contenido y se intenta consumir créditos de Live. |
+| Fuente / estímulo | Redis no responde al consultar contenido y se intenta consumir un recurso de plan o reservar capacidad audiovisual. |
 | Artefacto | Redis/cache + API |
 | Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
-| Respuesta y medida | Lecturas no sensibles pueden degradar a BD con control de carga; créditos y permisos siguen comprobándose en PostgreSQL; operación sensible con rate limit no debe quedar sin control. |
+| Respuesta y medida | Lecturas no sensibles pueden degradar a BD con control de carga; recursos, saldos y permisos siguen comprobándose en PostgreSQL; ninguna operación sensible con límite de tasa queda sin control. |
 | Verificación | Cortar conexión Redis durante test; verificar registros, latencia y ausencia de dobles consumos. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
@@ -384,10 +388,10 @@ Redis se adopta como caché temporal y mecanismo de contadores de limitación de
 
 | Campo | Especificación propuesta |
 |---|---|
-| Fuente / estímulo | El suscriptor Pro consume su última cuota y luego realiza nueva solicitud. |
-| Artefacto | API IA y ledger Studio |
+| Fuente / estímulo | Un suscriptor Premium consume su último recurso de la categoría y realiza una nueva solicitud. |
+| Artefacto | API IA y registro de recursos de plan (M5) |
 | Entorno | Sandbox/prototipo con datos ficticios, costos configurados y trazas auditables. |
-| Respuesta y medida | La solicitud adicional se rechaza sin cargo ni sobrecoste imprevisto; UI explica saldo; editor manual sigue operativo. |
+| Respuesta y medida | La solicitud adicional se rechaza sin cargo ni sobrecoste imprevisto; la UI explica el saldo y ofrece capacidad adicional legítima (anuncio recompensado o BYOK) solo si es elegible; el editor manual sigue operativo. |
 | Verificación | Test de concurrencia, presupuesto, límites por operación, reembolsos y error de proveedor. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
@@ -402,6 +406,160 @@ Redis se adopta como caché temporal y mecanismo de contadores de limitación de
 | Verificación | Repetir webhooks, fallos de red y reinicios del Worker; comparar estado local/proveedor. |
 | Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
 
+### EQ-32 — AC-04 y AC-11: aislamiento de fuentes privadas
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Usuario B consulta términos exactos de un espacio privado de A; A revoca un documento durante una consulta. |
+| Artefacto | RAG híbrido (BGE-M3, pgvector 1024), M2 y M6 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | 0 fragmentos de A en respuestas a B; la respuesta en curso no usa ni cita el documento revocado; 0 embeddings del documento revocado consultables tras la revocación. |
+| Verificación | RAG-SEC-01 a RAG-SEC-03 y RAG-SEC-06 con corpus sintético. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-33 — AC-11: aprendizaje general y complementación de fuentes
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Consultas sin fuentes, con fuentes insuficientes y con la orden «usa solo mis fuentes». |
+| Artefacto | Orquestador M6 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | 100 % de las respuestas sin fuentes etiquetadas como explicación general; con la orden de exclusividad, 0 complementos generales; 0 referencias inventadas en el conjunto de prueba. |
+| Verificación | TUT-01 a TUT-03 y RAG-Q-02. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-34 — AC-01 y AC-07: lienzo extensible en móvil
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Lienzo con 200 objetos, zoom y desplazamiento en un móvil de gama media. |
+| Artefacto | Motor visual y PWA |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Meta a medir (motor visual, sección 14): primer render ≤ 100 ms con 200 objetos y animaciones ≥ 30 cuadros/s; deshacer y rehacer sin pérdida. |
+| Verificación | PIZ-01 y VIS-06. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-35 — AC-04 y AC-11: selección contextual en la pizarra
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | El estudiante selecciona por lazo una región de una ilustración y un objeto estructurado, y pregunta. |
+| Artefacto | Pizarra, M6 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Se envían al modelo solo los identificadores de los objetos y el recorte de la región; la respuesta no modifica trazos ni anotaciones del usuario; las contribuciones de IA quedan en su capa. |
+| Verificación | PIZ-02 y PIZ-03. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-36 — AC-05, AC-06 y AC-10: biblioteca y revocación
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Una consulta coincide con un recurso validado; después su autor retira la publicación. |
+| Artefacto | Biblioteca M2, búsqueda M6, caché |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Se reutiliza o adapta el recurso antes de generar uno nuevo; tras el retiro, 0 accesos públicos, cachés invalidadas y embeddings públicos eliminados; ninguna conversación se publica. |
+| Verificación | BIB-01 a BIB-03. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-37 — AC-06, AC-09 y AC-11: evaluación personalizada
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Generación rápida sin parámetros y evaluación configurada desde fuentes propias. |
+| Artefacto | M3 y M6 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Al menos 15 preguntas variadas en la generación rápida; la calificación oficial es reproducible con la misma versión; las soluciones no se revelan en modo evaluación. |
+| Verificación | EVA-01 a EVA-03. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-38 — AC-04: BYOK
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Un adulto conecta una API key, consulta, la revoca y vuelve a consultar. |
+| Artefacto | M6 y almacén cifrado |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | 0 apariciones de la clave en logs, respuestas o conversaciones; tras la revocación la consulta BYOK falla sin usar la facturación de Mentelyx; una cuenta de menor no puede configurar BYOK. |
+| Verificación | BYK-01 a BYK-03 y SEC-09. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-39 — AC-06 y AC-10: recompensa publicitaria
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Un evento de recompensa llega repetido y otro llega desde una cuenta de menor. |
+| Artefacto | M7 y M5 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Un evento verificado concede los recursos una sola vez; un evento no verificado por el proveedor no concede nada; la cuenta de menor no ve anuncios recompensados. |
+| Verificación | PUB-01 a PUB-03. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-40 — AC-06 y AC-08: pagos CulqiOnline
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Webhooks duplicados, rechazados y fuera de orden; renovación recurrente y manual; pagos de S/39,90 por tarjeta y Yape. |
+| Artefacto | PaymentPort y CulqiPaymentAdapter en sandbox |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | 0 derechos concedidos sin consulta del estado real; 0 cobros duplicados; la comisión estimada usa la configuración vigente del medio y del umbral; la recurrencia solo con autorización registrada. |
+| Verificación | CUL-01 a CUL-05. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-41 — AC-06 y AC-10: consumo audiovisual y devolución
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Un docente Live consume 2.000 participante-minutos con la configuración de referencia; otro supera su capacidad. |
+| Artefacto | M4, M5 y adaptador de devoluciones |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Con la configuración de referencia, el consumo es S/24 y el saldo no utilizado candidato es S/21 según la fórmula de piloto de la IM, sección 15.3. Registrar por separado la comisión no recuperable, el importe solicitado y el importe efectivamente devuelto. La prueba verifica un único efecto por devolución autorizada y mantiene el estado pendiente hasta la evidencia del proveedor; no fija la distribución contractual de costos ni las políticas de cancelación de tutorías. El exceso solo se cobra con autorización. |
+| Verificación | AUD-01 a AUD-03. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-42 — AC-04 y AC-06: historial de 90 días
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Conversación inactiva durante 83 y 90 días; conversación con un lienzo guardado aparte. |
+| Artefacto | M6, M2 y purga |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Aviso a los 83 días; inaccesible a los 90 y purga agendada de sus derivados privados; el lienzo guardado se conserva; pagos y calificaciones no se ven afectados. |
+| Verificación | RET-01 y RET-02. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-43 — AC-04: perfil académico y edad
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Un estudiante cumple 18 años; un tercero consulta su perfil. |
+| Artefacto | M1 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | La condición de edad se actualiza sin intervención manual a partir de la fecha verificada; la fecha de nacimiento nunca se expone en APIs públicas ni a otros módulos salvo la condición derivada. |
+| Verificación | EDA-01 y EDA-02. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-44 — AC-04: grupos privados docentes
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Un no miembro solicita materiales y clases de un grupo privado; un miembro es expulsado. |
+| Artefacto | M4 |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | 100 % de accesos de no miembros denegados; el miembro expulsado pierde el acceso desde el commit. |
+| Verificación | GRU-01 y GRU-02. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
+### EQ-45 — AC-10: costo de inferencia frente al presupuesto de diseño
+
+| Campo | Especificación propuesta |
+|---|---|
+| Fuente / estímulo | Muestra de operaciones por categoría durante el piloto. |
+| Artefacto | M6, `ai_usage_records` |
+| Entorno | Sandbox o prototipo con datos sintéticos y proveedores simulados, salvo indicación expresa. |
+| Respuesta y medida | Costo medido por operación comparado con las cotas de diseño de la IM, sección 18.1 (0,001 / 0,006 / 0,015 / 0,025 / 0,003 / 0,060 USD); una desviación se reporta sin modificar las cuotas aprobadas. |
+| Verificación | COS-01 y COS-04. |
+| Estado | Pendiente de ejecución y evidencia; no afirmar cumplimiento. |
+
 ## 3. Matriz de evidencia por escenario
 
 | Escenarios | Evidencia necesaria | Estado |
@@ -412,9 +570,37 @@ Redis se adopta como caché temporal y mecanismo de contadores de limitación de
 | EQ-14, EQ-26 | SFU real con 35+1, ancho de banda, reconexiones, uso moderado y costo | Pendiente |
 | EQ-19–EQ-23, EQ-29 | Caídas de proveedores, backups/restauraciones, desconexión Studio y Redis | Pendiente |
 | EQ-15–EQ-18 | Simulacros, preparación, derechos, UX móvil y verificación de fuentes | Pendiente |
+| EQ-32–EQ-45 | Aislamiento RAG privado, Tutor general, lienzo, selección contextual, biblioteca, evaluaciones, BYOK, recompensas, Culqi, devoluciones, historial, edad, grupos y costo de inferencia | Pendiente |
 
-La trazabilidad de cada EQ con sus RF, DA, ADR y pruebas está en el [SDD, sección 9](../05-sdd/documento-de-diseño-de-software.md), y el plan de verificación (k6, fallos, recuperación, migración y calidad IA) en su sección 10. Las pruebas de IA citadas (API, RAG-SEC, INY, COS, BP) están en [calidad IA](../03-diseño-de-software/diseño-especializado/06-calidad-ia-criterios-y-pruebas.md). Los umbrales de este documento no cambian y todo sigue en estado Pendiente.
+La trazabilidad de cada EQ con sus RF, DA, ADR y pruebas está en el [SDD, sección 9](../06-SDD/documento-de-diseño-de-software.md), y el plan de verificación (k6, fallos, recuperación, migración y calidad IA) en su sección 10. Las pruebas de IA citadas (API, RAG-SEC, INY, COS, BP) están en [calidad IA](../03-diseño-de-software/diseño-especializado/06-calidad-ia-criterios-y-pruebas.md). Los umbrales de este documento no cambian y todo sigue en estado Pendiente.
 
 ## 4. Política de aceptación
 
 Una medición se aprueba solo al registrar: fecha, commit, entorno, número de usuarios/aulas, datos de prueba, capturas/logs anonimizados, tasa de éxito, costo asociado y responsable. *Disponibilidad 99,5 %*, créditos y precios son metas/políticas de diseño hasta que la operación y el marco comercial los sustenten.
+
+## 5. Textos sustituidos (historial)
+
+No son escenarios vigentes.
+
+| EQ | Campo | Texto sustituido |
+|---|---|---|
+| EQ-24 | Título | EQ-24 — AC-06 y AC-10: compra Live y movimientos de créditos |
+| EQ-24 | Fuente / estímulo | Dos intentos simultáneos del mismo estudiante y webhook repetido de su suscripción. |
+| EQ-24 | Artefacto | PostgreSQL / suscripciones y reservas |
+| EQ-24 | Respuesta y medida | 1 suscripción produce exactamente 4 créditos Live; se impide reserva que exceda saldo; evento duplicado no aplica dos veces; 0 sobrecupos en ensayos. |
+| EQ-24 | Verificación | Simular 100 reintentos/dobles webhooks con transacciones y revisar ledger SQL. |
+| EQ-25 | Título | EQ-25 — AC-06 y AC-10: liquidación contractual de docente |
+| EQ-25 | Fuente / estímulo | Clase con 3 alumnos de 2 créditos cada uno, luego cambio de tarifa contractual. |
+| EQ-25 | Artefacto | Pago a tutores y ledger |
+| EQ-25 | Respuesta y medida | Pago por política original versionada: si tarifa candidata S/8/crédito y 6 créditos válidos, liquidación prevista S/48; cambio posterior no altera compromiso previo. |
+| EQ-25 | Verificación | Probar cierre de clase, ausencias, cancelación, cambio de precio e idempotencia. |
+| EQ-27 | Fuente / estímulo | Docente modifica 10 gráficos manuales y luego solicita presentación IA con crédito limitado. |
+| EQ-27 | Artefacto | Studio/API IA/ledger Studio |
+| EQ-27 | Respuesta y medida | 10 cambios manuales consumen 0 créditos de IA; cada generación válida usa la tarifa mostrada exactamente una vez; resultados de costos registrados sin PII. |
+| EQ-28 | Fuente / estímulo | Docente ofrece clase individual a S/8 con pasarela de comisión mínima y costos superiores al margen. |
+| EQ-28 | Verificación | Pruebas con 1, 3, 5 y 35 inscritos, venta directa y suscripción; escenarios costo multiplicado. |
+| EQ-29 | Fuente / estímulo | Redis no responde al consultar contenido y se intenta consumir créditos de Live. |
+| EQ-29 | Respuesta y medida | Lecturas no sensibles pueden degradar a BD con control de carga; créditos y permisos siguen comprobándose en PostgreSQL; operación sensible con rate limit no debe quedar sin control. |
+| EQ-30 | Fuente / estímulo | El suscriptor Pro consume su última cuota y luego realiza nueva solicitud. |
+| EQ-30 | Artefacto | API IA y ledger Studio |
+| EQ-30 | Respuesta y medida | La solicitud adicional se rechaza sin cargo ni sobrecoste imprevisto; UI explica saldo; editor manual sigue operativo. |

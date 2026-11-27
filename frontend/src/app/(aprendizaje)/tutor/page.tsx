@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { Icono } from '@/components/ui/iconos';
 import { apiServidor, sesionActual } from '@/lib/api-servidor';
 
-export const metadata: Metadata = { title: 'Tutor' };
+export const metadata: Metadata = { title: 'Sesiones' };
 export const dynamic = 'force-dynamic';
 
 type Conversacion = { id: string; titulo: string; espacioId: string | null; mensajes: number; actualizadaEn: string; expiraEn: string };
@@ -20,25 +20,25 @@ export default async function Tutor() {
   return (
     <div className="pagina">
       <header className="pagina-cabecera">
-        <h1>Mis conversaciones</h1>
+        <h1>Sesiones</h1>
         <p className="suave">
-          Para preguntar sobre tus fuentes, abre uno de tus espacios. Cada conversación se eliminará el día indicado: 90 días después de su última actividad.
+          Cada sesión es una conversación con el Tutor. Para estudiar con tus apuntes, ábrela desde su tema. Cada sesión se eliminará el día indicado: 90 días después de su última actividad.
         </p>
       </header>
       {r.error && !r.datos ? (
         <p role="alert" className="mensaje mensaje-error">
           <Icono nombre="aviso" />
-          <span>No pudimos cargar tus conversaciones. Recarga la página para intentarlo de nuevo.</span>
+          <span>No pudimos cargar tus sesiones. Recarga la página para intentarlo de nuevo.</span>
         </p>
       ) : lista.length === 0 ? (
         <div className="vacio">
           <Icono nombre="conversaciones" tamano={24} />
           <div>
-            <p className="vacio-titulo">Aún no tienes conversaciones.</p>
-            <p className="suave">Abre un espacio y pregúntale al Tutor sobre tus fuentes.</p>
+            <p className="vacio-titulo">Aún no tienes sesiones.</p>
+            <p className="suave">Abre un tema y pregúntale al Tutor.</p>
             <p>
               <Link href="/espacios" className="boton boton-primario">
-                Ir a mis espacios
+                Ir a mis temas
               </Link>
             </p>
           </div>
@@ -46,11 +46,11 @@ export default async function Tutor() {
       ) : (
         <div className="tabla-contenedor" data-desplazable>
           <table className="tabla tabla-apilable">
-            <caption className="visually-hidden">Conversaciones guardadas</caption>
+            <caption className="visually-hidden">Sesiones guardadas</caption>
             <thead>
               <tr>
-                <th scope="col">Conversación</th>
-                <th scope="col">Espacio</th>
+                <th scope="col">Sesión</th>
+                <th scope="col">Tema</th>
                 <th scope="col" className="num">Mensajes</th>
                 <th scope="col">Última actividad</th>
                 <th scope="col">Se elimina el</th>
@@ -62,7 +62,7 @@ export default async function Tutor() {
                   <th scope="row">
                     <Link href={`/tutor/${c.id}`}>{c.titulo}</Link>
                   </th>
-                  <td data-titulo="Espacio">{espacio(c.espacioId) ?? 'Sin espacio'}</td>
+                  <td data-titulo="Tema">{espacio(c.espacioId) ?? 'Sin tema'}</td>
                   <td data-titulo="Mensajes" className="num">
                     {c.mensajes}
                   </td>

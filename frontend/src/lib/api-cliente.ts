@@ -13,11 +13,16 @@ export class ErrorApi extends Error {
 
 export const nuevaClave = () => crypto.randomUUID().replaceAll('-', '');
 
-type Opciones = { metodo?: string; cuerpo?: unknown; clave?: string };
+type Opciones = { metodo?: string; cuerpo?: unknown; clave?: string; cabeceras?: Record<string, string>; senal?: AbortSignal | undefined };
 
 export async function apiCliente<T>(ruta: string, opciones: Opciones = {}): Promise<T> {
-  const headers: Record<string, string> = { 'content-type': 'application/json' };
+  const headers: Record<string, string> = { 'content-type': 'application/json', ...opciones.cabeceras };
   if (opciones.clave) headers['idempotency-key'] = opciones.clave;
+  // Se obtiene de nuevo por mutación: login/logout rotan el contexto de sesión. No se persiste en localStorage.
+  if (!['GET', 'HEAD', 'OPTIONS'].includes((opciones.metodo ?? 'GET').toUpperCase())) {
+    const csrf = await apiCliente<{ token: string }>('/auth/csrf');
+    headers['x-csrf-token'] = csrf.token;
+  }
   let r: Response;
   try {
     r = await fetch(`/api/v1${ruta}`, {
@@ -25,8 +30,11 @@ export async function apiCliente<T>(ruta: string, opciones: Opciones = {}): Prom
       headers,
       credentials: 'same-origin',
       ...(opciones.cuerpo === undefined ? {} : { body: JSON.stringify(opciones.cuerpo) }),
+      ...(opciones.senal ? { signal: opciones.senal } : {}),
     });
-  } catch {
+  } catch (e) {
+    // Cancelada por la persona: el resultado en el servidor es desconocido (la misma Idempotency-Key lo recupera).
+    if (opciones.senal?.aborted || (e instanceof DOMException && e.name === 'AbortError')) throw new ErrorApi('CANCELADA', 'Cancelaste la espera.', 0);
     throw new ErrorApi('RED', 'No hay conexión con el servidor. Inténtalo de nuevo.', 0);
   }
   const json = (await r.json().catch(() => null)) as { ok: boolean; data?: T; error?: { code: string; message: string; details?: Record<string, unknown> } } | null;

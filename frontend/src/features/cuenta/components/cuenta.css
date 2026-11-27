@@ -1,0 +1,5 @@
+/* Configuración: apariencia */
+.ajustes-apariencia { display: grid; gap: var(--space-md); }
+.ajustes-apariencia fieldset.campo { margin: 0; padding: 0; border: 0; }
+.ajustes-apariencia fieldset.campo > legend { padding: 0; margin-block-end: var(--space-2xs); font-weight: 600; font-size: var(--fs-secundario); }
+.ajustes-apariencia p { margin: 0; }

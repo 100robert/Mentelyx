@@ -1,0 +1,592 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for packages/contratos/src/educacion/pregunta-corregir.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../../index.html">All files</a> / <a href="index.html">packages/contratos/src/educacion</a> pregunta-corregir.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">68.21% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>88/129</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">54.67% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>76/139</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">81.81% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>18/22</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">81.11% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>73/90</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line medium'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { analizar, evaluar } from './expresion';
+import type { Pregunta, SubPregunta } from './pregunta-esquema';
+&nbsp;
+/**
+ * Corrección de respuestas, siempre con código determinista (nunca código generado por IA):
+ * - determinista (opciones, verdadero o falso, identificación, orden y relación, con crédito parcial donde corresponde);
+ * - numérica con tolerancia explícita, leyendo la respuesta con el analizador seguro (fracciones y coma decimal);
+ * - expresiones: equivalencia comprobada evaluando ambas en puntos del dominio (alcance declarado: no es simbólica);
+ * - abiertas: quedan «pendientes de evaluación». No se comparan textos.
+ */
+export type Respuesta =
+  | { tipo: 'opcion'; id: string | null }
+  | { tipo: 'opciones'; ids: string[] }
+  | { tipo: 'booleano'; valor: boolean | null }
+  | { tipo: 'texto'; valor: string }
+  | { tipo: 'orden'; ids: string[] }
+  | { tipo: 'pares'; asignacion: Record&lt;string, string&gt; }
+  | { tipo: 'caso'; respuestas: Record&lt;string, Respuesta&gt; };
+&nbsp;
+export type EstadoCorreccion = 'correcta' | 'incorrecta' | 'parcial' | 'pendiente' | 'sin-responder' | 'invalida';
+export type Correccion = { estado: EstadoCorreccion; puntaje: number | null; criterio: string; detalle: string };
+&nbsp;
+const fin = (estado: EstadoCorreccion, puntaje: number | null, criterio: string, detalle: string): Correccion =&gt; ({ estado, puntaje, criterio, detalle });
+const porPuntaje = (p: number, criterio: string, detalle: string) =&gt; fin(p &gt;= 1 ? 'correcta' : p &lt;= 0 ? 'incorrecta' : 'parcial', Math.max(0, Math.min(1, p)), criterio, detalle);
+const cifra = (n: number) =&gt; String(Number(n.toPrecision(10))).replace('.', ',');
+&nbsp;
+/** Lee un número escrito por la persona: enteros, decimales con coma, fracciones u operaciones sin variables. */
+export function <span class="cstat-no" title="statement not covered" >leerNumero(t</span>exto: string): number | null {
+  const r = analizar(texto.trim(), []);
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!r.ok) <span class="cstat-no" title="statement not covered" >return null;</span>
+  const v = evaluar(r.nodo, {});
+  return Number.isFinite(v) ? v : <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
+}
+&nbsp;
+export function <span class="cstat-no" title="statement not covered" >dentroDeTolerancia(v</span>alor: number, esperado: number, t: { tipo: 'absoluta' | 'relativa'; valor: number }) {
+  const margen = t.tipo === 'absoluta' ? t.valor : <span class="branch-1 cbranch-no" title="branch not covered" >t.valor * Math.abs(esperado);</span>
+  return Math.abs(valor - esperado) &lt;= margen + 1e-12;
+}
+&nbsp;
+const PUNTOS = 24;
+/**
+ * Equivalencia de dos expresiones en las variables dadas, evaluándolas en 24 puntos repartidos en el dominio. Exige al
+ * menos 12 puntos donde ambas estén definidas. Es una comprobación numérica: puede no distinguir expresiones que solo
+ * difieren fuera del dominio o en puntos aislados, y así se informa.
+ */
+export function <span class="cstat-no" title="statement not covered" >equivalentes(r</span>espuesta: string, esperada: string, variables: readonly string[], dominio: { min: number; max: number }): { ok: boolean; motivo: string } {
+  const a = analizar(respuesta, variables);
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!a.ok) <span class="cstat-no" title="statement not covered" >return { ok: false, motivo: a.error.mensaje };</span>
+  const b = analizar(esperada, variables);
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!b.ok) <span class="cstat-no" title="statement not covered" >return { ok: false, motivo: 'La respuesta esperada no es válida.' };</span>
+  let validos = 0;
+  for (let k = 0; k &lt; PUNTOS; k++) {
+    const valores: Record&lt;string, number&gt; = {};
+    variables.forEach((v, j) =&gt; {
+      // Puntos no equiespaciados y distintos por variable, para no caer en simetrías.
+      const f = ((k + 0.5) / PUNTOS + 0.37 * j + 0.0123 * k * k) % 1;
+      valores[v] = dominio.min + f * (dominio.max - dominio.min);
+    });
+    const x = evaluar(a.nodo, valores);
+    const y = evaluar(b.nodo, valores);
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!Number.isFinite(x) || !Number.isFinite(y)) <span class="cstat-no" title="statement not covered" >continue;</span>
+    validos++;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (Math.abs(x - y) &gt; 1e-6 * Math.max(1, Math.abs(y))) <span class="cstat-no" title="statement not covered" >return { ok: false, motivo: `No coincide con la respuesta esperada en ${variables.map(<span class="fstat-no" title="function not covered" >(v</span>) =&gt; <span class="cstat-no" title="statement not covered" >`${v} = ${cifra(valores[v]!)}`)</span>.join(', ')}.` };</span>
+  }
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (validos &lt; PUNTOS / 2) <span class="cstat-no" title="statement not covered" >return { ok: false, motivo: 'No se pudo comprobar en suficientes puntos del dominio.' };</span>
+  return { ok: true, motivo: `Coincide en ${validos} puntos de [${cifra(dominio.min)}; ${cifra(dominio.max)}].` };
+}
+&nbsp;
+function corregirSub(s: SubPregunta, r: Respuesta | undefined): Correccion {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (s.tipo === 'opcion-unica') {
+<span class="cstat-no" title="statement not covered" >    if (r?.tipo !== 'opcion' || !r.id) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Determinista', 'Sin respuesta.');</span></span>
+<span class="cstat-no" title="statement not covered" >    return r.id === s.correcta ? fin('correcta', 1, 'Determinista', 'Opción correcta.') : fin('incorrecta', 0, 'Determinista', 'Opción incorrecta.');</span>
+  }
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (s.tipo === 'numerica') {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'texto' || !r.valor.trim()) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Numérica', 'Sin respuesta.');</span>
+    const v = leerNumero(r.valor);
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (v === null) <span class="cstat-no" title="statement not covered" >return fin('invalida', 0, 'Numérica', 'No es un número.');</span>
+    return dentroDeTolerancia(v, s.respuesta, s.tolerancia) ? fin('correcta', 1, 'Numérica', `Dentro de la tolerancia.`) : <span class="branch-1 cbranch-no" title="branch not covered" >fin('incorrecta', 0, 'Numérica', `Se esperaba ${cifra(s.respuesta)}${s.unidad ? ` ${s.unidad}` : ''}.`);</span>
+  }
+<span class="cstat-no" title="statement not covered" >  if (r?.tipo !== 'texto' || !r.valor.trim()) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', null, 'Abierta', 'Sin respuesta.');</span></span>
+<span class="cstat-no" title="statement not covered" >  return fin('pendiente', null, 'Abierta', 'Pendiente de evaluación: una respuesta abierta no se corrige comparando textos.');</span>
+}
+&nbsp;
+export function corregir(p: Pregunta, r: Respuesta | undefined): Correccion {
+  switch (p.tipo) {
+    case 'opcion-unica':
+    case 'identificar': {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'opcion' || !r.id) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Determinista', 'Sin respuesta.');</span>
+      return r.id === p.correcta ? fin('correcta', 1, 'Determinista', 'Respuesta correcta.') : <span class="branch-1 cbranch-no" title="branch not covered" >fin('incorrecta', 0, 'Determinista', 'Respuesta incorrecta.');</span>
+    }
+    case 'verdadero-falso': {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'booleano' || r.valor === null) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Determinista', 'Sin respuesta.');</span>
+      return r.valor === p.correcta ? <span class="branch-0 cbranch-no" title="branch not covered" >fin('correcta', 1, 'Determinista', 'Respuesta correcta.') : f</span>in('incorrecta', 0, 'Determinista', `Es ${p.correcta ? <span class="branch-0 cbranch-no" title="branch not covered" >'verdadero' : '</span>falso'}.`);
+    }
+    case 'opcion-multiple': {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'opciones' || r.ids.length === 0) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Determinista con crédito parcial', 'Sin respuesta.');</span>
+      const aciertos = r.ids.filter((x) =&gt; p.correctas.includes(x)).length;
+      const errores = r.ids.length - aciertos;
+      return porPuntaje((aciertos - errores) / p.correctas.length, 'Determinista con crédito parcial', `${aciertos} de ${p.correctas.length} correctas elegidas${errores ? <span class="branch-0 cbranch-no" title="branch not covered" >`, ${errores} incorrecta${errores === 1 ? '' : 's'} (restan)` </span>: ''}.`);
+    }
+    case 'numerica': {
+      if (r?.tipo !== 'texto' || !r.valor.trim()) return fin('sin-responder', 0, 'Numérica con tolerancia', 'Sin respuesta.');
+      const v = leerNumero(r.valor);
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (v === null) <span class="cstat-no" title="statement not covered" >return fin('invalida', 0, 'Numérica con tolerancia', 'La respuesta no es un número (puedes usar fracciones y coma decimal).');</span>
+      const t = p.tolerancia;
+      const margen = t.tipo === 'absoluta' ? `±${cifra(t.valor)}` : <span class="branch-1 cbranch-no" title="branch not covered" >`±${cifra(t.valor * 100)} %`;</span>
+      return dentroDeTolerancia(v, p.respuesta, t)
+        ? fin('correcta', 1, `Comparación numérica (tolerancia ${margen})`, `Tu valor, ${cifra(v)}, está dentro de la tolerancia.`)
+        : fin('incorrecta', 0, `Comparación numérica (tolerancia ${margen})`, `Tu valor es ${cifra(v)}; se esperaba ${cifra(p.respuesta)}${p.unidad ? <span class="branch-0 cbranch-no" title="branch not covered" >` ${p.unidad}` </span>: ''}.`);
+    }
+    case 'expresion': {
+      const criterio = 'Equivalencia aproximada por evaluación numérica (no simbólica)';
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'texto' || !r.valor.trim()) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, criterio, 'Sin respuesta.');</span>
+      const e = equivalentes(r.valor, p.respuesta, p.variables, p.dominio);
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (!e.ok &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >analizar(r.valor, p.variables).ok === false) <span class="cstat-no" title="statement not covered" >r</span>eturn fin('invalida', 0, criterio, e.motivo);</span>
+      return e.ok
+        ? fin('correcta', 1, criterio, `Coincide con la respuesta esperada: ${e.motivo.charAt(0).toLowerCase()}${e.motivo.slice(1)} Fuera de ese intervalo no se comprobó. No es una demostración simbólica y no evalúa el procedimiento, solo la respuesta final.`)
+        : <span class="branch-1 cbranch-no" title="branch not covered" >fin('incorrecta', 0, criterio, e.motivo);</span>
+    }
+    case 'ordenamiento': {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'orden' || r.ids.length === 0) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Posiciones', 'Sin respuesta.');</span>
+      const bien = p.orden.filter((x, k) =&gt; r.ids[k] === x).length;
+      return porPuntaje(bien / p.orden.length, 'Determinista con crédito parcial por posición', `${bien} de ${p.orden.length} en su lugar.`);
+    }
+    case 'relacion': {
+      if (r?.tipo !== 'pares' || Object.keys(r.asignacion).length === 0) return fin('sin-responder', 0, 'Pares', 'Sin respuesta.');
+      const bien = p.pares.filter((x) =&gt; r.asignacion[x.id] === x.id).length;
+      return porPuntaje(bien / p.pares.length, 'Determinista con crédito parcial por par', `${bien} de ${p.pares.length} pares correctos.`);
+    }
+    case 'abierta': {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (r?.tipo !== 'texto' || !r.valor.trim()) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', null, 'Abierta', 'Sin respuesta.');</span>
+      return fin('pendiente', null, 'Abierta', 'Pendiente de evaluación: compárala tú con los criterios. Una respuesta abierta no se corrige comparando textos.');
+    }
+    case 'caso': {
+      const respuestas = r?.tipo === 'caso' ? r.respuestas : <span class="branch-1 cbranch-no" title="branch not covered" >{};</span>
+      const subs = p.preguntas.map((s) =&gt; corregirSub(s, respuestas[s.id]));
+      const automaticas = subs.filter((s) =&gt; s.puntaje !== null);
+      const pendientes = subs.filter((s) =&gt; s.estado === 'pendiente').length;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (subs.every((s) =&gt; s.estado === 'sin-responder')) <span class="cstat-no" title="statement not covered" >return fin('sin-responder', 0, 'Por subpregunta', 'Sin respuesta.');</span>
+      const puntaje = automaticas.length ? automaticas.reduce((a, s) =&gt; a + (s.puntaje ?? <span class="branch-1 cbranch-no" title="branch not covered" >0), 0</span>) / automaticas.length : <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
+      const detalle = `${subs.filter((s) =&gt; s.estado === 'correcta').length} de ${automaticas.length} subpreguntas con corrección automática correctas${pendientes ? <span class="branch-0 cbranch-no" title="branch not covered" >`; ${pendientes} pendiente${pendientes === 1 ? '' : 's'} de evaluación` </span>: ''}.`;
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (pendientes) <span class="cstat-no" title="statement not covered" >return fin('pendiente', puntaje, 'Por subpregunta', detalle);</span>
+      return puntaje === null ? <span class="branch-0 cbranch-no" title="branch not covered" >fin('pendiente', null, 'Por subpregunta', detalle) : p</span>orPuntaje(puntaje, 'Por subpregunta', detalle);
+    }
+  }
+}
+&nbsp;
+/** Correcciones de cada subpregunta (para revisar un caso). */
+export const <span class="cstat-no" title="statement not covered" >corregirSubpreguntas = <span class="fstat-no" title="function not covered" >(</span>p</span>: Extract&lt;Pregunta, { tipo: 'caso' }&gt;, r: Respuesta | undefined) =&gt;
+<span class="cstat-no" title="statement not covered" >  p.preguntas.map(<span class="fstat-no" title="function not covered" >(s</span>) =&gt; (<span class="cstat-no" title="statement not covered" >{ id: s.id, correccion: corregirSub(s, r?.tipo === 'caso' ? r.respuestas[s.id] : undefined) }));</span></span>
+&nbsp;
+export function <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >respondida(r</span></span>: Respuesta | undefined): boolean {
+<span class="cstat-no" title="statement not covered" >  if (!r) <span class="cstat-no" title="statement not covered" >return false;</span></span>
+<span class="cstat-no" title="statement not covered" >  switch (r.tipo) {</span>
+    case 'opcion':
+<span class="cstat-no" title="statement not covered" >      return !!r.id;</span>
+    case 'opciones':
+    case 'orden':
+<span class="cstat-no" title="statement not covered" >      return r.ids.length &gt; 0;</span>
+    case 'booleano':
+<span class="cstat-no" title="statement not covered" >      return r.valor !== null;</span>
+    case 'texto':
+<span class="cstat-no" title="statement not covered" >      return r.valor.trim() !== '';</span>
+    case 'pares':
+<span class="cstat-no" title="statement not covered" >      return Object.keys(r.asignacion).length &gt; 0;</span>
+    case 'caso':
+<span class="cstat-no" title="statement not covered" >      return Object.values(r.respuestas).some(respondida);</span>
+  }
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-11-27T11:21:23.603Z
+            </div>
+        <script src="../../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../../sorter.js"></script>
+        <script src="../../../../block-navigation.js"></script>
+    </body>
+</html>
+    

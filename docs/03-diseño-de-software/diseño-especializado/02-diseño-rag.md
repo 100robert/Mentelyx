@@ -3,6 +3,7 @@
 > **Proyecto:** Mentelyx · **Ubicación:** `docs/03-diseño-de-software/diseño-especializado/02-diseño-rag.md`
 > **Módulo propietario:** M6 — Tutor IA y RAG (M2 es dueño de contenidos, versiones y licencias)
 > **Versión:** 1.1 — 17/11/2026 · **Estado:** especificación de diseño propuesta; no implementada.
+> **Cambios 2.0 (20/11/2026):** aplica la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md) (secciones 7, 7.1, 7.2 y 10): BGE-M3 con `vector(1024)` (ADR-076), recuperación híbrida semántica y textual para adultos y menores con los bloqueos legales vigentes, espacios y fuentes privadas con OCR y referencias a páginas y diapositivas (ADR-090), biblioteca reutilizable con publicación, retiro y purga de embeddings (ADR-084), y modo GENERAL/MIXTA decidido por el orquestador (ADR-078). Sección 18 nueva; las redacciones sustituidas se resumen en la sección 19.
 > **Cambios 1.1:** sincronización con el [contrato de coordinación](../contrato-coordinacion-datos-seguridad-infraestructura.md): CO-01 (secciones 9, 10.2, 13.1 y 13.3) y CO-05 (secciones 10.1 y 10.4). El esquema físico normativo es el de [persistencia, sección 7.6](../diseño-externo/01-diseño-de-persistencia-y-datos.md).
 
 ## 1. Propósito y alcance
@@ -11,7 +12,7 @@ Este documento completa ADR-019 y ADR-026 y el diseño de M6 (`diseño-interno-d
 
 **Contratos que se mantienen:**
 
-- `rag_document_chunks` con `vector(1536)`, índice HNSW y `UNIQUE (document_id, version, chunk_index)` (persistencia sección 3.6);
+- `rag_document_chunks` con `vector(1024)` (BGE-M3, ADR-076), índice HNSW parcial por modelo y la unicidad por generación de la [persistencia, sección 14](../diseño-externo/01-diseño-de-persistencia-y-datos.md);
 - la cola `mentelyx-rag-indexing` con el evento `DocumentoPublicadoParaRAG` y la clave `docId + version + stage` (API sección 3);
 - la revalidación con M2 antes de usar y antes de entregar (`ContentAccessPort.revalidar`).
 
@@ -100,12 +101,12 @@ Los nombres siguen la [persistencia, sección 7.6](../diseño-externo/01-diseño
 | PDF con capa de texto | Workers AI `toMarkdown` («free for most format conversions») | Markdown por página |
 | PDF escaneado o páginas con densidad de texto < 200 caracteres | Ruta `vision` (DeepSeek V4.1 Flash en Workers AI) con la instrucción «transcribe a Markdown; fórmulas en LaTeX; no inventes texto ilegible: márcalo [ilegible]» | Markdown + LaTeX validado con KaTeX (`throwOnError: true`); las fórmulas inválidas quedan como texto entre comillas |
 | Imágenes sueltas de apuntes | Ruta `vision` (D2 → solo ZDR) | Ídem |
-| Otros formatos (DOCX, PPTX, HTML) | `toMarkdown` según los formatos admitidos en su documentación (confirmar la lista en el prototipo) | Markdown |
+| Otros formatos (DOCX, PPTX, TXT, Markdown, HTML) | `toMarkdown` según los formatos admitidos en su documentación (confirmar la lista en el prototipo); PPTX conserva el número de diapositiva | Markdown con anclas de página, diapositiva o sección |
 
 **Costos:**
 
 - Las transcripciones por visión del contenido editorial se imputan al presupuesto operativo de Mentelyx.
-- En apuntes personales consumen **1 UTI por cada 5 páginas** (hipótesis) y requieren la confirmación previa del usuario con el costo mostrado.
+- En fuentes privadas, el OCR consume capacidad técnica de M6 dentro de sus presupuestos y el archivo consume `ALMACENAMIENTO_BYTES` del plan (reservado en M5 al emitir la URL de subida); no se crea otra categoría comercial.
 - Límite de 100 páginas por documento y de 20 MB por archivo (hipótesis de piloto).
 
 ## 6. Normalización
@@ -170,13 +171,13 @@ cerrar(x):
 
 | Aspecto | Decisión |
 |---|---|
-| Modelo | `gemini-embedding-2` con `output_dimensionality = 1536` (documentado como recomendado; autonormaliza dimensiones truncadas; más de 100 idiomas; 8192 tokens de entrada). Compatible con `vector(1536)` sin cambiar la persistencia. |
-| Prefijos de tarea | Este modelo no admite `task_type`. Se aplican los prefijos de consulta y documento indicados en su documentación oficial (para consultas: `task: search result \| query: {contenido}`). La plantilla exacta queda en configuración versionada. |
-| Lotes | Hasta 100 fragmentos por solicitud o el límite que fije el proveedor. Reintentos con espera ante `429`. |
-| Reutilización | Si `content_hash + chunker_version + embedding_model` ya existe en una versión anterior del mismo documento, **se copia el vector** sin llamar al proveedor. Las versiones con cambios menores casi no generan costo. |
-| Normalización | Vectores unitarios (autonormalizados); distancia coseno (`vector_cosine_ops`). |
-| Alternativa | `text-embedding-3-small` (1536 por defecto, USD 0,02/M). Exige reindexación completa: espacios vectoriales distintos **no se mezclan**. |
-| Consultas de menores bajo `SOLO_ZDR` | No se envía la consulta al modelo de embeddings externo. La recuperación es **solo léxica** (sección 10.3), con expansión de términos por la ruta `explicacion.zdr`. Ver BP-07 y SC-15 para la alternativa ZDR completa. |
+| Modelo | `@cf/baai/bge-m3` en Workers AI, `vector(1024)`; el adaptador comprueba la dimensión devuelta y rechaza el lote si no es 1024 (ADR-076). ZDR y sin entrenamiento con el contenido |
+| Prefijos de tarea | BGE-M3 no requiere prefijos de tarea; la plantilla queda en configuración versionada |
+| Lotes | Hasta 100 fragmentos por solicitud o el límite que fije el proveedor. Reintentos con espera ante `429` |
+| Reutilización | Si `content_hash + chunker_version + embedding_model` ya existe en una versión anterior del mismo documento, **se copia el vector** sin llamar al proveedor |
+| Normalización | Vectores normalizados; distancia coseno (`vector_cosine_ops`) |
+| Menores | Un solo espacio vectorial para todas las cuentas: la recuperación semántica está diseñada también para menores (IM, sección 7.1). El tratamiento de datos reales de menores sigue bloqueado hasta cumplir las condiciones legales y contractuales; mientras tanto solo se prueba con datos sintéticos |
+| Umbral de similitud | Experimental, no validado; se calibra con BP-07 |
 
 ## 9. Esquema PostgreSQL propuesto (detalle de SC-01 y SC-02)
 
@@ -193,9 +194,9 @@ cerrar(x):
 > Ejemplo del índice parcial vigente:
 >
 > ```sql
-> CREATE INDEX rag_chunks_hnsw_gemini2_1536 ON m6_ai_tutor.rag_document_chunks
+> CREATE INDEX rag_chunks_hnsw_bgem3_1024 ON m6_ai_tutor.rag_document_chunks
 >   USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64)
->   WHERE embedding_model = 'gemini-embedding-2' AND embedding IS NOT NULL;
+>   WHERE embedding_model = 'bge-m3' AND embedding IS NOT NULL;
 > ```
 
 ```sql
@@ -252,10 +253,10 @@ CREATE TABLE m6_ai_tutor.rag_index_documents (
 
 ### 10.1. Conjunto consultable (autorización previa)
 
-1. El orquestador pide a M2 `listarRecursosConsultables(actorId, contexto)`. Es un contrato nuevo que devuelve como máximo 200 identificadores de contenido que el actor puede leer en el contexto (curso activo, recurso abierto o ficha de examen).
+1. El orquestador pide a M2 `listarRecursosConsultables(actorId, contexto)`. Devuelve como máximo 200 identificadores de contenido que el actor puede leer en el contexto: curso activo, recurso abierto, espacio con sus fuentes seleccionadas, recursos propios, compartidos o públicos de la biblioteca y materiales de grupos con membresía vigente.
 2. Si el contexto es un `recursoId`, el conjunto es ese único recurso.
-3. Los apuntes `PRIVADO` se incluyen solo si el actor activó «Usar mis apuntes».
-4. El cliente nunca envía la lista de recursos. Nunca se usan fuentes sin autorizar. **Sincronización CO-05:** ADR-058 está diferida a producto y el modo `GENERAL` no está habilitado. Si M2 no responde o la autorización falla, la respuesta es `503 SERVICIO_NO_DISPONIBLE` (dependencia crítica de autorización caída, API sección 7), sin inferencia ni consumo. No hay respaldo silencioso a `GENERAL` (sección 12.2 del orquestador).
+3. Las fuentes privadas se incluyen si el actor las seleccionó o activó «Usar en mi Tutor»; con `fuentes.exclusivas` solo se usan ellas.
+4. El cliente nunca envía la lista de recursos. Nunca se usan fuentes sin autorizar. **Actualización ADR-078 (sustituye CO-05):** el modo `GENERAL` está habilitado y lo decide el orquestador cuando no hay fuentes pertinentes. Si M2 no responde o la autorización falla, la respuesta es `503 SERVICIO_NO_DISPONIBLE` (dependencia crítica de autorización caída, API sección 7), sin inferencia ni consumo. Un fallo de autorización nunca se convierte en respuesta `GENERAL` (sección 12.2 del orquestador).
 
 ### 10.2. Consulta híbrida con fusión por rangos (RRF)
 
@@ -298,11 +299,13 @@ GROUP BY id ORDER BY rrf DESC LIMIT 16;
 COMMIT;
 ```
 
-### 10.3. Modo solo léxico (consultas de menores bajo `SOLO_ZDR`)
+### 10.3. Modo solo léxico (degradación)
 
-1. `explicacion.zdr` genera hasta 6 términos de expansión. Salida JSON con la forma `{"terminos": ["segunda ley de Newton", "fuerza neta", "aceleración"]}`.
+Se usa cuando falla el modelo de embeddings (falla de Workers AI). La redacción anterior lo reservaba a menores bajo `SOLO_ZDR` y queda sustituida por el espacio único de ADR-076.
+
+1. `explicacion.general` genera hasta 6 términos de expansión. Salida JSON con la forma `{"terminos": ["segunda ley de Newton", "fuerza neta", "aceleración"]}`.
 2. Se ejecuta la rama `lex` con `websearch_to_tsquery` sobre `pregunta OR términos`.
-3. El costo se absorbe en la operación. Si la ruta ZDR falla, se usa la pregunta sin expandir.
+3. El costo se absorbe en la operación. Si la ruta falla, se usa la pregunta sin expandir.
 
 ### 10.4. Selección final
 
@@ -310,7 +313,7 @@ COMMIT;
 2. **Diversidad (MMR):** `puntaje = λ · rrf_norm − (1 − λ) · max(similitud con los ya elegidos)`, con λ = 0,7.
 3. **Empaquetado:** se agregan fragmentos en orden hasta `presupuestoContexto = min(0,5 × maxTokensEntrada, 6000)` tokens. Cada uno lleva la cabecera `[cN] Título · Sección · vX`.
 4. **Revalidación:** `ContentAccessPort.revalidar` por cada `document_id` distinto, en paralelo. Los fragmentos de recursos que fallen se eliminan.
-5. **Sin fragmentos:** con `recursoId`, la respuesta es `SIN_CONTEXTO` sin inferencia (regla existente). Sin `recursoId` también es `SIN_CONTEXTO` mientras ADR-058 siga diferida (CO-05). Solo si producto aprueba ADR-058 se usará el modo `GENERAL`, etiquetado y sin citas.
+5. **Sin fragmentos:** si el usuario exigió exclusividad (`fuentes.exclusivas`) o la consulta está limitada a un recurso, la respuesta es `SIN_CONTEXTO` sin inferencia. En otro caso el orquestador responde en modo `GENERAL` (etiquetado y sin citas) o `MIXTA` si los fragmentos son insuficientes (ADR-078).
 
 ## 11. Autorización: garantías
 
@@ -371,7 +374,7 @@ Se reindexa en generaciones nuevas, con un `embedding_model` o una `chunker_vers
 - Límites (hipótesis de piloto): 50 documentos y 300 páginas indexadas por usuario.
 - Activación explícita por documento. Al eliminar el apunte o desactivarlo, se purga de inmediato.
 - Retención: la del apunte en M2, bajo el control del usuario. El índice no sobrevive al documento.
-- Las cuentas de menores con `SOLO_ZDR` indexan texto en el modo léxico, sin embeddings externos. Las imágenes y escaneos se transcriben por la ruta `vision` (ZDR) y luego se tratan como texto.
+- Las fuentes privadas se organizan en espacios (RF-101) con el ciclo de vida que controla el usuario; eliminarlas purga fragmentos y embeddings. Imágenes y escaneos se transcriben por la ruta `vision`. Para menores rigen los bloqueos de tratamiento real.
 
 ## 15. Métricas de evaluación
 
@@ -384,7 +387,7 @@ Se reindexa en generaciones nuevas, con un `embedding_model` o una `chunker_vers
 | Latencia de recuperación | p95 desde la consulta hasta el contexto listo, sin el modelo | ≤ 400 ms (medir en Neon) |
 | Tiempo de revocación | Desde el `COMMIT` de M2 hasta `estado = 'REVOCADO'` | ≤ 60 s |
 
-**BP-07** compara `gemini-embedding-2@1536`, `text-embedding-3-small@1536`, `@cf/baai/bge-m3` y el modo solo léxico sobre 400 preguntas en español de cuatro niveles. Si `bge-m3` queda a ≤ 3 puntos de Recall@8 del mejor, se recomienda adoptar SC-15 (un único espacio ZDR para todos los usuarios, menor costo). Esa decisión corresponde al registro de decisiones.
+**BP-07** mide Recall@8 de `@cf/baai/bge-m3` y del modo solo léxico sobre 400 preguntas en español de cuatro niveles y calibra el umbral de similitud. La adopción de BGE-M3 ya está decidida (ADR-076; SC-15 resuelta); si BP-07 falla, se abre una solicitud de cambio, sin sustitución automática.
 
 ## 16. Ejemplo completo (EJ-05)
 
@@ -434,7 +437,24 @@ Se reindexa en generaciones nuevas, con un `embedding_model` o una `chunker_vers
 |---|---|
 | PEND-RAG-01 | Confirmar la versión de pgvector en Neon (búsqueda iterativa con filtros) y los parámetros HNSW con datos reales |
 | PEND-RAG-02 | Confirmar los formatos admitidos por `toMarkdown` y sus costos para imágenes |
-| PEND-RAG-03 | Ejecutar BP-07 y decidir sobre SC-15 |
+| PEND-RAG-03 | Ejecutar BP-07 (Recall@8 y umbral de BGE-M3); SC-15 ya resuelta por ADR-076 |
 | PEND-RAG-04 | Definir con M2 el contrato `listarRecursosConsultables` y su límite (200) en catálogos grandes (paginación por curso) |
 
-**Trazabilidad:** HU-26, HU-30, HU-31, HU-42, HU-53; RF-35, RF-41, RF-42, RF-55, RF-62, RF-91, RF-99; AC-04, AC-11; RC-11, RC-12, RC-16; ADR-019, ADR-026, ADR-042; EQ-11.
+**Trazabilidad:** HU-26, HU-30, HU-31, HU-42, HU-53; RF-35, RF-41, RF-42, RF-55, RF-62, RF-91, RF-99; AC-04, AC-11; RC-11, RC-12, RC-16; ADR-019, ADR-026, ADR-042, ADR-076, ADR-078, ADR-084, ADR-090; RF-101, RF-102, RF-109–RF-111; EQ-11, EQ-32, EQ-36.
+
+## 18. Biblioteca reutilizable y fuentes privadas
+
+| Tema | Diseño |
+|---|---|
+| Vectorizable (IM, sección 7.2) | Lecciones autorizadas, documentos con tratamiento permitido, ejercicios publicados y resueltos autorizados, materiales Studio, transcripciones autorizadas, metadatos de recursos reutilizables y fuentes privadas dentro de sus permisos |
+| Excluido | Bancos privados de evaluación, soluciones de exámenes activos, credenciales, datos financieros, información sensible no autorizada y conversaciones completas |
+| Ámbitos (`scope`) | `PRIVADO` (propietario), `COMPARTIDO` (destinatarios o grupo con membresía vigente) y `PUBLICO` (publicación autorizada); el filtro se aplica en la consulta SQL, antes y durante la búsqueda |
+| Publicación | `RecursoPublicado` reindexa la versión con `scope = PUBLICO` solo tras comprobar derechos, PII y BR-12 en M2 |
+| Retiro (BR-11) | `RecursoRetirado` tiene prioridad en la cola: revoca el acceso, invalida cachés y elimina los embeddings de esa versión en ≤ 60 s |
+| Buscar antes de generar (BR-02) | `buscarRecursosBiblioteca` combina BGE-M3 y texto con filtros de tipo, nivel, tema y permisos; ordena por relevancia, exactitud, permisos y calidad pedagógica (BR-03); la popularidad no sustituye la revisión |
+| Consultas temporales | Una consulta puede generar un embedding temporal que no se incorpora a la biblioteca |
+| Referencias | Cada cita apunta a documento, versión y página, diapositiva o sección |
+
+## 19. Redacciones sustituidas (20/11/2026)
+
+Fuente: la [instrucción maestra](../../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). No vigentes: `gemini-embedding-2` y `text-embedding-3-small` con `vector(1536)`; índice `rag_chunks_hnsw_gemini2_1536`; modo solo léxico obligatorio para menores bajo `SOLO_ZDR`; «1 UTI por cada 5 páginas»; GENERAL no habilitado (CO-05); BP-07 como condición para adoptar BGE-M3.

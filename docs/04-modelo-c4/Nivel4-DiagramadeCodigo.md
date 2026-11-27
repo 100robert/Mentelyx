@@ -119,7 +119,7 @@ El diseño deberá mantener separados el proceso determinista de evaluación y e
 | `ContenidoAutorizadoPort` | Interfaz | Aplicación | Consulta permisos y versiones de los materiales mediante el contrato público de M2. |
 | `BusquedaVectorialPort` | Interfaz | Aplicación | Define la recuperación de fragmentos educativos autorizados. |
 | `ModeloGenerativoPort` | Interfaz | Aplicación | Contrato para solicitar explicaciones a un proveedor de IA sin acoplar el caso de uso a una API específica. |
-| `DerechoUsoIAPort` | Interfaz | Aplicación | Comprueba cuotas y coordina el consumo autorizado mediante el contrato público de M5. |
+| `DerechoUsoIAPort` | Interfaz | Aplicación | Reserva, confirma o libera el recurso de plan mediante los contratos públicos de M5 (`reservarRecursoPlan`, `confirmarRecursoPlan`, `liberarRecursoPlan`; ADR-080). |
 | `PgvectorBusquedaAdapter` | Adaptador | Infraestructura | Implementa `BusquedaVectorialPort` mediante PostgreSQL y pgvector. |
 | `ProveedorIAAdapter` | Adaptador | Infraestructura | Implementa `ModeloGenerativoPort` utilizando el proveedor de IA que se seleccione. |
 
@@ -188,13 +188,13 @@ El diseño deberá mantener separados el proceso determinista de evaluación y e
 | 10 | Estudiante → Aplicación Web/PWA | Solicita una explicación adicional de una dificultad detectada. |
 | 11 | Aplicación Web/PWA → `TutorIAController` | Envía la solicitud autenticada de explicación. |
 | 12 | `TutorIAController` → `ExplicarDificultadUseCase` | Delega la consulta pedagógica. |
-| 13 | `ExplicarDificultadUseCase` → `DerechoUsoIAPort` | Comprueba el derecho de uso, la cuota y las condiciones del producto mediante M5. |
+| 13 | `ExplicarDificultadUseCase` → `DerechoUsoIAPort` | Reserva el recurso de plan en M5 (`reservarRecursoPlan`); con `SIN_CUOTA` no se invoca el modelo. |
 | 14 | `ExplicarDificultadUseCase` → `ConsultaProgresoPort` | Obtiene el contexto académico permitido y la dificultad asociada al intento mediante M3. |
 | 15 | `ExplicarDificultadUseCase` → `ContenidoAutorizadoPort` | Comprueba el alcance, versiones y autorizaciones de las fuentes educativas mediante M2. |
 | 16 | `ExplicarDificultadUseCase` → `BusquedaVectorialPort` | Recupera fragmentos relevantes aplicando restricciones de acceso y vigencia. |
 | 17 | `ExplicarDificultadUseCase` → `ModeloGenerativoPort` | Solicita una explicación adaptada al nivel del estudiante utilizando las fuentes recuperadas. |
 | 18 | `ModeloGenerativoPort` → `ExplicarDificultadUseCase` | Devuelve la respuesta generada. |
-| 19 | `ExplicarDificultadUseCase` → M5, mediante `DerechoUsoIAPort` | Finaliza o ajusta el consumo de cuota conforme a la política aplicable, con control de duplicados y errores. |
+| 19 | `ExplicarDificultadUseCase` → M5, mediante `DerechoUsoIAPort` | Confirma o libera el recurso reservado con la misma `operationKey`, con control de duplicados y errores. |
 | 20 | `TutorIAController` → Aplicación Web/PWA | Entrega la explicación, las referencias disponibles y las advertencias que correspondan. |
 | 21 | Aplicación Web/PWA → Estudiante | Presenta la retroalimentación y permite continuar practicando o buscar apoyo docente. |
 

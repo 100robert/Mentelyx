@@ -1,5 +1,8 @@
 
 
+> **Actualización del 20/11/2026:** texto alineado con la [instrucción maestra](../00-gestion-del-proyecto/sprint-02/instruccion-maestra.md). Las fuentes draw.io de este nivel se corrigieron y sus PNG/SVG se reexportaron el 21/11/2026 (CulqiOnline, Workers AI, RealtimeKit seleccionado, Resend de referencia y recursos de plan).
+
+
 > **Proyecto:** Mentelyx  
 > **Modelo:** C4 · Nivel 2 de 4 · **Versión:** 2.0  
 > **Estado:** Diseño arquitectónico previo a la implementación
@@ -45,9 +48,9 @@ No se representan los siete módulos del backend como contenedores independiente
 
 | Contenedor | Tecnología | Responsabilidad | Datos que maneja |
 |---|---|---|---|
-| **Aplicación Web/PWA Mentelyx** | Next.js, React y TypeScript | Proporciona la interfaz de aprendizaje, panel docente, Mentelyx Studio y administración. Se utiliza desde el navegador y podrá instalarse como PWA en dispositivos compatibles. Su modalidad de entrega estática o dinámica debe validarse. | Estado de interfaz, información consultada y borradores locales pendientes de sincronización. |
+| **Aplicación Web/PWA Mentelyx** | Next.js híbrido (SSR, ISR y estático), React y TypeScript en Cloudflare Workers con OpenNext (ADR-074) | Proporciona el lienzo de aprendizaje con el Tutor IA, panel docente, Studio y administración. Se usa desde el navegador y puede instalarse como PWA. | Estado de interfaz, información consultada y borradores locales pendientes de sincronización. |
 | **API Backend Mentelyx** | TypeScript + Hono, con Cloudflare Workers como entorno objetivo | Expone la API REST, autentica solicitudes, comprueba autorizaciones, ejecuta reglas de negocio y coordina integraciones. Es un **monolito modular de siete módulos lógicos**, no siete microservicios. | No constituye el almacén permanente de información. Consulta y modifica datos mediante adaptadores y contratos. |
-| **Base de datos transaccional** | PostgreSQL + pgvector; PostgreSQL local en desarrollo y Neon como proveedor objetivo de producción | Conserva datos relacionales, integridad de operaciones y registros oficiales. Permite transacciones para pagos, reservas, permisos y resultados. pgvector ofrece búsqueda vectorial para fuentes RAG autorizadas. | Cuentas, perfiles, autorizaciones, catálogo referencial, resultados, progreso confirmado, suscripciones, reservas, créditos, pagos, liquidaciones, licencias y vectores autorizados. |
+| **Base de datos transaccional** | PostgreSQL + pgvector; PostgreSQL local en desarrollo y Neon como proveedor objetivo de producción | Conserva datos relacionales, integridad de operaciones y registros oficiales. Permite transacciones para pagos, reservas, permisos y resultados. pgvector ofrece búsqueda vectorial con BGE-M3 `vector(1024)` para fuentes RAG autorizadas. Esquema y migraciones con Drizzle Kit; consultas especializadas con Kysely (ADR-075). | Cuentas, perfiles, autorizaciones, catálogo referencial, resultados, progreso confirmado, suscripciones, reservas, recursos de plan, saldo audiovisual, pagos, comisiones, licencias y vectores autorizados. |
 | **Base de datos documental** | MongoDB local en desarrollo y MongoDB Atlas como proveedor objetivo de producción | Conserva estructuras pedagógicas y documentos educativos flexibles, versionados y editables. | Lecciones estructuradas, actividades interactivas, preguntas heterogéneas y documentos de Mentelyx Studio. |
 | **Caché temporal** | Redis compatible; proveedor administrado pendiente de selección | Reduce lecturas repetidas y permite gestionar información temporal, contadores y determinados límites de solicitudes. | Copias temporales de consultas, claves de caché y contadores con vencimiento. No almacena saldos ni pagos oficiales. |
 | **Almacenamiento de objetos** | Cloudflare R2 | Almacena archivos binarios y recursos educativos que no deben guardarse directamente en las bases de datos operacionales. | PDF, imágenes, archivos adjuntos, documentos originales y recursos educativos. |
@@ -59,7 +62,7 @@ No se representan los siete módulos del backend como contenedores independiente
 - **PostgreSQL y MongoDB son almacenes diferentes**, con responsabilidades diferenciadas. No debe suponerse una transacción ACID distribuida entre ambos.
 - **pgvector no es otro contenedor**: es una extensión del contenedor PostgreSQL.
 - **Better Auth es la biblioteca de autenticación integrada seleccionada** (ADR-033/044; bloqueada para producción hasta superar el prototipo, [ADR, sección 10](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)), no un servicio o contenedor adicional.
-- **Redis no sustituye PostgreSQL**, especialmente para pagos, cupos, créditos y calificaciones.
+- **Redis no sustituye PostgreSQL**, especialmente para pagos, cupos, recursos de plan y calificaciones.
 - **Cloudflare Queues no es un octavo módulo de negocio**. Es infraestructura de mensajería, atendida por uno o varios procesos consumidores.
 - **Neon, Atlas y los servicios administrados están previstos para producción**, sin que su representación implique contratación o despliegue ya realizados.
 
@@ -69,10 +72,10 @@ Se conservan fuera del límite de Mentelyx los sistemas identificados en el nive
 
 | Sistema externo | Responsabilidad |
 |---|---|
-| **Pasarela de pagos** | Procesamiento de cobros y comunicación de sus resultados (proveedor por contratar, P-07) |
+| **Pasarela de pagos** | Procesamiento de cobros, recurrencia y devoluciones: CulqiOnline (ADR-082), sin contratar |
 | **Servicio de videoconferencia** | Comunicación interactiva en tiempo real mediante un proveedor audiovisual (RealtimeKit seleccionado) |
 | **Plataforma de videos grabados** | Procesamiento y reproducción de videos educativos (Bunny Stream seleccionado) |
-| **Proveedor de inteligencia artificial** | Inferencia de modelos, asistencia pedagógica y capacidades generativas autorizadas: Workers AI y AI Gateway hacia Anthropic y Google Gemini API; Stability AI para objetos 3D; Cloudflare Browser Rendering para PDF. Seleccionados, no contratados ([ADR, sección 10](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)) |
+| **Proveedor de inteligencia artificial** | Inferencia de modelos, asistencia pedagógica y capacidades generativas autorizadas: Workers AI (DeepSeek V4.1 Flash, Gemma 4 26B A4B, BGE-M3, FLUX.2 Klein); Cloudflare Browser Run para PDF; extensiones externas desactivadas. Seleccionados, no contratados ([ADR, sección 10](../01-analisis-de-sistema/07-decisiones-arquitectonicas.md)) |
 | **Servicio de notificaciones** | Entrega de correos transaccionales y avisos en la aplicación (proveedor de correo por contratar, P-08) |
 
 El diagrama conserva las cajas genéricas de cada sistema externo, que son el nivel de detalle propio de esta vista. Los proveedores concretos se registran en esta tabla.
@@ -158,7 +161,7 @@ Estas decisiones son de **arquitectura objetivo**. No representan funcionalidade
 - La modalidad docente, la habilitación para impartir tutorías y la acreditación académica se verifican independientemente.
 - Las cuentas de menores requieren controles de acceso y privacidad específicos.
 - La pérdida de Redis no debe permitir operaciones no autorizadas.
-- Ante fallos de PostgreSQL, no deben confirmarse pagos, créditos ni resultados cuya escritura no haya sido persistida.
+- Ante fallos de PostgreSQL, no deben confirmarse pagos, recursos ni resultados cuya escritura no haya sido persistida.
 - La protección de Cloudflare frente a ataques no equivale por sí sola a alta disponibilidad de los proveedores de datos.
 
 ---

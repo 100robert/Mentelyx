@@ -8,12 +8,14 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // `next dev` 16.4 genera un AGENTS.md propio al detectar agentes de IA; las instrucciones del proyecto viven en la raíz.
+  agentRules: false,
   transpilePackages: ['@mentelyx/contratos'],
   images: { unoptimized: true },
   // Alias fáciles de recordar hacia las rutas reales de la aplicación.
   async redirects() {
     return [
-      { source: '/dashboard', destination: '/espacios', permanent: false },
+      { source: '/dashboard', destination: '/inicio', permanent: false },
       { source: '/login', destination: '/auth/ingresar', permanent: false },
       { source: '/registro', destination: '/auth/registro', permanent: false },
     ];

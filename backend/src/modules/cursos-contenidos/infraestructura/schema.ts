@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { bigint, boolean, char, check, index, integer, pgSchema, primaryKey, text, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
+import { bigint, boolean, char, check, index, integer, pgSchema, primaryKey, text, timestamp, unique, uniqueIndex, uuid, varchar, type AnyPgColumn } from 'drizzle-orm/pg-core';
 import { crearTablasMensajeria } from '../../../shared/bd/mensajeria';
 
 /**
@@ -97,6 +97,54 @@ export const studySpaceSources = m2Contents.table(
     addedAt: ahora('added_at'),
   },
   (t) => [primaryKey({ columns: [t.spaceId, t.contentId] })],
+);
+
+/**
+ * Carpetas personales independientes por módulo (API, 12.1; ADR-093). M2 es dueña de la organización y de los permisos;
+ * los elementos referencian recursos de su propietario (temas en M2, sesiones en M6, preparaciones en M3) sin FK entre
+ * esquemas: M2 comprueba la propiedad mediante las API públicas de esos módulos.
+ */
+export const folders = m2Contents.table(
+  'folders',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    ownerId: uuid('owner_id').notNull(),
+    module: text('module').notNull(),
+    name: varchar('name', { length: 80 }).notNull(),
+    parentId: uuid('parent_id').references((): AnyPgColumn => folders.id),
+    status: text('status').notNull().default('ACTIVA'),
+    operationKey: varchar('operation_key', { length: 100 }),
+    createdAt: ahora('created_at'),
+    updatedAt: ahora('updated_at'),
+  },
+  (t) => [
+    index('folders_owner_module_idx').on(t.ownerId, t.module, t.status),
+    // Nombre único entre hermanas sin distinguir mayúsculas (409 NOMBRE_DUPLICADO); la raíz se representa con el uuid nulo.
+    uniqueIndex('folders_hermanas_nombre_uq').on(t.ownerId, t.module, sql`coalesce(${t.parentId}, '00000000-0000-0000-0000-000000000000'::uuid)`, sql`lower(${t.name})`),
+    unique('folders_owner_operation_uq').on(t.ownerId, t.operationKey),
+    check('folders_module_ck', sql`${t.module} in ('APRENDIZAJE', 'EXAMENES')`),
+    check('folders_status_ck', sql`${t.status} in ('ACTIVA', 'ARCHIVADA')`),
+    check('folders_no_self_parent_ck', sql`${t.parentId} is null or ${t.parentId} <> ${t.id}`),
+  ],
+);
+
+export const folderItems = m2Contents.table(
+  'folder_items',
+  {
+    ownerId: uuid('owner_id').notNull(),
+    itemType: text('item_type').notNull(),
+    itemId: uuid('item_id').notNull(),
+    folderId: uuid('folder_id')
+      .notNull()
+      .references(() => folders.id, { onDelete: 'cascade' }),
+    updatedAt: ahora('updated_at'),
+  },
+  (t) => [
+    // Un elemento está como máximo en una carpeta; sin fila, está en la raíz de su módulo.
+    primaryKey({ columns: [t.ownerId, t.itemType, t.itemId] }),
+    index('folder_items_folder_idx').on(t.folderId),
+    check('folder_items_type_ck', sql`${t.itemType} in ('TEMA', 'SESION', 'PREPARACION')`),
+  ],
 );
 
 export const { outboxEvents, inboxEvents } = crearTablasMensajeria(m2Contents);

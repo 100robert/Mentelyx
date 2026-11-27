@@ -13,8 +13,17 @@ const correo = `prinf01+${crypto.randomUUID().slice(0, 8)}@ejemplo.test`;
 const contrasena = 'Clave-sintetica-2026';
 let cookie = '';
 
-const enviar = (ruta: string, init: RequestInit = {}) =>
-  worker.fetch(`${API}${ruta}`, { ...init, headers: { 'content-type': 'application/json', ...(cookie ? { cookie } : {}), ...init.headers } });
+const enviar = async (ruta: string, init: RequestInit = {}) => {
+  const headers = new Headers({ 'content-type': 'application/json', origin: 'http://localhost', 'cf-connecting-ip': '198.51.100.11', ...(cookie ? { cookie } : {}), ...init.headers });
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(init.method ?? 'GET')) {
+    const csrf = await worker.fetch(`${API}/auth/csrf`, { headers });
+    const token = (await csrf.json()) as { data: { token: string } };
+    const previa = csrf.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
+    if (previa) headers.set('cookie', [cookie, previa].filter(Boolean).join('; '));
+    headers.set('x-csrf-token', token.data.token);
+  }
+  return worker.fetch(`${API}${ruta}`, { ...init, headers });
+};
 
 const cookiesDe = (r: Response) =>
   r.headers
@@ -37,6 +46,9 @@ describe('PR-INF-01 · API Hono en workerd', () => {
     expect(registro.status).toBe(201);
     cookie = cookiesDe(registro);
     expect(cookie).toMatch(/mentelyx\.session_token=/);
+    const cookieSesion = registro.headers.getSetCookie().find((valor) => valor.includes('mentelyx.session_token='));
+    expect(cookieSesion).toContain('HttpOnly');
+    expect(cookieSesion).toMatch(/SameSite=Lax/i);
     const usuarioId = ((await registro.json()) as { data: { usuarioId: string } }).data.usuarioId;
 
     const sesion = await enviar('/auth/sesion');
@@ -50,6 +62,24 @@ describe('PR-INF-01 · API Hono en workerd', () => {
     const login = await enviar('/auth/login', { method: 'POST', body: JSON.stringify({ correo, contrasena }) });
     expect(login.status).toBe(200);
     cookie = cookiesDe(login);
+
+    const origenAjeno = await worker.fetch(`${API}/auth/logout`, {
+      method: 'POST',
+      headers: { origin: 'https://sitio-ajeno.example', 'sec-fetch-site': 'cross-site', cookie, 'content-type': 'application/json' },
+    });
+    expect(origenAjeno.status).toBe(403);
+    const csrfInvalido = await worker.fetch(`${API}/auth/logout`, {
+      method: 'POST',
+      headers: { origin: 'http://localhost', cookie, 'content-type': 'application/json', 'x-csrf-token': 'invalido' },
+    });
+    expect(csrfInvalido.status).toBe(403);
+    const preflightAjeno = await worker.fetch(`${API}/auth/logout`, {
+      method: 'OPTIONS',
+      headers: { origin: 'https://sitio-ajeno.example', 'access-control-request-method': 'POST', 'access-control-request-headers': 'content-type,x-csrf-token' },
+    });
+    expect(preflightAjeno.ok).toBe(false);
+    expect(preflightAjeno.headers.get('access-control-allow-origin')).toBeNull();
+    expect((await enviar('/auth/sesion')).status).toBe(200);
 
     expect((await enviar('/auth/logout', { method: 'POST' })).status).toBe(200);
     expect((await enviar('/auth/sesion')).status).toBe(401);

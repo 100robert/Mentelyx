@@ -1,10 +1,10 @@
 import type { Collection, Db, MongoClient } from 'mongodb';
-import type { ConversacionesPort, ConversacionGuardada, MensajeGuardado } from '../dominio/tutor';
+import type { ConversacionesPort, ConversacionGuardada, EstadoSesionGuardado, MensajeGuardado } from '../dominio/tutor';
 
 export const COLECCION_CONVERSACIONES = 'tutor_conversaciones';
 const MAX_MENSAJES = 100; // persistencia, sección 8.1 (los segmentos de continuación llegan en I-2)
 
-type Documento = ConversacionGuardada & { schemaVersion: 'mentelyx.conversacion/v1'; deletedAt: Date | null };
+type Documento = ConversacionGuardada & { schemaVersion: 'mentelyx.conversacion/v1'; deletedAt: Date | null; estadoSesion?: EstadoSesionGuardado };
 
 /**
  * Conversaciones del Tutor en MongoDB (persistencia, secciones 8.1–8.3). Cada consulta filtra por `ownerUserId`
@@ -28,6 +28,7 @@ export class MongoConversaciones implements ConversacionesPort {
       schemaVersion: 'mentelyx.conversacion/v1',
       titulo: c.titulo,
       espacioId: c.espacioId,
+      ...(c.preparacionId ? { preparacionId: c.preparacionId, temaId: c.temaId ?? null } : {}),
       messages: [],
       createdAt: c.ahora,
       updatedAt: c.ahora,
@@ -39,10 +40,35 @@ export class MongoConversaciones implements ConversacionesPort {
     return doc;
   }
 
-  async listar(ownerUserId: string, ahora: Date) {
+  async resumenes(ownerUserId: string, ids: string[], ahora: Date) {
+    if (!ids.length) return [];
+    const docs = await (await this.col())
+      .find({ ownerUserId, conversationId: { $in: ids }, deletedAt: null, expiraEn: { $gt: ahora } }, { projection: { _id: 0, conversationId: 1, titulo: 1, updatedAt: 1 } })
+      .toArray();
+    return docs.map((d) => ({ id: d.conversationId, titulo: d.titulo, actualizadoEn: d.updatedAt }));
+  }
+
+  async obtenerEstado(ownerUserId: string, conversationId: string, ahora: Date) {
+    const d = await (await this.col()).findOne({ conversationId, ownerUserId, deletedAt: null, expiraEn: { $gt: ahora } }, { projection: { _id: 0, estadoSesion: 1 } });
+    if (!d) return undefined;
+    return d.estadoSesion ?? null;
+  }
+
+  async guardarEstado(ownerUserId: string, conversationId: string, versionEsperada: number, estado: Omit<EstadoSesionGuardado, 'version' | 'actualizadoEn'>, ahora: Date) {
+    const col = await this.col();
+    const vigente = { conversationId, ownerUserId, deletedAt: null, expiraEn: { $gt: ahora } };
+    const nuevo: EstadoSesionGuardado = { ...estado, version: versionEsperada + 1, actualizadoEn: ahora };
+    // CAS: solo si la versión guardada es la que la pestaña leyó (0 = nunca se guardó).
+    const condicion = versionEsperada === 0 ? { estadoSesion: { $exists: false } } : { 'estadoSesion.version': versionEsperada };
+    const r = await col.updateOne({ ...vigente, ...condicion }, [{ $set: { estadoSesion: { $literal: nuevo } } }]);
+    if (r.modifiedCount === 1) return nuevo;
+    return (await col.countDocuments(vigente, { limit: 1 })) ? ('CONFLICTO' as const) : ('NO_ENCONTRADA' as const);
+  }
+
+  async listar(ownerUserId: string, ahora: Date, filtro?: { preparacionId?: string }) {
     const docs = await (await this.col())
       .aggregate<Omit<ConversacionGuardada, 'messages'> & { mensajes: number }>([
-        { $match: { ownerUserId, deletedAt: null, expiraEn: { $gt: ahora } } },
+        { $match: { ownerUserId, deletedAt: null, expiraEn: { $gt: ahora }, ...(filtro?.preparacionId ? { preparacionId: filtro.preparacionId } : {}) } },
         { $sort: { updatedAt: -1 } },
         { $limit: 50 },
         {
@@ -52,6 +78,8 @@ export class MongoConversaciones implements ConversacionesPort {
             ownerUserId: 1,
             titulo: 1,
             espacioId: 1,
+            preparacionId: 1,
+            temaId: 1,
             createdAt: 1,
             updatedAt: 1,
             expiraEn: 1,
@@ -107,6 +135,8 @@ export async function asegurarIndicesConversaciones(db: Db) {
   await col.createIndex({ conversationId: 1 }, { unique: true, name: 'conversacion_uq' });
   await col.createIndex({ ownerUserId: 1, updatedAt: -1 }, { name: 'propietario_actividad' });
   await col.createIndex({ expiraEn: 1 }, { expireAfterSeconds: 0, name: 'retencion_ttl' });
+  // V1 (API 12.9): sesiones de estudio de una preparación de examen.
+  await col.createIndex({ ownerUserId: 1, preparacionId: 1, updatedAt: -1 }, { name: 'propietario_preparacion', partialFilterExpression: { preparacionId: { $type: 'string' } } });
 }
 
 /** Cliente por petición: se crea perezosamente (también la carga del driver) y se cierra al terminar. */

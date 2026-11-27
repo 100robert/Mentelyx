@@ -1,8 +1,14 @@
 import type { Metadata } from 'next';
 import { Icono } from '@/components/ui/iconos';
-import { PLANES, type Plan } from '@/features/planes';
+import { NOTA_AUN_NO_DISPONIBLE, PLANES, RECURSOS_AUN_NO_DISPONIBLES, type Plan } from '@/features/planes';
 
-export const metadata: Metadata = { title: 'Planes' };
+const pendiente = (nombre: string) => RECURSOS_AUN_NO_DISPONIBLES.nombres.includes(nombre);
+const Marca = () => <span className="etiqueta etiqueta-pendiente">Aún no disponible</span>;
+
+export const metadata: Metadata = {
+  title: 'Planes',
+  description: 'Empieza gratis con Mentelyx y amplía tu capacidad de aprendizaje cuando lo necesites.',
+};
 /** SSG: precios y recursos de la versión comercial vigente (IM, secciones 14 y 15). */
 export const dynamic = 'force-static';
 
@@ -29,8 +35,10 @@ function TablaPlanes({ id, titulo, planes }: { id: string; titulo: string; plane
           </thead>
           <tbody>
             {recursos.map((r) => (
-              <tr key={r}>
-                <th scope="row">{r}</th>
+              <tr key={r} data-pendiente={pendiente(r) || undefined}>
+                <th scope="row">
+                  {r} {pendiente(r) && <Marca />}
+                </th>
                 {planes.map((p) => (
                   <td key={p.codigo} className="num">
                     {p.recursos.find(([n]) => n === r)?.[1]}
@@ -53,8 +61,10 @@ function TablaPlanes({ id, titulo, planes }: { id: string; titulo: string; plane
             </div>
             <dl>
               {p.recursos.map(([nombre, valor]) => (
-                <div key={nombre}>
-                  <dt>{nombre}</dt>
+                <div key={nombre} data-pendiente={pendiente(nombre) || undefined}>
+                  <dt>
+                    {nombre} {pendiente(nombre) && <Marca />}
+                  </dt>
                   <dd>{valor}</dd>
                 </div>
               ))}
@@ -78,13 +88,13 @@ export default function Planes() {
     <div className="contenedor pagina-publica">
       <header className="pagina-cabecera">
         <h1>Planes</h1>
-        <p className="suave">Recursos mensuales por categoría. Los planes superiores amplían capacidad sin quitar funciones al Gratuito. Las clases con docentes no están incluidas.</p>
+        <p className="suave">Recursos mensuales por categoría. Los planes superiores amplían la capacidad sin quitar funciones al Gratuito.</p>
       </header>
-      <TablaPlanes id="planes-ESTUDIANTE" titulo="Estudiantes" planes={PLANES.filter((p) => p.publico === 'ESTUDIANTE')} />
-      <TablaPlanes id="planes-DOCENTE" titulo="Docentes" planes={PLANES.filter((p) => p.publico === 'DOCENTE')} />
+      {/* Mentelyx V1 (ADR-093) solo ofrece los planes de aprendizaje; los planes docentes siguen en features/planes, pospuestos. */}
+      <TablaPlanes id="planes-ESTUDIANTE" titulo="Planes de aprendizaje" planes={PLANES.filter((p) => p.publico === 'ESTUDIANTE')} />
       <p className="mensaje mensaje-info">
         <Icono nombre="info" />
-        <span>Toda cuenta nueva empieza con el plan Gratuito.</span>
+        <span>Toda cuenta nueva empieza con el plan Gratuito. {NOTA_AUN_NO_DISPONIBLE}</span>
       </p>
     </div>
   );

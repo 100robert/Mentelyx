@@ -30,9 +30,25 @@ export const manejarErrores: ErrorHandler = (err, c) => {
   // Errores de dominio de autorización por recurso: «no encontrado» para no revelar recursos ajenos.
   if (err instanceof Error && err.name === 'RecursoNoEncontrado') return responderFallo(c, 'RECURSO_NO_ENCONTRADO', err.message);
   if (err instanceof Error && err.name === 'ZodError') return responderFallo(c, 'ENTRADA_INVALIDA', 'La solicitud no cumple el contrato.');
+  // EQ-20 (hallazgo de la carga del 27/11/2026): una dependencia de datos inalcanzable es 503 recuperable, no 500.
+  if (esFalloDeDependencia(err)) {
+    registrar('warn', 'dependencia_no_disponible', { requestId: c.get('requestId'), tipo: err instanceof Error ? err.name : typeof err });
+    c.header('Retry-After', '5');
+    return responderFallo(c, 'SERVICIO_NO_DISPONIBLE', 'El servicio no está disponible en este momento. Inténtalo de nuevo en unos segundos.');
+  }
   registrar('error', 'error_no_controlado', { requestId: c.get('requestId'), tipo: err instanceof Error ? err.name : typeof err });
   return responderFallo(c, 'ERROR_INTERNO', 'Ocurrió un error interno.');
 };
+
+const DEPENDENCIA = /^Mongo(ServerSelection|Network|NetworkTimeout|NotConnected|PoolClosed)Error$/;
+const MENSAJE_CONEXION = /network connection lost|connection terminated|ECONNREFUSED|ECONNRESET|ETIMEDOUT|too many (clients|connections)|remaining connection slots/i;
+/** Fallo de conexión con PostgreSQL o MongoDB (también envuelto por Drizzle en `cause`): sin efectos confirmados. */
+export function esFalloDeDependencia(err: unknown): boolean {
+  for (let e = err as { name?: string; message?: string; code?: string; cause?: unknown } | undefined, n = 0; e && n < 4; e = e.cause as typeof e, n++) {
+    if (DEPENDENCIA.test(e.name ?? '') || MENSAJE_CONEXION.test(e.message ?? '') || e.code === '53300' || e.code === '57P01') return true;
+  }
+  return false;
+}
 
 /** Gancho común de validación: un contrato incumplido responde con la envoltura de la API (ENTRADA_INVALIDA). */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- firma genérica de la biblioteca
@@ -57,13 +73,14 @@ const METODOS_SEGUROS = new Set(['GET', 'HEAD', 'OPTIONS']);
  * Defensa CSRF (seguridad, sección 3): una petición con efectos que trae `Origin` de un sitio no permitido se rechaza
  * con 403 antes de llegar a los módulos. Better Auth aplica `trustedOrigins` solo en su propio handler, no en las
  * llamadas `auth.api.*` que hace M1, por eso la comprobación vive aquí (hallazgo de PR-INF-01, 21/11/2026).
- * Sin `Origin` (clientes no navegador) se deja pasar: el navegador siempre lo envía en peticiones con efectos.
+ * Mutaciones sin Origin o con Fetch Metadata cross-site se rechazan; clientes HTTP deben declarar el origen permitido.
+ * El token CSRF ligado a sesión se comprueba además en csrf.ts. Las lecturas no requieren Origin.
  */
 export const verificarOrigen =
   (permitidos: readonly string[]): MiddlewareHandler =>
   async (c, next) => {
     const origen = c.req.header('origin');
-    if (!METODOS_SEGUROS.has(c.req.method) && origen && !permitidos.includes(origen)) {
+    if (!METODOS_SEGUROS.has(c.req.method) && (!origen || !permitidos.includes(origen) || c.req.header('sec-fetch-site') === 'cross-site')) {
       return responderFallo(c, 'NO_AUTORIZADO', 'Origen no permitido.');
     }
     await next();

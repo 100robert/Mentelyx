@@ -1,0 +1,285 @@
+{
+  "escenario": "eq15",
+  "base": "http://127.0.0.1:8792",
+  "fecha": "2026-11-27T05-52-22-377Z",
+  "metricas": {
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 932475,
+        "rate": 2314.261867541744
+      }
+    },
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 145200.072475,
+        "p(99)": 154934.442568,
+        "max": 155008.7311,
+        "avg": 132138.45053750006,
+        "min": 87685.3131,
+        "med": 133134.0944,
+        "p(90)": 144938.70107
+      }
+    },
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 1492,
+        "rate": 3.7029182620148338
+      }
+    },
+    "group_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 153934.038119,
+        "max": 154008.0939,
+        "avg": 131129.82887299987,
+        "min": 86641.4518,
+        "med": 132115.99894999998,
+        "p(90)": 143934.02795,
+        "p(95)": 144198.80726
+      }
+    },
+    "http_req_blocked": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.41097359249329757,
+        "min": 0,
+        "med": 0,
+        "p(90)": 0,
+        "p(95)": 1.0118,
+        "p(99)": 14.62781799999992,
+        "max": 54.3116
+      }
+    },
+    "mentelyx_intentos_de_otro_estudiante": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(90)": 30770.73125,
+        "p(95)": 36959.424055,
+        "p(99)": 39247.819009000006,
+        "max": 42663.1955,
+        "avg": 21601.51344086469,
+        "min": 25.0648,
+        "med": 21943.55245
+      }
+    },
+    "mentelyx_errores_5xx": {
+      "thresholds": {
+        "rate<0.01": {
+          "ok": false
+        }
+      },
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "passes": 58,
+        "fails": 1374,
+        "rate": 0.040502793296089384
+      }
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "max": 100,
+        "value": 100,
+        "min": 0
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0.9594972067039106,
+        "passes": 1374,
+        "fails": 58
+      }
+    },
+    "http_req_tls_handshaking": {
+      "contains": "time",
+      "values": {
+        "avg": 0,
+        "min": 0,
+        "med": 0,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0,
+        "max": 0
+      },
+      "type": "trend"
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 21556.9841,
+        "p(90)": 30736.54389,
+        "p(95)": 36952.81241,
+        "p(99)": 39200.18784299999,
+        "max": 42663.1955,
+        "avg": 21109.01566668899,
+        "min": 25.0648
+      }
+    },
+    "http_req_failed": {
+      "values": {
+        "rate": 0.0388739946380697,
+        "passes": 58,
+        "fails": 1434
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "mentelyx_intentos_calificados": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 200,
+        "rate": 0.4963697402164656
+      }
+    },
+    "mentelyx_guardado_respuesta_ms": {
+      "contains": "time",
+      "values": {
+        "min": 3169.7704,
+        "med": 19931.99565,
+        "p(90)": 24256.59882,
+        "p(95)": 25357.1033,
+        "p(99)": 26464.667941999996,
+        "max": 27575.8269,
+        "avg": 18872.185380579413
+      },
+      "thresholds": {
+        "p(95)<3000": {
+          "ok": false
+        }
+      },
+      "type": "trend"
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 39153.054268,
+        "max": 42631.7348,
+        "avg": 20981.81440857908,
+        "min": 23.9326,
+        "med": 21499.4973,
+        "p(90)": 30364.34811,
+        "p(95)": 36941.501435
+      }
+    },
+    "mentelyx_respuestas_perdidas": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_receiving": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 126.19235462466501,
+        "min": 0,
+        "med": 28.18515,
+        "p(90)": 406.17374,
+        "p(95)": 582.3452150000003,
+        "p(99)": 1055.3208239999917,
+        "max": 2295.1721
+      }
+    },
+    "data_received": {
+      "values": {
+        "count": 1545059,
+        "rate": 3834.602672245561
+      },
+      "type": "counter",
+      "contains": "data"
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0,
+        "p(90)": 1.00858,
+        "p(95)": 2,
+        "p(99)": 13.695780999999988,
+        "max": 143.2763,
+        "avg": 1.0089034852546912
+      }
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "max": 100,
+        "value": 100,
+        "min": 100
+      }
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 0,
+        "p(90)": 0,
+        "p(95)": 0.99778,
+        "p(99)": 5.553300999999998,
+        "max": 13.5093,
+        "avg": 0.18374812332439686,
+        "min": 0
+      }
+    },
+    "iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 200,
+        "rate": 0.4963697402164656
+      }
+    }
+  },
+  "umbrales": {
+    "mentelyx_guardado_respuesta_ms": [
+      "p(95)<3000"
+    ],
+    "mentelyx_errores_5xx": [
+      "rate<0.01"
+    ],
+    "mentelyx_respuestas_perdidas": [
+      "count==0"
+    ],
+    "mentelyx_intentos_de_otro_estudiante": [
+      "count==0"
+    ]
+  }
+}

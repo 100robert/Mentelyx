@@ -628,3 +628,465 @@ Limitaciones del archivo:
   - recorrido de interfaz 22/22;
   - 52 capturas sin desbordes ni errores de consola;
   - 9 rutas sin texto de proceso.
+
+## 16. Mentelyx V1, fase 1: sistema editorial y landing (25/11/2026, Claude Code)
+
+**Instrucción:** el propietario definió el alcance de Mentelyx V1 para el frontend (Aprendizaje y Preparación de exámenes; Studio pospuesto; tutorías humanas sin presentarse como disponibles) y pidió ejecutar la fase 1 de diez: auditoría, identidad, sistema de diseño y landing completa. El alcance y el sistema quedan registrados en [diseño de interfaces, sección 1.3](../../03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md). Sin commits, pushes ni despliegues. No se tocaron el backend, las migraciones, los contratos ni el dashboard.
+
+**Implementado:**
+- **Sistema editorial:** retícula de 12/8/4 columnas, escala tipográfica fluida, ritmo entre secciones, movimiento y colores semánticos de figuras, en `tokens.css`; utilidades `.marco`, `.reticula` y textos en `globals.css`. Las reglas de la portada anterior se retiraron.
+- **Landing** (`features/marketing`), en este orden:
+  - hero 6 + 6 con el búho esculpido y una lámina técnica que se dibuja al cargar;
+  - «Todo empieza con una pregunta», con seis preguntas y una lámina persistente: perfil NACA 2412 calculado, circulación doble, radios de Schwarzschild, poder de compra con inflación, ecuación paso a paso y La gran ola;
+  - pizarra con la derivada de x² (la secante se transforma en tangente y el Tutor señala el paso 3);
+  - motor de cuatro tiempos en 3D, con despiece real, ciclo de 720° y cinemática biela-manivela exacta;
+  - un universo de conocimientos;
+  - con tus materiales o sin ellos, con las cuatro procedencias;
+  - preparación de exámenes: ocho pasos que señalan su zona en un espacio de ejemplo ilustrativo;
+  - cómo funciona, con dudas frecuentes;
+  - cierre y pie con créditos de recursos.
+- **Cabecera:** Aprendizaje, Cómo funciona, Preparación de exámenes, Planes, Iniciar sesión y Comenzar. Menú desplegable por debajo de 70 rem. Nuevo `useSesion` en `features/auth`.
+- **SEO:** título, descripción, canónica, Open Graph y Twitter con imagen real del hero (`public/og/`), `robots.txt` y `sitemap.xml`. El origen sale de `NEXT_PUBLIC_SITIO_URL`; sin dominio contratado, el valor local es `http://localhost:8788`.
+- **Dependencias:** `three` 0.187.0, `@types/three` 0.187.0 y `katex` 0.19.1, con versión exacta y licencia MIT.
+- **Recurso externo:** La gran ola (The Met, JP1847), de dominio público y en Open Access CC0, verificado en la API de la colección y en el repositorio oficial `metmuseum/openaccess`.
+- **Prueba de humo:** `scripts/humo-e2e.mjs` comprueba ahora «Todo empieza con una pregunta» en `/`, en lugar del titular anterior.
+
+**Verificación ejecutada:**
+
+| Prueba | Resultado |
+|---|---|
+| `pnpm typecheck` (3 proyectos), `pnpm lint`, `pnpm test` | OK, 0 avisos, 46/46 |
+| `opennextjs-cloudflare build` (contenedor) | OK; `/`, `robots.txt` y `sitemap.xml` estáticos |
+| `humo-e2e.mjs` contra `http://localhost:8788` | 16/16 |
+| Capturas en Chrome a 1920, 1440, 1280, 1024, 768, 390 y 360 px, en claro, oscuro y movimiento reducido | Sin desbordamiento horizontal. Consola: solo el 401 esperado de `/auth/sesion` sin sesión y el aviso de una precarga de React del logotipo del registro |
+| Jerarquía | Un h1 y ningún salto de nivel |
+| WebGL | Carga diferida verificada: Three.js no entra en la carga inicial |
+| Rendimiento medido en local (Worker en 8788, Brotli, sin caché) | Escritorio: LCP 0,74–1,64 s y CLS ≤ 0,0001. Móvil con CPU ×4 y 1,6 Mbps / 150 ms: LCP 4,1–5,5 s y CLS ≤ 0,0002, **por encima del objetivo de 2,5 s** |
+
+**Optimizaciones medidas:**
+- Fuentes solo con el subconjunto latino, sin eje óptico y sin precargar la serif: de seis archivos precargados (~527 KB) a uno (Lexend, 39 KB).
+- Texto del hero sin animación de entrada.
+- Figuras de la lámina de escritorio montadas solo en cliente.
+- Límites `Suspense` por sección y `content-visibility` bajo el hero.
+
+**Pendiente y decisiones abiertas:**
+- **LCP móvil.** Lo limita la hidratación de las islas interactivas con la CPU limitada. Propuesta: hidratar la narrativa y las demostraciones solo al hacerse visibles y medir en el borde real de Cloudflare con datos de campo.
+- **Funciones sin construir.** La landing describe el alcance de V1, pero la pizarra adaptativa, los modelos 3D, la preparación de exámenes y las carpetas aún no existen en la aplicación privada (fases 3 a 8). No publicarla comercialmente antes.
+- **Armonización documental.** La [instrucción maestra](instruccion-maestra.md), el README, los RF y las ADR siguen describiendo Studio, docentes y aulas como alcance. Necesitan una ADR o una actualización autorizada.
+- **Planes y registro.** `/planes` sigue mostrando los planes docentes. `?objetivo=examen` en el registro aún no se usa (fase 2).
+- **Páginas legales.** No existen privacidad, términos ni accesibilidad, y el pie no las enlaza.
+- **Archivo de Next.** `next dev` 16.4 genera `frontend/AGENTS.md`; se retiró. Para evitarlo, `agentRules: false` en `next.config.ts`, pendiente de autorización.
+- **Accesibilidad.** No hay auditoría con axe-core ni con lectores de pantalla reales.
+
+## 17. Mentelyx V1: consolidación de la fase 1 y fases 2 y 3 (25/11/2026, Claude Code)
+
+**Instrucción:** el propietario aceptó la fase 1 y autorizó:
+- la ADR del alcance de V1;
+- `agentRules: false`;
+- la consolidación de la landing (rendimiento móvil y accesibilidad);
+- las fases 2 (autenticación) y 3 (inicio, navegación y carpetas).
+
+No se modificó el backend: otro agente trabaja en él. Tiene en curso un módulo de preparación de exámenes con un único plan por cuenta, que solo se leyó.
+
+**Decisiones y documentación:**
+- [ADR-093](../../01-analisis-de-sistema/07-decisiones-arquitectonicas.md), sección 12: alcance de V1. Las decisiones pospuestas (ADR-045, 046, 051, 081, 087 y 088, y en parte ADR-080, 084 y 091) quedan marcadas en su fila, sin borrarse.
+- [Diseño de API, sección 12](../../03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md): contratos propuestos para carpetas, varias preparaciones por cuenta y recuperación de contraseña. Incluye el conflicto con el backend en curso y una solución compatible.
+- Armonizados: el README (sección 1), CLAUDE.md, el SDD (sección 1) y el diseño de interfaces (secciones 1.3 y 4).
+- `AGENTS.md` no se modificó: se comparte con Codex y no se tocó sin coordinación. Conviene añadirle una línea con la referencia a ADR-093.
+
+**Landing:**
+- **Flujo público:** `/planes` muestra solo los planes de aprendizaje y `/biblioteca` sale del flujo público y del sitemap (no se indexa).
+- **Llamadas a la acción:** llevan su intención (`objetivo=aprendizaje` o `objetivo=examen`) y se añadió una tras la sección de disciplinas.
+- **Pies de figura:** sin la numeración académica.
+- **Texto revelado por el desplazamiento:** pasa de golpe a visible, sin opacidad intermedia.
+- **Rótulo** «Ejemplo ilustrativo» visible en la maqueta de examen.
+
+**Rendimiento (causa medida con trazas de Chrome, no supuesta):**
+- La hidratación no era la causa principal: con el JavaScript bloqueado el LCP no cambiaba.
+- **Lo que pesaba:**
+  - las maquetaciones en frío y las provocadas por la llegada de cada fuente;
+  - el reparto del ancho de banda entre el búho, las fuentes en serie, las fuentes de KaTeX y el JavaScript;
+  - 35 KB de CSS de la aplicación cargados en la landing.
+- **Cambios:**
+  - CSS de la aplicación separado en `(aprendizaje)/aplicacion.css`;
+  - islas con hidratación por proximidad (`islas.tsx`);
+  - `content-visibility` por sección y por paso;
+  - búho de 320 px para móvil y logotipos redimensionados (26 KB a 3,2 KB y 76 KB a 18 KB);
+  - sin el selector `html:has()`;
+  - escena 3D creada en un momento ocioso y con un entorno de reflejos menor en móvil;
+  - corte 2D del motor como estado inicial antes del 3D.
+- **Mediciones locales** (sin medición en Cloudflare):
+
+| Condiciones | Antes (fase 1) | Después |
+|---|---|---|
+| Móvil, CPU ×4 y 1,6 Mbps / 150 ms, Worker local | LCP 4,1–5,5 s | LCP 1,28–2,16 s |
+| Mismo móvil, servidor estático tipo CDN | — | LCP 1,71–2,29 s |
+| Escritorio, servidor tipo CDN | LCP 0,74–1,64 s | LCP 0,47–0,56 s |
+| CLS | ≤ 0,0002 | ≤ 0,0001 |
+| INP de laboratorio (interacciones reales con CPU ×4) | 304 y 536 ms | 112, 256 y 200 ms |
+
+- **Ruido:** durante parte de la sesión el equipo estuvo muy cargado (MongoDB al 101 % de CPU) y las mismas mediciones variaron hasta 3 s. Las finales se tomaron con el equipo descargado.
+
+**Fase 2, acceso:**
+- Dos zonas en escritorio y el formulario primero en móvil.
+- Intención conservada con validación de `siguiente` (lista cerrada, sin redirecciones abiertas; 5 pruebas unitarias).
+- Errores por código de la API y estado de sesión ya iniciada.
+- No hay recuperación de contraseña ni verificación de correo: no tienen soporte en el backend.
+
+**Fase 3, espacio personal:**
+- Rutas `/inicio`, `/aprendizaje`, `/examenes`, `/fuentes` y `/configuracion`.
+- Navegación con los dos módulos separados.
+- Carpetas independientes por módulo (`features/carpetas`, con 5 pruebas del árbol).
+- Lo que depende de un backend inexistente (carpetas y preparaciones) informa de que no está disponible. Sin datos simulados ni `localStorage`.
+
+**Verificación:**
+
+| Prueba | Resultado |
+|---|---|
+| `pnpm typecheck` (3 proyectos), `pnpm lint`, `pnpm test` | OK, 0 avisos, 56/56 |
+| OpenNext build y `humo-e2e.mjs` | OK y 16/16 (la aserción de `/planes` ahora exige que no haya planes docentes) |
+| Recorrido de interfaz | 10/10, 0 excepciones: registro con intención, credenciales incorrectas, empezar un tema real, menú, eliminación con confirmación, búsqueda, salida y redirección sin sesión |
+| axe-core 4.14.0 (WCAG 2.0/2.1/2.2 A y AA) en 13 vistas | 0 violaciones tras corregir el nombre del botón «Buscar» en móvil, un defecto previo |
+| Contraste por tokens | 30 pares por encima de 4,5:1 (mínimo 5,57:1) |
+| Teclado | 8/8 |
+
+No se declara conformidad completa con WCAG: faltan las pruebas con lectores de pantalla reales.
+
+**Evidencias:** en `.hallmark/v1-fase2-3/`. Las capturas «con-contrato» usan respuestas del contrato propuesto interceptadas solo en el navegador de prueba; no son datos del producto.
+
+**Pendiente:**
+- el backend de carpetas, de varias preparaciones y de la recuperación de contraseña (diseño de API, sección 12);
+- `nombre` y `correo` en la sesión;
+- INP por debajo de 200 ms de forma consistente (crear la escena 3D en un Worker con OffscreenCanvas);
+- medición en el borde real de Cloudflare;
+- renombrar «Mis espacios» como «Temas» en `/espacios`, en la fase 4;
+- el detalle de cada preparación, en la fase 7.
+
+## 18. Revalidación de hallazgos originales F01–F04 (25/11/2026, Copilot)
+
+Esta entrada actualiza la evidencia local sin reescribir los estados históricos de las secciones 12–17. El detalle por criterio y la limitación de cada prueba están en [EVIDENCIAS](../../_auditoria/EVIDENCIAS.md); el punto activo de continuidad está en [ESTADO](../../_auditoria/ESTADO.md).
+
+| Hallazgo / puerta | Verificación ejecutada | Resultado |
+|---|---|---|
+| F01, limitación de autenticación | Integración PostgreSQL de M1 (4/4) y typecheck backend | Límite compartido por correo/IP, 429/`Retry-After`, rechazo sin IP y fallo cerrado. Staging debe validar la cabecera real y el umbral provisional por IP |
+| F02, Origin/CSRF | CSRF unitarias 7/7, Workers 5/5, integración PostgreSQL y Chromium local | Cookies HttpOnly/SameSite=Lax en navegador local; origen/token inválidos no mutan; preflight cross-origin es bloqueado; logout autorizado revoca sesión. No hay prueba staging/producción |
+| F03, periodos M5 | `idempotencia-p0.integration.test.ts` (12/12) | Restricción EXCLUDE impide solapes; repeticiones exactas idempotentes, incompatibles rechazadas, contigüidad admitida |
+| F04, ARQ-01/MIG-04/PR-INF-01 y controles I-0 | `pnpm arq` (6/6), `pnpm db:verificar` (13/13), Workerd (5/5), MVP vertical (22/22) | Autorización por recurso y presupuesto negativo verificados. CI GitHub, reinstalación limpia desde lockfile y build OpenNext E2E no se ejecutaron; I-0 sigue sin declararse terminado |
+
+El servidor Wrangler temporal usado para la prueba de navegador fue detenido. MIG-04 creó y eliminó únicamente su base temporal local generada; no se ejecutaron migraciones remotas, despliegues ni operaciones sobre bases existentes.
+
+## 19. Mentelyx V1, fases 4 a 6: núcleo educativo (25-26/11/2026, Claude Code)
+
+**Instrucción:** espacio educativo, sistema de bloques y acciones, pizarra matemática, renderizadores entre disciplinas, visor 3D, visor PDF e integración con el Tutor real. No se tocaron el backend, `AGENTS.md` ni Git.
+
+**Funcionalidades nuevas del frontend:** `estudio`, `bloques`, `matematicas`, `visor-3d` (el motor de la landing se movió aquí; la landing lo carga por `@/features/visor-3d/escena`), `visor-pdf` y `experiencias`. Detalle en el [diseño de interfaces, sección 1.3](../../03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md).
+- `/espacios/[id]` es el espacio educativo del tema, con la sesión estable en `?sesion=` y los bloques reconstruidos desde los mensajes reales. «Mis espacios» pasa a «Temas» y «Conversaciones» a «Sesiones», sin cambiar rutas.
+- `/aprendizaje/experiencias/[clave]`: derivadas, motor, obra (Hokusai, The Met 45434, CC0), documento y galería. Contenido rotulado «Ejemplo ilustrativo»; el Tutor es el real.
+- Recursos propios: `public/modelos/metano.glb` y `public/documentos/apuntes-derivadas.pdf` (la página 3 es una imagen, para el aviso sin OCR).
+- Dependencia: `pdfjs-dist` 6.5.438 (Apache-2.0, 01/11/2026); sus archivos estáticos en `public/pdfjs/6.5.438/`, excluidos del lint. MathLive evaluada y no incorporada.
+- Configuración compartida: alias `@/` del frontend en el proyecto «unitarias» de `vitest.config.ts`.
+
+**Contratos:** [diseño de API, secciones 12.4 a 12.8](../../03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md): bloques y acciones del Tutor, guardado del estado de la sesión, PDF como fuentes, actividades y progreso, y la reafirmación de varias preparaciones.
+
+**Verificación:**
+
+| Prueba | Resultado |
+|---|---|
+| `pnpm typecheck` (3 proyectos), `pnpm lint`, `pnpm test` | OK, 0 avisos, 117/117 (61 nuevas: analizador, derivada, bloques, acciones, adaptador del Tutor, experiencias, búsqueda PDF y primera pregunta) |
+| OpenNext build y `humo-e2e.mjs` | OK y 16/16 |
+| Recorrido de interfaz (escritorio, 1024, 768 y 390 px, Tutor real) | 63/63, consola sin errores |
+| axe-core 4.14.0 en 9 vistas | 0 violaciones |
+| LCP móvil de la landing (9 corridas, Worker local) | 1,72–3,32 s; las 3 lentas con 750–920 ms de script por contención de CPU del equipo y los mismos 326 KB; CLS ≤ 0,0001 |
+| INP de laboratorio (CPU ×4) | 64–232 ms por interacción. La 2.ª y 3.ª pulsación del deslizador de la pizarra no produjeron fotogramas en Chrome sin interfaz: medición no fiable, pendiente con pantalla real |
+
+No se declara conformidad completa con WCAG. **Evidencias:** `.hallmark/v1-fase4-6/`.
+
+**Pendiente:** backend de las secciones 12.1 a 12.7; medir INP con pantalla real o RUM (no migrar a OffscreenCanvas: los perfiles atribuyen el costo a React, no a la escena 3D); medición en el borde de Cloudflare; añadir la referencia a ADR-093 en `AGENTS.md` coordinándolo con Codex.
+
+## 20. Mentelyx V1, fases 7 a 9: exámenes, evaluaciones y configuración (26/11/2026, Claude Code)
+
+**Auditoría:**
+- El backend de otro agente añadió en M3 (`evaluaciones-aprendizaje`, sin versionar) una preparación real: objetivo, plan determinista, completar actividad y seguimiento. Guarda **una preparación vigente por cuenta**, sin nombre ni asignatura.
+- La autenticación ofrece registro, ingreso, salida y sesión (`usuarioId`, `expiraEn`).
+- No hay `/preparaciones`, carpetas, banco de preguntas, intentos, tarjetas ni preferencias.
+- No se modificaron archivos del backend, `AGENTS.md` ni Git.
+
+**Entorno local:**
+- El contenedor de pruebas tenía un backend anterior al módulo de preparación. Se copió en él el backend del repositorio, con respaldo previo en `/app/backend.respaldo-fase7`.
+- Se aplicó la migración 0006 **solo a la base local de Docker** (`pnpm db:migrate`). No hubo migraciones remotas ni despliegues.
+
+**Frontend:**
+- `features/examenes`: preparaciones, interpretación local de la frase, temario, preguntas (`mentelyx.pregunta/v1`) y su corrección, simulacro, tarjetas, progreso, ejemplos ilustrativos, servicios y componentes. Tiene una segunda entrada, `servidor.ts`, para el SSR.
+- `features/cuenta`: apariencia por dispositivo.
+- `TutorEnLinea` en `features/estudio`.
+- Rutas: `/examenes/nueva`, `/examenes/[id]` y `/examenes/[id]/estudiar/[tema]`. `/examenes?nueva=1` redirige a la creación.
+- Tokens del modo oscuro forzado (`:root[data-tema]`) y regla de movimiento reducido elegido.
+- Detalle en el [diseño de interfaces (versión 2.6)](../../03-diseño-de-software/diseño-externo/03-diseño-de-interfaces-y-flujos.md), sección 1.3. Contratos pendientes en el [diseño de API, secciones 12.9 y 12.10](../../03-diseño-de-software/diseño-externo/02-diseño-de-api-y-contratos.md).
+
+**Verificación:**
+
+| Prueba | Resultado |
+|---|---|
+| `pnpm typecheck` (3 proyectos), `pnpm lint`, `pnpm test` | OK, 0 avisos, 141/141 (24 nuevas: interpretación, fechas, temario, preguntas, corrección, equivalencia, simulacro, resultados, tarjetas, seguimiento y apariencia) |
+| OpenNext build y `humo-e2e.mjs` | OK y 16/16 |
+| Recorrido de las fases 7 a 9 (backend real local, escritorio, 1024 y 390 px) | 55/55, consola sin errores; los únicos 404 son los de `/preparaciones` y `/carpetas`, la detección prevista de contratos que aún no existen |
+| Regresión de las fases 4 a 6 | 63/63 |
+| axe-core 4.14.0 en 11 vistas, dos de ellas en tema oscuro | 0 violaciones |
+
+No se declara conformidad completa con WCAG. **Evidencias:** `.hallmark/v1-fase7-9/`.
+
+**Pendiente:**
+- el backend de las secciones 12.1, 12.2, 12.9 y 12.10;
+- vincular las sesiones del Tutor a la preparación;
+- el diagnóstico inicial, que depende de un banco real;
+- INP con pantalla real;
+- medición en Cloudflare;
+- la referencia a ADR-093 en `AGENTS.md`, coordinándola con Codex;
+- restaurar el contenedor si el otro agente lo necesita con su versión anterior.
+
+## 21. Mentelyx V1, fase 10B: auditoría integral y refinamiento del frontend (26/11/2026, Claude Code)
+
+**Alcance:** auditoría renderizada, corrección y consolidación, sin ampliar el alcance de V1. No se modificó el backend ni `AGENTS.md`, no hubo migraciones, commits, push ni despliegues, y no se restauró el respaldo del contenedor.
+
+**Entorno local:**
+- El backend del contenedor es idéntico al del repositorio: mismo hash del árbol `src` y 7 migraciones aplicadas en local, igual que en `backend/drizzle`.
+- Ningún otro agente cambió archivos desde la sección 20.
+- El respaldo `/app/backend.respaldo-fase7` contiene `atlas-credentials.env`: es local, pero conviene borrarlo cuando el agente del backend lo confirme.
+- El proveedor simulado del Tutor local responde «En el entorno de demostración no hay un modelo…»: es texto del backend local, no de la interfaz.
+
+**Defectos encontrados y corregidos:**
+
+| Defecto | Corrección |
+|---|---|
+| La landing anunciaba como disponibles el diagnóstico, el plan adaptativo, los simulacros sobre la propia preparación, las carpetas, la biblioteca, las fuentes externas y las citas por página | Textos y maqueta de exámenes alineados con lo que existe hoy (plan por temas, estudio y ejercicios con el Tutor, seguimiento). La escena y la animación no cambiaron |
+| Migas de la barra superior con «Inicio» en Exámenes y en las experiencias, y duplicadas en los temas | `navegacion/migas.ts`, con 2 pruebas. La barra nombra el módulo y cada pantalla mantiene su ruta |
+| Dos experiencias distintas para una sesión (`/tutor/[id]` con el panel anterior) | `/tutor/[id]` usa el espacio educativo (con las fuentes de su tema si lo tiene); las citas muestran un extracto |
+| La barra lateral no se contraía en las experiencias ni en el estudio de un examen | Se contrae en todas las pantallas del espacio educativo |
+| `/fuentes` prometía citas «de la página» | «Del pasaje» |
+| Encabezados de Planes desalineados respecto de sus cifras | Alineación por especificidad |
+| «Ver todo seguido» deshabilitado con un solo bloque | Se oculta |
+| La corrección de expresiones se presentaba como «equivalencia numérica» | «Equivalencia aproximada por evaluación numérica (no simbólica)», con el intervalo, sin dominio ni procedimiento; 2 pruebas documentan los límites |
+| El visor 3D creaba el contexto WebGL dentro del ciclo de pintado | Creación en un momento ocioso; sin mejora medible concluyente |
+
+**Verificación:**
+
+| Prueba | Resultado |
+|---|---|
+| `pnpm typecheck` (3 proyectos), `pnpm lint`, `pnpm test` | OK, 0 avisos, 145/145 (4 nuevas) |
+| OpenNext build y `humo-e2e.mjs` | OK y 16/16. Una compilación falló una vez al descargar Source Serif 4 desde Google Fonts y pasó al reintentar |
+| Barrido renderizado: 23 vistas en 1920, 1440, 1280, 1024, 768, 390 y 360 px | Sin desbordes horizontales; 32 enlaces internos sin 404 ni 5xx; migas correctas en todas las pantallas |
+| Regresiones | Espacio educativo 63/63; exámenes y configuración 55/55 |
+| Teclado y foco | 17/17: foco visible, foco en la pregunta al empezar, diálogo modal con Escape y retorno del foco, aviso al salir de un simulacro en curso, pestañas con flechas, menú móvil y movimiento reducido |
+| axe-core 4.14.0 | 0 violaciones en las vistas auditadas, incluidas la landing y el ingreso en oscuro. En la landing en claro, 4 nodos de contraste del motor fuera de pantalla resultaron ser un **falso positivo**: con `content-visibility: auto` axe no resuelve el fondo; con la sección visible hay 0 |
+| INP de laboratorio (390 px, CPU ×4, Event Timing) | Responder o comprobar: 0–224 ms. Marcar y resumen: 128–352 ms. Siguiente pregunta: 168–344 ms. **Empezar una práctica o un simulacro: 232–1192 ms**; el costo es sobre todo maquetación (133–236 ms) y estilos (59–80 ms), frente a 64–138 ms de script |
+| LCP | Sin cambios en la ruta crítica de la landing (solo textos); no se volvió a medir |
+
+No se declara conformidad con WCAG: no hay lector de pantalla en el entorno. Quedan pendientes NVDA o JAWS en el espacio educativo, el simulacro con temporizador y el visor PDF, y TalkBack o VoiceOver en móvil.
+
+**Evidencias:** `.hallmark/v1-fase10b/`: barrido, públicas (también en oscuro), educativas, evaluación y resultados JSON.
+
+**Estado por funcionalidad:**
+
+| Clasificación | Funcionalidades |
+|---|---|
+| Integrada y persistente | Registro, ingreso y salida; temas; sesiones del Tutor y su continuidad; fuentes TXT y MD; plan de la preparación y completar actividades; seguimiento de actividad; plan y recursos del mes |
+| Funcional localmente | Pizarra, bloques, acciones y recorridos; visor 3D; visor PDF (catálogo propio o archivo del equipo); lectura de obras; corrección de preguntas; práctica, simulacro y resultados de la visita; tarjetas; apariencia por dispositivo |
+| Parcialmente integrada | Preparación (una por cuenta, sin nombre); estudio por tema con el contexto del examen en texto; temario (solo rehaciendo el plan) |
+| Ilustrativa | Experiencias de Aprendizaje; preparaciones de ejemplo con banco de preguntas y tarjetas |
+| Bloqueada por backend | Carpetas, varias preparaciones, banco propio, intentos guardados, diagnóstico, dominio estimado, anotaciones, PDF como fuentes, perfil, seguridad de la cuenta y preferencias de aprendizaje (diseño de API, 12.11) |
+
+**V1 no está completa:** faltan las integraciones bloqueadas por backend.
+
+**Pendiente antes del lanzamiento público:**
+- política de privacidad, términos y condiciones, declaración de accesibilidad, página de créditos y datos comerciales (no se redactaron: requieren autorización);
+- decidir si Planes debe seguir listando recursos sin interfaz todavía (razonamiento profundo, evaluaciones e ilustraciones), sin cambiar la información comercial aprobada;
+- INP con pantalla real y RUM;
+- medición en Cloudflare;
+- pruebas con lectores de pantalla.
+
+## 22. Cierre de la fase 10B y preparación de la integración (26/11/2026, Claude Code)
+
+**Seguridad del entorno (para Codex, agente del backend):**
+- Hay un archivo de credenciales reales de MongoDB Atlas en `/app/backend.respaldo-fase7/atlas-credentials.env`, dentro del contenedor local `mentelyx-build`.
+- **Otras copias:**
+  - `backend/src/atlas-credentials.env` en el repositorio: ignorada por `.gitignore` (`*.env`) y nunca versionada (`git log --all` sin resultados);
+  - `/app/backend/src/atlas-credentials.env` en el mismo contenedor, porque la fase 7 copió `backend/src` completo con `docker cp`.
+- No se abrió su contenido ni se copió a documentación, capturas o evidencias. Tampoco se borró el respaldo.
+- **Pendiente de Codex:**
+  - confirmar si el respaldo sigue siendo necesario;
+  - buscar otras copias (imágenes, volúmenes, otros equipos);
+  - evaluar si las credenciales estuvieron expuestas y si conviene rotarlas en Atlas.
+- No se encendieron Docker ni los contenedores en esta intervención.
+
+**Proveedor simulado:**
+- El texto «En el entorno de demostración…» sale de `backend/src/modules/tutor-ia-rag/infraestructura/proveedor-simulado.adapter.ts`.
+- `IA_PROVEEDOR` vale `simulado` por omisión (`backend/src/app.ts`) y nada lo impide en `staging` o `produccion`; solo el entorno `demostracion` de `backend/wrangler.jsonc` fija `workers-ai`.
+- Corrección propuesta en el diseño de API, sección 12.11 (riesgos): fallar al iniciar con el simulado en esos entornos y guardar `ruta` en cada mensaje.
+- El frontend no oculta nada: rotula la respuesta en vivo como «Demostración (sin IA real)».
+
+**Comunicación comercial (autorizada):**
+- En `/planes` y en Configuración, «Razonamiento profundo», «Evaluaciones de 15 preguntas» e «Ilustraciones» llevan la marca «Aún no disponible» y una nota: ningún módulo los consume.
+- Precios, límites y beneficios no cambiaron, y una prueba nueva los fija.
+- Las consultas generales, las técnicas y el almacenamiento sí son reales.
+- No hay planes docentes ni Studio.
+
+**Matriz de integración (diseño de API, 12.11):**
+- Las 25 rutas de archivo son completas desde la raíz del repositorio y existen.
+- Cada fila nombra el módulo responsable del backend (M1, M2, M3, M5 o M6), el contrato, el estado, lo que muestra la interfaz sin soporte y la prueba de aceptación.
+
+**Rendimiento (análisis, sin cambios):**
+- No hubo mejoras demostrables posibles: no se encendieron los contenedores para medir.
+- Ya está cumplido, verificado en el código:
+  - práctica y simulacro montan **solo la pregunta activa**;
+  - la preparación monta solo la sección activa;
+  - el visor 3D se crea en un momento ocioso y solo si la pregunta lo usa.
+- Candidatos al costo de maquetación y estilos (133–236 ms) al empezar, por orden de probabilidad:
+  1. primer uso de Source Serif 4 en el enunciado (`.pregunta-enunciado`), una fuente que se carga sin precarga (`preload: false` en `frontend/src/app/layout.tsx`, decidido por el LCP de la landing): descarga y vuelve a maquetar el documento;
+  2. consultas de contenedor de `.bloque-educativo`, `.visor-3d` y `.visor-pdf`, que se evalúan al insertar un apoyo;
+  3. el mapa del simulacro, con un botón por pregunta.
+- **Plan para la fase 10C:**
+  - traza con invalidaciones de maquetación y eventos de fuente en Chrome con pantalla, con y sin precargar Source Serif solo en `(aprendizaje)`;
+  - aplicar únicamente lo que reduzca la medición.
+
+**Páginas legales:** siguen pendientes la política de privacidad, los términos y condiciones, la declaración de accesibilidad y la página de créditos y licencias. No se redactaron ni se creó su estructura: falta la aprobación.
+
+**Pruebas focalizadas:**
+- `pnpm typecheck`, `pnpm lint` y `pnpm test`: 147/147.
+- `next build` en el equipo, fuera de los contenedores: correcto.
+- `/planes` renderizada en 1440 y 390 px: marcas visibles, 0 violaciones de axe, sin desborde.
+- No se compiló OpenNext ni se ejecutó el humo: requieren el contenedor.
+
+**Procedimiento de la fase 10C (por contrato que publique Codex):**
+1. Inspeccionar el contrato.
+2. Verificar su compatibilidad con la fila de la matriz 12.11.
+3. Conectar el servicio frontend indicado.
+4. Sustituir el estado provisional.
+5. Probar persistencia y recuperación.
+6. Verificar autorización (404 a otra cuenta).
+7. Ejecutar pruebas de integración y regresiones.
+8. Actualizar la fila de la matriz.
+
+V1 sigue sin estar completa.
+
+## 23. Mentelyx V1: backend e integración Full Stack (26/11/2026, Claude Code)
+
+**Instrucción:** implementación backend e integración Full Stack definitiva para la presentación del 27/11/2026. Sin commits, push, despliegues ni operaciones sobre bases remotas.
+
+**Recuperación:** rama `reorganizacion-frontend` (HEAD `8883a42`, dos commits sobre `main` = `origin/main` = `560de05`). Los cambios ajenos sin confirmar se conservaron y las eliminaciones staged (`docs.zip`, `.bkp`) no se tocaron. F01 (límite de autenticación) y F02 (Origin/CSRF), corregidos por Copilot, siguen vigentes y probados. F03 (periodos M5) está cubierto por `EXCLUDE` y la suite P0. La migración `0006` se verificó y no se duplicó.
+
+**Implementado (detalle en el diseño de API, 12.1–12.11):**
+- **M6:**
+  - `IA_PROVEEDOR` no tiene valor por omisión fuera de `desarrollo`/`ci`; el simulado hace fallar el arranque en staging o producción; `deshabilitado` responde 503 sin reservar cuota.
+  - Prompt `tutor-sistema/v2` con una sección `mentelyx` opcional que el servidor separa, expande y valida con el validador del cliente (14 tipos de bloque, 9 acciones). Bloques y `ruta` se guardan con cada mensaje.
+  - Estado de la sesión con `If-Match`; sesiones vinculadas a una preparación.
+  - Entorno `local-ia` en `wrangler.jsonc` para usar Gemma real.
+- **M2:** carpetas por módulo (3 niveles, sin ciclos, nombre único sin distinguir mayúsculas, elementos solo de su módulo).
+- **M3:**
+  - varias preparaciones con nombre y asignatura (ADR-093) y temario editable que conserva el avance;
+  - banco versionado en MongoDB, validado con `mentelyx.pregunta/v1`;
+  - intentos con la hora del servidor y proyección sin soluciones;
+  - calificación oficial única e idempotente;
+  - rendimiento por tema, diagnóstico (solo en el servidor) y tarjetas SM-2.
+- **M1:** nombre y correo en la sesión, `/cuenta/me`, preferencias, sesiones activas y cambio de contraseña que revoca las demás.
+- **Compartido:** esquemas de bloques, acciones, preguntas y corrección movidos a `packages/contratos/src/educacion`. El frontend los reexporta sin cambiar su API.
+- **Frontend:** Exámenes (práctica, simulacro, resultados e historial del servidor; temario), Configuración (perfil, seguridad y preferencias) y guardado del estado de los bloques. Las carpetas funcionaron sin cambios en la interfaz.
+- **Datos:**
+  - migración aditiva `0007`, aplicada solo al PostgreSQL local. Su única baja es el índice «una preparación activa», sustituido por decisión de ADR-093;
+  - `preparar-mongo.mjs` crea los índices y el validador `$jsonSchema` de `question_banks`;
+  - `scripts/sembrar-demo.mjs` crea los datos de demostración por la API.
+
+**Verificación (todo en local; dobles del proveedor de IA, nunca Workers AI):**
+
+| Prueba | Resultado |
+|---|---|
+| `pnpm typecheck`, `pnpm lint`, `git diff --check` | OK, 0 avisos |
+| `pnpm test` | 153/153 (147 previas + 6 nuevas) |
+| `pnpm test:integracion` (PostgreSQL y MongoDB reales) | 61/61 (51 previas + 10 de los flujos A, B y C) |
+| `test:workers` | 5/5 |
+| `pnpm db:verificar` (MIG-04) | 13/13: 8 migraciones, sin deriva |
+| Build de OpenNext y `humo-e2e.mjs` | OK y 16/16 |
+| `scripts/flujos-v1-e2e.mjs` por el frontend | 9/9; repetido tras reiniciar PostgreSQL, MongoDB y los Workers, con los datos intactos |
+| Recorrido en Chrome (CDP, 1440 px) | 9/9 comprobaciones de interfaz; 1 error de consola esperado (401 de `/auth/sesion` antes de ingresar). Evidencias en `.hallmark/v1-integracion/` |
+
+**No verificado o pendiente:**
+- Workers AI real: falta `wrangler login`.
+- MongoDB Atlas: el clúster rechaza el TLS desde este equipo; probablemente falta la IP en *Network Access*.
+- PDF como fuente y OCR.
+- Interfaz: vista de tarjetas sin conectar y anotaciones de PDF y obras sin guardar.
+- Cuenta: recuperación y verificación por correo, y eliminación de la cuenta.
+- Páginas legales (privacidad, términos, accesibilidad y créditos): sin redactar.
+- Volumen nombrado de MongoDB en Compose: no se cambió antes de la demostración para no perder los datos sembrados.
+
+**Seguridad de credenciales:**
+- La URI de Atlas solo está en `backend/src/atlas-credentials.env`. Ese archivo está ignorado y nunca se versionó; no hay copias en el historial ni en `dist`.
+- Hay dos copias más dentro del contenedor local `mentelyx-build`. No existen imágenes propias.
+- Los permisos denegaron moverla fuera de `src` y borrar las copias del contenedor: queda para el propietario.
+- La sincronización del contenedor excluye `*.env`.
+- Rotar la contraseña de Atlas es recomendable por precaución, aunque no hay evidencia de exposición fuera de este equipo.
+
+**Siguiente acción exacta:**
+1. `wrangler login` y `wrangler dev --env local-ia` para probar Gemma.
+2. Añadir la IP en Atlas.
+3. Conectar las tarjetas.
+4. Redactar las páginas legales.
+5. Proponer los commits (todavía no se ha hecho ninguno).
+
+## 24. Infraestructura real: NVIDIA, Neon y Atlas; tarjetas, PDF y páginas legales (27/11/2026, Claude Code)
+
+**Protección previa:** respaldos de PostgreSQL (`pg_dump`, 42 tablas con datos) y de MongoDB (`mongodump`) en `E:\Mentelyx-respaldos\2026-11-26-local`, fuera del repositorio. Se compararon con los datos vivos: 1 banco y 86 conversaciones en los dos lados. El volumen anónimo de MongoDB es `8ddec12f…` (`/data/db`); no se tocó ningún volumen.
+
+**Secretos:**
+- Las credenciales de Neon y NVIDIA (`backend/src/.dev.vars.env`) y de Atlas (`backend/src/atlas-credentials.env`) se movieron a `backend/.secretos/`, fuera de `src` e ignorado por Git. En `.gitignore` se añadió `.secretos/` y se creó un `.dockerignore` en la raíz. Las dos copias antiguas de Atlas dentro del contenedor `mentelyx-build` se eliminaron; no queda ninguna.
+- El perfil `externo` usa `backend/.dev.vars.externo`, que genera `scripts/preparar-perfil-externo.mjs` sin imprimir valores. Ese script elige la URL *pooled* de Neon por el host y convierte la URI SRV de Atlas en lista de semillas.
+- Los nombres `DATABASE_URL` y `DIRECT_DATABASE_URL` del archivo del propietario están intercambiados respecto a su host; el script no depende de ellos.
+- El usuario de Atlas tiene el rol `atlasAdmin`. Se recomienda crear uno con solo `readWrite` sobre `mentelyx` para la aplicación y rotar las credenciales, que estuvieron dentro de `src` y en un contenedor local.
+- Perfiles: `local` (Docker, simulado), `local-ia` (Docker + Workers AI), `externo` (Neon + Atlas + NVIDIA) y `demostracion` (despliegue).
+
+**NVIDIA (ADR-094):**
+- `GET /models` lista 30 modelos para la cuenta.
+- `google/gemma-3-12b-it` y `google/gemma-3-4b-it` responden 404 («Function not found for account»).
+- `moonshotai/kimi-k3.1-pro` responde. Con razonamiento, gastó los 60 tokens en razonar y tardó 77 s; sin razonamiento, respondió en 36 s.
+- Se implementaron el adaptador y 5 pruebas unitarias con dobles.
+- **Inferencia real de extremo a extremo** (`scripts/tutor-real-e2e.mjs`): cuenta en Neon, fuente propia, conversación en Atlas; respuesta RESPONDIDA y FUNDAMENTADA con 1 cita, bloque `pasos` y acción `revelar-paso` validados en el servidor, recuperados con la ruta `nvidia`; **81 s**.
+
+**Workers AI:** Wrangler está autenticado en este equipo, sin copiar tokens a contenedores. El binding remoto falla porque la cuenta **no tiene subdominio workers.dev**: es una acción pendiente del propietario.
+
+**Neon:**
+- PostgreSQL 18.7 con TLS verificado; base `neondb`, que estaba vacía; `vector` 0.8.7.
+- Se aplicaron 0000–0007 con la conexión directa: 8 migraciones, 42 tablas, 7 esquemas.
+- Verificado: EXCLUDE de M5, los 4 triggers del libro, semilla 6/40, HNSW e índices de M3 y de carpetas.
+
+**Atlas:**
+- Desde este equipo: DNS (con resolvedor explícito, porque el de Node apunta a 127.0.0.1), TLS, autenticación y ping en unos 2 s.
+- Se crearon los índices, el TTL y el validador `$jsonSchema` con `preparar-mongo.mjs`.
+- No se verificó la conectividad desde Cloudflare: las IP de salida de Workers no son fijas y no se abrió `0.0.0.0/0` en Network Access.
+
+**Flujos con servicios externos** (API y frontend en Windows con el perfil `externo`; *bundle* OpenNext compilado en el contenedor):
+- `sembrar-demo.mjs` sobre Neon y Atlas: 12 preguntas.
+- `flujos-v1-e2e.mjs`: **9/9**, con latencias de 3 a 28 s por paso.
+
+**Funcionalidades:**
+- Tarjetas conectadas al servidor (SM-2, próxima fecha y pendientes de hoy).
+- PDF como fuente: el texto se extrae por página en el navegador con PDF.js (el archivo no se sube; las páginas escaneadas se avisan). Prueba de integración: se indexa, se cita, y otra cuenta recibe 404.
+- Páginas `/privacidad`, `/terminos`, `/accesibilidad` y `/creditos`, enlazadas en el pie y el sitemap, con las secciones provisionales que requieren revisión jurídica.
+
+**Pendiente:**
+- Anotaciones en los visores de PDF y obras: el contrato del estado ya las admite, pero los visores no las envían.
+- Recuperación y verificación por correo: no hay proveedor de correo.
+- Eliminación de cuenta: falta el procedimiento de borrado entre módulos.
+- Citas con número de página.
+- Gates remotos de I-0 (CI de GitHub).
+
+**Pruebas:**
+- `typecheck` y `lint`: OK.
+- Unitarias: 158/158.
+- Integración: 62/62 (+1 de PDF).
+- Workers: 5/5.
+
+**Despliegue: no realizado.** Bloqueos:
+1. R2 no está habilitado en la cuenta (código 10042).
+2. No hay subdominio workers.dev.
+3. Atlas no es alcanzable desde Workers sin abrir Network Access o sin otra estrategia.
+4. El hash de contraseñas (scrypt, unos 83 ms) supera la CPU de Workers Free.
+
+**Siguiente acción exacta:** que el propietario habilite R2 y registre el subdominio workers.dev, y decida la estrategia de Atlas para Workers. Después, `wrangler secret bulk` y `wrangler deploy --env demostracion`, con autorización explícita.

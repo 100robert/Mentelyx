@@ -4,7 +4,8 @@
  * actor se le responde «no encontrado» para no revelar su existencia.
  */
 export type EstadoLectura = 'PENDIENTE' | 'INDEXANDO' | 'LISTA' | 'FALLIDA';
-export type FormatoTexto = 'TXT' | 'MD';
+/** PDF = texto extraído en el navegador con marcadores de página (API 12.6); se guarda como texto, no el original. */
+export type FormatoTexto = 'TXT' | 'MD' | 'PDF';
 
 export type EspacioRegistro = {
   id: string;
@@ -44,7 +45,7 @@ export const bytesUtf8 = (texto: string): number => new TextEncoder().encode(tex
 
 /** Clave del objeto original en R2: aislada por espacio y fuente; nunca contiene datos personales. */
 export const claveObjetoFuente = (espacioId: string, contentId: string, version: number, formato: FormatoTexto) =>
-  `espacios/${espacioId}/fuentes/${contentId}/v${version}.${formato === 'MD' ? 'md' : 'txt'}`;
+  `espacios/${espacioId}/fuentes/${contentId}/v${version}.${formato === 'MD' ? 'md' : formato === 'PDF' ? 'pdf.txt' : 'txt'}`;
 
 // Puertos (diseño interno, sección 2: la aplicación depende de interfaces, no de adaptadores).
 

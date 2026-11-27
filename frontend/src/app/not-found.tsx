@@ -13,7 +13,7 @@ export default function NoEncontrado() {
             Volver al inicio
           </Link>
           <Link className="boton boton-secundario" href="/espacios">
-            Ir a mis espacios
+            Ir a mis temas
           </Link>
         </p>
       </main>
