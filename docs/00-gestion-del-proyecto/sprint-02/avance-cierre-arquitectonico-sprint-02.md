@@ -1348,3 +1348,55 @@ node scripts/thunder/verificar-coleccion.mjs http://localhost:8787
 - Árbol de trabajo: los mismos 47 de antes, todos en archivos ignorados. Ninguno nuevo.
 
 **Pendiente en este punto:** el push, el estado del CI y la limpieza de ramas y del worktree (ver 27.2).
+
+### 27.2. Publicación, CI y ramas (27/11/2026, ~16:45, Claude Code)
+
+**Publicación:**
+- `git push origin main` sin `--force`: `a70582c..2c06175`.
+- `origin/main` = `main` = `2c06175` antes de este commit de cierre. Contiene `a70582c`, `bb6961c`, `cf1fa86`, `b3fd3bc`, `f4f2ad5`, `2bbffb7` y `2c06175`.
+- El commit de esta sección se publica con un segundo push. Su hash queda en `git log -1 origin/main`.
+
+**CI** (una sola consulta; no se esperó):
+- `2c06175`: **en curso**, pendiente de verificación: https://github.com/100robert/Mentelyx/actions/runs/46072214165
+- El anterior, de `a70582c`, **falló**: https://github.com/100robert/Mentelyx/actions/runs/46066438028. Sus 4 jobs se detuvieron en `pnpm install --frozen-lockfile`, que es el defecto que corrige `f4f2ad5`.
+- `gh` no está instalado en este equipo. La consulta se hizo por la API pública de GitHub.
+
+**Ramas y worktrees:**
+- `reorganizacion-frontend`: eliminada en local (`git branch -d`) y en remoto (`git push origin --delete`). Antes se verificó que estaba íntegra en `origin/main` (`git branch -r --merged`, 0 commits fuera) y que no tenía PR abierto.
+- Worktree `.claude/worktrees/plugin-usage-a05ecb` y rama `claude/plugin-usage-a05ecb` (`560de05`): quitados con `git worktree remove` (sin `--force`) y `git branch -d`. Estaban limpios y sin commits propios, y la única sesión que los usó no tenía actividad desde el 21/11.
+- Se conservan las 25 referencias de recuperación (`refs/codex/*` y `refs/agents/*`) y el respaldo `E:\Mentelyx-respaldos\2026-11-27-1540\`.
+- Ramas actuales: solo `main`, y `origin/main` en el remoto.
+
+**Pruebas:**
+
+| | Resultado (27/11/2026) |
+|---|---|
+| Ejecutadas, en un clon limpio de `2bbffb7` | `pnpm install --frozen-lockfile`, `typecheck`, `lint` (0 errores), build del backend, `next build`, Vitest 190/190 y Jest 63/63 |
+| Fallidas | Ninguna de las ejecutables sin Docker |
+| No ejecutadas (Docker apagado) | Integración, Workers con PostgreSQL y Redis (sin Docker, 3 de 5 fallan por conexión denegada), registro, inicio de sesión y sesiones en 8787/8788, flujos E2E y volcados de las bases |
+| No ejecutable en Windows | OpenNext `build:worker` (`EPERM symlink`). Se compila en el contenedor Linux `mentelyx-build` |
+
+**Registro e inicio de sesión:** no verificados en esta tarea. Su último resultado real es el de las secciones 23 y 26, con la pila de Docker.
+
+**Cómo levantar Mentelyx** (Git Bash, en la raíz, con Docker Desktop encendido):
+
+```bash
+bash scripts/levantar-local.sh                          # bases, API en 8787 y web en 8788
+curl http://localhost:8788/api/v1/salud                 # estado: ok con los 7 módulos
+node scripts/sembrar-demo.mjs http://127.0.0.1:8787     # datos de demostración (idempotente)
+node scripts/humo-e2e.mjs http://127.0.0.1:8788         # 16 pasos
+node scripts/flujos-v1-e2e.mjs http://127.0.0.1:8788    # 9 pasos: registro, sesión y flujos A, B y C
+corepack pnpm test:integracion && (cd backend && corepack pnpm test:workers)
+```
+
+Si 8787 u 8788 ya están ocupados por procesos del host (`workerd` o `next dev` del propietario), el contenedor `mentelyx-build` no puede publicar esos puertos. Hay que cerrarlos antes (lo decide el propietario) o usar los servidores del host.
+
+**Defectos y pendientes:**
+1. Verificar el CI de `2c06175` y del commit de cierre (enlace arriba).
+2. Regresión con Docker: integración, Workers, E2E, registro e inicio de sesión.
+3. Los scripts raíz `build` y `test:workers` invocan `pnpm` directamente y fallan si pnpm solo está disponible como `corepack pnpm`.
+4. `E:\tmp-mentelyx-clon` no se pudo borrar (el sistema de permisos lo bloqueó). Está verificado sin cambios propios y lo borra el propietario.
+5. `marca/generado/` y `mentelyx-copilot/` siguen en disco sin versionar, por decisión del propietario.
+6. Siguen abiertos los pendientes de la sección 26: *pooling* y repetición de los EQ, R2, `workers.dev`, CPU de Workers Free y Atlas desde Workers.
+
+**Siguiente tarea (Codex):** recuperar y validar en el navegador el registro, el inicio de sesión y las sesiones (incluidos el cierre de sesión y la expiración), con la pila de Docker levantada y cuentas ficticias. Debe registrar el resultado real en este documento.
