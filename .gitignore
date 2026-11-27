@@ -11,6 +11,11 @@ mentelyx-skills.zip
 !/.claude/skills/
 /.agents/*
 !/.agents/skills/
+# Skills de terceros: solo locales (se versionan únicamente las mentelyx-*)
+/.claude/skills/hallmark/
+/.claude/skills/cli-hub-meta-skill/
+/skills-lock.json
+/.hallmark/
 /.codex/
 
 # draw.io backups
